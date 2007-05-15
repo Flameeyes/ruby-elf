@@ -95,6 +95,8 @@ so_files.each do |so|
   # this call should really be replaced with some kind of
   # libelf bindings
   `readelf -sW #{so}`.each_line do |re_line|
+    break if re_line =~ /Symbol table '.symtab' contains /
+
     re_line = re_line.split(/\s+/)
 
     next if re_line[5] != "GLOBAL"
