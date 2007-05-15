@@ -99,6 +99,7 @@ so_files.each do |so|
 
     next if re_line[5] != "GLOBAL"
     next if re_line[7] == "UND"
+    next if re_line[7] == "ABS"
 
     symbol = re_line[8]
     
@@ -113,7 +114,7 @@ so_files.each do |so|
 
     next if symbol == nil
 
-    $stderr.puts "INSERT INTO symbols VALUES('#{so}', '#{symbol}')"
+    # $stderr.puts "INSERT INTO symbols VALUES('#{so}', '#{symbol}')"
     db.execute("INSERT INTO symbols VALUES('#{so}', '#{symbol}')")
   end
 end
@@ -121,8 +122,10 @@ end
 search_files = db.prepare( "SELECT path FROM symbols WHERE symbol='?'")
 
 db.execute "SELECT * FROM ( SELECT symbol, COUNT(*) AS occurrences FROM symbols GROUP BY symbol ) WHERE occurrences > 1 ORDER BY occurrences DESC;" do |row|
-  puts "Symbol #{row[0]} present #{row[1]}"
-  search_files.execute(row[0]) do |path|
-    puts "  #{path}"
+  puts "Symbol #{row[0]} present #{row[1]} times"
+  search_files.execute(row[0]) do |res|
+    res.each do |path|
+      puts "  #{path[0]}"
+    end
   end
 end
