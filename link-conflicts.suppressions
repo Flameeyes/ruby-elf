@@ -1,4 +1,15 @@
 .*					^_(init|fini)$
 ^/lib(|32|64)/modules/.*
+.*/lib32/.*
 .*/xine/plugins/.*/xineplug_.*\.so	^xine_plugin_info$
 .*/gconv/.*\.so				^gconv(_init)?$
+.*/libkdeinit_.*\.so			^kdemain$
+.*/kde3/.*\.so				^kde(init)?main$
+.*/kde3/.*thumbnail\.so			^new_creator$
+.*/kde3/.*panel(applet|extension)\.so	^init$
+.*/lib(|32|64)/security/pam_.*\.so	^pam_sm_(authenticate|acct_mgmt|close_session|setcred|chauthtok|open_session)$
+.*/valgrind/(amd64|x86|ppc|ppc64)/vgpreload_.*\.so	^_vgrZU_.*$
+.*/kde3/libaudiocd_encoder_.*\.so	^create_audiocd_encoders$
+.*/qt4/plugins/.*\.so			^qt_plugin_(instance|query_verification_data)$
+.*kde3/plugins/.*\.so			^(qt_ucm_query_verification_data|ucm_instantiate)$
+.*kde3/kwin3_.*\.so			^create_factory$
