@@ -3,6 +3,7 @@
 require 'set'
 require 'sqlite3'
 require 'pathname'
+require 'tmpdir'
 
 # First of all, load the suppression files.
 # These are needed to skip paths like /lib/modules
@@ -87,7 +88,7 @@ ldso_paths.each do |path|
   end
 end
 
-db = SQLite3::Database.new("/tmp/link-conficts-tmp.db")
+db = SQLite3::Database.new("#{Dir.tmpdir}/link-conficts-tmp.db")
 db.execute("CREATE TABLE symbols ( path, symbol )")
 
 so_files.each do |so|
