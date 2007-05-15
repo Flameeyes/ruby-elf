@@ -1,1 +1,2 @@
 /lib(|32|64)/modules/.*
+.*/xine/plugins/.*/xineplug_*.so	xine_plugin_info
