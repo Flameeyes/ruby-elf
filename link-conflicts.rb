@@ -7,8 +7,8 @@ require 'pathname'
 # First of all, load the suppression files.
 # These are needed to skip paths like /lib/modules
 xdg_config_paths = ["."]
-xdg_config_paths << ENV['XDG_CONFIG_HOME'] ? ENV['XDG_CONFIG_HOME'] : ENV['HOME']+'/.config'
-xdg_config_paths << ENV['XDG_CONFIG_DIRS'].split(":") if ENV['XDG_CONFIG_DIRS']
+xdg_config_paths << (ENV['XDG_CONFIG_HOME'] ? ENV['XDG_CONFIG_HOME'] : "#{ENV['HOME']}/.config")
+xdg_config_paths += ENV['XDG_CONFIG_DIRS'].split(":") if ENV['XDG_CONFIG_DIRS']
 xdg_config_paths << "/etc/xdg"
 
 # Total suppressions are for directories to skip entirely
@@ -46,8 +46,6 @@ so_files = Set.new
 # Extend Pathname with a so_files method
 class Pathname
   def so_files
-    puts "Scanning #{realpath}"
-
     res = Set.new
     each_entry do |entry|
       begin
@@ -69,7 +67,7 @@ class Pathname
           res.merge entry.so_files
           next
         elsif entry.to_s[-3..-1] == ".so"
-          res.add entry.realpath
+          res.add entry.realpath.to_s
         end
       rescue Errno::EACCES
         next
@@ -103,11 +101,27 @@ so_files.each do |so|
 
     symbol = re_line[8]
     
-    puts "INSERT INTO symbols VALUES('#{so}', '#{symbol}')"
+    $partial_suppressions.each do |supp|
+      next unless so.to_s =~ supp[0]
+
+      if symbol =~ supp[1]
+        symbol = nil
+        break
+      end
+    end
+
+    next if symbol == nil
+
+    $stderr.puts "INSERT INTO symbols VALUES('#{so}', '#{symbol}')"
     db.execute("INSERT INTO symbols VALUES('#{so}', '#{symbol}')")
   end
 end
 
-db.execute "SELECT symbol, COUNT(*) AS occurrences FROM symbols GROUP BY path" do |row|
-  puts row.inspect
+search_files = db.prepare( "SELECT path FROM symbols WHERE symbol='?'")
+
+db.execute "SELECT * FROM ( SELECT symbol, COUNT(*) AS occurrences FROM symbols GROUP BY symbol ) WHERE occurrences > 1 ORDER BY occurrences DESC;" do |row|
+  puts "Symbol #{row[0]} present #{row[1]}"
+  search_files.execute(row[0]) do |path|
+    puts "  #{path}"
+  end
 end
