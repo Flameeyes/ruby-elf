@@ -121,13 +121,9 @@ so_files.each do |so|
   end
 end
 
-search_files = db.prepare( "SELECT path FROM symbols WHERE symbol='?'")
-
 db.execute "SELECT * FROM ( SELECT symbol, COUNT(*) AS occurrences FROM symbols GROUP BY symbol ) WHERE occurrences > 1 ORDER BY occurrences DESC;" do |row|
   puts "Symbol #{row[0]} present #{row[1]} times"
-  search_files.execute(row[0]) do |res|
-    res.each do |path|
-      puts "  #{path[0]}"
-    end
+  db.execute( "SELECT path FROM symbols WHERE symbol='#{row[0]}'" ) do |path|
+    puts "  #{path[0]}"
   end
 end
