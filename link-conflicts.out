@@ -1,0 +1,621 @@
+Symbol gconv present 233
+  #<SQLite3::ResultSet:0x2b959a7d5ab8>
+Symbol _DYNAMIC present 207
+  #<SQLite3::ResultSet:0x2b959a7d52c0>
+Symbol kdemain present 86
+  #<SQLite3::ResultSet:0x2b959a7d49b0>
+Symbol pam_sm_authenticate present 52
+  #<SQLite3::ResultSet:0x2b959a7d40c8>
+Symbol pam_sm_setcred present 52
+  #<SQLite3::ResultSet:0x2b959a7d37b8>
+Symbol kdeinitmain present 45
+  #<SQLite3::ResultSet:0x2b959a7d2ef8>
+Symbol pam_sm_acct_mgmt present 42
+  #<SQLite3::ResultSet:0x2b959a7d2610>
+Symbol pam_sm_close_session present 39
+  #<SQLite3::ResultSet:0x2b959a7d1cd8>
+Symbol pam_sm_open_session present 39
+  #<SQLite3::ResultSet:0x2b959a7d13c8>
+Symbol main present 34
+  #<SQLite3::ResultSet:0x2b959a7d0b58>
+Symbol GLIBC_PRIVATE present 30
+  #<SQLite3::ResultSet:0x2b959a7d0270>
+Symbol pam_sm_chauthtok present 26
+  #<SQLite3::ResultSet:0x2b959a7cf960>
+Symbol WinMain present 18
+  #<SQLite3::ResultSet:0x2b959a7cf050>
+Symbol init present 17
+  #<SQLite3::ResultSet:0x2b959a7ce790>
+Symbol GLIBC_2.2.5 present 16
+  #<SQLite3::ResultSet:0x2b959a7cdea8>
+Symbol _pammodutil_cleanup present 16
+  #<SQLite3::ResultSet:0x2b959a7cd5e8>
+Symbol _pammodutil_getpwnam present 15
+  #<SQLite3::ResultSet:0x2b959a7ccc88>
+Symbol GLIBC_2.0 present 14
+  #<SQLite3::ResultSet:0x2b959a7cc328>
+Symbol GLIBC_2.4 present 14
+  #<SQLite3::ResultSet:0x2b959a7cbab8>
+Symbol GLIBC_2.3.3 present 13
+  #<SQLite3::ResultSet:0x2b959a7cb220>
+Symbol __driUtilCreateNewScreen present 13
+  #<SQLite3::ResultSet:0x2b959a7ca910>
+Symbol __driUtilMessage present 13
+  #<SQLite3::ResultSet:0x2b959a7ca000>
+Symbol __driUtilUpdateDrawableInfo present 13
+  #<SQLite3::ResultSet:0x2b959a7c9740>
+Symbol __glCoreCreateContext present 13
+  #<SQLite3::ResultSet:0x2b959a7c8e08>
+Symbol __glCoreNopDispatch present 13
+  #<SQLite3::ResultSet:0x2b959a7c84f8>
+Symbol _ac_CreateContext present 13
+  #<SQLite3::ResultSet:0x2b959a7c7c60>
+Symbol _ac_DestroyContext present 13
+  #<SQLite3::ResultSet:0x2b959a7c7350>
+Symbol _ac_InvalidateState present 13
+  #<SQLite3::ResultSet:0x2b959a7c6a68>
+Symbol _ac_import_attrib present 13
+  #<SQLite3::ResultSet:0x2b959a7c6180>
+Symbol _ac_import_color present 13
+  #<SQLite3::ResultSet:0x2b959a7c5898>
+Symbol _ac_import_edgeflag present 13
+  #<SQLite3::ResultSet:0x2b959a7c4f60>
+Symbol _ac_import_elements present 13
+  #<SQLite3::ResultSet:0x2b959a7c46a0>
+Symbol _ac_import_fogcoord present 13
+  #<SQLite3::ResultSet:0x2b959a7c3d90>
+Symbol _ac_import_index present 13
+  #<SQLite3::ResultSet:0x2b959a7c34f8>
+Symbol _ac_import_normal present 13
+  #<SQLite3::ResultSet:0x2b959a7c2bc0>
+Symbol _ac_import_range present 13
+  #<SQLite3::ResultSet:0x2b959a7c2300>
+Symbol _ac_import_secondarycolor present 13
+  #<SQLite3::ResultSet:0x2b959a7c19f0>
+Symbol _ac_import_texcoord present 13
+  #<SQLite3::ResultSet:0x2b959a7c1108>
+Symbol _ac_import_vertex present 13
+  #<SQLite3::ResultSet:0x2b959a7c0848>
+Symbol _ae_create_context present 13
+  #<SQLite3::ResultSet:0x2b959a7bff88>
+Symbol _ae_destroy_context present 13
+  #<SQLite3::ResultSet:0x2b959a7bf6a0>
+Symbol _ae_invalidate_state present 13
+  #<SQLite3::ResultSet:0x2b959a7bed68>
+Symbol _ae_loopback_array_elt present 13
+  #<SQLite3::ResultSet:0x2b959a7be408>
+Symbol _dri_texformat_a8 present 13
+  #<SQLite3::ResultSet:0x2b959a7bdb20>
+Symbol _dri_texformat_al88 present 13
+  #<SQLite3::ResultSet:0x2b959a7bd288>
+Symbol _dri_texformat_argb1555 present 13
+  #<SQLite3::ResultSet:0x2b959a7bc9a0>
+Symbol _dri_texformat_argb4444 present 13
+  #<SQLite3::ResultSet:0x2b959a7bc090>
+Symbol _dri_texformat_argb8888 present 13
+  #<SQLite3::ResultSet:0x2b959a7bb780>
+Symbol _dri_texformat_ci8 present 13
+  #<SQLite3::ResultSet:0x2b959a7baee8>
+Symbol _dri_texformat_i8 present 13
+  #<SQLite3::ResultSet:0x2b959a7ba650>
+Symbol _dri_texformat_l8 present 13
+  #<SQLite3::ResultSet:0x2b959a7b9cc8>
+Symbol _dri_texformat_rgb565 present 13
+  #<SQLite3::ResultSet:0x2b959a7b93e0>
+Symbol _dri_texformat_rgba8888 present 13
+  #<SQLite3::ResultSet:0x2b959a7b8ad0>
+Symbol _math_de_casteljau_surf present 13
+  #<SQLite3::ResultSet:0x2b959a7b8260>
+Symbol _math_horner_bezier_curve present 13
+  #<SQLite3::ResultSet:0x2b959a7b79c8>
+Symbol _math_horner_bezier_surf present 13
+  #<SQLite3::ResultSet:0x2b959a7b70b8>
+Symbol _math_matrix_alloc_inv present 13
+  #<SQLite3::ResultSet:0x2b959a7b67a8>
+Symbol _math_matrix_analyse present 13
+  #<SQLite3::ResultSet:0x2b959a7b5e70>
+Symbol _math_matrix_copy present 13
+  #<SQLite3::ResultSet:0x2b959a7b5600>
+Symbol _math_matrix_ctr present 13
+  #<SQLite3::ResultSet:0x2b959a7b4cc8>
+Symbol _math_matrix_dtr present 13
+  #<SQLite3::ResultSet:0x2b959a7b4430>
+Symbol _math_matrix_frustum present 13
+  #<SQLite3::ResultSet:0x2b959a7b3b20>
+Symbol _math_matrix_has_rotation present 13
+  #<SQLite3::ResultSet:0x2b959a7b3210>
+Symbol _math_matrix_is_dirty present 13
+  #<SQLite3::ResultSet:0x2b959a7b2900>
+Symbol _math_matrix_is_general_scale present 13
+  #<SQLite3::ResultSet:0x2b959a7b2018>
+Symbol _math_matrix_is_length_preserving present 13
+  #<SQLite3::ResultSet:0x2b959a7b16e0>
+Symbol _math_matrix_loadf present 13
+  #<SQLite3::ResultSet:0x2b959a7b0df8>
+Symbol _math_matrix_mul_floats present 13
+  #<SQLite3::ResultSet:0x2b959a7b0510>
+Symbol _math_matrix_mul_matrix present 13
+  #<SQLite3::ResultSet:0x2b959a7afc78>
+Symbol _math_matrix_ortho present 13
+  #<SQLite3::ResultSet:0x2b959a7af368>
+Symbol _math_matrix_print present 13
+  #<SQLite3::ResultSet:0x2b959a7aead0>
+Symbol _math_matrix_rotate present 13
+  #<SQLite3::ResultSet:0x2b959a7ae210>
+Symbol _math_matrix_scale present 13
+  #<SQLite3::ResultSet:0x2b959a7ad8d8>
+Symbol _math_matrix_set_identity present 13
+  #<SQLite3::ResultSet:0x2b959a7acff0>
+Symbol _math_matrix_translate present 13
+  #<SQLite3::ResultSet:0x2b959a7ac730>
+Symbol _math_matrix_viewport present 13
+  #<SQLite3::ResultSet:0x2b959a7abe70>
+Symbol _math_trans_1f present 13
+  #<SQLite3::ResultSet:0x2b959a7ab510>
+Symbol _math_trans_1ub present 13
+  #<SQLite3::ResultSet:0x2b9599e23330>
+Symbol _math_trans_1ui present 13
+  #<SQLite3::ResultSet:0x2b9599e21f58>
+Symbol _math_trans_3fn present 13
+  #<SQLite3::ResultSet:0x2b9599e20900>
+Symbol _math_trans_4chan present 13
+  #<SQLite3::ResultSet:0x2b9599e1ed58>
+Symbol _math_trans_4f present 13
+  #<SQLite3::ResultSet:0x2b9599e1d278>
+Symbol _math_trans_4fn present 13
+  #<SQLite3::ResultSet:0x2b9599e1a8e8>
+Symbol _math_trans_4ub present 13
+  #<SQLite3::ResultSet:0x2b9599e14ba0>
+Symbol _math_trans_4us present 13
+  #<SQLite3::ResultSet:0x2b9599e0eef8>
+Symbol _math_transposed present 13
+  #<SQLite3::ResultSet:0x2b9599e09b38>
+Symbol _math_transposef present 13
+  #<SQLite3::ResultSet:0x2b9599e07658>
+Symbol _math_transposefd present 13
+  #<SQLite3::ResultSet:0x2b9599e05d58>
+Symbol _mesa_3dlabs_create_debug_object present 13
+  #<SQLite3::ResultSet:0x2b9599e03da0>
+Symbol _mesa_3dlabs_create_program_object present 13
+  #<SQLite3::ResultSet:0x2b9599e01870>
+Symbol _mesa_3dlabs_create_shader_object present 13
+  #<SQLite3::ResultSet:0x2b9599dfde28>
+Symbol _mesa_Accum present 13
+  #<SQLite3::ResultSet:0x2b9599df53e0>
+Symbol _mesa_ActiveStencilFaceEXT present 13
+  #<SQLite3::ResultSet:0x2b9599df0c50>
+Symbol _mesa_ActiveTextureARB present 13
+  #<SQLite3::ResultSet:0x2b9599debc50>
+Symbol _mesa_AlphaFragmentOp1ATI present 13
+  #<SQLite3::ResultSet:0x2b9599de5260>
+Symbol _mesa_AlphaFragmentOp2ATI present 13
+  #<SQLite3::ResultSet:0x2b9599de0080>
+Symbol _mesa_AlphaFragmentOp3ATI present 13
+  #<SQLite3::ResultSet:0x2b9599ddbda0>
+Symbol _mesa_AlphaFunc present 13
+  #<SQLite3::ResultSet:0x2b9599dda1d0>
+Symbol _mesa_AreProgramsResidentNV present 13
+  #<SQLite3::ResultSet:0x2b9599dd7c78>
+Symbol _mesa_AreTexturesResident present 13
+  #<SQLite3::ResultSet:0x2b9599dd5608>
+Symbol _mesa_AttachObjectARB present 13
+  #<SQLite3::ResultSet:0x2b9599dd38a8>
+Symbol _mesa_BeginFragmentShaderATI present 13
+  #<SQLite3::ResultSet:0x2b9599dd0a18>
+Symbol _mesa_BeginQueryARB present 13
+  #<SQLite3::ResultSet:0x2b9599dceb00>
+Symbol _mesa_BindAttribLocationARB present 13
+  #<SQLite3::ResultSet:0x2b9599dcb798>
+Symbol _mesa_BindBufferARB present 13
+  #<SQLite3::ResultSet:0x2b9599dc7ad0>
+Symbol _mesa_BindFragmentShaderATI present 13
+  #<SQLite3::ResultSet:0x2b9599dc2300>
+Symbol _mesa_BindFramebufferEXT present 13
+  #<SQLite3::ResultSet:0x2b9599dbe4f8>
+Symbol _mesa_BindProgram present 13
+  #<SQLite3::ResultSet:0x2b9599dbcdd8>
+Symbol _mesa_BindRenderbufferEXT present 13
+  #<SQLite3::ResultSet:0x2b9599dbc108>
+Symbol _mesa_BindTexture present 13
+  #<SQLite3::ResultSet:0x2b9599db9fc0>
+Symbol _mesa_BindVertexArrayAPPLE present 13
+  #<SQLite3::ResultSet:0x2b9599db6140>
+Symbol _mesa_Bitmap present 13
+  #<SQLite3::ResultSet:0x2b9599daf188>
+Symbol _mesa_BlendColor present 13
+  #<SQLite3::ResultSet:0x2b9599dae148>
+Symbol _mesa_BlendEquation present 13
+  #<SQLite3::ResultSet:0x2b9599dab150>
+Symbol _mesa_BlendEquationSeparateEXT present 13
+  #<SQLite3::ResultSet:0x2b9599daa318>
+Symbol _mesa_BlendFunc present 13
+  #<SQLite3::ResultSet:0x2b9599da9328>
+Symbol _mesa_BlendFuncSeparateEXT present 13
+  #<SQLite3::ResultSet:0x2b9599da7b40>
+Symbol _mesa_BlitFramebufferEXT present 13
+  #<SQLite3::ResultSet:0x2b9599da6420>
+Symbol _mesa_BufferDataARB present 13
+  #<SQLite3::ResultSet:0x2b9599da3b80>
+Symbol _mesa_BufferSubDataARB present 13
+  #<SQLite3::ResultSet:0x2b9599da0ac0>
+Symbol _mesa_CallList present 13
+  #<SQLite3::ResultSet:0x2b9599d9f6e8>
+Symbol _mesa_CallLists present 13
+  #<SQLite3::ResultSet:0x2b9599d9eba8>
+Symbol _mesa_CheckFramebufferStatusEXT present 13
+  #<SQLite3::ResultSet:0x2b9599d9e0b8>
+Symbol _mesa_Clear present 13
+  #<SQLite3::ResultSet:0x2b9599d9d668>
+Symbol _mesa_ClearAccum present 13
+  #<SQLite3::ResultSet:0x2b9599d9c510>
+Symbol _mesa_ClearColor present 13
+  #<SQLite3::ResultSet:0x2b9599d96ed0>
+Symbol _mesa_ClearDepth present 13
+  #<SQLite3::ResultSet:0x2b9599d878b8>
+Symbol _mesa_ClearIndex present 13
+  #<SQLite3::ResultSet:0x2b9599d795b0>
+Symbol _mesa_ClearStencil present 13
+  #<SQLite3::ResultSet:0x2b9599d72b70>
+Symbol _mesa_ClientActiveTextureARB present 13
+  #<SQLite3::ResultSet:0x2b9599d70c08>
+Symbol _mesa_ClipPlane present 13
+  #<SQLite3::ResultSet:0x2b9599d6e368>
+Symbol _mesa_ColorFragmentOp1ATI present 13
+  #<SQLite3::ResultSet:0x2b9599d6b938>
+Symbol _mesa_ColorFragmentOp2ATI present 13
+  #<SQLite3::ResultSet:0x2b9599d3cf20>
+Symbol _mesa_ColorFragmentOp3ATI present 13
+  #<SQLite3::ResultSet:0x2b9599d3c4d0>
+Symbol _mesa_ColorMask present 13
+  #<SQLite3::ResultSet:0x2b9599d3afe0>
+Symbol _mesa_ColorMaterial present 13
+  #<SQLite3::ResultSet:0x2b9599d39078>
+Symbol _mesa_ColorPointer present 13
+  #<SQLite3::ResultSet:0x2b9599d37e80>
+Symbol _mesa_ColorPointerEXT present 13
+  #<SQLite3::ResultSet:0x2b9599d351d0>
+Symbol _mesa_ColorSubTable present 13
+  #<SQLite3::ResultSet:0x2b9599d30978>
+Symbol _mesa_ColorTable present 13
+  #<SQLite3::ResultSet:0x2b9599d27be8>
+Symbol _mesa_ColorTableParameterfv present 13
+  #<SQLite3::ResultSet:0x2b9599d25ff0>
+Symbol _mesa_ColorTableParameteriv present 13
+  #<SQLite3::ResultSet:0x2b9599d23f20>
+Symbol _mesa_CompileShaderARB present 13
+  #<SQLite3::ResultSet:0x2b9599d1e390>
+Symbol _mesa_CompressedTexImage1DARB present 13
+  #<SQLite3::ResultSet:0x2b9599d1aec0>
+Symbol _mesa_CompressedTexImage2DARB present 13
+  #<SQLite3::ResultSet:0x2b9599d16168>
+Symbol _mesa_CompressedTexImage3DARB present 13
+  #<SQLite3::ResultSet:0x2b9599d15560>
+Symbol _mesa_CompressedTexSubImage1DARB present 13
+  #<SQLite3::ResultSet:0x2b9599d12478>
+Symbol _mesa_CompressedTexSubImage2DARB present 13
+  #<SQLite3::ResultSet:0x2b9599d0e0f8>
+Symbol _mesa_CompressedTexSubImage3DARB present 13
+  #<SQLite3::ResultSet:0x2b9599d0b4e8>
+Symbol _mesa_ConvolutionFilter1D present 13
+  #<SQLite3::ResultSet:0x2b9599d0a8e0>
+Symbol _mesa_ConvolutionFilter2D present 13
+  #<SQLite3::ResultSet:0x2b9599d09d00>
+Symbol _mesa_ConvolutionParameterf present 13
+  #<SQLite3::ResultSet:0x2b9599d07a00>
+Symbol _mesa_ConvolutionParameterfv present 13
+  #<SQLite3::ResultSet:0x2b9599d07168>
+Symbol _mesa_ConvolutionParameteri present 13
+  #<SQLite3::ResultSet:0x2b9599d00b38>
+Symbol _mesa_ConvolutionParameteriv present 13
+  #<SQLite3::ResultSet:0x2b9599cfd780>
+Symbol _mesa_CopyColorSubTable present 13
+  #<SQLite3::ResultSet:0x2b9599cfac38>
+Symbol _mesa_CopyColorTable present 13
+  #<SQLite3::ResultSet:0x2b9599cf7038>
+Symbol _mesa_CopyConvolutionFilter1D present 13
+  #<SQLite3::ResultSet:0x2b9599cf6250>
+Symbol _mesa_CopyConvolutionFilter2D present 13
+  #<SQLite3::ResultSet:0x2b9599cf3a50>
+Symbol _mesa_CopyPixels present 13
+  #<SQLite3::ResultSet:0x2b9599cf3118>
+Symbol _mesa_CopyTexImage1D present 13
+  #<SQLite3::ResultSet:0x2b9599cf2880>
+Symbol _mesa_CopyTexImage2D present 13
+  #<SQLite3::ResultSet:0x2b9599cf1f20>
+Symbol _mesa_CopyTexSubImage1D present 13
+  #<SQLite3::ResultSet:0x2b9599cf14a8>
+Symbol _mesa_CopyTexSubImage2D present 13
+  #<SQLite3::ResultSet:0x2b9599cf0b70>
+Symbol _mesa_CopyTexSubImage3D present 13
+  #<SQLite3::ResultSet:0x2b9599cf0260>
+Symbol _mesa_CreateProgramObjectARB present 13
+  #<SQLite3::ResultSet:0x2b9599cef838>
+Symbol _mesa_CreateShaderObjectARB present 13
+  #<SQLite3::ResultSet:0x2b9599ceeed8>
+Symbol _mesa_CullFace present 13
+  #<SQLite3::ResultSet:0x2b9599cee550>
+Symbol _mesa_CullParameterdvEXT present 13
+  #<SQLite3::ResultSet:0x2b9599cedc40>
+Symbol _mesa_CullParameterfvEXT present 13
+  #<SQLite3::ResultSet:0x2b9599ced2e0>
+Symbol _mesa_DeleteBuffersARB present 13
+  #<SQLite3::ResultSet:0x2b9599cec9a8>
+Symbol _mesa_DeleteFragmentShaderATI present 13
+  #<SQLite3::ResultSet:0x2b9599cebff8>
+Symbol _mesa_DeleteFramebuffersEXT present 13
+  #<SQLite3::ResultSet:0x2b9599ceb698>
+Symbol _mesa_DeleteHashTable present 13
+  #<SQLite3::ResultSet:0x2b9599ceabf8>
+Symbol _mesa_DeleteLists present 13
+  #<SQLite3::ResultSet:0x2b9599cea270>
+Symbol _mesa_DeleteObjectARB present 13
+  #<SQLite3::ResultSet:0x2b9599ce98c0>
+Symbol _mesa_DeletePrograms present 13
+  #<SQLite3::ResultSet:0x2b9599ce8f60>
+Symbol _mesa_DeleteQueriesARB present 13
+  #<SQLite3::ResultSet:0x2b9599ce85d8>
+Symbol _mesa_DeleteRenderbuffersEXT present 13
+  #<SQLite3::ResultSet:0x2b95996b6f20>
+Symbol _mesa_DeleteTextures present 13
+  #<SQLite3::ResultSet:0x2b95996b4f68>
+Symbol _mesa_DeleteVertexArraysAPPLE present 13
+  #<SQLite3::ResultSet:0x2b95996b2560>
+Symbol _mesa_DepthBoundsEXT present 13
+  #<SQLite3::ResultSet:0x2b95996b01c0>
+Symbol _mesa_DepthFunc present 13
+  #<SQLite3::ResultSet:0x2b95996ac458>
+Symbol _mesa_DepthMask present 13
+  #<SQLite3::ResultSet:0x2b95996a9ff0>
+Symbol _mesa_DepthRange present 13
+  #<SQLite3::ResultSet:0x2b95996a6710>
+Symbol _mesa_DetachObjectARB present 13
+  #<SQLite3::ResultSet:0x2b95996a4870>
+Symbol _mesa_Disable present 13
+  #<SQLite3::ResultSet:0x2b95996a3da8>
+Symbol _mesa_DisableClientState present 13
+  #<SQLite3::ResultSet:0x2b95996a06d0>
+Symbol _mesa_DisableVertexAttribArrayARB present 13
+  #<SQLite3::ResultSet:0x2b959969c620>
+Symbol _mesa_DrawBuffer present 13
+  #<SQLite3::ResultSet:0x2b959969bb58>
+Symbol _mesa_DrawBuffersARB present 13
+  #<SQLite3::ResultSet:0x2b959969b018>
+Symbol _mesa_DrawPixels present 13
+  #<SQLite3::ResultSet:0x2b959969a5c8>
+Symbol _mesa_DummyProgram present 13
+  #<SQLite3::ResultSet:0x2b9599698278>
+Symbol _mesa_EdgeFlagPointer present 13
+  #<SQLite3::ResultSet:0x2b9599692b98>
+Symbol _mesa_EdgeFlagPointerEXT present 13
+  #<SQLite3::ResultSet:0x2b9599691018>
+Symbol _mesa_Enable present 13
+  #<SQLite3::ResultSet:0x2b959968ddc8>
+Symbol _mesa_EnableClientState present 13
+  #<SQLite3::ResultSet:0x2b959968cd10>
+Symbol _mesa_EnableVertexAttribArrayARB present 13
+  #<SQLite3::ResultSet:0x2b959968b528>
+Symbol _mesa_EndFragmentShaderATI present 13
+  #<SQLite3::ResultSet:0x2b959968a0b0>
+Symbol _mesa_EndList present 13
+  #<SQLite3::ResultSet:0x2b95996879c8>
+Symbol _mesa_EndQueryARB present 13
+  #<SQLite3::ResultSet:0x2b9599683eb8>
+Symbol _mesa_ExecuteProgramNV present 13
+  #<SQLite3::ResultSet:0x2b9599682068>
+Symbol _mesa_FeedbackBuffer present 13
+  #<SQLite3::ResultSet:0x2b959967e5a8>
+Symbol _mesa_Finish present 13
+  #<SQLite3::ResultSet:0x2b9599676e48>
+Symbol _mesa_Flush present 13
+  #<SQLite3::ResultSet:0x2b9599671998>
+Symbol _mesa_FogCoordPointerEXT present 13
+  #<SQLite3::ResultSet:0x2b959966cd08>
+Symbol _mesa_Fogf present 13
+  #<SQLite3::ResultSet:0x2b9599668cd0>
+Symbol _mesa_Fogfv present 13
+  #<SQLite3::ResultSet:0x2b95996641d0>
+Symbol _mesa_Fogi present 13
+  #<SQLite3::ResultSet:0x2b9599663000>
+Symbol _mesa_Fogiv present 13
+  #<SQLite3::ResultSet:0x2b9599661ae8>
+Symbol _mesa_FramebufferRenderbufferEXT present 13
+  #<SQLite3::ResultSet:0x2b95996605a8>
+Symbol _mesa_FramebufferTexture1DEXT present 13
+  #<SQLite3::ResultSet:0x2b959965e8c0>
+Symbol _mesa_FramebufferTexture2DEXT present 13
+  #<SQLite3::ResultSet:0x2b959965d128>
+Symbol _mesa_FramebufferTexture3DEXT present 13
+  #<SQLite3::ResultSet:0x2b959965beb8>
+Symbol _mesa_FrontFace present 13
+  #<SQLite3::ResultSet:0x2b959965b120>
+Symbol _mesa_Frustum present 13
+  #<SQLite3::ResultSet:0x2b959965a478>
+Symbol _mesa_GenBuffersARB present 13
+  #<SQLite3::ResultSet:0x2b9599659848>
+Symbol _mesa_GenFragmentShadersATI present 13
+  #<SQLite3::ResultSet:0x2b9599658268>
+Symbol _mesa_GenFramebuffersEXT present 13
+  #<SQLite3::ResultSet:0x2b9599655fb8>
+Symbol _mesa_GenLists present 13
+  #<SQLite3::ResultSet:0x2b959964ee48>
+Symbol _mesa_GenPrograms present 13
+  #<SQLite3::ResultSet:0x2b9599649740>
+Symbol _mesa_GenQueriesARB present 13
+  #<SQLite3::ResultSet:0x2b9599647788>
+Symbol _mesa_GenRenderbuffersEXT present 13
+  #<SQLite3::ResultSet:0x2b95996448a8>
+Symbol _mesa_GenTextures present 13
+  #<SQLite3::ResultSet:0x2b9599643520>
+Symbol _mesa_GenVertexArraysAPPLE present 13
+  #<SQLite3::ResultSet:0x2b9599641b30>
+Symbol _mesa_GenerateMipmapEXT present 13
+  #<SQLite3::ResultSet:0x2b959963e1d8>
+Symbol _mesa_GetActiveAttribARB present 13
+  #<SQLite3::ResultSet:0x2b959963b500>
+Symbol _mesa_GetActiveUniformARB present 13
+  #<SQLite3::ResultSet:0x2b95996392f0>
+Symbol _mesa_GetAttachedObjectsARB present 13
+  #<SQLite3::ResultSet:0x2b9599635fd8>
+Symbol _mesa_GetAttribLocationARB present 13
+  #<SQLite3::ResultSet:0x2b9599633760>
+Symbol _mesa_GetBooleanv present 13
+  #<SQLite3::ResultSet:0x2b9599631a00>
+Symbol _mesa_GetBufferParameterivARB present 13
+  #<SQLite3::ResultSet:0x2b9599630d08>
+Symbol _mesa_GetBufferPointervARB present 13
+  #<SQLite3::ResultSet:0x2b959962edf0>
+Symbol _mesa_GetBufferSubDataARB present 13
+  #<SQLite3::ResultSet:0x2b959962dc20>
+Symbol _mesa_GetClipPlane present 13
+  #<SQLite3::ResultSet:0x2b959962bee8>
+Symbol _mesa_GetColorTable present 13
+  #<SQLite3::ResultSet:0x2b959962b358>
+Symbol _mesa_GetColorTableParameterfv present 13
+  #<SQLite3::ResultSet:0x2b959962a480>
+Symbol _mesa_GetColorTableParameteriv present 13
+  #<SQLite3::ResultSet:0x2b9599627f00>
+Symbol _mesa_GetCompressedTexImageARB present 13
+  #<SQLite3::ResultSet:0x2b95996268d0>
+Symbol _mesa_GetConvolutionFilter present 13
+  #<SQLite3::ResultSet:0x2b9599615bc0>
+Symbol _mesa_GetConvolutionParameterfv present 13
+  #<SQLite3::ResultSet:0x2b959960ba08>
+Symbol _mesa_GetConvolutionParameteriv present 13
+  #<SQLite3::ResultSet:0x2b95993e2a10>
+Symbol _mesa_GetDoublev present 13
+  #<SQLite3::ResultSet:0x2b95993dd7e0>
+Symbol _mesa_GetError present 13
+  #<SQLite3::ResultSet:0x2b95993dc2c8>
+Symbol _mesa_GetFloatv present 13
+  #<SQLite3::ResultSet:0x2b95993daab8>
+Symbol _mesa_GetFramebufferAttachmentParameterivEXT present 13
+  #<SQLite3::ResultSet:0x2b95993d7750>
+Symbol _mesa_GetHandleARB present 13
+  #<SQLite3::ResultSet:0x2b95993d1a58>
+Symbol _mesa_GetHistogram present 13
+  #<SQLite3::ResultSet:0x2b95993cbd88>
+Symbol _mesa_GetHistogramParameterfv present 13
+  #<SQLite3::ResultSet:0x2b95993c91c8>
+Symbol _mesa_GetHistogramParameteriv present 13
+  #<SQLite3::ResultSet:0x2b95993c7760>
+Symbol _mesa_GetInfoLogARB present 13
+  #<SQLite3::ResultSet:0x2b95993be5e8>
+Symbol _mesa_GetIntegerv present 13
+  #<SQLite3::ResultSet:0x2b95993b5880>
+Symbol _mesa_GetLightfv present 13
+  #<SQLite3::ResultSet:0x2b95993aebc0>
+Symbol _mesa_GetLightiv present 13
+  #<SQLite3::ResultSet:0x2b95993a8e00>
+Symbol _mesa_GetMapdv present 13
+  #<SQLite3::ResultSet:0x2b95993a79d8>
+Symbol _mesa_GetMapfv present 13
+  #<SQLite3::ResultSet:0x2b959a9e4890>
+Symbol _mesa_GetMapiv present 13
+  #<SQLite3::ResultSet:0x2b959a9e2f18>
+Symbol _mesa_GetMaterialfv present 13
+  #<SQLite3::ResultSet:0x2b959a9e1dc0>
+Symbol _mesa_GetMaterialiv present 13
+  #<SQLite3::ResultSet:0x2b959a9e0380>
+Symbol _mesa_GetMinmax present 13
+  #<SQLite3::ResultSet:0x2b959a9de788>
+Symbol _mesa_GetMinmaxParameterfv present 13
+  #<SQLite3::ResultSet:0x2b959a9dd860>
+Symbol _mesa_GetMinmaxParameteriv present 13
+  #<SQLite3::ResultSet:0x2b959a9dcd70>
+Symbol _mesa_GetObjectParameterfvARB present 13
+  #<SQLite3::ResultSet:0x2b959a9dbf88>
+Symbol _mesa_GetObjectParameterivARB present 13
+  #<SQLite3::ResultSet:0x2b959a9db6c8>
+Symbol _mesa_GetPixelMapfv present 13
+  #<SQLite3::ResultSet:0x2b959a9d9c60>
+Symbol _mesa_GetPixelMapuiv present 13
+  #<SQLite3::ResultSet:0x2b959a9d9378>
+Symbol _mesa_GetPixelMapusv present 13
+  #<SQLite3::ResultSet:0x2b959a9d8ab8>
+Symbol _mesa_GetPointerv present 13
+  #<SQLite3::ResultSet:0x2b959a9d8248>
+Symbol _mesa_GetPolygonStipple present 13
+  #<SQLite3::ResultSet:0x2b959a9d77f8>
+Symbol _mesa_GetProgramEnvParameterdvARB present 13
+  #<SQLite3::ResultSet:0x2b959a9d5de0>
+Symbol _mesa_GetProgramEnvParameterfvARB present 13
+  #<SQLite3::ResultSet:0x2b959a9d4e18>
+Symbol _mesa_GetProgramLocalParameterdvARB present 13
+  #<SQLite3::ResultSet:0x2b959a9d3a18>
+Symbol _mesa_GetProgramLocalParameterfvARB present 13
+  #<SQLite3::ResultSet:0x2b959a9d2438>
+Symbol _mesa_GetProgramNamedParameterdvNV present 13
+  #<SQLite3::ResultSet:0x2b959a9d1060>
+Symbol _mesa_GetProgramNamedParameterfvNV present 13
+  #<SQLite3::ResultSet:0x2b959a9cfe68>
+Symbol _mesa_GetProgramParameterdvNV present 13
+  #<SQLite3::ResultSet:0x2b959a9cee00>
+Symbol _mesa_GetProgramParameterfvNV present 13
+  #<SQLite3::ResultSet:0x2b959a9cdc30>
+Symbol _mesa_GetProgramRegisterfvMESA present 13
+  #<SQLite3::ResultSet:0x2b959a9cc920>
+Symbol _mesa_GetProgramStringARB present 13
+  #<SQLite3::ResultSet:0x2b959a9c9b30>
+Symbol _mesa_GetProgramStringNV present 13
+  #<SQLite3::ResultSet:0x2b959a9c8f28>
+Symbol _mesa_GetProgramivARB present 13
+  #<SQLite3::ResultSet:0x2b959a9c62c8>
+Symbol _mesa_GetProgramivNV present 13
+  #<SQLite3::ResultSet:0x2b959a9c4ec8>
+Symbol _mesa_GetQueryObjecti64vEXT present 13
+  #<SQLite3::ResultSet:0x2b959a9c3348>
+Symbol _mesa_GetQueryObjectivARB present 13
+  #<SQLite3::ResultSet:0x2b959a9c24c0>
+Symbol _mesa_GetQueryObjectui64vEXT present 13
+  #<SQLite3::ResultSet:0x2b959a9c14d0>
+Symbol _mesa_GetQueryObjectuivARB present 13
+  #<SQLite3::ResultSet:0x2b959a9c07b0>
+Symbol _mesa_GetQueryivARB present 13
+  #<SQLite3::ResultSet:0x2b959a9bfec8>
+Symbol _mesa_GetRenderbufferParameterivEXT present 13
+  #<SQLite3::ResultSet:0x2b959a9bf450>
+Symbol _mesa_GetSeparableFilter present 13
+  #<SQLite3::ResultSet:0x2b959a9be078>
+Symbol _mesa_GetShaderSourceARB present 13
+  #<SQLite3::ResultSet:0x2b959a9bd358>
+Symbol _mesa_GetString present 13
+  #<SQLite3::ResultSet:0x2b959a9bca20>
+Symbol _mesa_GetTexEnvfv present 13
+  #<SQLite3::ResultSet:0x2b959a9bc160>
+Symbol _mesa_GetTexEnviv present 13
+  #<SQLite3::ResultSet:0x2b959a9bb878>
+Symbol _mesa_GetTexGendv present 13
+  #<SQLite3::ResultSet:0x2b959a9badb0>
+Symbol _mesa_GetTexGenfv present 13
+  #<SQLite3::ResultSet:0x2b959a9b9078>
+Symbol _mesa_GetTexGeniv present 13
+  #<SQLite3::ResultSet:0x2b959a9b82b8>
+Symbol _mesa_GetTexImage present 13
+  #<SQLite3::ResultSet:0x2b959a9b7688>
+Symbol _mesa_GetTexLevelParameterfv present 13
+  #<SQLite3::ResultSet:0x2b959a9b69b8>
+Symbol _mesa_GetTexLevelParameteriv present 13
+  #<SQLite3::ResultSet:0x2b959a9b5ec8>
+Symbol _mesa_GetTexParameterfv present 13
+  #<SQLite3::ResultSet:0x2b959a9b5270>
+Symbol _mesa_GetTexParameteriv present 13
+  #<SQLite3::ResultSet:0x2b959a9b44d8>
+Symbol _mesa_GetTrackMatrixivNV present 13
+  #<SQLite3::ResultSet:0x2b959a9b3830>
+Symbol _mesa_GetUniformLocationARB present 13
+  #<SQLite3::ResultSet:0x2b959a9b0fe0>
+Symbol _mesa_GetUniformfvARB present 13
+  #<SQLite3::ResultSet:0x2b959a9b06f8>
+Symbol _mesa_GetUniformivARB present 13
+  #<SQLite3::ResultSet:0x2b959a9afe60>
+Symbol _mesa_GetVertexAttribPointervARB present 13
+  #<SQLite3::ResultSet:0x2b959a9af5c8>
+Symbol _mesa_GetVertexAttribPointervNV present 13
+  #<SQLite3::ResultSet:0x2b959a9aed58>
+Symbol _mesa_GetVertexAttribdvARB present 13
+  #<SQLite3::ResultSet:0x2b959a9ae330>
+Symbol _mesa_GetVertexAttribdvNV present 13
+  #<SQLite3::ResultSet:0x2b959a9ad9d0>
+Symbol _mesa_GetVertexAttribfvARB present 13
+  #<SQLite3::ResultSet:0x2b959a9acfd0>
+Symbol
