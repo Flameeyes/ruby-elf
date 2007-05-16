@@ -40,7 +40,12 @@ f.sections['.dynsym'].symbols.each do |sym|
       if sym.section == nil
         version_name = f.sections['.gnu.version_r'][version_idx][:name]
       else
-        version_name = f.sections['.gnu.version_d'][version_idx][:names][0]
+        if version_idx & (1 << 15) == 0
+          version_name = f.sections['.gnu.version_d'][version_idx][:names][0]
+        else
+          version_idx = version_idx & ~(1 << 15)
+          version_name = f.sections['.gnu.version_d'][version_idx][:names][1]
+        end
       end
 
       version_name = "@@#{version_name}"
