@@ -150,7 +150,7 @@ so_files.each do |so|
 end
 
 db.execute "SELECT * FROM ( SELECT symbol, abi, COUNT(*) AS occurrences FROM symbols GROUP BY symbol, abi ) WHERE occurrences > 1 ORDER BY occurrences DESC;" do |row|
-  puts "Symbol #{row[0]} present #{row[1]} times"
+  puts "Symbol #{row[0]} (#{row[1]}) present #{row[2]} times"
   db.execute( "SELECT path FROM symbols WHERE symbol='#{row[0]}' AND abi = '#{row[1]}'" ) do |path|
     puts "  #{path[0]}"
   end
