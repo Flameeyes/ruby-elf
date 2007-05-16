@@ -36,7 +36,7 @@ f.sections['.dynsym'].symbols.each do |sym|
 
   if flag != 'A' and f.sections['.gnu.version']
     version_idx = f.sections['.gnu.version'][sym.idx]
-    if version_idx != 0
+    if version_idx >= 2
       if sym.section == nil
         version_name = f.sections['.gnu.version_r'][version_idx][:name]
       else
