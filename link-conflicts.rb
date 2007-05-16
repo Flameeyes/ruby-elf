@@ -134,6 +134,17 @@ so_files.each do |so|
 
         next if symbol == nil
 
+        # Get the symbol version afterward, suppressions act on the single symbols
+        version_idx = f.sections['.gnu.version'][sym.idx] if f.sections['.gnu.version']
+        if version_idx and version_idx >= 2
+          name_idx = (version_idx & (1 << 15) == 0 ? 0 : 1)
+          version_idx = version_idx & ~(1 << 15)
+
+          version_name = f.sections['.gnu.version_d'][version_idx][:names][name_idx]
+
+          symbol = "#{symbol}@@#{version_name}"
+        end
+
         db.execute("INSERT INTO symbols VALUES('#{so}', '#{symbol}', '#{abi}')")
       rescue Exception
         $stderr.puts "Mangling symbol #{sym.name}"
