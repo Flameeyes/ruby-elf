@@ -19,6 +19,7 @@ require 'set'
 require 'sqlite3'
 require 'pathname'
 require 'tmpdir'
+require 'elf'
 
 # First of all, load the suppression files.
 # These are needed to skip paths like /lib/modules
@@ -104,42 +105,53 @@ ldso_paths.each do |path|
 end
 
 db = SQLite3::Database.new("#{Dir.tmpdir}/link-conficts-tmp.db")
-db.execute("CREATE TABLE symbols ( path, symbol )")
+db.execute("CREATE TABLE symbols ( path, symbol, abi )")
 
 so_files.each do |so|
-  # TODO: nm does not provide symbols' version information
-  # this call should really be replaced with some kind of
-  # libelf bindings
-  `readelf -sW #{so}`.each_line do |re_line|
-    break if re_line =~ /Symbol table '.symtab' contains /
+  local_suppressions = $partial_suppressions.dup.delete_if { |s| not so.to_s =~ s[0] }
+  
+  begin
+    f = Elf::File.new(so)
+    abi = "#{f.elf_class} #{f.abi} #{f.machine}"
 
-    re_line = re_line.split(/\s+/)
+    f.sections['.dynsym'].symbols.each do |sym|
+      begin
+        next if sym.idx == 0
+        next if sym.bind != Elf::Symbol::Binding::Global
+        next if sym.section == nil
+        next if sym.value == 0
+        next if sym.section.is_a? Integer
+        next if sym.section.name == '.init'
 
-    next if re_line[5] != "GLOBAL"
-    next if re_line[7] == "UND"
-    next if re_line[7] == "ABS"
+        symbol = sym.name
+        
+        local_suppressions.each do |supp|
+          if symbol =~ supp[1]
+            symbol = nil
+            break
+          end
+        end
 
-    symbol = re_line[8]
-    
-    $partial_suppressions.each do |supp|
-      next unless so.to_s =~ supp[0]
+        next if symbol == nil
 
-      if symbol =~ supp[1]
-        symbol = nil
-        break
+        db.execute("INSERT INTO symbols VALUES('#{so}', '#{symbol}', '#{abi}')")
+      rescue Exception
+        $stderr.puts "Mangling symbol #{sym.name}"
+        raise
       end
     end
 
-    next if symbol == nil
-
-    # $stderr.puts "INSERT INTO symbols VALUES('#{so}', '#{symbol}')"
-    db.execute("INSERT INTO symbols VALUES('#{so}', '#{symbol}')")
+    f.close
+  rescue Exception
+    $stderr.puts "Checking #{so}"
+    f.close if f
+    raise
   end
 end
 
-db.execute "SELECT * FROM ( SELECT symbol, COUNT(*) AS occurrences FROM symbols GROUP BY symbol ) WHERE occurrences > 1 ORDER BY occurrences DESC;" do |row|
+db.execute "SELECT * FROM ( SELECT symbol, abi, COUNT(*) AS occurrences FROM symbols GROUP BY symbol, abi ) WHERE occurrences > 1 ORDER BY occurrences DESC;" do |row|
   puts "Symbol #{row[0]} present #{row[1]} times"
-  db.execute( "SELECT path FROM symbols WHERE symbol='#{row[0]}'" ) do |path|
+  db.execute( "SELECT path FROM symbols WHERE symbol='#{row[0]}' AND abi = '#{row[1]}'" ) do |path|
     puts "  #{path[0]}"
   end
 end
