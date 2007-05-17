@@ -104,7 +104,7 @@ ldso_paths.each do |path|
   end
 end
 
-db = SQLite3::Database.new("#{Dir.tmpdir}/link-conficts-tmp.db")
+db = SQLite3::Database.new("#{Dir.tmpdir}/link-conflicts-tmp.db")
 db.execute("CREATE TABLE symbols ( path, symbol, abi )")
 
 so_files.each do |so|
