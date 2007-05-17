@@ -577,7 +577,7 @@ class Elf
             entry[:names] << link[@file.read_word]
             next_name_off = @file.read_word
             break unless next_name_off != 0
-            name_name_off += next_off
+            name_off += next_name_off
           end
 
           @defined_versions[ndx] = entry
