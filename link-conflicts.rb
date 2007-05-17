@@ -68,7 +68,7 @@ class Pathname
     each_entry do |entry|
       begin
         next if entry.to_s =~ /\.\.?$/
-        entry = self + entry
+        entry = (self + entry).realpath
 
         skip = false
 
@@ -80,14 +80,14 @@ class Pathname
         end
 
         next if skip
-        
+
         if entry.directory?
           res.merge entry.so_files
           next
-        elsif entry.to_s[-3..-1] == ".so"
-          res.add entry.realpath.to_s
+        elsif entry.to_s =~ /\.so[\.0-9]*$/
+          res.add entry.to_s
         end
-      rescue Errno::EACCES
+      rescue Errno::EACCES, Errno::ENOENT
         next
       end
     end
