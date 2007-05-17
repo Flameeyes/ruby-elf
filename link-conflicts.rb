@@ -63,7 +63,7 @@ so_files = Set.new
 
 # Extend Pathname with a so_files method
 class Pathname
-  def so_files
+  def so_files(recursive = true)
     res = Set.new
     each_entry do |entry|
       begin
@@ -82,7 +82,7 @@ class Pathname
         next if skip
 
         if entry.directory?
-          res.merge entry.so_files
+          res.merge entry.so_files if recursive
           next
         elsif entry.to_s =~ /\.so[\.0-9]*$/
           res.add entry.to_s
@@ -101,6 +101,12 @@ ldso_paths.each do |path|
     so_files.merge Pathname.new(path.strip).so_files
   rescue Errno::ENOENT
     next
+  end
+end
+
+if ENV['PATH']
+  ENV['PATH'].split(":").each do |path|
+    so_files.merge Pathname.new(path).so_files(false)
   end
 end
 
