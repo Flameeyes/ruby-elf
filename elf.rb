@@ -451,16 +451,22 @@ class Elf
       @link
     end
 
+    def load
+      oldpos = @file.tell
+      @file.seek(@off, IO::SEEK_SET)
+
+      load_internal
+
+      @file.seek(oldpos, IO::SEEK_SET)
+    end
+
     def summary
       $stdout.puts "#{name}\t\t#{@type}\t#{@flags}\t#{@addr}\t#{@offset}\t#{@size}\t#{@link}\t#{@info}\t#{@addralign}\t#{@entsize}"
     end
   end
 
   class StringTable < Section
-    def load
-      oldpos = @file.tell
-      @file.seek(@off, IO::SEEK_SET)
-      
+    def load_internal
       @rawtable = @file.readbytes(@size)
       
       @table = {}
@@ -470,7 +476,6 @@ class Elf
 
         idx = idx + string.length + 1
       end
-      @file.seek(oldpos, IO::SEEK_SET)
     end
 
     def [](idx)
@@ -500,9 +505,7 @@ class Elf
   end
 
   class DynamicSymbolTable < Section
-    def load
-      @file.seek(@off)
-
+    def load_internal
       @symbols = []
       for i in 1..(@numentries)
         @symbols << Symbol.new(@file, self, i-1)
@@ -532,9 +535,7 @@ class Elf
     end
 
     class SymbolVersionTable < Section
-      def load
-        @file.seek(@off)
-        
+      def load_internal
         @versions = []
         for i in 1..(@numentries)
           @versions << @file.read_versym
@@ -549,9 +550,7 @@ class Elf
     end
 
     class SymbolVersionDef < Section
-      def load
-        @file.seek(@off)
-
+      def load_internal
         @defined_versions = {}
         loop do
           entry = {}
@@ -587,9 +586,7 @@ class Elf
     end
 
     class SymbolVersionNeed < Section
-      def load
-        @file.seek(@off)
-
+      def load_internal
         @needed_versions = {}
         loop do
           version = @file.read_half
