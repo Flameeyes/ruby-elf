@@ -12,7 +12,7 @@
 .*/qt4/plugins/.*\.so			^qt_plugin_(instance|query_verification_data)$
 .*kde3/plugins/.*\.so			^(qt_ucm_query_verification_data|ucm_instantiate)$
 .*kde3/kwin3_.*\.so			^create_factory$
-.*/libpthread\.so			^(pthread_.*|_IO_f(|un|try)lockfile)$
+.*/libpthread(-[\.0-9]+)?\.so		^(pthread_.*|_IO_f(|un|try)lockfile)$
 .*\.exe\.so				^WinMain$
 .*/gtk-.*/.*/immodules/im-.*\.so	^im_module_(create|init|exit|list)$
 .*/gtk-.*/.*/engines/.*\.so		^(g_module_check_init|theme_(create_rc_style|init|exit))$
