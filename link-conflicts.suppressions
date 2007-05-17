@@ -14,3 +14,5 @@
 .*kde3/kwin3_.*\.so			^create_factory$
 .*/libpthread\.so			^pthread_.*
 .*\.exe\.so				^WinMain$
+gtk-.*/.*/immodules/im-.*\.so		^im_module_(create|init|exit|list)$
+gtk-.*/.*/engines/.*\.so		^(g_module_check_init|theme_(create_rc_style|init|exit))$
