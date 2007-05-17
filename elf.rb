@@ -521,6 +521,16 @@ class Elf
   # GNU extensions to the ELF formats.
   # 'nuff said.
   module GNU
+    class SymbolVersionUnknown < Exception
+      def initialize(val)
+        @val = val
+      end
+
+      def message
+        "GNU Symbol versioning version #{@val} unknown"
+      end
+    end
+
     class SymbolVersionTable < Section
       def load
         @file.seek(@off)
@@ -546,7 +556,7 @@ class Elf
         loop do
           entry = {}
           version = @file.read_half
-          throw Exception if version != 1
+          raise SymbolVersionUnknown.new(version) if version != 1
           entry[:flags] = @file.read_half
           ndx = @file.read_half
           aux_count = @file.read_half
