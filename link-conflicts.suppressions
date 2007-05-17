@@ -16,3 +16,4 @@
 .*\.exe\.so				^WinMain$
 .*/gtk-.*/.*/immodules/im-.*\.so	^im_module_(create|init|exit|list)$
 .*/gtk-.*/.*/engines/.*\.so		^(g_module_check_init|theme_(create_rc_style|init|exit))$
+.*/alsa-lib/smixer/smixer-.*\.so	^alsa_mixer_simple_(init|event)$
