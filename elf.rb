@@ -393,6 +393,11 @@ class Elf
   end
 
   class Section
+    # Reserved sections' indexes
+    Undef  = nil    # Would be '0', but this fits enough
+    Abs    = 0xfff1 # Absolute symbols
+    Common = 0xfff2 # Common symbols
+
     # Create a new Section object reading the section's header from
     # the file.
     # This function assumes that the elf file is aligned ad the
