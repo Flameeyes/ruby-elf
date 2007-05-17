@@ -32,3 +32,4 @@
 .*/claws-mail/plugins/.*\.so		^plugin_(desc|done|init|licence|name|provides|type|version)$
 .*/sasl2/lib.*\.so			^sasl_(client|server)_plug_init$
 .*/cherokee/libplugin_.*cgi\.so		^cherokee_handler_cgi_base_(add_headers|add_parameter|build_basic_env|build_envp|extract_path|free|init|split_pathinfo|step)
+.*/libstlportg\.so.*
