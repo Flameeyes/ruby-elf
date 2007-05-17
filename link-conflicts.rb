@@ -54,10 +54,12 @@ end
 ldso_paths = Set.new
 ldso_paths.merge ENV['LD_LIBRARY_PATH'].split(":").set if ENV['LD_LIBRARY_PATH']
 
-ldconfig_paths = File.new("/etc/ld.so.conf").readlines
-ldconfig_paths.delete_if { |l| l =~ /\s*#.*/ }
-
-ldso_paths.merge ldconfig_paths
+File.open("/etc/ld.so.conf") do |ldsoconf|
+  ldso_paths.merge ldsoconf.readlines.
+    delete_if { |l| l =~ /\s*#.*/ }.
+    collect { |l| l.strip }.
+    uniq
+end
 
 so_files = Set.new
 
