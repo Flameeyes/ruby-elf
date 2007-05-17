@@ -13,3 +13,4 @@
 .*kde3/plugins/.*\.so			^(qt_ucm_query_verification_data|ucm_instantiate)$
 .*kde3/kwin3_.*\.so			^create_factory$
 .*/libpthread\.so			^pthread_.*
+.*\.exe\.so				^WinMain$
