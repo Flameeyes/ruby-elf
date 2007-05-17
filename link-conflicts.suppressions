@@ -1,4 +1,4 @@
-.*					^_(init|fini)$
+.*					^(_(init|fini)|main)$
 ^/lib(|32|64)/modules/.*
 .*/xine/plugins/.*/xineplug_.*\.so	^xine_plugin_info$
 .*/gconv/.*\.so				^gconv(_init)?$
