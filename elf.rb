@@ -550,6 +550,9 @@ class Elf
     end
 
     class SymbolVersionDef < Section
+      FlagBase = 0x0001
+      FlagWeak = 0x0002
+
       def load_internal
         link.load # do this now for safety
 
@@ -567,7 +570,9 @@ class Elf
           # This one is interesting only when we need to stop the
           # read loop.
           more = @file.read_word != 0
-          
+
+          aux_count = 0 if entry[:flags] & FlagBase == FlagBase
+
           entry[:names] = []
           for i in 1..aux_count
             entry[:names] << link[@file.read_word]
