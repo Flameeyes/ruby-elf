@@ -593,7 +593,7 @@ class Elf
         @needed_versions = {}
         loop do
           version = @file.read_half
-          throw Exception if version != 1
+          raise SymbolVersionUnknown.new(version) if version != 1
           aux_count = @file.read_half
           file = link[@file.read_word]
           # discard the next, it's used for non-sequential reading.
