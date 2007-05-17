@@ -1,7 +1,8 @@
 .*					^(_(init|fini)|main)$
 ^/lib(|32|64)/modules/.*
+^/lib(|32|64)/libgcc_s\.so.*
 .*/xine/plugins/.*/xineplug_.*\.so	^xine_plugin_info$
-.*/gconv/.*\.so				^gconv(_init)?$
+.*/gconv/.*\.so				^gconv(_(init|end))?$
 .*/libkdeinit_.*\.so			^kdemain$
 .*/kde3/.*\.so				^kde(init)?main$
 .*/kde3/.*thumbnail\.so			^new_creator$
@@ -11,9 +12,23 @@
 .*/kde3/libaudiocd_encoder_.*\.so	^create_audiocd_encoders$
 .*/qt4/plugins/.*\.so			^qt_plugin_(instance|query_verification_data)$
 .*kde3/plugins/.*\.so			^(qt_ucm_query_verification_data|ucm_instantiate)$
-.*kde3/kwin3_.*\.so			^create_factory$
+.*kde3/kwin3_.*\.so			^(create_factory|allocate_config)$
 .*/libpthread(-[\.0-9]+)?\.so		^(pthread_.*|_IO_f(|un|try)lockfile)$
 .*\.exe\.so				^WinMain$
 .*/gtk-.*/.*/immodules/im-.*\.so	^im_module_(create|init|exit|list)$
 .*/gtk-.*/.*/engines/.*\.so		^(g_module_check_init|theme_(create_rc_style|init|exit))$
 .*/alsa-lib/smixer/smixer-.*\.so	^alsa_mixer_simple_(init|event)$
+.*/libgphoto2/.*/.*\.so			^camera_(abilities|id|init)$
+.*					^JNI_OnLoad$
+.*/zsh/.*/zsh/.*\.so			^(boot|setup|cleanup|finish)_$
+.*/wireshark/plugins/.*/.*\.so		^(version|plugin_(reg_handoff|register))$
+.*/samba/(vfs|auth|charset)/.*\.so	^init_module$
+.*/xawtv/.*\.so				^ng_plugin_init$
+.*/gtk-2\.0/.*/loaders/libpixbuf.*\.so	^(load|fill_(info|vtable)|get_info)$
+.*/imlib2/loaders/.*\.so		^(formats|save)$
+.*/pango/.*/modules/pango-.*\.so	^script_engine_(list|create|init|exit)$
+.*/gnome-vfs-2\.0/modules/lib.*\.so	^vfs_module_(init|shutdown)$
+.*/kde3/libamarok_.*\.so		^create_plugin$
+.*/claws-mail/plugins/.*\.so		^plugin_(desc|done|init|licence|name|provides|type|version)$
+.*/sasl2/lib.*\.so			^sasl_(client|server)_plug_init$
+.*/cherokee/libplugin_.*cgi\.so		^cherokee_handler_cgi_base_(add_headers|add_parameter|build_basic_env|build_envp|extract_path|free|init|split_pathinfo|step)
