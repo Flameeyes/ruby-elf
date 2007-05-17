@@ -15,14 +15,20 @@ f.sections['.dynsym'].symbols.each do |sym|
   flag = '?'
   if sym.idx == 0
     next
-  elsif sym.bind == Elf::Symbol::Binding::Absolute
-    flag = 'A'
   elsif sym.bind == Elf::Symbol::Binding::Weak
     flag = sym.value != 0 ? 'W' : 'w'
-  elsif sym.section == nil
+  # The following are three 'reserved sections'
+  elsif sym.section == Elf::Section::Undef
     flag = 'U'
-  elsif sym.value == 0
+  elsif sym.section == Elf::Section::Abs
+    # Absolute symbols
     flag = 'A'
+  elsif sym.section == Elf::Section::Common
+    # Common symbols
+    flag = 'C'
+  elsif sym.section.is_a? Integer
+    $stderr.puts sym.section.hex
+    flag = '!'
   elsif sym.section.name == '.init'
     next
   else
