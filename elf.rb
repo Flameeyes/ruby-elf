@@ -551,6 +551,8 @@ class Elf
 
     class SymbolVersionDef < Section
       def load_internal
+        link.load # do this now for safety
+
         @defined_versions = {}
         loop do
           entry = {}
@@ -587,6 +589,8 @@ class Elf
 
     class SymbolVersionNeed < Section
       def load_internal
+        link.load # do this now for safety
+
         @needed_versions = {}
         loop do
           version = @file.read_half
