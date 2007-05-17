@@ -153,6 +153,8 @@ so_files.each do |so|
     end
 
     f.close
+  rescue Elf::File::NotAnELF
+    next
   rescue Exception
     $stderr.puts "Checking #{so}"
     f.close if f
