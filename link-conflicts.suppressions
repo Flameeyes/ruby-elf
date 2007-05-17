@@ -12,3 +12,4 @@
 .*/qt4/plugins/.*\.so			^qt_plugin_(instance|query_verification_data)$
 .*kde3/plugins/.*\.so			^(qt_ucm_query_verification_data|ucm_instantiate)$
 .*kde3/kwin3_.*\.so			^create_factory$
+.*/libpthread\.so			^pthread_.*
