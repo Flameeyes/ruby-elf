@@ -557,7 +557,10 @@ class Elf
         link.load # do this now for safety
 
         @defined_versions = {}
+        entry_off = @off
         loop do
+          @file.seek(entry_off)
+
           entry = {}
           version = @file.read_half
           raise SymbolVersionUnknown.new(version) if version != 1
@@ -565,23 +568,23 @@ class Elf
           ndx = @file.read_half
           aux_count = @file.read_half
           entry[:hash] = @file.read_word
-          # discard the next, it's used for non-sequential reading.
-          @file.read_word
-          # This one is interesting only when we need to stop the
-          # read loop.
-          more = @file.read_word != 0
-
-          aux_count = 0 if entry[:flags] & FlagBase == FlagBase
+          name_off = entry_off + @file.read_word
+          next_entry_off = @file.read_word
 
           entry[:names] = []
           for i in 1..aux_count
+            @file.seek(name_off)
             entry[:names] << link[@file.read_word]
-            break unless @file.read_word != 0
+            next_name_off = @file.read_word
+            break unless next_name_off != 0
+            name_name_off += next_off
           end
 
           @defined_versions[ndx] = entry
 
-          break unless more
+          break unless next_entry_off != 0
+
+          entry_off += next_entry_off
         end
       end
  
