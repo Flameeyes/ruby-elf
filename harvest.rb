@@ -18,17 +18,32 @@
 # This script is used to harvest the symbols defined in the shared
 # objects of the whole system.
 
-require 'getopt/long'
+require 'getoptlong'
 require 'set'
 require 'pathname'
 require 'sqlite3'
 require 'elf'
 
-opt = Getopt::Long.getopts(
-                           ["--output", "-o", Getopt::REQUIRED],
-                           ["--pathscan", "-p", Getopt::BOOLEAN],
-                           ["--suppressions", "-s", Getopt::REQUIRED]
-                           )
+opts = GetoptLong.new(
+  ["--output",       "-o", GetoptLong::REQUIRED_ARGUMENT ],
+  ["--pathscan",     "-p", GetoptLong::NO_ARGUMENT ],
+  ["--suppressions", "-s", GetoptLong::REQUIRED_ARGUMENT ]
+)
+
+output_file = 'symbols-datatabase.sqlite3'
+suppression_file = 'suppressions'
+scan_path = false
+
+opts.each do |opt, arg|
+  case opt
+  when '--output'
+    output_file = arg
+  when '--suppressions'
+    suppression_file = arg
+  when '--pathscan'
+    scan_path = true
+  end
+end
 
 # Total suppressions are for directories to skip entirely
 # Partial suppressions are the ones that apply only to a subset
@@ -36,7 +51,7 @@ opt = Getopt::Long.getopts(
 $total_suppressions = []
 $partial_suppressions = []
 
-File.open(opt['suppressions'] ? opt['suppressions'] : 'suppressions') do |file|
+File.open(suppression_file) do |file|
   file.each_line do |line|
     path, symbols = line.
       gsub(/#\s.*/, '').
@@ -108,13 +123,13 @@ ldso_paths.each do |path|
   end
 end
 
-if opt['path'] and ENV['PATH']
+if scan_path and ENV['PATH']
   ENV['PATH'].split(":").each do |path|
     so_files.merge Pathname.new(path).so_files(false)
   end
 end
 
-db = SQLite3::Database.new( opt['output'] ? opt['output'] : 'symbols-datatabase.sqlite' )
+db = SQLite3::Database.new output_file
 db.execute("CREATE TABLE symbols ( path, symbol, abi )")
 
 so_files.each do |so|
