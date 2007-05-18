@@ -18,12 +18,25 @@
 # bsd-nm implementation based on elf.rb (very limited)
 
 require 'elf'
+require 'getoptlong'
+
+opts = GetoptLong.new(
+  ["--dynamic", "-D", GetoptLong::NO_ARGUMENT]
+)
+
+scan_section = '.symtab'
+
+opts.each do |opt, arg|
+  case opt
+  when '--dynamic'
+    scan_section = '.dynsym'
+  end
+end
 
 Elf::File.open(ARGV[0]) do |elf|
   addrsize = (elf.elf_class == Elf::Class::Elf32 ? 8 : 16)
 
-  # Assume -D switch, just for now
-  symsection = elf.sections['.dynsym']
+  symsection = elf.sections[scan_section]
 
   if symsection == nil
     $stderr.puts "nm.rb: #{elf.path}: No symbols"
