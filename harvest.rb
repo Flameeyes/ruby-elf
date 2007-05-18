@@ -30,7 +30,7 @@ opts = GetoptLong.new(
   ["--suppressions", "-s", GetoptLong::REQUIRED_ARGUMENT ]
 )
 
-output_file = 'symbols-datatabase.sqlite3'
+output_file = 'symbols-database.sqlite3'
 suppression_file = 'suppressions'
 scan_path = false
 
