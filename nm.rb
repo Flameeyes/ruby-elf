@@ -83,7 +83,7 @@ files.each do |file|
         else
           flag = case sym.section.name
                  when ".bss" then 'B'
-                 when ".rodata" then 'R'
+                 when /\.rodata.*/ then 'R'
                  when ".text" then 'T'
                  else '?'
                  end
