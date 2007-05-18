@@ -117,55 +117,53 @@ db.execute("CREATE TABLE symbols ( path, symbol, abi )")
 
 so_files.each do |so|
   local_suppressions = $partial_suppressions.dup.delete_if { |s| not so.to_s =~ s[0] }
-  
+
   begin
-    f = Elf::File.new(so)
-    abi = "#{f.elf_class} #{f.abi} #{f.machine}"
+    Elf::File.open(so) do |elf|
+      abi = "#{elf.elf_class} #{elf.abi} #{elf.machine}"
 
-    f.sections['.dynsym'].symbols.each do |sym|
-      begin
-        next if sym.idx == 0
-        next if sym.bind != Elf::Symbol::Binding::Global
-        next if sym.section == nil
-        next if sym.value == 0
-        next if sym.section.is_a? Integer
-        next if sym.section.name == '.init'
+      elf.sections['.dynsym'].symbols.each do |sym|
+        begin
+          next if sym.idx == 0
+          next if sym.bind != Elf::Symbol::Binding::Global
+          next if sym.section == nil
+          next if sym.value == 0
+          next if sym.section.is_a? Integer
+          next if sym.section.name == '.init'
 
-        symbol = sym.name
-        
-        local_suppressions.each do |supp|
-          if symbol =~ supp[1]
-            symbol = nil
-            break
+          symbol = sym.name
+          
+          local_suppressions.each do |supp|
+            if symbol =~ supp[1]
+              symbol = nil
+              break
+            end
           end
+
+          next if symbol == nil
+
+          # Get the symbol version afterward, suppressions act on the single symbols
+          version_idx = elf.sections['.gnu.version'][sym.idx] if elf.sections['.gnu.version']
+          if version_idx and version_idx >= 2
+            name_idx = (version_idx & (1 << 15) == 0 ? 0 : 1)
+            version_idx = version_idx & ~(1 << 15)
+
+            version_name = elf.sections['.gnu.version_d'][version_idx][:names][name_idx]
+
+            symbol = "#{symbol}@@#{version_name}"
+          end
+
+          db.execute("INSERT INTO symbols VALUES('#{so}', '#{symbol}', '#{abi}')")
+        rescue Exception
+          $stderr.puts "Mangling symbol #{sym.name}"
+          raise
         end
-
-        next if symbol == nil
-
-        # Get the symbol version afterward, suppressions act on the single symbols
-        version_idx = f.sections['.gnu.version'][sym.idx] if f.sections['.gnu.version']
-        if version_idx and version_idx >= 2
-          name_idx = (version_idx & (1 << 15) == 0 ? 0 : 1)
-          version_idx = version_idx & ~(1 << 15)
-
-          version_name = f.sections['.gnu.version_d'][version_idx][:names][name_idx]
-
-          symbol = "#{symbol}@@#{version_name}"
-        end
-
-        db.execute("INSERT INTO symbols VALUES('#{so}', '#{symbol}', '#{abi}')")
-      rescue Exception
-        $stderr.puts "Mangling symbol #{sym.name}"
-        raise
       end
     end
-
-    f.close
   rescue Elf::File::NotAnELF
     next
   rescue Exception
     $stderr.puts "Checking #{so}"
-    f.close if f
     raise
   end
 end
