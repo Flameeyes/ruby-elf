@@ -18,11 +18,16 @@
 # This script is used to harvest the symbols defined in the shared
 # objects of the whole system.
 
+require 'getopt/long'
 require 'set'
 require 'pathname'
-require 'tmpdir'
 require 'sqlite3'
 require 'elf'
+
+opt = Getopt::Long.getopts(
+                           ["--output", "-o", Getopt::REQUIRED],
+                           ["--pathscan", "-p", Getopt::BOOLEAN]
+                           )
 
 # First of all, load the suppression files.
 # These are needed to skip paths like /lib/modules
@@ -108,13 +113,13 @@ ldso_paths.each do |path|
   end
 end
 
-if ENV['PATH']
+if opt['path'] and ENV['PATH']
   ENV['PATH'].split(":").each do |path|
     so_files.merge Pathname.new(path).so_files(false)
   end
 end
 
-db = SQLite3::Database.new("#{Dir.tmpdir}/link-conflicts-tmp.db")
+db = SQLite3::Database.new( opt['output'] ? opt['output'] : 'symbols-datatabase.sqlite' )
 db.execute("CREATE TABLE symbols ( path, symbol, abi )")
 
 so_files.each do |so|
