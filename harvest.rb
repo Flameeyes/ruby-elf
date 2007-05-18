@@ -141,12 +141,12 @@ so_files.each do |so|
 
       elf.sections['.dynsym'].symbols.each do |sym|
         begin
-          next if sym.idx == 0
-          next if sym.bind != Elf::Symbol::Binding::Global
-          next if sym.section == nil
-          next if sym.value == 0
-          next if sym.section.is_a? Integer
-          next if sym.section.name == '.init'
+          next if sym.idx == 0 or
+            sym.bind != Elf::Symbol::Binding::Global or
+            sym.section == nil or
+            sym.value == 0 or
+            sym.section.is_a? Integer or
+            sym.section.name == '.init'
 
           symbol = sym.name
           
