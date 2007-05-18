@@ -23,7 +23,9 @@ Elf::File.open(ARGV[0]) do |elf|
   addrsize = (elf.elf_class == Elf::Class::Elf32 ? 8 : 16)
 
   # Assume -D switch, just for now
-  elf.sections['.dynsym'].symbols.each do |sym|
+  symsection = elf.sections['.dynsym']
+
+  symsection.symbols.each do |sym|
     addr = sprintf("%0#{addrsize}x", sym.value)
 
     addr = ' ' * addrsize unless sym.section
