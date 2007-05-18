@@ -33,74 +33,87 @@ opts.each do |opt, arg|
   end
 end
 
-Elf::File.open(ARGV[0]) do |elf|
-  addrsize = (elf.elf_class == Elf::Class::Elf32 ? 8 : 16)
+exitval = 0
 
-  symsection = elf.sections[scan_section]
+files = ARGV.length > 0 ? ARGV : ['a.out']
 
-  if symsection == nil
-    $stderr.puts "nm.rb: #{elf.path}: No symbols"
-    exit 1
-  end
+files.each do |file|
+  begin
+    Elf::File.open(file) do |elf|
+      addrsize = (elf.elf_class == Elf::Class::Elf32 ? 8 : 16)
 
-  symsection.symbols.each do |sym|
-    addr = sprintf("%0#{addrsize}x", sym.value)
+      symsection = elf.sections[scan_section]
 
-    addr = ' ' * addrsize unless sym.section
+      if symsection == nil
+        $stderr.puts "nm.rb: #{elf.path}: No symbols"
+        exitval = 1
+        next
+      end
 
-    versioned = elf.sections['.gnu.version'] != nil
-    flag = '?'
-    if sym.idx == 0
-      next
-    elsif sym.bind == Elf::Symbol::Binding::Weak
-      flag = sym.type == Elf::Symbol::Type::Object ? 'V' : 'W'
-      
-      flag.downcase! if sym.value == 0
-      # The following are three 'reserved sections'
-    elsif sym.section == Elf::Section::Undef
-      flag = 'U'
-    elsif sym.section == Elf::Section::Abs
-      # Absolute symbols
-      flag = 'A'
-      versioned = false
-    elsif sym.section == Elf::Section::Common
-      # Common symbols
-      flag = 'C'
-    elsif sym.section.is_a? Integer
-      $stderr.puts sym.section.hex
-      flag = '!'
-    elsif sym.section.name == '.init'
-      next
-    else
-      flag = case sym.section.name
-             when ".text" then 'T'
-             when ".bss" then 'B'
-             else '?'
-             end
-    end
+      symsection.symbols.each do |sym|
+        addr = sprintf("%0#{addrsize}x", sym.value)
 
-    versioned = false if sym.section.is_a? Elf::Section and sym.section.name == ".bss"
+        addr = ' ' * addrsize unless sym.section
 
-    flag.downcase! if sym.bind == Elf::Symbol::Binding::Local
-
-    if versioned
-      version_idx = elf.sections['.gnu.version'][sym.idx]
-      if version_idx >= 2
-        if sym.section == nil
-          version_name = elf.sections['.gnu.version_r'][version_idx][:name]
+        versioned = elf.sections['.gnu.version'] != nil
+        flag = '?'
+        if sym.idx == 0
+          next
+        elsif sym.bind == Elf::Symbol::Binding::Weak
+          flag = sym.type == Elf::Symbol::Type::Object ? 'V' : 'W'
+          
+          flag.downcase! if sym.value == 0
+          # The following are three 'reserved sections'
+        elsif sym.section == Elf::Section::Undef
+          flag = 'U'
+        elsif sym.section == Elf::Section::Abs
+          # Absolute symbols
+          flag = 'A'
+          versioned = false
+        elsif sym.section == Elf::Section::Common
+          # Common symbols
+          flag = 'C'
+        elsif sym.section.is_a? Integer
+          $stderr.puts sym.section.hex
+          flag = '!'
+        elsif sym.section.name == '.init'
+          next
         else
-          if version_idx & (1 << 15) == 0
-            version_name = elf.sections['.gnu.version_d'][version_idx][:names][0]
-          else
-            version_idx = version_idx & ~(1 << 15)
-            version_name = elf.sections['.gnu.version_d'][version_idx][:names][1]
+          flag = case sym.section.name
+                 when ".text" then 'T'
+                 when ".bss" then 'B'
+                 else '?'
+                 end
+        end
+
+        versioned = false if sym.section.is_a? Elf::Section and sym.section.name == ".bss"
+
+        flag.downcase! if sym.bind == Elf::Symbol::Binding::Local
+
+        if versioned
+          version_idx = elf.sections['.gnu.version'][sym.idx]
+          if version_idx >= 2
+            if sym.section == nil
+              version_name = elf.sections['.gnu.version_r'][version_idx][:name]
+            else
+              if version_idx & (1 << 15) == 0
+                version_name = elf.sections['.gnu.version_d'][version_idx][:names][0]
+              else
+                version_idx = version_idx & ~(1 << 15)
+                version_name = elf.sections['.gnu.version_d'][version_idx][:names][1]
+              end
+            end
+
+            version_name = "@@#{version_name}"
           end
         end
 
-        version_name = "@@#{version_name}"
+        puts "#{addr} #{flag} #{sym.name}#{version_name}"
       end
     end
-
-    puts "#{addr} #{flag} #{sym.name}#{version_name}"
+  rescue Errno::ENOENT
+    $stderr.puts "nm.rb: #{file}: No such file"
   end
 end
+
+exit exitval
