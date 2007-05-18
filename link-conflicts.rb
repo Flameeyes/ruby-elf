@@ -15,17 +15,27 @@
 # along with this generator; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
-require 'getopt/long'
+require 'getoptlong'
 require 'sqlite3'
 
-opt = Getopt::Long.getopts(
-                           ["--input", "-i", Getopt::REQUIRED],
-                           ["--output", "-o", Getopt::REQUIRED]
-                           )
+opts = GetoptLong.new(
+  ["--input", "-i", GetoptLong::REQUIRED_ARGUMENT],
+  ["--output", "-o", GetoptLong::REQUIRED_ARGUMENT]
+)
 
-outfile = opt['output'] ? File.new(opt['output'], "w") : $stdout
+outfile = $stdout
+input_database = 'symbols-database.sqlite'
 
-db = SQLite3::Database.new( opt['input'] ? opt['input'] : 'symbols-datatabase.sqlite' )
+opts.each do |opt, arg|
+  case opt
+  when '--output'
+    outfile = File.new(arg, "w")
+  when '--input'
+    input_database = arg
+  end
+end
+
+db = SQLite3::Database.new input_database
 
 db.execute "SELECT * FROM ( SELECT symbol, abi, COUNT(*) AS occurrences FROM symbols GROUP BY symbol, abi ) WHERE occurrences > 1 ORDER BY occurrences DESC;" do |row|
   outfile.puts "Symbol #{row[0]} (#{row[1]}) present #{row[2]} times"
