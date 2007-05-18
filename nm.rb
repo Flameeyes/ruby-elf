@@ -51,6 +51,8 @@ files.each do |file|
       end
 
       symsection.symbols.each do |sym|
+        next if sym.name == ''
+
         addr = sprintf("%0#{addrsize}x", sym.value)
 
         addr = ' ' * addrsize unless sym.section
