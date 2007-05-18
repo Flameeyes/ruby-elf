@@ -1,6 +1,6 @@
 # bsd-nm implementation based on elf.rb (very limited)
 
-require 'elf.rb'
+require 'elf'
 
 Elf::File.open(ARGV[0]) do |elf|
   addrsize = (elf.elf_class == Elf::Class::Elf32 ? 8 : 16)
