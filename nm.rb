@@ -80,8 +80,9 @@ files.each do |file|
           next
         else
           flag = case sym.section.name
-                 when ".text" then 'T'
                  when ".bss" then 'B'
+                 when ".rodata" then 'R'
+                 when ".text" then 'T'
                  else '?'
                  end
         end
