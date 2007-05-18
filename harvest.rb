@@ -48,8 +48,13 @@ xdg_config_paths.each do |dir|
   next unless path.exist?
 
   path.each_line do |line|
-    path, symbols = line.strip!.split(/\s+/, 2)
+    path, symbols = line.
+      gsub(/#\s.*/, '').
+      strip!.
+      split(/\s+/, 2)
 
+    next unless path
+    
     if not symbols or symbols == ""
       $total_suppressions << Regexp.new(path)
     else
