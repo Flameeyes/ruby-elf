@@ -26,15 +26,9 @@ require 'elf'
 
 opt = Getopt::Long.getopts(
                            ["--output", "-o", Getopt::REQUIRED],
-                           ["--pathscan", "-p", Getopt::BOOLEAN]
+                           ["--pathscan", "-p", Getopt::BOOLEAN],
+                           ["--suppressions", "-s", Getopt::REQUIRED]
                            )
-
-# First of all, load the suppression files.
-# These are needed to skip paths like /lib/modules
-xdg_config_paths = ["."]
-xdg_config_paths << (ENV['XDG_CONFIG_HOME'] ? ENV['XDG_CONFIG_HOME'] : "#{ENV['HOME']}/.config")
-xdg_config_paths += ENV['XDG_CONFIG_DIRS'].split(":") if ENV['XDG_CONFIG_DIRS']
-xdg_config_paths << "/etc/xdg"
 
 # Total suppressions are for directories to skip entirely
 # Partial suppressions are the ones that apply only to a subset
@@ -42,12 +36,8 @@ xdg_config_paths << "/etc/xdg"
 $total_suppressions = []
 $partial_suppressions = []
 
-xdg_config_paths.each do |dir|
-  path = Pathname.new(dir) + "link-conflicts.suppressions"
-
-  next unless path.exist?
-
-  path.each_line do |line|
+File.open(opt['suppressions'] ? opt['suppressions'] : 'suppressions') do |file|
+  file.each_line do |line|
     path, symbols = line.
       gsub(/#\s.*/, '').
       strip!.
