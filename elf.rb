@@ -504,7 +504,7 @@ class Elf
     end
   end
 
-  class DynamicSymbolTable < Section
+  class SymbolTable < Section
     def load_internal
       @symbols = []
       for i in 1..(@numentries)
@@ -683,7 +683,8 @@ class Elf
 
       Class = {
         StrTab => Elf::StringTable,
-        DynSym => Elf::DynamicSymbolTable,
+        SymTab => Elf::SymbolTable,
+        DynSym => Elf::SymbolTable,
         GNUVerSym => Elf::GNU::SymbolVersionTable,
         GNUVerDef => Elf::GNU::SymbolVersionDef,
         GNUVerNeed => Elf::GNU::SymbolVersionNeed
