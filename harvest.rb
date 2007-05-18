@@ -148,29 +148,18 @@ so_files.each do |so|
             sym.section.is_a? Integer or
             sym.section.name == '.init'
 
-          symbol = sym.name
+          skip = false
           
           local_suppressions.each do |supp|
-            if symbol =~ supp[1]
-              symbol = nil
+            if sym.name =~ supp[1]
+              skip = true
               break
             end
           end
 
-          next if symbol == nil
+          next if skip
 
-          # Get the symbol version afterward, suppressions act on the single symbols
-          version_idx = elf.sections['.gnu.version'][sym.idx] if elf.sections['.gnu.version']
-          if version_idx and version_idx >= 2
-            name_idx = (version_idx & (1 << 15) == 0 ? 0 : 1)
-            version_idx = version_idx & ~(1 << 15)
-
-            version_name = elf.sections['.gnu.version_d'][version_idx][:names][name_idx]
-
-            symbol = "#{symbol}@@#{version_name}"
-          end
-
-          db.execute("INSERT INTO symbols VALUES('#{so}', '#{symbol}', '#{abi}')")
+          db.execute("INSERT INTO symbols VALUES('#{so}', '#{sym.name}@@#{sym.version}', '#{abi}')")
         rescue Exception
           $stderr.puts "Mangling symbol #{sym.name}"
           raise
