@@ -57,7 +57,6 @@ files.each do |file|
 
         addr = ' ' * addrsize unless sym.section
 
-        versioned = elf.sections['.gnu.version'] != nil
         flag = '?'
         if sym.idx == 0
           next
@@ -71,7 +70,6 @@ files.each do |file|
         elsif sym.section == Elf::Section::Abs
           # Absolute symbols
           flag = 'A'
-          versioned = false
         elsif sym.section == Elf::Section::Common
           # Common symbols
           flag = 'C'
@@ -89,27 +87,10 @@ files.each do |file|
                  end
         end
 
-        versioned = false if sym.section.is_a? Elf::Section and sym.section.name == ".bss"
-
         flag.downcase! if sym.bind == Elf::Symbol::Binding::Local
 
-        if versioned
-          version_idx = elf.sections['.gnu.version'][sym.idx]
-          if version_idx >= 2
-            if sym.section == nil
-              version_name = elf.sections['.gnu.version_r'][version_idx][:name]
-            else
-              if version_idx & (1 << 15) == 0
-                version_name = elf.sections['.gnu.version_d'][version_idx][:names][0]
-              else
-                version_idx = version_idx & ~(1 << 15)
-                version_name = elf.sections['.gnu.version_d'][version_idx][:names][1]
-              end
-            end
-
-            version_name = "@@#{version_name}"
-          end
-        end
+        version_name = sym.version
+        version_name = version_name ? "@@#{version_name}" : ""
 
         puts "#{addr} #{flag} #{sym.name}#{version_name}"
       end
