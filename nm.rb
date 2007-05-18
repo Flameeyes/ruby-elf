@@ -12,17 +12,21 @@ f.sections['.dynsym'].symbols.each do |sym|
 
   addr = ' ' * addrsize unless sym.section
 
+  versioned = f.sections['.gnu.version'] != nil
   flag = '?'
   if sym.idx == 0
     next
   elsif sym.bind == Elf::Symbol::Binding::Weak
-    flag = sym.value != 0 ? 'W' : 'w'
+    flag = sym.type == Elf::Symbol::Type::Object ? 'V' : 'W'
+    
+    flag.downcase! if sym.value == 0
   # The following are three 'reserved sections'
   elsif sym.section == Elf::Section::Undef
     flag = 'U'
   elsif sym.section == Elf::Section::Abs
     # Absolute symbols
     flag = 'A'
+    versioned = false
   elsif sym.section == Elf::Section::Common
     # Common symbols
     flag = 'C'
@@ -34,13 +38,16 @@ f.sections['.dynsym'].symbols.each do |sym|
   else
     flag = case sym.section.name
            when ".text" then 'T'
+           when ".bss" then 'B'
            else '?'
            end
   end
 
+  versioned = false if sym.section.is_a? Elf::Section and sym.section.name == ".bss"
+
   flag.downcase! if sym.bind == Elf::Symbol::Binding::Local
 
-  if flag != 'A' and f.sections['.gnu.version']
+  if versioned
     version_idx = f.sections['.gnu.version'][sym.idx]
     if version_idx >= 2
       if sym.section == nil
