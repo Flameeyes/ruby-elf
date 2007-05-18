@@ -15,17 +15,21 @@
 # along with this generator; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
-require 'set'
+require 'getopt/long'
 require 'sqlite3'
-require 'pathname'
-require 'tmpdir'
-require 'elf'
 
-db = SQLite3::Database.new("#{Dir.tmpdir}/link-conflicts-tmp.db")
+opt = Getopt::Long.getopts(
+                           ["--input", "-i", Getopt::REQUIRED],
+                           ["--output", "-o", Getopt::REQUIRED]
+                           )
+
+outfile = opt['output'] ? File.new(opt['output'], "w") : $stdout
+
+db = SQLite3::Database.new( opt['input'] ? opt['input'] : 'symbols-datatabase.sqlite' )
 
 db.execute "SELECT * FROM ( SELECT symbol, abi, COUNT(*) AS occurrences FROM symbols GROUP BY symbol, abi ) WHERE occurrences > 1 ORDER BY occurrences DESC;" do |row|
-  puts "Symbol #{row[0]} (#{row[1]}) present #{row[2]} times"
+  outfile.puts "Symbol #{row[0]} (#{row[1]}) present #{row[2]} times"
   db.execute( "SELECT path FROM symbols WHERE symbol='#{row[0]}' AND abi = '#{row[1]}'" ) do |path|
-    puts "  #{path[0]}"
+    outfile.puts "  #{path[0]}"
   end
 end
