@@ -25,6 +25,11 @@ Elf::File.open(ARGV[0]) do |elf|
   # Assume -D switch, just for now
   symsection = elf.sections['.dynsym']
 
+  if symsection == nil
+    $stderr.puts "nm.rb: #{elf.path}: No symbols"
+    exit 1
+  end
+
   symsection.symbols.each do |sym|
     addr = sprintf("%0#{addrsize}x", sym.value)
 
