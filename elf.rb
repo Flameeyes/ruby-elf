@@ -609,6 +609,31 @@ class Elf
              0x6ffffeff => [ :SymInfo, "Syminfo table", :Address ]
            })
     end
+
+    def load_internal
+      elf32 = elf.elf_class == Class::Elf32
+
+      @entries = []
+
+      for i in 1..@numentries
+        entry = {}
+        
+        entry[:type] = Type[ elf32 ? read_sword : read_sxword ]
+        entry[:attribute] = case entry[:type]
+                            when Type::Address then read_addr
+                            when Type::Value then elf32 ? read_word : read_xword
+                            else nil
+                            end
+
+        @entries << entry
+      end
+    end
+
+    def entries
+      load unless @entries
+
+      @entries
+    end
   end
 
   # GNU extensions to the ELF formats.
