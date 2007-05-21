@@ -606,7 +606,20 @@ class Elf
              0x6ffffefb => [ :DepAudit, "Dependency auditing", :Address ],
              0x6ffffefc => [ :PltPad, "PLT padding", :Address ],
              0x6ffffefd => [ :MoveTab, "Move table", :Address ],
-             0x6ffffeff => [ :SymInfo, "Syminfo table", :Address ]
+             0x6ffffeff => [ :SymInfo, "Syminfo table", :Address ],
+
+             # GNU extension, should be named :GNUVerSym?
+             0x6ffffff0 => [ :VerSym, nil, :Ignore ],
+
+             0x6ffffff9 => [ :RelACount, nil, :Value ],
+             0x6ffffffa => [ :RelCount, nil, :Value ],
+             
+             # Sun extensions, should be named :Sun*?
+             0x6ffffffb => [ :Flags1, "State flags", :Value ],
+             0x6ffffffc => [ :VerDef, "Address of version definition table", :Address ],
+             0x6ffffffd => [ :VerDefNum, "Number of version definitions", :Value ],
+             0x6ffffffe => [ :VerNeed, "Address of version definitions", :Address ],
+             0x6fffffff => [ :VerNeedNum, "Number of needed versions", :Value ]
            })
     end
 
