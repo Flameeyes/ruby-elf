@@ -611,18 +611,19 @@ class Elf
     end
 
     def load_internal
-      elf32 = elf.elf_class == Class::Elf32
+      elf32 = @file.elf_class == Class::Elf32
 
       @entries = []
 
       for i in 1..@numentries
         entry = {}
         
-        entry[:type] = Type[ elf32 ? read_sword : read_sxword ]
+        type = elf32 ? @file.read_sword : @file.read_sxword
+        entry[:type] = Type[ type ]
         entry[:attribute] = case entry[:type]
-                            when Type::Address then read_addr
-                            when Type::Value then elf32 ? read_word : read_xword
-                            else nil
+                            when :Address then @file.read_addr
+                            when :Value then elf32 ? @file.read_word : @file.read_xword
+                            else @file.read_addr
                             end
 
         @entries << entry
