@@ -41,9 +41,9 @@ class Elf
       end
     end
 
-    def initialize(val, desc)
+    def initialize(val, params)
       @val = val
-      @desc = desc
+      @desc = params[1]
     end
 
     attr_reader :desc, :val
@@ -64,7 +64,7 @@ class Elf
       @enums = { }
 
       hash.each_pair do |index, value|
-        @enums[index] = self.new(index, value[1])
+        @enums[index] = self.new(index, value)
         const_set(value[0], @enums[index])
       end
     end
@@ -540,9 +540,17 @@ class Elf
 
   class Dynamic < Section
     class Type < Value
+      attr_reader :attribute
+
+      def initialize(val, params)
+        super(val, params)
+
+        @attribute = params[2]
+      end
+
       fill({
               0 => [ :Null, "End of dynamic section", :Ignore ],
-              1 => [ :Needed, "Name of needed library", :Val ],
+              1 => [ :Needed, "Name of needed library", :Value ],
               2 => [ :PltRelSz, "Size in bytes of PLT relocs", :Value ],
               3 => [ :PltGot, "Processor defined value", :Ignore ],
               4 => [ :Hash, "Address of symbol hash table", :Address ],
