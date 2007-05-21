@@ -800,6 +800,7 @@ class Elf
         StrTab => Elf::StringTable,
         SymTab => Elf::SymbolTable,
         DynSym => Elf::SymbolTable,
+        Dynamic => Elf::Dynamic,
         GNUVerSym => Elf::GNU::SymbolVersionTable,
         GNUVerDef => Elf::GNU::SymbolVersionDef,
         GNUVerNeed => Elf::GNU::SymbolVersionNeed
