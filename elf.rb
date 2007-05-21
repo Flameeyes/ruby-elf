@@ -625,6 +625,44 @@ class Elf
            })
     end
 
+    module Flags
+      Origin     = 0x00000001
+      Symbolic   = 0x00000002
+      Textrel    = 0x00000004
+      BindNow    = 0x00000008
+      StaticTLS  = 0x00000010
+    end
+
+    module Flags1
+      Now        = 0x00000001
+      Global     = 0x00000002
+      Group      = 0x00000004
+      NoDelete   = 0x00000008
+      LoadFltr   = 0x00000010
+      InitFirst  = 0x00000020
+      NoOpen     = 0x00000040
+      Origin     = 0x00000080
+      Direct     = 0x00000100
+      Trans      = 0x00000200
+      Interpose  = 0x00000400
+      NoDefLib   = 0x00000800
+      NoDump     = 0x00001000
+      ConfAlt    = 0x00002000
+      EndFiltee  = 0x00004000
+      DispRelDNE = 0x00008000
+      DispRelPND = 0x00010000
+    end
+
+    module Features1
+      ParInit    = 0x00000001
+      ConfExp    = 0x00000002
+    end
+
+    module PosFlags1
+      LazyLoad   = 0x00000001
+      GroupPerm  = 0x00000002
+    end
+
     def load_internal
       elf32 = @file.elf_class == Class::Elf32
 
