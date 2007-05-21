@@ -642,6 +642,8 @@ class Elf
                             end
 
         @entries << entry
+
+        break if entry[:type] == Type::Null
       end
     end
 
