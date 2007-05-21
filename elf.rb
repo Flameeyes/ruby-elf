@@ -538,6 +538,71 @@ class Elf
     end
   end
 
+  class Dynamic < Section
+    class Type < Value
+      fill({
+              0 => [ :Null, "End of dynamic section", :Ignore ],
+              1 => [ :Needed, "Name of needed library", :Val ],
+              2 => [ :PltRelSz, "Size in bytes of PLT relocs", :Value ],
+              3 => [ :PltGot, "Processor defined value", :Ignore ],
+              4 => [ :Hash, "Address of symbol hash table", :Address ],
+              5 => [ :StrTab, "Address of string table", :Address ],
+              6 => [ :SymTab, "Address of symbol table", :Address ],
+              7 => [ :RelA, "Address of RelA relocs", :Address ],
+              8 => [ :RelASz, "Total size of Rela relocs", :Value ],
+              9 => [ :RelAEnt, "Size of one RelA reloc", :Value ],
+             10 => [ :StrSz, "Size of string table", :Value ],
+             11 => [ :SymEnt, "Size of one symbol table entry", :Value ],
+             12 => [ :Init, "Address of init function", :Address ],
+             13 => [ :Fini, "Address of termination function", :Address ],
+             14 => [ :SoName, "Name of shared object", :Value ],
+             15 => [ :RPath, "Library search path (deprecated)", :Ignore ],
+             16 => [ :Symbolic, "Start symbol search here", :Ignore ],
+             17 => [ :Rel, "Address of Rel relocs", :Address ],
+             18 => [ :RelSz, "Total size of Rel relocs", :Value ],
+             19 => [ :RelEnt, "Size of one Rel reloc", :Value ],
+             20 => [ :PltRel, "Type of reloc in PLT", :Value ],
+             21 => [ :Debug, "For debugging; unspecified", :Ignore ],
+             22 => [ :TextRel, "Reloc might modify .text", :Ignore ],
+             23 => [ :JmpRel, "Address of PLT relocs", :Address ],
+             24 => [ :BindNow, "Process relocations of object", :Ignore ],
+             25 => [ :InitArray, "Array with addresses of init functions", :Address ],
+             26 => [ :FiniArray, "Array with addresses of termination functions", :Address ],
+             27 => [ :InitArraySz, "Size in bytes of InitArray", :Value ],
+             28 => [ :FiniArraySz, "Size in bytes of FiniArray", :Value ],
+             29 => [ :Runpath, "Library search path", :Ignore ],
+             30 => [ :Flags, "Flags for the object being loaded", :Value ],
+             32 => [ :PreinitArray, "Array with addresses of preinit functions", :Address ],
+             33 => [ :PreinitArraySz, "Size in bytes of PreinitArray", :Value ],
+
+             # DT_VAL* constants mapping
+             0x6ffffdf5 => [ :GNUPrelinked, "Prelinking timestamp", :Value ],
+             0x6ffffdf6 => [ :GNUConflictSz, "Size of conflict section", :Value ],
+             0x6ffffdf7 => [ :GNULibListSz, "Size of library list", :Value ],
+             0x6ffffdf8 => [ :CheckSum, nil, :Value ],
+             0x6ffffdf9 => [ :PltPadSz, nil, :Value ],
+             0x6ffffdfa => [ :MoveEnt, nil, :Value ],
+             0x6ffffdfb => [ :MoveSz, nil, :Value ],
+             0x6ffffdfc => [ :Feature1, "Feature selection", :Value ],
+             0x6ffffdfd => [ :Postflag1, "Flags for Dynamic::Type entries", :Value ],
+             0x6ffffdfe => [ :SymInSz, "Size in bytes of syminfo table", :Value ],
+             0x6ffffdff => [ :SymInEnt, "Entry size of syminfo", :Value ],
+
+             # DT_ADDR* constants mapping
+             0x6ffffef5 => [ :GNUHash, "GNU-style hash table", :Address ],
+             0x6ffffef6 => [ :TLSDescPlt, nil, :Address ],
+             0x6ffffef7 => [ :TLSDescGot, nil, :Address ],
+             0x6ffffef8 => [ :GNUConflict, "Start of conflict section", :Address ],
+             0x6ffffef9 => [ :GNULibList, "Library list", :Address ],
+             0x6ffffefa => [ :Config, "Configuration information", :Address ],
+             0x6ffffefb => [ :DepAudit, "Dependency auditing", :Address ],
+             0x6ffffefc => [ :PltPad, "PLT padding", :Address ],
+             0x6ffffefd => [ :MoveTab, "Move table", :Address ],
+             0x6ffffeff => [ :SymInfo, "Syminfo table", :Address ]
+           })
+    end
+  end
+
   # GNU extensions to the ELF formats.
   # 'nuff said.
   module GNU
