@@ -431,6 +431,8 @@ class Elf
       end
     end
 
+    attr_reader :offset
+
     def initialize(elf, name, type)
       elf32 = elf.elf_class == Class::Elf32
 
@@ -439,7 +441,7 @@ class Elf
       @type = type
       @flags = elf32 ? elf.read_word : elf.read_xword
       @addr = elf.read_addr
-      @off = elf.read_off
+      @offset = elf.read_off
       @size = elf32 ? elf.read_word : elf.read_xword
       @link = elf.read_word
       @info = elf.read_word
@@ -470,7 +472,7 @@ class Elf
 
     def load
       oldpos = @file.tell
-      @file.seek(@off, IO::SEEK_SET)
+      @file.seek(@offset, IO::SEEK_SET)
 
       load_internal
 
@@ -686,7 +688,7 @@ class Elf
         link.load # do this now for safety
 
         @defined_versions = {}
-        entry_off = @off
+        entry_off = @offset
         loop do
           @file.seek(entry_off)
 
