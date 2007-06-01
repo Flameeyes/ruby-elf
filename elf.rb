@@ -673,11 +673,17 @@ class Elf
         
         type = elf32 ? @file.read_sword : @file.read_sxword
         entry[:type] = Type[ type ]
-        entry[:attribute] = case entry[:type]
+        entry[:attribute] = case entry[:type].attribute
                             when :Address then @file.read_addr
                             when :Value then elf32 ? @file.read_word : @file.read_xword
                             else @file.read_addr
                             end
+
+        entry[:parsed] = 
+          case entry[:type]
+          when Type::Needed
+            @file.sections['.dynstr'][entry[:attribute]]
+          end
 
         @entries << entry
 
