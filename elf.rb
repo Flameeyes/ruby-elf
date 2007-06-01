@@ -681,7 +681,7 @@ class Elf
 
         entry[:parsed] = 
           case entry[:type]
-          when Type::Needed
+          when Type::Needed, Type::SoName
             @file.sections['.dynstr'][entry[:attribute]]
           end
 
