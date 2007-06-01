@@ -130,14 +130,36 @@ if scan_path and ENV['PATH']
 end
 
 db = SQLite3::Database.new output_file
-db.execute("CREATE TABLE symbols ( path, symbol, abi )")
+db.execute("CREATE TABLE objects ( id INTEGER PRIMARY KEY, path, abi, soname )")
+db.execute("CREATE TABLE symbols ( object INTEGER, symbol )")
+
+val = 0
 
 so_files.each do |so|
   local_suppressions = $partial_suppressions.dup.delete_if { |s| not so.to_s =~ s[0] }
 
   begin
     Elf::File.open(so) do |elf|
+      next unless elf.sections['.dynsym'] and elf.sections['.dynstr']
+
       abi = "#{elf.elf_class} #{elf.abi} #{elf.machine}"
+      soname = ""
+      needed_objects = []
+
+      if elf.sections['.dynamic']
+        elf.sections['.dynamic'].entries.each do |entry|
+          case entry[:type]
+          when Elf::Dynamic::Type::Needed
+            needed_objects << elf.sections['.dynstr'][entry[:attribute]]
+          when Elf::Dynamic::Type::SoName
+            soname = elf.sections['.dynstr'][entry[:attribute]]
+          end
+        end
+      end
+
+      val += 1
+
+      db.execute("INSERT INTO objects(id, path, abi, soname) VALUES(#{val}, '#{so}', '#{elf.elf_class} #{elf.abi} #{elf.machine}', '#{soname}')")
 
       elf.sections['.dynsym'].symbols.each do |sym|
         begin
@@ -159,7 +181,7 @@ so_files.each do |so|
 
           next if skip
 
-          db.execute("INSERT INTO symbols VALUES('#{so}', '#{sym.name}@@#{sym.version}', '#{abi}')")
+          db.execute("INSERT INTO symbols VALUES('#{val}', '#{sym.name}@@#{sym.version}')")
         rescue Exception
           $stderr.puts "Mangling symbol #{sym.name}"
           raise

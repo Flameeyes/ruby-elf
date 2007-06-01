@@ -39,7 +39,7 @@ db = SQLite3::Database.new input_database
 
 db.execute "SELECT * FROM ( SELECT symbol, abi, COUNT(*) AS occurrences FROM symbols GROUP BY symbol, abi ) WHERE occurrences > 1 ORDER BY occurrences DESC;" do |row|
   outfile.puts "Symbol #{row[0]} (#{row[1]}) present #{row[2]} times"
-  db.execute( "SELECT path FROM symbols WHERE symbol='#{row[0]}' AND abi = '#{row[1]}'" ) do |path|
+  db.execute( "SELECT path FROM symbols RIGHT JOIN objects ON symbols.object = objects.id WHERE symbol = '#{row[0]}' AND abi = '#{row[1]}'" ) do |path|
     outfile.puts "  #{path[0]}"
   end
 end
