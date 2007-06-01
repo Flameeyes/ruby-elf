@@ -41,7 +41,7 @@ files.each do |file|
 
       case entry[:type]
       when Elf::Dynamic::Type::Needed
-        val = "Shared library: [#{elf.sections['.dynstr'][entry[:attribute]]}]"
+        val = "Shared library: [#{entry[:parsed]}]"
       when Elf::Dynamic::Type::SoName
         val = "Library soname: [#{elf.sections['.dynstr'][entry[:attribute]]}]"
       when Elf::Dynamic::Type::StrSz, Elf::Dynamic::Type::SymEnt,
