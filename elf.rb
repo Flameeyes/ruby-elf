@@ -683,6 +683,8 @@ class Elf
           case entry[:type]
           when Type::Needed, Type::SoName
             @file.sections['.dynstr'][entry[:attribute]]
+          when Type::GNUPrelinked
+            Time.at(entry[:attribute])
           end
 
         @entries << entry

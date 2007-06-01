@@ -52,7 +52,7 @@ files.each do |file|
       when Elf::Dynamic::Type::VerNeedNum, Elf::Dynamic::Type::RelACount
         val = entry[:attribute]
       when Elf::Dynamic::Type::GNUPrelinked
-        val = Time.at(entry[:attribute]).getutc.strftime('%Y-%m-%dT%H:%M:%S')
+        val = entry[:parsed].getutc.strftime('%Y-%m-%dT%H:%M:%S')
       else
         val = sprintf "0x%0#{addrsize}x", entry[:attribute]
       end
