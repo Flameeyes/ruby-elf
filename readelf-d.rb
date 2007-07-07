@@ -49,7 +49,7 @@ files.each do |file|
         Elf::Dynamic::Type::RelAEnt
 
         val = "#{entry[:attribute]} (bytes)"
-      when Elf::Dynamic::Type::VerNeedNum, Elf::Dynamic::Type::RelACount
+      when Elf::Dynamic::Type::VerDefNum, Elf::Dynamic::Type::VerNeedNum, Elf::Dynamic::Type::RelACount
         val = entry[:attribute]
       when Elf::Dynamic::Type::GNUPrelinked
         val = entry[:parsed].getutc.strftime('%Y-%m-%dT%H:%M:%S')
