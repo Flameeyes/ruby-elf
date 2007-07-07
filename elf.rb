@@ -210,7 +210,7 @@ class Elf
               1 => [ :Global, 'Global symbol' ],
               2 => [ :Weak, 'Weak symbol' ],
              # This one is inferred out of libpam.so
-              3 => [ :Absolute, 'Absolute symbol' ],
+              3 => [ :Number, 'Number of defined type' ],
              10 => [ :LoOs, 'OS-specific range start' ],
              12 => [ :HiOs, 'OS-specific range end' ],
              13 => [ :LoProc, 'Processor-specific range start' ],
