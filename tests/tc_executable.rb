@@ -43,9 +43,37 @@ class TC_Executable < Test::Unit::TestCase
     end
   end
 
+  def test_type
+    @elfs.each_pair do |name, elf|
+      assert(elf.type == Elf::File::Type::Exec)
+    end
+  end
+
   def test_elfclass
     assert(@elfs['linux_x86'].elf_class == Elf::Class::Elf32)
     assert(@elfs['linux_amd64'].elf_class == Elf::Class::Elf64)
   end
 
+  def test_dataencoding
+    assert(@elfs['linux_x86'].data_encoding == Elf::DataEncoding::Lsb)
+    assert(@elfs['linux_amd64'].data_encoding == Elf::DataEncoding::Lsb)
+  end
+
+  def test_version
+    assert(@elfs['linux_x86'].version == 1)
+    assert(@elfs['linux_amd64'].version == 1)
+  end
+
+  def test_abi
+    assert(@elfs['linux_x86'].abi == Elf::OsAbi::SysV)
+    assert(@elfs['linux_x86'].abi_version == 0)
+
+    assert(@elfs['linux_amd64'].abi == Elf::OsAbi::SysV)
+    assert(@elfs['linux_amd64'].abi_version == 0)
+  end
+
+  def test_machine
+    assert(@elfs['linux_x86'].machine == Elf::Machine::I386)
+    assert(@elfs['linux_amd64'].machine == Elf::Machine::X8664)
+  end
 end
