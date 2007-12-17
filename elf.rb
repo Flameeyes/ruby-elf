@@ -327,7 +327,8 @@ class Elf
            })
     end
 
-    attr_reader :elf_class, :abi, :machine
+    attr_reader :elf_class, :data_encoding, :type, :version, :abi,
+                :abi_version, :machine
     attr_reader :string_table
     attr_reader :sections
 
