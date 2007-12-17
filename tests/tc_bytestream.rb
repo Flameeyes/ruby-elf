@@ -1,5 +1,5 @@
 # Tests for the bytestrem reader
-#xs
+#
 # Copyright 2007 Diego Pettenò <flameeyes@gmail.com>
 #
 # Permission is hereby granted, free of charge, to any person
