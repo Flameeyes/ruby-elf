@@ -295,7 +295,7 @@ class Elf
 
       version_idx = @file.sections['.gnu.version'][@idx]
       
-      return nil unless version_idx >= 2
+      return nil unless version_idx && version_idx >= 2
 
       return @file.sections['.gnu.version_r'][version_idx][:name] if section == nil
 
