@@ -76,4 +76,17 @@ class TC_Executable < Test::Unit::TestCase
     assert(@elfs['linux_x86'].machine == Elf::Machine::I386)
     assert(@elfs['linux_amd64'].machine == Elf::Machine::X8664)
   end
+
+  def test_printf_symbol
+    @elfs.each_pair do |name, elf|
+      elf.sections['.dynsym'].symbols.each do |sym|
+        continue unless sym.name == "printf"
+        printf_found = true
+        
+        assert(printf_symbol.section == Elf::Section::Undef,
+               "printf symbol not in Undefined section")
+      end
+      assert(printf_found, "printf symbol not found")
+    end
+  end
 end
