@@ -22,6 +22,8 @@
 
 require 'bytestream-reader'
 
+require 'elf/value'
+
 # We need this quite e lot
 class Integer
   def hex
@@ -30,45 +32,6 @@ class Integer
 end
 
 class Elf
-  class Value
-    class OutOfBound < Exception
-      def initialize(val)
-        @val = val
-      end
-
-      def message
-        "Value #{@val} out of bound"
-      end
-    end
-
-    def initialize(val, params)
-      @val = val
-      @desc = params[1]
-    end
-
-    attr_reader :desc, :val
-    alias :to_i :val
-    alias :to_s :desc
-
-    def ==(other)
-      @val == other.to_i and self.class == other.class
-    end
-
-    def Value.[](idx)
-      raise OutOfBound.new(idx) unless @enums[idx]
-
-      @enums[idx]
-    end
-
-    def Value.fill(hash)
-      @enums = { }
-
-      hash.each_pair do |index, value|
-        @enums[index] = self.new(index, value)
-        const_set(value[0], @enums[index])
-      end
-    end
-  end
 
   MagicString = "\177ELF"
 
