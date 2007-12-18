@@ -25,11 +25,6 @@ class TC_Executable < Test::Unit::TestCase
   TestElfType = Elf::File::Type::Exec
   include ElfTests
 
-  def test_version
-    assert(@elfs['linux_x86'].version == 1)
-    assert(@elfs['linux_amd64'].version == 1)
-  end
-
   def test_dynsym_presence
     @elfs.each_pair do |name, elf|
       assert(elf.sections['.dynsym'],

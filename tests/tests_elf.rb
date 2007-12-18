@@ -41,12 +41,20 @@ module ElfTests
     end
   end
 
+  # We assume that all the ELF files we test are ELF 1 files.
+  def test_version
+    @elfs.each_pair do |name, elf|
+      assert(elf.version == 1,
+             "ELF version for #{elf.path} (#{elf.version}) differs from expected version (1)")
+    end
+  end
+
   def test_type
     @elfs.each_pair do |name, elf|
       assert(elf.type == self.class::TestElfType)
     end
   end
-
+  
   def test_elfclass
     @elfs.each_pair do |name, elf|
       expectedclass = case name
