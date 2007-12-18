@@ -25,10 +25,15 @@ class Elf
     class OutOfBound < Exception
       def initialize(val)
         @val = val
+        @appendix = ""
       end
 
       def message
-        "Value #{@val} out of bound"
+        "Value #{@val} out of bound#{@appendix}"
+      end
+      
+      def append_message(s)
+        @appendix << "\n#{s}"
       end
     end
 
