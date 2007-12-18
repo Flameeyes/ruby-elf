@@ -80,4 +80,19 @@ class TC_Exceptions < Test::Unit::TestCase
 
     assert(exception_received, "Elf::File::UnsupportedElfVersion exception not received.")
   end
+
+  def test_invalid_abi
+    assert(File.exist?(TestDir + "invalid_invalidabi"),
+           "Missing test file invalid_invalidabi")
+
+    exception_received = false
+    begin
+      elf = Elf::File.new(TestDir + "invalid_invalidabi")
+      elf.close
+    rescue Elf::File::InvalidOsAbi
+      exception_received = true
+    end
+
+    assert(exception_received, "Elf::File::InvalidOsAbi exception not received.")
+  end
 end
