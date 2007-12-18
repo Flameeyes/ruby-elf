@@ -66,6 +66,15 @@ class Elf
       end
     end
 
+    class InvalidElfType < Exception
+      def initialize(type)
+        @type = type
+      end
+      def message
+        "Invalid Elf type #{@type}"
+      end
+    end
+
     class Type < Value
       fill({
              0 => [ :None, 'No file type' ],
@@ -140,7 +149,12 @@ class Elf
       alias :read_section :read_u16
       alias :read_versym :read_half
       
-      @type = Type[read_half]
+      begin
+        @type = Type[read_half]
+      rescue Value::OutOfBound => e
+        raise InvalidElfType.new(e.val)
+      end
+
       @machine = Machine[read_half]
       @version = read_word
       @entry = read_addr
