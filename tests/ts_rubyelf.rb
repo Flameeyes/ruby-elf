@@ -20,4 +20,4 @@ require 'pathname'
 require Pathname.new(__FILE__).dirname + 'tc_bytestream'
 require Pathname.new(__FILE__).dirname + 'tc_executable'
 require Pathname.new(__FILE__).dirname + 'tc_relocatable'
-
+require Pathname.new(__FILE__).dirname + 'tc_exceptions'
