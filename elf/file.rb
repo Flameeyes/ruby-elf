@@ -39,6 +39,15 @@ class Elf
       end
     end
 
+    class InvalidDataEncoding < Exception
+      def initialize(encoding)
+        @encoding = encoding
+      end
+      def message
+        "Invalid Elf Data Encoding #{@encoding}"
+      end
+    end
+
     class Type < Value
       fill({
              0 => [ :None, 'No file type' ],
@@ -83,7 +92,12 @@ class Elf
         raise InvalidElfClass.new(e.val)
       end
 
-      @data_encoding = DataEncoding[read_u8]
+      begin
+        @data_encoding = DataEncoding[read_u8]
+      rescue Value::OutOfBound => e
+        raise InvalidDataEncoding.new(e.val)
+      end
+
       @version = read_u8
       @abi = OsAbi[read_u8]
       @abi_version = read_u8
