@@ -79,8 +79,13 @@ class Elf
         @size = elf.read_xword
       end
 
-      @bind = Binding[info >> 4]
-      @type = Type[info & 0xF]
+      begin
+        @bind = Binding[info >> 4]
+        @type = Type[info & 0xF]
+      rescue Elf::Value::OutOfBound => e
+        e.append_message("While processing symbol #{@name}. Symbol info: 0x#{info.hex}")
+        raise e
+      end
 
       @file = elf
     end
