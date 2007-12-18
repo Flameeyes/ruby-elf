@@ -69,7 +69,7 @@ module ElfTests
                          end
 
       assert(elf.data_encoding == expectedencoding,
-             "ELF encoding for #{elf.path} (#{elf.data_encoding}) differs from expected class (#{expectedencoding})")
+             "ELF encoding for #{elf.path} (#{elf.data_encoding}) differs from expected encoding (#{expectedencoding})")
     end
   end
 
