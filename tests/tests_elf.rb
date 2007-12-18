@@ -61,4 +61,16 @@ module ElfTests
     end
   end
 
+  def test_dataencoding
+    @elfs.each_pair do |name, elf|
+      expectedencoding = case name
+                         when /.*_x86/, /.*_amd64/
+                           Elf::DataEncoding::Lsb
+                         end
+
+      assert(elf.data_encoding == expectedencoding,
+             "ELF encoding for #{elf.path} (#{elf.data_encoding}) differs from expected class (#{expectedencoding})")
+    end
+  end
+
 end

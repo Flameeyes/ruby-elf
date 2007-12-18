@@ -25,11 +25,6 @@ class TC_Relocatable < Test::Unit::TestCase
   TestElfType = Elf::File::Type::Rel
   include ElfTests
 
-  def test_dataencoding
-    assert(@elfs['linux_x86'].data_encoding == Elf::DataEncoding::Lsb)
-    assert(@elfs['linux_amd64'].data_encoding == Elf::DataEncoding::Lsb)
-  end
-
   def test_version
     assert(@elfs['linux_x86'].version == 1)
     assert(@elfs['linux_amd64'].version == 1)
