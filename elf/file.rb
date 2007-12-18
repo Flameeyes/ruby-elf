@@ -75,6 +75,15 @@ class Elf
       end
     end
 
+    class InvalidMachine < Exception
+      def initialize(machine)
+        @machine = machine
+      end
+      def message
+        "Invalid Elf machine #{@machine}"
+      end
+    end
+
     class Type < Value
       fill({
              0 => [ :None, 'No file type' ],
@@ -154,8 +163,13 @@ class Elf
       rescue Value::OutOfBound => e
         raise InvalidElfType.new(e.val)
       end
+      
+      begin
+        @machine = Machine[read_half]
+      rescue Value::OutOfBound => e
+        raise InvalidMachine.new(e.val)
+      end
 
-      @machine = Machine[read_half]
       @version = read_word
       @entry = read_addr
       @phoff = read_off
