@@ -65,4 +65,19 @@ class TC_Exceptions < Test::Unit::TestCase
 
     assert(exception_received, "Elf::File::InvalidDataEncoding exception not received.")
   end
+
+  def test_unsupported_version
+    assert(File.exist?(TestDir + "invalid_unsupportedversion"),
+           "Missing test file invalid_unsupportedversion")
+
+    exception_received = false
+    begin
+      elf = Elf::File.new(TestDir + "invalid_unsupportedversion")
+      elf.close
+    rescue Elf::File::UnsupportedElfVersion
+      exception_received = true
+    end
+
+    assert(exception_received, "Elf::File::UnsupportedElfVersion exception not received.")
+  end
 end
