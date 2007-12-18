@@ -73,4 +73,22 @@ module ElfTests
     end
   end
 
+  def test_abi
+    @elfs.each_pair do |name, elf|
+      expectedabi = case name
+                    when /linux_.*/
+                      Elf::OsAbi::SysV
+                    end
+      expectedabiversion = case name
+                           when /linux_.*/
+                             0
+                           end
+
+      assert(elf.abi == expectedabi,
+             "ELF ABI for #{elf.path} (#{elf.abi}) differs from expected ABI (#{expectedabi})")
+      assert(elf.abi_version == expectedabiversion,
+             "ELF ABI version for #{elf.path} (#{elf.abi_version}) differs from expected ABI version (#{expectedabiversion})")
+    end
+  end
+
 end

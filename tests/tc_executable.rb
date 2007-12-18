@@ -30,14 +30,6 @@ class TC_Executable < Test::Unit::TestCase
     assert(@elfs['linux_amd64'].version == 1)
   end
 
-  def test_abi
-    assert(@elfs['linux_x86'].abi == Elf::OsAbi::SysV)
-    assert(@elfs['linux_x86'].abi_version == 0)
-
-    assert(@elfs['linux_amd64'].abi == Elf::OsAbi::SysV)
-    assert(@elfs['linux_amd64'].abi_version == 0)
-  end
-
   def test_machine
     assert(@elfs['linux_x86'].machine == Elf::Machine::I386)
     assert(@elfs['linux_amd64'].machine == Elf::Machine::X8664)
