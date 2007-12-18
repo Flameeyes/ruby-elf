@@ -18,36 +18,12 @@ require 'test/unit'
 require 'pathname'
 require 'elf'
 
+require Pathname.new(__FILE__).dirname + 'tests_elf'
+
 class TC_Relocatable < Test::Unit::TestCase
-  TestDir = Pathname.new(__FILE__).dirname + "binaries"
-  
-  def setup
-    @elfs = {}
-
-    # Check for presence of all the executables for the arches to test.
-    # Make sure to check all the operating systems too.
-    # Also open the ELF files for testing
-    [ "linux" ].each do |os|
-      [ "x86", "amd64" ].each do |arch|
-        filename = "#{os}_#{arch}_executable.o"
-        assert(File.exists?( TestDir + filename ),
-               "Missing test file #{filename}")
-        @elfs["#{os}_#{arch}"] = Elf::File.open(TestDir + filename)
-      end
-    end
-  end
-
-  def teardown
-    @elfs.each_pair do |name, elf|
-      elf.close
-    end
-  end
-
-  def test_type
-    @elfs.each_pair do |name, elf|
-      assert(elf.type == Elf::File::Type::Rel)
-    end
-  end
+  TestBaseFilename = "executable.o"
+  TestElfType = Elf::File::Type::Rel
+  include ElfTests
 
   def test_elfclass
     assert(@elfs['linux_x86'].elf_class == Elf::Class::Elf32)
