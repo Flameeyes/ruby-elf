@@ -47,4 +47,18 @@ module ElfTests
     end
   end
 
+  def test_elfclass
+    @elfs.each_pair do |name, elf|
+      expectedclass = case name
+      when /.*_x86/
+        Elf::Class::Elf32
+      when /.*_amd64/
+        Elf::Class::Elf64
+      end
+
+      assert(elf.elf_class == expectedclass,
+             "ELF class for #{elf.path} (#{elf.elf_class}) differs from expected class (#{expectedclass})")
+    end
+  end
+
 end

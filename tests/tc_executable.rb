@@ -25,11 +25,6 @@ class TC_Executable < Test::Unit::TestCase
   TestElfType = Elf::File::Type::Exec
   include ElfTests
 
-  def test_elfclass
-    assert(@elfs['linux_x86'].elf_class == Elf::Class::Elf32)
-    assert(@elfs['linux_amd64'].elf_class == Elf::Class::Elf64)
-  end
-
   def test_dataencoding
     assert(@elfs['linux_x86'].data_encoding == Elf::DataEncoding::Lsb)
     assert(@elfs['linux_amd64'].data_encoding == Elf::DataEncoding::Lsb)
