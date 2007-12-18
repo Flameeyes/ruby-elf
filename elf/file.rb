@@ -30,6 +30,15 @@ class Elf
       end
     end
 
+    class InvalidElfClass < Exception
+      def initialize(klass)
+        @klass = klass
+      end
+      def message
+        "Invalid Elf Class #{@klass}"
+      end
+    end
+
     class Type < Value
       fill({
              0 => [ :None, 'No file type' ],
@@ -68,7 +77,12 @@ class Elf
 
       raise NotAnELF unless readbytes(4) == MagicString
 
-      @elf_class = Class[read_u8]
+      begin
+        @elf_class = Class[read_u8]
+      rescue Value::OutOfBound => e
+        raise InvalidElfClass.new(e.val)
+      end
+
       @data_encoding = DataEncoding[read_u8]
       @version = read_u8
       @abi = OsAbi[read_u8]
