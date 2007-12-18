@@ -32,7 +32,7 @@ class Integer
   end
 end
 
-class Elf
+module Elf
 
   MagicString = "\177ELF"
 

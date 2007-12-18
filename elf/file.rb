@@ -22,7 +22,7 @@
 
 require 'bytestream-reader'
 
-class Elf
+module Elf
   class File < BytestreamReader
     class NotAnELF < Exception
       def message

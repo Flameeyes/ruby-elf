@@ -20,7 +20,7 @@
 # along with this generator; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
-class Elf
+module Elf
   class Section
     # Reserved sections' indexes
     Undef  = nil    # Would be '0', but this fits enough
@@ -101,7 +101,7 @@ require 'elf/stringtable'
 require 'elf/symboltable'
 require 'elf/dynamic'
 
-class Elf
+module Elf
   class Section
     class Type < Value
       fill({

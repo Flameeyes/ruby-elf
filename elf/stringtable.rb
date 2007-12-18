@@ -22,7 +22,7 @@
 
 require 'elf/section'
 
-class Elf
+module Elf
   class StringTable < Section
     def load_internal
       @rawtable = @file.readbytes(@size)
