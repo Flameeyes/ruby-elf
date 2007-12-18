@@ -23,6 +23,8 @@
 class Elf
   class Value
     class OutOfBound < Exception
+      attr_reader :val
+
       def initialize(val)
         @val = val
         @appendix = ""
