@@ -49,6 +49,20 @@ class Elf
     attr_reader :string_table
     attr_reader :sections
 
+    def read_addr
+      case @elf_class
+      when Class::Elf32: read_u32
+      when Class::Elf64: read_u64
+      end
+    end
+
+    def read_off
+      case @elf_class
+      when Class::Elf32: read_u32
+      when Class::Elf64: read_u64
+      end
+    end
+
     def initialize(path)
       super(path, "rb")
 
@@ -74,15 +88,6 @@ class Elf
       alias :read_section :read_u16
       alias :read_versym :read_half
       
-      case @elf_class
-      when Class::Elf32
-        alias :read_addr :read_u32
-        alias :read_off :read_u32
-      when Class::Elf64
-        alias :read_addr :read_u64
-        alias :read_off :read_u64
-      end
-
       @type = Type[read_half]
       @machine = Machine[read_half]
       @version = read_word
