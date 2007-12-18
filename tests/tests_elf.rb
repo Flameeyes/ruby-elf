@@ -91,4 +91,18 @@ module ElfTests
     end
   end
 
+  def test_machine
+    @elfs.each_pair do |name, elf|
+      expectedmachine = case name
+                        when /.*_x86/
+                          Elf::Machine::I386
+                        when /.*_amd64/
+                          Elf::Machine::X8664
+                        end
+
+      assert(elf.machine == expectedmachine,
+             "ELF machine for #{elf.path} (#{elf.machine}) differs from expected amchine (#{expectedmachine})")
+    end
+  end
+
 end

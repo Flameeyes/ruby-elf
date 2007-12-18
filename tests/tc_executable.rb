@@ -30,11 +30,6 @@ class TC_Executable < Test::Unit::TestCase
     assert(@elfs['linux_amd64'].version == 1)
   end
 
-  def test_machine
-    assert(@elfs['linux_x86'].machine == Elf::Machine::I386)
-    assert(@elfs['linux_amd64'].machine == Elf::Machine::X8664)
-  end
-
   def test_dynsym_presence
     @elfs.each_pair do |name, elf|
       assert(elf.sections['.dynsym'],
