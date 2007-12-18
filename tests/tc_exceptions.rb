@@ -20,14 +20,11 @@ require 'elf'
 
 class TC_Exceptions < Test::Unit::TestCase
   TestDir = Pathname.new(__FILE__).dirname + "binaries"
-  def setup
-    [ "invalid_nonelf" ].each do |file|
-      assert(File.exist?(TestDir + file),
-             "Missing test file #{file}")
-    end
-  end
 
   def test_notanelf
+    assert(File.exist?(TestDir + "invalid_nonelf"),
+           "Missing test file invalid_nonelf")
+
     exception_received = false
     begin
       elf = Elf::File.new(TestDir + "invalid_nonelf")
