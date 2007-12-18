@@ -86,12 +86,13 @@ class TC_Executable < Test::Unit::TestCase
 
   def test_printf_symbol
     @elfs.each_pair do |name, elf|
+      printf_found = false
       begin
         elf.sections['.dynsym'].symbols.each do |sym|
-          continue unless sym.name == "printf"
+          next unless sym.name == "printf"
           printf_found = true
           
-          assert(printf_symbol.section == Elf::Section::Undef,
+          assert(sym.section == Elf::Section::Undef,
                  "printf symbol not in Undefined section")
         end
         assert(printf_found, "printf symbol not found")
