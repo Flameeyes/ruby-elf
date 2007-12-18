@@ -83,7 +83,7 @@ class Elf
         @bind = Binding[info >> 4]
         @type = Type[info & 0xF]
       rescue Elf::Value::OutOfBound => e
-        e.append_message("While processing symbol #{@name}. Symbol info: 0x#{info.hex}")
+        e.append_message("While processing symbol #{@idx}. Symbol info: 0x#{info.hex}")
         raise e
       end
 
