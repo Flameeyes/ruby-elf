@@ -77,6 +77,13 @@ class TC_Executable < Test::Unit::TestCase
     assert(@elfs['linux_amd64'].machine == Elf::Machine::X8664)
   end
 
+  def test_dynsym_presence
+    @elfs.each_pair do |name, elf|
+      assert(elf.sections['.dynsym'],
+             "Missing .dynsym section on ELF file #{elf.path}")
+    end
+  end
+
   def test_printf_symbol
     @elfs.each_pair do |name, elf|
       begin
