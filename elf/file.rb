@@ -48,6 +48,15 @@ class Elf
       end
     end
 
+    class UnsupportedElfVersion < Exception
+      def initialize(version)
+        @version = version
+      end
+      def message
+        "Unsupported Elf version #{@version}"
+      end
+    end
+
     class Type < Value
       fill({
              0 => [ :None, 'No file type' ],
@@ -99,6 +108,8 @@ class Elf
       end
 
       @version = read_u8
+      raise UnsupportedElfVersion.new(@version) if @version > 1
+
       @abi = OsAbi[read_u8]
       @abi_version = read_u8
 
