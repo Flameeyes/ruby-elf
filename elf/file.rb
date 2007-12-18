@@ -57,6 +57,15 @@ class Elf
       end
     end
 
+    class InvalidOsAbi < Exception
+      def initialize(abi)
+        @abi = abi
+      end
+      def message
+        "Invalid Elf ABI #{@abi}"
+      end
+    end
+
     class Type < Value
       fill({
              0 => [ :None, 'No file type' ],
@@ -110,7 +119,11 @@ class Elf
       @version = read_u8
       raise UnsupportedElfVersion.new(@version) if @version > 1
 
-      @abi = OsAbi[read_u8]
+      begin
+        @abi = OsAbi[read_u8]
+      rescue Value::OutOfBound => e
+        raise InvalidOsAbi.new(e.val)
+      end
       @abi_version = read_u8
 
       seek(16, IO::SEEK_SET)
