@@ -100,6 +100,9 @@ module Elf
       @name
     end
 
+    # Alias to_s to name so that using this in a string will report the name
+    alias :to_s :name
+
     def section
       # We didn't read the section yet.
       @section = nil if @section == 0
