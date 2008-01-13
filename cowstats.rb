@@ -100,7 +100,7 @@ if not stats_only
     rel_size = 0
     
     if info["data_vars"].length > 0
-      puts "The following variables are writable (Copy-On-Write):"
+      puts "  The following variables are writable (Copy-On-Write):"
       info["data_vars"].each do |sym|
         puts "    #{sym} (size: #{sym.size})"
         data_size += sym.size
@@ -109,7 +109,7 @@ if not stats_only
     data_total += data_size
 
     if info["bss_vars"].length > 0
-      puts "The following variables aren't initialised (Copy-On-Write):"
+      puts "  The following variables aren't initialised (Copy-On-Write):"
       info["bss_vars"].each do |sym|
         puts "    #{sym} (size: #{sym.size})"
         bss_size += sym.size
@@ -118,7 +118,7 @@ if not stats_only
     bss_total += bss_size
 
     if info["rel_vars"].length > 0
-      puts "The following variables need runtime relocation (Copy-On-Write):"
+      puts "  The following variables need runtime relocation (Copy-On-Write):"
       info["rel_vars"].each do |sym|
         puts "    #{sym} (size: #{sym.size})"
         rel_size += sym.size
@@ -169,8 +169,8 @@ end
 
 if show_total
   puts "Totals:"
-  puts "  #{data_total} bytes of writable variables."
-  puts "  #{bss_total} bytes of non-initialised variables."
-  puts "  #{rel_total} bytes of variables needing runtime relocation."
-  puts "Total #{data_total+bss_total+rel_total} bytes of variables in copy-on-write sections"
+  puts "    #{data_total} bytes of writable variables."
+  puts "    #{bss_total} bytes of non-initialised variables."
+  puts "    #{rel_total} bytes of variables needing runtime relocation."
+  puts "  Total #{data_total+bss_total+rel_total} bytes of variables in copy-on-write sections"
 end
