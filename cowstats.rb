@@ -99,27 +99,27 @@ if not stats_only
     bss_size = 0
     rel_size = 0
     
-    if data_vars.length > 0
+    if info["data_vars"].length > 0
       puts "The following variables are writable (Copy-On-Write):"
-      data_vars.each do |sym|
+      info["data_vars"].each do |sym|
         puts "    #{sym} (size: #{sym.size})"
         data_size += sym.size
       end
     end
     data_total += data_size
 
-    if bss_vars.length > 0
+    if info["bss_vars"].length > 0
       puts "The following variables aren't initialised (Copy-On-Write):"
-      bss_vars.each do |sym|
+      info["bss_vars"].each do |sym|
         puts "    #{sym} (size: #{sym.size})"
         bss_size += sym.size
       end
     end
     bss_total += bss_size
 
-    if rel_vars.length > 0
+    if info["rel_vars"].length > 0
       puts "The following variables need runtime relocation (Copy-On-Write):"
-      rel_vars.each do |sym|
+      info["rel_vars"].each do |sym|
         puts "    #{sym} (size: #{sym.size})"
         rel_size += sym.size
       end
