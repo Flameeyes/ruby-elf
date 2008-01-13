@@ -73,6 +73,9 @@ module Elf
       @name
     end
 
+    # Alias to_s to name so that using this in a string will report the name
+    alias :to_s :name
+
     def link
       # We didn't get the linked section header yet
       if @link.is_a? Integer
