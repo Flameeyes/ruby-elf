@@ -78,7 +78,7 @@ ARGV.each do |file|
           data_vars << symbol
         when /\.bss$/
           bss_vars << symbol
-        when /\.data\.rel(\.local)?$/
+        when /\.data\.rel(\.ro)?(\.local)?$/
           rel_vars << symbol
         end
       end
