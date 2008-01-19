@@ -55,6 +55,10 @@ ARGV.each do |file|
         $stderr.puts "cowstats.rb: #{file}: not an object file"
         next
       end
+      if elf.sections['.symtab'] == nil
+        $stderr.puts "cowstats.rb: #{file}: no .symtab section found"
+        next
+      end
 
       files_info[file] = {}
       
