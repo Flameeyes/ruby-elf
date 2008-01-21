@@ -24,8 +24,8 @@
 .*/libpthread(-[\.0-9]+)?\.so		^(pthread_.*|_IO_f(|un|try)lockfile)$
 
 # KDE-related suppressions
-.*/libkdeinit_.*\.so			^kdemain$
-.*/kde3/.*\.so				^kde(init)?main$
+.*/libkdeinit4?_.*\.so			^kdemain$
+.*/kde[34]/.*\.so			^kde(init)?main$
 .*/kde3/.*thumbnail\.so			^new_creator$
 .*/kde3/.*panel(applet|extension)\.so	^init$
 .*/kde3/libaudiocd_encoder_.*\.so	^create_audiocd_encoders$
