@@ -97,8 +97,16 @@ class Pathname
         if entry.directory?
           res.merge entry.so_files if recursive
           next
-        elsif entry.to_s =~ /\.so[\.0-9]*$/
-          res.add entry.to_s
+        elsif entry.symlink?
+          next
+        else
+          begin
+            elf = Elf::File.open(entry)
+            elf.close
+            res.add entry.to_s
+          rescue Elf::File::NotAnELF
+            next
+          end
         end
       rescue Errno::EACCES, Errno::ENOENT
         next
