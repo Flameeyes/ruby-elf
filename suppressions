@@ -11,7 +11,7 @@
 # main is instead present in every executable.
 # stdin/out/err are defined in every executable.
 # optind/arg/err are defined by executables using getopt.h
-.*					^(_(init|fini)|main|std(in|out|err)|opt(ind|arg|err))$
+.*					^((__libc_csu)?_(init|fini|start)|main|std(in|out|err)|opt(ind|arg|err|opt)|__data_start|_IO_stdin_used)$
 
 # xine plugins use xine_plugin_info structure as entrypoint
 .*/xine/plugins/.*/xineplug_.*\.so	^xine_plugin_info$
@@ -32,6 +32,10 @@
 .*/kde3/plugins/.*\.so			^(qt_ucm_query_verification_data|ucm_instantiate)$
 .*/kde3/kwin3_.*\.so			^(create_factory|allocate_config)$
 .*/kde3/libamarok_.*\.so		^create_plugin$
+					# KApplication::KApp
+.*					^_ZN12KApplication4KAppE$
+# KDE 4
+.*/kde4/.*\.so$				^kde_plugin_verification_data$
 
 # PAM modules
 .*/lib(|32|64)/security/pam_.*\.so	^pam_sm_(authenticate|acct_mgmt|close_session|setcred|chauthtok|open_session)$
@@ -40,7 +44,7 @@
 .*/valgrind/(amd64|x86|ppc|ppc64)-linux/vgpreload_.*\.so	^_vgrZU_.*$
 
 # Qt4 plugins
-.*/qt4/plugins/.*\.so			^qt_plugin_(instance|query_verification_data)$
+.*/.*\.so				^qt_plugin_(instance|query_verification_data)$
 
 # Wine stuff
 .*\.exe\.so				^WinMain$
@@ -60,6 +64,8 @@
 
 # Java JNI extensions
 .*					^JNI_OnLoad$
+# Sun Java implementation
+^/opt/sun-jdk-.*/.*			^JavaMain$
 
 # ZSH modules
 .*/zsh/.*/zsh/.*\.so			^(boot|setup|cleanup|finish)_$
@@ -87,3 +93,6 @@
 
 # STLport debug library (TODO: should be moved to something different)
 .*/libstlportg\.so.*
+
+# OpenOffice.org
+.*/openoffice/program/.*\.so$		^(component_(getFactory|getImplementationEnvironment|writeInfo|canUnload)|GetVersionInfo)
