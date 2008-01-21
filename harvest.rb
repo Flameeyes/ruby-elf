@@ -25,14 +25,16 @@ require 'sqlite3'
 require 'elf'
 
 opts = GetoptLong.new(
-  ["--output",       "-o", GetoptLong::REQUIRED_ARGUMENT ],
-  ["--pathscan",     "-p", GetoptLong::NO_ARGUMENT ],
-  ["--suppressions", "-s", GetoptLong::REQUIRED_ARGUMENT ]
+  ["--output",         "-o", GetoptLong::REQUIRED_ARGUMENT ],
+  ["--no-scan-ldpath", "-L", GetoptLong::NO_ARGUMENT ],
+  ["--scan-path",      "-p", GetoptLong::NO_ARGUMENT ],
+  ["--suppressions",   "-s", GetoptLong::REQUIRED_ARGUMENT ]
 )
 
 output_file = 'symbols-database.sqlite3'
 suppression_file = 'suppressions'
 scan_path = false
+scan_ldpath = true
 
 opts.each do |opt, arg|
   case opt
@@ -40,8 +42,10 @@ opts.each do |opt, arg|
     output_file = arg
   when '--suppressions'
     suppression_file = arg
-  when '--pathscan'
+  when '--scan-path'
     scan_path = true
+  when '--no-scan-ldpath'
+    scan_ldpath = false
   end
 end
 
@@ -66,16 +70,6 @@ File.open(suppression_file) do |file|
       $partial_suppressions << [Regexp.new(path), Regexp.new(symbols)]
     end
   end
-end
-
-ldso_paths = Set.new
-ldso_paths.merge ENV['LD_LIBRARY_PATH'].split(":").set if ENV['LD_LIBRARY_PATH']
-
-File.open("/etc/ld.so.conf") do |ldsoconf|
-  ldso_paths.merge ldsoconf.readlines.
-    delete_if { |l| l =~ /\s*#.*/ }.
-    collect { |l| l.strip }.
-    uniq
 end
 
 so_files = Set.new
@@ -115,17 +109,34 @@ class Pathname
   end
 end
 
-ldso_paths.each do |path|
-  begin
-    so_files.merge Pathname.new(path.strip).so_files
-  rescue Errno::ENOENT
-    next
+if scan_ldpath
+  ldso_paths = Set.new
+  ldso_paths.merge ENV['LD_LIBRARY_PATH'].split(":").set if ENV['LD_LIBRARY_PATH']
+  
+  File.open("/etc/ld.so.conf") do |ldsoconf|
+    ldso_paths.merge ldsoconf.readlines.
+      delete_if { |l| l =~ /\s*#.*/ }.
+      collect { |l| l.strip }.
+      uniq
+  end
+
+  ldso_paths.each do |path|
+    begin
+      so_files.merge Pathname.new(path.strip).so_files
+    rescue Errno::ENOENT
+      next
+    end
   end
 end
 
 if scan_path and ENV['PATH']
   ENV['PATH'].split(":").each do |path|
-    so_files.merge Pathname.new(path).so_files(false)
+    begin
+      so_files.merge Pathname.new(path).so_files(false)
+    rescue Errno::ENOENT
+      $stderr.puts "harvest.rb: No such file or directory - #{path}"
+      next
+    end
   end
 end
 
