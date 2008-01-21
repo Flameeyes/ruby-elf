@@ -120,7 +120,11 @@ module Elf
     def initialize(path)
       super(path, "rb")
 
-      raise NotAnELF unless readbytes(4) == MagicString
+      begin
+        raise NotAnELF unless readbytes(4) == MagicString
+      rescue EOFError
+        raise NotAnELF
+      end
 
       begin
         @elf_class = Class[read_u8]

@@ -36,6 +36,21 @@ class TC_Exceptions < Test::Unit::TestCase
     assert(exception_received, "Elf::File::NotAnElf exception not received")
   end
 
+  def test_shortfile
+    assert(File.exist?(TestDir + "invalid_shortfile"),
+           "Missing test file invalid_shortfile")
+
+    exception_received = false
+    begin
+      elf = Elf::File.new(TestDir + "invalid_shortfile")
+      elf.close
+    rescue Elf::File::NotAnELF
+      exception_received = true
+    end
+
+    assert(exception_received, "Elf::File::NotAnElf exception not received")
+  end
+
   def test_invalid_elfclass
     assert(File.exist?(TestDir + "invalid_invalidclass"),
            "Missing test file invalid_invalidclass")
