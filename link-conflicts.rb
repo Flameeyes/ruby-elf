@@ -24,7 +24,7 @@ opts = GetoptLong.new(
 )
 
 outfile = $stdout
-input_database = 'symbols-database.sqlite'
+input_database = 'symbols-database.sqlite3'
 
 opts.each do |opt, arg|
   case opt
