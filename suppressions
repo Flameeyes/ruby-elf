@@ -1,6 +1,9 @@
 # Ignore the modules directory.
 ^/lib(|32|64)/modules/.*
 
+# Ignore the debug directory
+^/usr/lib(|32|64)/debug/.*
+
 # libgcc_s is usually duplicated in a system, skip it
 ^/lib(|32|64)/libgcc_s\.so.*
 
