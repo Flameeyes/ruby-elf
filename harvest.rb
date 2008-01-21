@@ -32,7 +32,7 @@ opts = GetoptLong.new(
 )
 
 output_file = 'symbols-database.sqlite3'
-suppression_file = 'suppressions'
+suppression_files = File.exist?('suppressions') ? [ 'suppressions' ] : []
 scan_path = false
 scan_ldpath = true
 
@@ -41,7 +41,11 @@ opts.each do |opt, arg|
   when '--output'
     output_file = arg
   when '--suppressions'
-    suppression_file = arg
+    unless File.exist? arg
+      $stderr.puts "harvest.rb: no such file or directory - #{arg}"
+      exit -1
+    end
+    suppression_files << arg
   when '--scan-path'
     scan_path = true
   when '--no-scan-ldpath'
@@ -55,19 +59,21 @@ end
 $total_suppressions = []
 $partial_suppressions = []
 
-File.open(suppression_file) do |file|
-  file.each_line do |line|
-    path, symbols = line.
-      gsub(/#\s.*/, '').
-      strip!.
-      split(/\s+/, 2)
-
-    next unless path
-    
-    if not symbols or symbols == ""
-      $total_suppressions << Regexp.new(path)
-    else
-      $partial_suppressions << [Regexp.new(path), Regexp.new(symbols)]
+suppression_files.each do |suppression|
+  File.open(suppression) do |file|
+    file.each_line do |line|
+      path, symbols = line.
+        gsub(/#\s.*/, '').
+        strip!.
+        split(/\s+/, 2)
+      
+      next unless path
+      
+      if not symbols or symbols == ""
+        $total_suppressions << Regexp.new(path)
+      else
+        $partial_suppressions << [Regexp.new(path), Regexp.new(symbols)]
+      end
     end
   end
 end
