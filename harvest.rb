@@ -149,6 +149,7 @@ if scan_path and ENV['PATH']
 end
 
 db = SQLite3::Database.new output_file
+db.execute("BEGIN TRANSACTION")
 db.execute("CREATE TABLE objects ( id INTEGER PRIMARY KEY, path, abi, soname )")
 db.execute("CREATE TABLE symbols ( object INTEGER, symbol )")
 
@@ -214,3 +215,5 @@ so_files.each do |so|
     raise
   end
 end
+
+db.execute("COMMIT")
