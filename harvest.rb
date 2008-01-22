@@ -29,7 +29,9 @@ opts = GetoptLong.new(
   ["--no-scan-ldpath",     "-L", GetoptLong::NO_ARGUMENT ],
   ["--scan-path",          "-p", GetoptLong::NO_ARGUMENT ],
   ["--suppressions",       "-s", GetoptLong::REQUIRED_ARGUMENT ],
-  ["--multiplementations", "-m", GetoptLong::REQUIRED_ARGUMENT ]
+  ["--multiplementations", "-m", GetoptLong::REQUIRED_ARGUMENT ],
+  ["--scan-directory",     "-d", GetoptLong::REQUIRED_ARGUMENT ],
+  ["--rescursive-scan",    "-r", GetoptLong::NO_ARGUMENT ]
 )
 
 output_file = 'symbols-database.sqlite3'
@@ -37,6 +39,8 @@ suppression_files = File.exist?('suppressions') ? [ 'suppressions' ] : []
 multimplementation_files = File.exist?('multimplementations') ? [ 'multimplementations' ] : []
 scan_path = false
 scan_ldpath = true
+recursive_scan = false
+scan_directories = []
 
 opts.each do |opt, arg|
   case opt
@@ -58,6 +62,10 @@ opts.each do |opt, arg|
     scan_path = true
   when '--no-scan-ldpath'
     scan_ldpath = false
+  when '--scan-directory'
+    scan_directories << arg
+  when '--recursive-scan'
+    recursive_scan = true
   end
 end
 
@@ -177,6 +185,15 @@ if scan_path and ENV['PATH']
       $stderr.puts "harvest.rb: No such file or directory - #{path}"
       next
     end
+  end
+end
+
+scan_directories.each do |path|
+  begin
+    so_files.merge Pathname.new(path).so_files(recursive_scan)
+  rescue Errno::ENOENT
+    $stderr.puts "harvest.rb: No such file or directory - #{path}"
+    next
   end
 end
 
