@@ -39,6 +39,9 @@
 .*/kde4/.*\.so$				^kde_plugin_verification_data$
 .*/kde4/.*thumbnail\.so$		^new_creator$
 
+# Amarok
+.*/kde3/libamarok_.*\.so$		^_ZN6Amarok(6|12)Plugin(Config)?.*
+
 # PAM modules
 .*/lib(|32|64)/security/pam_.*\.so	^pam_sm_(authenticate|acct_mgmt|close_session|setcred|chauthtok|open_session)$
 
@@ -112,3 +115,6 @@
 
 # OpenSync
 .*/opensync-1.0/formats/.*\.so$		^get_(format|conversion)_info$
+
+# libao
+.*/ao/plugins-2/lib.*\.so$		^ao_plugin_(test|set_option|open|play|driver_info|device_(init|clear)|close)$
