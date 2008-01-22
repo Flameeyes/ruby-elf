@@ -218,9 +218,6 @@ so_files.each do |so|
         db.execute("SELECT id FROM objects WHERE path = '#{implementation}'") do |row|
           impid = row[0]
         end
-
-        $stderr.puts "Done, impid: #{impid}"
-
         break
       end
 
