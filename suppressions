@@ -9,9 +9,7 @@
 
 # Common symbols, usually present in every shared object
 # main is instead present in every executable.
-# stdin/out/err are defined in every executable.
-# optind/arg/err are defined by executables using getopt.h
-.*					^((__libc_csu)?_(init|fini|start)|main|std(in|out|err)|opt(ind|arg|err|opt)|__data_start|_IO_stdin_used)$
+.*					^((__libc_csu)?_(init|fini|start)|main|__data_start|_IO_stdin_used)$
 
 # xine plugins use xine_plugin_info structure as entrypoint
 .*/xine/plugins/.*/xineplug_.*\.so	^xine_plugin_info$
