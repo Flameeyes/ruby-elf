@@ -62,7 +62,7 @@
 .*/libglade/.*/lib.*\.so		^glade_module_register_widgets$
 
 # ALSA plugins
-.*/alsa-lib/smixer/smixer-.*\.so	^alsa_mixer_simple_(init|event)$
+.*/alsa-lib/smixer/smixer-.*\.so	^(alsa_mixer_simple_(init|event)|selectors)$
 
 # gphoto plugins
 .*/libgphoto2/.*/.*\.so			^camera_(abilities|id|init)$
@@ -107,9 +107,10 @@
 
 # JACK Audio Connection Kit
 .*/jack/jack_.*\.so$			^driver_(client_name|initialize|finish|get_descriptor)$
+.*/jack/.*\.so$				^jack_(initialize|finish)$
 
 # DSSI
-.*/dssi/.*\.so$				^dssi_descriptor$
+.*/dssi/.*\.so$				^dssi_(descriptor|configure_message)$
 
 # OpenSync
 .*/opensync-1.0/formats/.*\.so$		^get_(format|conversion)_info$
