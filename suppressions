@@ -58,6 +58,7 @@
 .*/gtk-2\.0/.*/printbackends/.*\.so	^pb_module_(init|create|exit)$
 .*/pango/.*/modules/pango-.*\.so	^script_engine_(list|create|init|exit)$
 .*/gnome-vfs-2\.0/modules/lib.*\.so	^vfs_module_(init|shutdown)$
+.*/libglade/.*/lib.*\.so		^glade_module_register_widgets$
 
 # ALSA plugins
 .*/alsa-lib/smixer/smixer-.*\.so	^alsa_mixer_simple_(init|event)$
@@ -110,4 +111,4 @@
 .*/dssi/.*\.so$				^dssi_descriptor$
 
 # OpenSync
-.*/opensync-1.0/formats/.*\.so$		^get_format_info$
+.*/opensync-1.0/formats/.*\.so$		^get_(format|conversion)_info$
