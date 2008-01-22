@@ -32,10 +32,12 @@
 .*/kde3/plugins/.*\.so			^(qt_ucm_query_verification_data|ucm_instantiate)$
 .*/kde3/kwin3_.*\.so			^(create_factory|allocate_config)$
 .*/kde3/libamarok_.*\.so		^create_plugin$
+.*/kde[34]/kstyle_.*\.so		^allocate_kstyle_config$
 					# KApplication::KApp
 .*					^_ZN12KApplication4KAppE$
 # KDE 4
 .*/kde4/.*\.so$				^kde_plugin_verification_data$
+.*/kde4/.*thumbnail\.so$		^new_creator$
 
 # PAM modules
 .*/lib(|32|64)/security/pam_.*\.so	^pam_sm_(authenticate|acct_mgmt|close_session|setcred|chauthtok|open_session)$
@@ -53,6 +55,7 @@
 .*/gtk-2\.0/.*/immodules/im-.*\.so	^im_module_(create|init|exit|list)$
 .*/gtk-2\.0/.*/engines/.*\.so		^(g_module_check_init|theme_(create_rc_style|init|exit))$
 .*/gtk-2\.0/.*/loaders/libpixbuf.*\.so	^(load|fill_(info|vtable)|get_info)$
+.*/gtk-2\.0/.*/printbackends/.*\.so	^pb_module_(init|create|exit)$
 .*/pango/.*/modules/pango-.*\.so	^script_engine_(list|create|init|exit)$
 .*/gnome-vfs-2\.0/modules/lib.*\.so	^vfs_module_(init|shutdown)$
 
@@ -96,3 +99,15 @@
 
 # OpenOffice.org
 .*/openoffice/program/.*\.so$		^(component_(getFactory|getImplementationEnvironment|writeInfo|canUnload)|GetVersionInfo)
+
+# FFmpeg's vhook
+.*/vhook/.*\.so$			^(Configure|Process|Release)$
+
+# JACK Audio Connection Kit
+.*/jack/jack_.*\.so$			^driver_(client_name|initialize|finish|get_descriptor)$
+
+# DSSI
+.*/dssi/.*\.so$				^dssi_descriptor$
+
+# OpenSync
+.*/opensync-1.0/formats/.*\.so$		^get_format_info$
