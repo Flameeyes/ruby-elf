@@ -238,7 +238,8 @@ so_files.each do |so|
             sym.section == nil or
             sym.value == 0 or
             sym.section.is_a? Integer or
-            sym.section.name == '.init'
+            sym.section.name == '.init' or
+            sym.section.name == '.bss'
 
           skip = false
           
