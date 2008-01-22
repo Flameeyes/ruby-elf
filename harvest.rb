@@ -183,7 +183,7 @@ end
 db = SQLite3::Database.new output_file
 db.execute("BEGIN TRANSACTION")
 db.execute("CREATE TABLE objects ( id INTEGER PRIMARY KEY, path, abi, soname )")
-db.execute("CREATE TABLE symbols ( object INTEGER, symbol )")
+db.execute("CREATE TABLE symbols ( object INTEGER, symbol, UNIQUE(object, symbol) )")
 
 val = 0
 
@@ -248,8 +248,17 @@ so_files.each do |so|
           end
 
           next if skip
-
-          db.execute("INSERT INTO symbols VALUES('#{impid}', '#{sym.name}@@#{sym.version}')")
+          
+          begin
+            db.execute("INSERT INTO symbols VALUES('#{impid}', '#{sym.name}@@#{sym.version}')")
+          # Duplicated unique constraint causes this exception to be raised.
+          # unfortunately we're going to ignore some other errors this way
+          # but until I decide to write this with a different DBMS I'm afraid
+          # it's the only way.
+          rescue SQLite3::SQLException => e
+            raise unless e.message == "SQL logic error or missing database"
+            next
+          end
         rescue Exception
           $stderr.puts "Mangling symbol #{sym.name}"
           raise
