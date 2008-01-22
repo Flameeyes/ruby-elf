@@ -5,3 +5,12 @@
 
 perl			/usr/bin/perl5\..*
 perl			/usr/lib(|32|64)/libperl\.so\..*
+
+libgpgme		.*/libgpgme(-pth(read)?)?\.so.*
+
+java-libawt		jre/lib/(amd64|i386)/libawt\.so$
+
+ncurses-libcurses	^/lib(|32|64)/libn?cursesw?\.so
+ncurses-libform		^/usr/lib(|32|64)/libformw?\.so
+ncurses-libmenu		^/usr/lib(|32|64)/libmenuw?\.so
+ncurses-libpanel	^/usr/lib(|32|64)/libpanelw?\.so
