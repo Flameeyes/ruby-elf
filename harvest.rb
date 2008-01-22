@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby
-# Copyright © 2007, Diego "Flameeyes" Pettenò <flameeyes@gmail.com>
+# Copyright © 2007-2008, Diego "Flameeyes" Pettenò <flameeyes@gmail.com>
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -25,14 +25,16 @@ require 'sqlite3'
 require 'elf'
 
 opts = GetoptLong.new(
-  ["--output",         "-o", GetoptLong::REQUIRED_ARGUMENT ],
-  ["--no-scan-ldpath", "-L", GetoptLong::NO_ARGUMENT ],
-  ["--scan-path",      "-p", GetoptLong::NO_ARGUMENT ],
-  ["--suppressions",   "-s", GetoptLong::REQUIRED_ARGUMENT ]
+  ["--output",             "-o", GetoptLong::REQUIRED_ARGUMENT ],
+  ["--no-scan-ldpath",     "-L", GetoptLong::NO_ARGUMENT ],
+  ["--scan-path",          "-p", GetoptLong::NO_ARGUMENT ],
+  ["--suppressions",       "-s", GetoptLong::REQUIRED_ARGUMENT ],
+  ["--multiplementations", "-m", GetoptLong::REQUIRED_ARGUMENT ]
 )
 
 output_file = 'symbols-database.sqlite3'
 suppression_files = File.exist?('suppressions') ? [ 'suppressions' ] : []
+multimplementation_files = File.exist?('multimplementations') ? [ 'multimplementations' ] : []
 scan_path = false
 scan_ldpath = true
 
@@ -46,6 +48,12 @@ opts.each do |opt, arg|
       exit -1
     end
     suppression_files << arg
+  when "--multiplementations"
+    unless File.exist? arg
+      $stderr.puts "harvest.rb: no such file or directory - #{arg}"
+      exit -1
+    end
+    multimplementation_files << arg
   when '--scan-path'
     scan_path = true
   when '--no-scan-ldpath'
@@ -74,6 +82,24 @@ suppression_files.each do |suppression|
       else
         $partial_suppressions << [Regexp.new(path), Regexp.new(symbols)]
       end
+    end
+  end
+end
+
+multimplementations = []
+
+multimplementation_files.each do |multimplementation|
+  File.open(multimplementation) do |file|
+    file.each_line do |line|
+      implementation, paths = line.
+        gsub(/#\s.*/, '').
+        strip!.
+        split(/\s+/, 2)
+      
+      next unless implementation
+      next unless paths
+      
+      multimplementations << [ implementation, Regexp.new(paths) ]
     end
   end
 end
@@ -183,10 +209,28 @@ so_files.each do |so|
         end
       end
 
-      val += 1
+      impid = nil
 
-      db.execute("INSERT INTO objects(id, path, abi, soname) VALUES(#{val}, '#{so}', '#{elf.elf_class} #{elf.abi} #{elf.machine}', '#{soname}')")
+      multimplementations.each do |implementation, paths|
+        next unless so =~ paths
 
+        so = implementation
+        db.execute("SELECT id FROM objects WHERE path = '#{implementation}'") do |row|
+          impid = row[0]
+        end
+
+        $stderr.puts "Done, impid: #{impid}"
+
+        break
+      end
+
+      unless impid
+        val += 1
+        impid = val
+        
+        db.execute("INSERT INTO objects(id, path, abi, soname) VALUES(#{impid}, '#{so}', '#{elf.elf_class} #{elf.abi} #{elf.machine}', '#{soname}')")
+      end
+        
       elf.sections['.dynsym'].symbols.each do |sym|
         begin
           next if sym.idx == 0 or
@@ -207,7 +251,7 @@ so_files.each do |so|
 
           next if skip
 
-          db.execute("INSERT INTO symbols VALUES('#{val}', '#{sym.name}@@#{sym.version}')")
+          db.execute("INSERT INTO symbols VALUES('#{impid}', '#{sym.name}@@#{sym.version}')")
         rescue Exception
           $stderr.puts "Mangling symbol #{sym.name}"
           raise

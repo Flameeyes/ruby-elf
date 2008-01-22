@@ -1,0 +1,7 @@
+# Multi-implementation: compressor file for multiple implementations
+# This file is used to describe which libraries compose multiple implementations
+# ignoring eventual problems with multiple libraries implementing the same
+# interface
+
+perl			/usr/bin/perl5\..*
+perl			/usr/lib(|32|64)/libperl\.so\..*
