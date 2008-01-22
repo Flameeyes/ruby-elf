@@ -15,4 +15,13 @@ ncurses-libform		^/usr/lib(|32|64)/libformw?\.so
 ncurses-libmenu		^/usr/lib(|32|64)/libmenuw?\.so
 ncurses-libpanel	^/usr/lib(|32|64)/libpanelw?\.so
 
-xorg-vservers		^/usr/bin/X(next|vfb)$
+xorg-vservers		^/usr/bin/X(nest|vfb)$
+
+php5			php5/bin/php(-cgi)?$
+
+mysqlclient		^/usr/lib(|32|64)/mysql/libmysqlclient(_r)?\.so
+libldap			^/usr/lib(|32|64)/libldap(_r)?\.so
+
+libXaw			^/usr/lib(|32|64)/libXaw[67]\.so
+
+osswrappers		^/usr/lib(|32|64)/lib(aoss|(esd|pa|)dsp)\.so$
