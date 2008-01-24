@@ -74,12 +74,12 @@ ARGV.each do |file|
         next if symbol.name == ""
         
         case symbol.section.name
-        when /\.data(\.local)?$/
-          data_vars << symbol
-        when /\.bss$/
-          bss_vars << symbol
-        when /\.data\.rel(\.ro)?(\.local)?$/
+        when /\.data\.rel(\.ro)?(\.local)?(\..*)?/
           rel_vars << symbol
+        when /\.data(\.local)?(\..*)?/
+          data_vars << symbol
+        when /\.bss(\..*)?/
+          bss_vars << symbol
         end
       end
       
