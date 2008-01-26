@@ -24,7 +24,9 @@ opts = GetoptLong.new(
   # Only show statistics for the various files
   ["--statistics", "-s", GetoptLong::NO_ARGUMENT],
   # Show the total size of COW pages
-  ["--total", "-t", GetoptLong::NO_ARGUMENT]
+  ["--total", "-t", GetoptLong::NO_ARGUMENT],
+  # Read the file to check from a file rather than commandline
+  ["--filelist", "-f", GetoptLong::REQUIRED_ARGUMENT]
 )
 
 unless ARGV.length > 0
@@ -33,6 +35,7 @@ end
 
 stats_only = false
 show_total = false
+file_list = nil
 
 opts.each do |opt, arg|
   case opt
@@ -40,15 +43,21 @@ opts.each do |opt, arg|
     stats_only = true
   when '--total'
     show_total = true
+  when '--filelist'
+    if arg == '-'
+      file_list = $stdin
+    else
+      file_list = File.new(arg)
+    end
   end
 end
 
-files_info = {}
+$files_info = {}
 data_total = 0
 bss_total = 0
 rel_total = 0
 
-ARGV.each do |file|
+def cowstats_scan(file)
   begin
     Elf::File.open(file) do |elf|
       if elf.type != Elf::File::Type::Rel
@@ -60,7 +69,7 @@ ARGV.each do |file|
         next
       end
 
-      files_info[file] = {}
+      $files_info[file] = {}
       
       data_vars = []
       bss_vars = []
@@ -83,9 +92,9 @@ ARGV.each do |file|
         end
       end
       
-      files_info[file]["data_vars"] = data_vars
-      files_info[file]["bss_vars"] = bss_vars
-      files_info[file]["rel_vars"] = rel_vars
+      $files_info[file]["data_vars"] = data_vars
+      $files_info[file]["bss_vars"] = bss_vars
+      $files_info[file]["rel_vars"] = rel_vars
     end
   rescue Errno::ENOENT
     $stderr.puts "cowstats.rb: #{file}: no such file"
@@ -94,8 +103,18 @@ ARGV.each do |file|
   end
 end
 
+if file_list
+  file_list.each_line do |file|
+    cowstats_scan(file.chomp)
+  end
+else
+  ARGV.each do |file|
+    cowstats_scan(file)
+  end
+end
+
 if not stats_only
-  files_info.each_pair do |file, info|
+  $files_info.each_pair do |file, info|
     next unless (info["data_vars"] + info["bss_vars"] + info["rel_vars"] ).length > 0
     puts "Processing file #{file}"
     
@@ -143,7 +162,7 @@ else
 
   output_info = []
 
-  files_info.each_pair do |file, info|
+  $files_info.each_pair do |file, info|
     next unless (info["data_vars"] + info["bss_vars"] + info["rel_vars"] ).length > 0
     maxlen = file.length if maxlen < file.length
 
