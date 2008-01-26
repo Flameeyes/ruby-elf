@@ -29,10 +29,6 @@ opts = GetoptLong.new(
   ["--filelist", "-f", GetoptLong::REQUIRED_ARGUMENT]
 )
 
-unless ARGV.length > 0
-  $stderr.puts "Please provide at least a file to check."
-end
-
 stats_only = false
 show_total = false
 file_list = nil
