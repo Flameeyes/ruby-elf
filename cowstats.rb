@@ -103,6 +103,12 @@ def cowstats_scan(file)
   end
 end
 
+# If there are no arguments passed through the command line
+# consider it like we're going to act on stdin.
+if not file_list and ARGV.size == 0
+  file_list = $stdin
+end
+
 if file_list
   file_list.each_line do |file|
     cowstats_scan(file.chomp)
