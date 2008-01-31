@@ -192,9 +192,9 @@ else
   end
 end
 
-data_total_real = ((data_total/4096) + (data_total % 4096 ? 1 : 0)) * 4096
-bss_total_real = ((bss_total/4096) + (bss_total % 4096 ? 1 : 0)) * 4096
-rel_total_real = ((rel_total/4096) + (rel_total % 4096 ? 1 : 0)) * 4096
+data_total_real = data_total > 0 ? ((data_total/4096) + (data_total % 4096 ? 1 : 0)) * 4096 : 0
+bss_total_real = bss_total > 0 ? ((bss_total/4096) + (bss_total % 4096 ? 1 : 0)) * 4096 : 0 
+rel_total_real = rel_total > 0 ? ((rel_total/4096) + (rel_total % 4096 ? 1 : 0)) * 4096 : 0
 
 if show_total
   puts "Totals:"
