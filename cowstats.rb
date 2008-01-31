@@ -192,10 +192,14 @@ else
   end
 end
 
+data_total_real = ((data_total/4096) + (data_total % 4096 ? 1 : 0)) * 4096
+bss_total_real = ((bss_total/4096) + (bss_total % 4096 ? 1 : 0)) * 4096
+rel_total_real = ((rel_total/4096) + (rel_total % 4096 ? 1 : 0)) * 4096
+
 if show_total
   puts "Totals:"
-  puts "    #{data_total} bytes of writable variables."
-  puts "    #{bss_total} bytes of non-initialised variables."
-  puts "    #{rel_total} bytes of variables needing runtime relocation."
-  puts "  Total #{data_total+bss_total+rel_total} bytes of variables in copy-on-write sections"
+  puts "    #{data_total} (#{data_total_real} \"real\") bytes of writable variables."
+  puts "    #{bss_total} (#{bss_total_real} \"real\") bytes of non-initialised variables."
+  puts "    #{rel_total} (#{rel_total_real} \"real\") bytes of variables needing runtime relocation."
+  puts "  Total #{data_total+bss_total+rel_total} (#{data_total_real+bss_total_real+rel_total_real} \"real\") bytes of variables in copy-on-write sections"
 end
