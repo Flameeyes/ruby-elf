@@ -1,0 +1,6 @@
+# Suppressions for known-broken software, avoid reporting it until fixed.
+
+.*/libkcal\.so.*		^ical.*$
+
+/usr/bin/gs
+/usr/bin/gdbtui
