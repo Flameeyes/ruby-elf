@@ -213,13 +213,10 @@ so_files.each do |so|
 
       abi = "#{elf.elf_class} #{elf.abi} #{elf.machine}"
       soname = ""
-      needed_objects = []
 
       if elf.sections['.dynamic']
         elf.sections['.dynamic'].entries.each do |entry|
           case entry[:type]
-          when Elf::Dynamic::Type::Needed
-            needed_objects << elf.sections['.dynstr'][entry[:attribute]]
           when Elf::Dynamic::Type::SoName
             soname = elf.sections['.dynstr'][entry[:attribute]]
           end
