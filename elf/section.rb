@@ -139,6 +139,7 @@ module Elf
 #             0x6fffffff => [ :HiOs, 'OS-specific range end' ],
              0x6fffffff => [ :GNUVerSym, 'Version symbol table' ],
              0x70000000 => [ :LoProc, 'Processor-specific range start' ],
+             0x70000003 => [ :ARMAttributes, 'ARM Attributes' ],
              0x7fffffff => [ :HiProc, 'Processor-specific range end' ],
              0x80000000 => [ :LoUser, 'Application-specific range start' ],
              0x8fffffff => [ :HiUser, 'Application-specific range end' ]
