@@ -16,15 +16,21 @@
 # Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 require 'getoptlong'
-require 'sqlite3'
+require 'postgres'
 
 opts = GetoptLong.new(
   ["--input", "-i", GetoptLong::REQUIRED_ARGUMENT],
-  ["--output", "-o", GetoptLong::REQUIRED_ARGUMENT]
+  ["--output", "-o", GetoptLong::REQUIRED_ARGUMENT],
+  ["--postgres-username",  "-U", GetoptLong::REQUIRED_ARGUMENT ],
+  ["--postgres-password",  "-P", GetoptLong::REQUIRED_ARGUMENT ],
+  ["--postgres-database",  "-D", GetoptLong::REQUIRED_ARGUMENT ]
 )
 
 outfile = $stdout
-input_database = 'symbols-database.sqlite3'
+
+pg_username = nil
+pg_password = nil
+pg_database = nil
 
 opts.each do |opt, arg|
   case opt
@@ -32,14 +38,20 @@ opts.each do |opt, arg|
     outfile = File.new(arg, "w")
   when '--input'
     input_database = arg
+  when '--postgres-username' then pg_username = arg
+  when '--postgres-password' then pg_password = arg
+  when '--postgres-database' then pg_database = arg
   end
 end
 
-db = SQLite3::Database.new input_database
+db = PGconn.open('user' => pg_username, 'password' => pg_password, 'dbname' => pg_database)
 
-db.execute "SELECT * FROM ( SELECT symbol, abi, COUNT(*) AS occurrences FROM symbols INNER JOIN objects ON symbols.object = objects.id GROUP BY symbol, abi ) WHERE occurrences > 1 ORDER BY occurrences DESC;" do |row|
+db.exec("PREPARE getinstances (text, text) AS
+         SELECT path FROM symbols INNER JOIN objects ON symbols.object = objects.id WHERE symbol = $1 AND abi = $2")
+
+db.exec("SELECT * FROM duplicate_symbols;").each do |row|
   outfile.puts "Symbol #{row[0]} (#{row[1]}) present #{row[2]} times"
-  db.execute( "SELECT path FROM symbols INNER JOIN objects ON symbols.object = objects.id WHERE symbol = '#{row[0]}' AND abi = '#{row[1]}'" ) do |path|
+  db.exec( "EXECUTE getinstances ('#{row[0]}', '#{row[1]}')" ).each do |path|
     outfile.puts "  #{path[0]}"
   end
 end

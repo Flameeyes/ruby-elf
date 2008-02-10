@@ -21,20 +21,21 @@
 require 'getoptlong'
 require 'set'
 require 'pathname'
-require 'sqlite3'
+require 'postgres'
 require 'elf'
 
 opts = GetoptLong.new(
-  ["--output",             "-o", GetoptLong::REQUIRED_ARGUMENT ],
   ["--no-scan-ldpath",     "-L", GetoptLong::NO_ARGUMENT ],
   ["--scan-path",          "-p", GetoptLong::NO_ARGUMENT ],
   ["--suppressions",       "-s", GetoptLong::REQUIRED_ARGUMENT ],
   ["--multiplementations", "-m", GetoptLong::REQUIRED_ARGUMENT ],
   ["--scan-directory",     "-d", GetoptLong::REQUIRED_ARGUMENT ],
-  ["--rescursive-scan",    "-r", GetoptLong::NO_ARGUMENT ]
+  ["--rescursive-scan",    "-r", GetoptLong::NO_ARGUMENT ],
+  ["--postgres-username",  "-U", GetoptLong::REQUIRED_ARGUMENT ],
+  ["--postgres-password",  "-P", GetoptLong::REQUIRED_ARGUMENT ],
+  ["--postgres-database",  "-D", GetoptLong::REQUIRED_ARGUMENT ]
 )
 
-output_file = 'symbols-database.sqlite3'
 suppression_files = File.exist?('suppressions') ? [ 'suppressions' ] : []
 multimplementation_files = File.exist?('multimplementations') ? [ 'multimplementations' ] : []
 scan_path = false
@@ -42,10 +43,12 @@ scan_ldpath = true
 recursive_scan = false
 scan_directories = []
 
+pg_username = nil
+pg_password = nil
+pg_database = nil
+
 opts.each do |opt, arg|
   case opt
-  when '--output'
-    output_file = arg
   when '--suppressions'
     unless File.exist? arg
       $stderr.puts "harvest.rb: no such file or directory - #{arg}"
@@ -66,6 +69,9 @@ opts.each do |opt, arg|
     scan_directories << arg
   when '--recursive-scan'
     recursive_scan = true
+  when '--postgres-username' then pg_username = arg
+  when '--postgres-password' then pg_password = arg
+  when '--postgres-database' then pg_database = arg
   end
 end
 
@@ -146,6 +152,9 @@ class Pathname
             res.add entry.to_s
           rescue Elf::File::NotAnELF
             next
+          rescue Exception => e
+            $stderr.puts "Scanning #{entry}"
+            raise e
           end
         end
       rescue Errno::EACCES, Errno::ENOENT
@@ -197,11 +206,31 @@ scan_directories.each do |path|
   end
 end
 
-db = SQLite3::Database.new output_file
-db.execute("BEGIN TRANSACTION")
-db.execute("CREATE TABLE objects ( id INTEGER PRIMARY KEY, path, abi, soname )")
-db.execute("CREATE TABLE symbols ( object INTEGER, symbol, UNIQUE(object, symbol) )")
+db = PGconn.open('user' => pg_username, 'password' => pg_password, 'dbname' => pg_database)
 
+db.exec("DROP VIEW duplicate_symbols") rescue PGError
+db.exec("DROP VIEW symbol_count") rescue PGError
+db.exec("DROP TABLE symbols") rescue PGError
+db.exec("DROP TABLE objects") rescue PGError
+
+db.exec("CREATE TABLE objects ( id INTEGER PRIMARY KEY, path VARCHAR(4096), abi VARCHAR(255), soname VARCHAR(255), UNIQUE(path) )")
+db.exec("CREATE TABLE symbols ( object INTEGER REFERENCES objects(id), symbol TEXT, PRIMARY KEY(object, symbol) )")
+
+db.exec("CREATE VIEW symbol_count AS
+         SELECT symbol, abi, COUNT(*) AS occurrences FROM symbols INNER JOIN objects ON symbols.object = objects.id GROUP BY symbol, abi")
+db.exec("CREATE VIEW duplicate_symbols AS
+         SELECT * FROM symbol_count WHERE occurrences > 1 ORDER BY occurrences DESC")
+
+db.exec("PREPARE newobject (int, text, text, text) AS
+         INSERT INTO objects(id, path, abi, soname) VALUES($1, $2, $3, $4)")
+db.exec("PREPARE newsymbol (int, text) AS
+         INSERT INTO symbols VALUES($1, $2)")
+db.exec("PREPARE checkimplementation(text) AS
+         SELECT id FROM objects WHERE path = $1")
+db.exec("PREPARE checkdupsymbol (int, text) AS
+         SELECT 1 FROM symbols WHERE object = $1 AND symbol = $2")
+
+db.exec("BEGIN TRANSACTION")
 val = 0
 
 so_files.each do |so|
@@ -229,7 +258,7 @@ so_files.each do |so|
         next unless so =~ paths
 
         so = implementation
-        db.execute("SELECT id FROM objects WHERE path = '#{implementation}'") do |row|
+        db.exec("EXECUTE checkimplementation('#{implementation}')").each do |row|
           impid = row[0]
         end
         break
@@ -239,7 +268,7 @@ so_files.each do |so|
         val += 1
         impid = val
         
-        db.execute("INSERT INTO objects(id, path, abi, soname) VALUES(#{impid}, '#{so}', '#{elf.elf_class} #{elf.abi} #{elf.machine}', '#{soname}')")
+        db.exec("EXECUTE newobject(#{impid}, '#{so}', '#{elf.elf_class} #{elf.abi} #{elf.machine.to_s.gsub("'", "\\'" )}', '#{soname}')")
       end
         
       elf.sections['.dynsym'].symbols.each do |sym|
@@ -261,18 +290,10 @@ so_files.each do |so|
             end
           end
 
-          next if skip
+          next if skip or (db.exec("EXECUTE checkdupsymbol('#{impid}', '#{sym.name}@@#{sym.version}')").num_tuples > 0)
+
+          db.exec("EXECUTE newsymbol('#{impid}', '#{sym.name}@@#{sym.version}')")
           
-          begin
-            db.execute("INSERT INTO symbols VALUES('#{impid}', '#{sym.name}@@#{sym.version}')")
-          # Duplicated unique constraint causes this exception to be raised.
-          # unfortunately we're going to ignore some other errors this way
-          # but until I decide to write this with a different DBMS I'm afraid
-          # it's the only way.
-          rescue SQLite3::SQLException => e
-            raise unless e.message == "SQL logic error or missing database"
-            next
-          end
         rescue Exception
           $stderr.puts "Mangling symbol #{sym.name}"
           raise
@@ -287,4 +308,4 @@ so_files.each do |so|
   end
 end
 
-db.execute("COMMIT")
+db.exec("COMMIT")
