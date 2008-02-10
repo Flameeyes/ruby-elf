@@ -29,7 +29,11 @@ module ElfTests
     # Make sure to check all the operating systems too.
     # Also open the ELF files for testing
     OS_Arches.each do |os_arch|
-      filename = "#{os_arch}_#{self.class::TestBaseFilename}"
+      basefilename = self.class::TestBaseFilename
+      next if basefilename == "dynamic_executable" and os_arch =~ /bare_.*/
+      
+      basefilename = "static_executable.o" if basefilename == "dynamic_executable.o" and os_arch =~ /bare_.*/
+      filename = "#{os_arch}_#{basefilename}"
       assert(File.exists?( TestDir + filename ),
              "Missing test file #{filename}")
       @elfs["#{os_arch}"] = Elf::File.open(TestDir + filename)
