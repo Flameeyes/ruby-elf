@@ -4,3 +4,5 @@
 
 /usr/bin/gs
 /usr/bin/gdbtui
+
+/usr/lib32/dri/.*
