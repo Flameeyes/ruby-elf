@@ -16,10 +16,22 @@
 
 require 'test/unit'
 require 'pathname'
+require 'elf'
 
-require Pathname.new(__FILE__).dirname + 'tc_bytestream'
-require Pathname.new(__FILE__).dirname + 'tc_dynamic_executable'
-require Pathname.new(__FILE__).dirname + 'tc_static_executable'
-require Pathname.new(__FILE__).dirname + 'tc_relocatable'
-require Pathname.new(__FILE__).dirname + 'tc_exceptions'
-require Pathname.new(__FILE__).dirname + 'tc_arm'
+require Pathname.new(__FILE__).dirname + 'tests_elf'
+
+# Test proper handling of Static Executable ELF files.
+class TC_Static_Executable < Test::Unit::TestCase
+  TestBaseFilename = "static_executable"
+  TestElfType = Elf::File::Type::Exec
+  include ElfTests
+
+  # Test for _not_ of .dynamic section on the file.
+  # This is a prerequisite for static executable files.
+  def test_staic
+    @elfs.each_pair do |name, elf|
+      assert(!elf.sections['.dynamic'],
+             ".dynamic section present on ELF file #{elf.path}")
+    end
+  end
+end
