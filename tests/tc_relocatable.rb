@@ -21,7 +21,7 @@ require 'elf'
 require Pathname.new(__FILE__).dirname + 'tests_elf'
 
 class TC_Relocatable < Test::Unit::TestCase
-  TestBaseFilename = "executable.o"
+  TestBaseFilename = "dynamic_executable.o"
   TestElfType = Elf::File::Type::Rel
   include ElfTests
 
