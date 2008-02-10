@@ -26,6 +26,15 @@ class TC_Executable < Test::Unit::TestCase
   TestElfType = Elf::File::Type::Exec
   include ElfTests
 
+  # Test for presence of .dynamic section on the file.
+  # This is a prerequisite for dynamic executable files.
+  def test_dynamic
+    @elfs.each_pair do |name, elf|
+      assert(elf.sections['.dynamic'],
+             "Missing .dynamic section on ELF file #{elf.path}")
+    end
+  end
+
   # Test for the presence of .dynsym section on the file.
   def test_dynsym_presence
     @elfs.each_pair do |name, elf|
