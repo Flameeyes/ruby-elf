@@ -112,8 +112,20 @@
 # DSSI
 .*/dssi/.*\.so$				^dssi_(descriptor|configure_message)$
 
+# LADSPA
+.*/(ladspa|dssi)/.*\.so$		^ladspa_descriptor$
+
 # OpenSync
-.*/opensync-1.0/formats/.*\.so$		^get_(format|conversion)_info$
+.*/opensync-1.0/formats/.*\.so$		^(get(_(format|conversion))?_info|vformat_.*)$
 
 # libao
 .*/ao/plugins-2/lib.*\.so$		^ao_plugin_(test|set_option|open|play|driver_info|device_(init|clear)|close)$
+
+# OpenSSL
+.*/lib(|32|64)/engines/.*\.so$		^(bind_engine|v_check)$
+
+# Wine
+.*/lib(|32)/wine/.*\.exe\.so$		^wmain$
+
+# ZSH
+.*/lib(|32|64)/zsh/.*/zsh/.*\.so$	^(enables|features)_$
