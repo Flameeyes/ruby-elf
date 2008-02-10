@@ -29,8 +29,8 @@ class TC_Exceptions < Test::Unit::TestCase
     elf = Elf::File.new(TestDir + "arm-crtn.o")
     assert(elf.sections[".ARM.attributes"],
            ".ARM.attributes section not found.")
-    assert(elf.sections[".ARM.attributes"].type == Elf::Section::Type::ARMAttributes,
-           "wrong .ARM.attributes type (expected Elf::Section::Type::ARMAttributes, got #{elf.sections[".ARM.attributes"].type})")
+    assert(elf.sections[".ARM.attributes"].type == Elf::Section::Type::ProcARM::ARMAttributes,
+           "wrong .ARM.attributes type (expected Elf::Section::Type::ProcARM::ARMAttributes, got #{elf.sections[".ARM.attributes"].type})")
   end
 
 end
