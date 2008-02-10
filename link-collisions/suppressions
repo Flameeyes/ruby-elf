@@ -126,6 +126,7 @@
 
 # Wine
 .*/lib(|32)/wine/.*\.exe\.so$		^wmain$
+.*/lib(|32)/wine/.*\.ds\.so$		^DS_Entry$
 
 # ZSH
 .*/lib(|32|64)/zsh/.*/zsh/.*\.so$	^(enables|features)_$
