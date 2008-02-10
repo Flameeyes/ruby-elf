@@ -33,6 +33,8 @@ opts = GetoptLong.new(
   ["--rescursive-scan",    "-r", GetoptLong::NO_ARGUMENT ],
   ["--postgres-username",  "-U", GetoptLong::REQUIRED_ARGUMENT ],
   ["--postgres-password",  "-P", GetoptLong::REQUIRED_ARGUMENT ],
+  ["--postgres-hostname",  "-H", GetoptLong::REQUIRED_ARGUMENT ],
+  ["--postgres-port",      "",   GetoptLong::REQUIRED_ARGUMENT ],
   ["--postgres-database",  "-D", GetoptLong::REQUIRED_ARGUMENT ]
 )
 
@@ -43,9 +45,7 @@ scan_ldpath = true
 recursive_scan = false
 scan_directories = []
 
-pg_username = nil
-pg_password = nil
-pg_database = nil
+pg_params = {}
 
 opts.each do |opt, arg|
   case opt
@@ -69,9 +69,11 @@ opts.each do |opt, arg|
     scan_directories << arg
   when '--recursive-scan'
     recursive_scan = true
-  when '--postgres-username' then pg_username = arg
-  when '--postgres-password' then pg_password = arg
-  when '--postgres-database' then pg_database = arg
+  when '--postgres-username' then pg_params['user'] = arg
+  when '--postgres-password' then pg_params['password'] = arg
+  when '--postgres-hostname' then pg_params['host'] = arg
+  when '--postgres-port'     then pg_params['port'] = arg
+  when '--postgres-database' then pg_params['dbname'] = arg
   end
 end
 
@@ -206,7 +208,7 @@ scan_directories.each do |path|
   end
 end
 
-db = PGconn.open('user' => pg_username, 'password' => pg_password, 'dbname' => pg_database)
+db = PGconn.open(pg_params)
 
 db.exec("DROP VIEW duplicate_symbols") rescue PGError
 db.exec("DROP VIEW symbol_count") rescue PGError
