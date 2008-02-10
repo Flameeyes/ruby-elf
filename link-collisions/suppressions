@@ -85,7 +85,7 @@
 .*/xawtv/.*\.so				^ng_plugin_init$
 
 # Imlib
-.*/imlib2/loaders/.*\.so		^(formats|save|load)$
+.*/imlib2/loaders/.*\.so		^(init|formats|save|load)$
 
 # Claws Mail
 .*/claws-mail/plugins/.*\.so		^plugin_(desc|done|init|licence|name|provides|type|version)$
