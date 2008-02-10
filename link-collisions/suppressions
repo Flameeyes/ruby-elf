@@ -116,7 +116,7 @@
 .*/(ladspa|dssi)/.*\.so$		^ladspa_descriptor$
 
 # OpenSync
-.*/opensync-1.0/formats/.*\.so$		^(get(_(format|conversion))?_info|vformat_.*)$
+.*/opensync(-1.0)?/(formats|plugins)/.*\.so$	^(get(_(format|conversion))?_info|vformat_.*|(quoted|base64)_(encode|decode)_simple)$
 
 # libao
 .*/ao/plugins-2/lib.*\.so$		^ao_plugin_(test|set_option|open|play|driver_info|device_(init|clear)|close)$
