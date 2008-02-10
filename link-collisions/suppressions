@@ -133,3 +133,6 @@
 
 # OSS wrappers and other LD_PRELOAD libraries
 lib((pa|esd|arts)dsp|aoss)		^m(un)?map$
+
+# Strigi
+strigi/strigi[lt]a_.*\.so		^(deleteS|s)trigiAnalyzerFactory$
