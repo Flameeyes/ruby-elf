@@ -27,6 +27,8 @@ class TC_Exceptions < Test::Unit::TestCase
 
   def test_section_presence
     elf = Elf::File.new(TestDir + "arm-crtn.o")
+    assert(elf.machine == Elf::Machine::ARM,
+           "wrong ELF machine type (expected Elf::Machine::ARM, got #{elf.machine}")
     assert(elf.sections[".ARM.attributes"],
            ".ARM.attributes section not found.")
     assert(elf.sections[".ARM.attributes"].type == Elf::Section::Type::ProcARM::ARMAttributes,
