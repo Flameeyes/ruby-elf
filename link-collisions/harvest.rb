@@ -34,7 +34,7 @@ opts = GetoptLong.new(
   ["--postgres-username",  "-U", GetoptLong::REQUIRED_ARGUMENT ],
   ["--postgres-password",  "-P", GetoptLong::REQUIRED_ARGUMENT ],
   ["--postgres-hostname",  "-H", GetoptLong::REQUIRED_ARGUMENT ],
-  ["--postgres-port",      "",   GetoptLong::REQUIRED_ARGUMENT ],
+  ["--postgres-port",      "-T",  GetoptLong::REQUIRED_ARGUMENT ],
   ["--postgres-database",  "-D", GetoptLong::REQUIRED_ARGUMENT ]
 )
 
