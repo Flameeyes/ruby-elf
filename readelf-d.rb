@@ -24,43 +24,48 @@ files = ARGV.length > 0 ? ARGV : ['a.out']
 
 files.each do |file|
   puts
-  Elf::File.open(file) do |elf|
-    dynsection = elf.sections['.dynamic']
+  begin
+    Elf::File.open(file) do |elf|
+      dynsection = elf.sections['.dynamic']
 
-    unless dynsection
-      puts "There is no dynamic section in this file."
-      next
-    end
-    
-    addrsize = (elf.elf_class == Elf::Class::Elf32 ? 8 : 16)
-
-    puts "Dynamic section at offset 0x#{dynsection.offset.hex} contains #{dynsection.entries.size} entries"
-    puts "  Tag        Type                         Name/Value"
-
-    dynsection.entries.each do |entry|
-
-      case entry[:type]
-      when Elf::Dynamic::Type::Needed
-        val = "Shared library: [#{entry[:parsed]}]"
-      when Elf::Dynamic::Type::SoName
-        val = "Library soname: [#{entry[:parsed]}]"
-      when Elf::Dynamic::Type::StrSz, Elf::Dynamic::Type::SymEnt,
-        Elf::Dynamic::Type::PltRelSz, Elf::Dynamic::Type::RelASz,
-        Elf::Dynamic::Type::RelAEnt
-
-        val = "#{entry[:attribute]} (bytes)"
-      when Elf::Dynamic::Type::VerDefNum, Elf::Dynamic::Type::VerNeedNum, Elf::Dynamic::Type::RelACount
-        val = entry[:attribute]
-      when Elf::Dynamic::Type::GNUPrelinked
-        val = entry[:parsed].getutc.strftime('%Y-%m-%dT%H:%M:%S')
-      else
-        val = sprintf "0x%0#{addrsize}x", entry[:attribute]
+      unless dynsection
+        puts "There is no dynamic section in this file."
+        next
       end
+      
+      addrsize = (elf.elf_class == Elf::Class::Elf32 ? 8 : 16)
 
-      printf " 0x%08x %-28s %s\n", entry[:type].to_i, "(#{entry[:type].to_s})", val
+      puts "Dynamic section at offset 0x#{dynsection.offset.hex} contains #{dynsection.entries.size} entries"
+      puts "  Tag        Type                         Name/Value"
 
-      break if entry[:type] == Elf::Dynamic::Type::Null
+      dynsection.entries.each do |entry|
+
+        case entry[:type]
+        when Elf::Dynamic::Type::Needed
+          val = "Shared library: [#{entry[:parsed]}]"
+        when Elf::Dynamic::Type::SoName
+          val = "Library soname: [#{entry[:parsed]}]"
+        when Elf::Dynamic::Type::StrSz, Elf::Dynamic::Type::SymEnt,
+          Elf::Dynamic::Type::PltRelSz, Elf::Dynamic::Type::RelASz,
+          Elf::Dynamic::Type::RelAEnt
+
+          val = "#{entry[:attribute]} (bytes)"
+        when Elf::Dynamic::Type::VerDefNum, Elf::Dynamic::Type::VerNeedNum, Elf::Dynamic::Type::RelACount
+          val = entry[:attribute]
+        when Elf::Dynamic::Type::GNUPrelinked
+          val = entry[:parsed].getutc.strftime('%Y-%m-%dT%H:%M:%S')
+        else
+          val = sprintf "0x%0#{addrsize}x", entry[:attribute]
+        end
+
+        printf " 0x%08x %-28s %s\n", entry[:type].to_i, "(#{entry[:type].to_s})", val
+
+        break if entry[:type] == Elf::Dynamic::Type::Null
+      end
     end
+  rescue Errno::ENOENT
+    $stderr.puts "readelf-d.rb: '#{file}': No such file"
+    exit 1
   end
 end
 
