@@ -34,7 +34,17 @@ module Elf
     # start of the next header.
     def Section.read(elf)
       name = elf.read_word
-      type = Type[elf.read_word]
+      type_id = elf.read_word
+      
+      if type_id >= Type::LoProc.val && type_id <= Type::HiProc.val
+        case elf.machine
+        when Elf::Machine::ARM
+          type = Type::ProcARM[type_id]
+        end
+      # elsif type_id >= Type::LoOs.val && type_id <= Type::HiOs.val
+      else
+        type = Type[type_id]
+      end
 
       if Type::Class[type]
         return Type::Class[type].new(elf, name, type)
@@ -139,7 +149,6 @@ module Elf
 #             0x6fffffff => [ :HiOs, 'OS-specific range end' ],
              0x6fffffff => [ :GNUVerSym, 'Version symbol table' ],
              0x70000000 => [ :LoProc, 'Processor-specific range start' ],
-             0x70000003 => [ :ARMAttributes, 'ARM Attributes' ],
              0x7fffffff => [ :HiProc, 'Processor-specific range end' ],
              0x80000000 => [ :LoUser, 'Application-specific range start' ],
              0x8fffffff => [ :HiUser, 'Application-specific range end' ]
@@ -154,6 +163,12 @@ module Elf
         GNUVerDef => Elf::GNU::SymbolVersionDef,
         GNUVerNeed => Elf::GNU::SymbolVersionNeed
       }
+
+      class ProcARM < Value
+        fill({
+             0x70000003 => [ :ARMAttributes, 'ARM Attributes' ],
+             })
+      end
     end
   end
 end
