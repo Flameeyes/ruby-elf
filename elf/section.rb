@@ -20,6 +20,8 @@
 # along with this generator; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
+require 'set'
+
 module Elf
   class Section
     # Reserved sections' indexes
@@ -61,7 +63,7 @@ module Elf
       @file = elf
       @name = name
       @type = type
-      @flags = elf32 ? elf.read_word : elf.read_xword
+      @flags_val = elf32 ? elf.read_word : elf.read_xword
       @addr = elf.read_addr
       @offset = elf.read_off
       @size = elf32 ? elf.read_word : elf.read_xword
@@ -95,6 +97,18 @@ module Elf
       @link
     end
 
+    # Return a set of flag items, easier to check for single elements.
+    def flags
+      return @flags if @flags
+      
+      @flags = Set.new
+      Flags.each do |flag|
+        flags.add(flag) if (@flags_val & flag.val) == flag.val
+      end
+
+      @flags
+    end
+
     def load
       oldpos = @file.tell
       @file.seek(@offset, IO::SEEK_SET)
@@ -105,7 +119,26 @@ module Elf
     end
 
     def summary
-      $stdout.puts "#{name}\t\t#{@type}\t#{@flags}\t#{@addr}\t#{@offset}\t#{@size}\t#{@link}\t#{@info}\t#{@addralign}\t#{@entsize}"
+      $stdout.puts "#{name}\t\t#{@type}\t#{@flags_val}\t#{@addr}\t#{@offset}\t#{@size}\t#{@link}\t#{@info}\t#{@addralign}\t#{@entsize}"
+    end
+
+    class Flags < Value
+      fill({
+             0x00000001 => [ :Write, 'Writable' ],
+             0x00000002 => [ :Alloc, 'Allocated' ],
+             0x00000004 => [ :ExecInstr, 'Executable' ],
+             0x00000010 => [ :Merge, 'Mergeable' ],
+             0x00000020 => [ :Strings, 'Contains null-terminated strings' ],
+             0x00000040 => [ :InfoLink, 'sh_info contains SHT index' ],
+             0x00000080 => [ :LinkOrder, 'Preserve order after combining' ],
+             0x00000100 => [ :OsNonConforming, 'Non-standard OS specific handling required' ],
+             0x00000200 => [ :Group, 'Section is member of a group' ],
+             0x00000400 => [ :TLS, 'Section hold thread-local data' ],
+             0x0ff00000 => [ :MaskOS, 'OS-specific flags' ],
+             0xf0000000 => [ :MaskProc, 'Processor-specific flags' ],
+             0x40000000 => [ :Ordered, 'Special ordering requirement' ],
+             0x80000000 => [ :Exclude, 'Section is excluded unless referenced or allocated' ]
+           })
     end
   end
 end
