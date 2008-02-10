@@ -43,7 +43,7 @@ module Elf
       end
     end
 
-    attr_reader :offset
+    attr_reader :offset, :type
 
     def initialize(elf, name, type)
       elf32 = elf.elf_class == Class::Elf32
