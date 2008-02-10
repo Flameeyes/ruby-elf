@@ -32,6 +32,8 @@ class TC_Executable < Test::Unit::TestCase
     @elfs.each_pair do |name, elf|
       assert(elf.sections['.dynamic'],
              "Missing .dynamic section on ELF file #{elf.path}")
+      assert(elf.sections['.dynamic'].type == Elf::Section::Type::Dynamic,
+             "Wrong type for section .dynamic (expected Elf::Section::Type::Dynamic, got #{elf.sections['.dynamic'].type})")
     end
   end
 
@@ -40,6 +42,8 @@ class TC_Executable < Test::Unit::TestCase
     @elfs.each_pair do |name, elf|
       assert(elf.sections['.dynsym'],
              "Missing .dynsym section on ELF file #{elf.path}")
+      assert(elf.sections['.dynsym'].type == Elf::Section::Type::DynSym,
+             "Wrong type for section .dynsym (expected Elf::Section::Type::DynSym, got #{elf.sections['.dynsym'].type})")
     end
   end
 
