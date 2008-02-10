@@ -23,5 +23,24 @@ mysqlclient		^/usr/lib(|32|64)/mysql/libmysqlclient(_r)?\.so
 libldap			^/usr/lib(|32|64)/libldap(_r)?\.so
 
 libXaw			^/usr/lib(|32|64)/libXaw(6|7|3d)\.so
+libXmu			^/usr/lib(|32|64)/libXmuu?\.so
 
 osswrappers		^/usr/lib(|32|64)/lib(aoss|(esd|pa|)dsp)\.so$
+
+libxerces		^/usr/lib(|32|64)/libxerces-(c|depdom)\.so
+
+# Boost
+libboost_date_time	^/usr/lib(|32|64)/libboost_date_time(-mt)?.so
+libboost_filesystem	^/usr/lib(|32|64)/libboost_filesystem(-mt)?.so
+libboost_graph		^/usr/lib(|32|64)/libboost_graph(-mt)?.so
+libboost_iostreams	^/usr/lib(|32|64)/libboost_iostreams(-mt)?.so
+libboost_prg_exec_monitor	^/usr/lib(|32|64)/libboost_prg_exec_monitor(-mt)?.so
+libboost_program_options	^/usr/lib(|32|64)/libboost_program_options(-mt)?.so
+libboost_python		^/usr/lib(|32|64)/libboost_python(-mt)?.so
+libboost_random		^/usr/lib(|32|64)/libboost_random(-mt)?.so
+libboost_regex		^/usr/lib(|32|64)/libboost_regex(-mt)?.so
+libboost_serialization	^/usr/lib(|32|64)/libboost_serialization(-mt)?.so
+libboost_signals	^/usr/lib(|32|64)/libboost_signals(-mt)?.so
+libboost_unit_test_framework	^/usr/lib(|32|64)/libboost_unit_test_framework(-mt)?.so
+libboost_wave		^/usr/lib(|32|64)/libboost_wave(-mt)?.so
+libboost_wserialization	^/usr/lib(|32|64)/libboost_wserialization(-mt)?.so
