@@ -66,5 +66,9 @@ module Elf
         const_set(value[0], @enums[index])
       end
     end
+
+    def Value.each(&block)
+      @enums.each_value(&block)
+    end
   end
 end
