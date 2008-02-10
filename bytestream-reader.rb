@@ -131,22 +131,52 @@ class BytestreamReader < File
   BigEndian = :BigEndian
   LittleEndian = :LittleEndian
 
+  def read_s16
+    case @endian
+    when BigEndian then read_s16_be
+    when LittleEndian then read_s16_le
+    end
+  end
+
+  def read_s32
+    case @endian
+    when BigEndian then read_s32_be
+    when LittleEndian then read_s32_le
+    end
+  end
+
+  def read_s64
+    case @endian
+    when BigEndian then read_s64_be
+    when LittleEndian then read_s64_le
+    end
+  end
+
+  def read_u16
+    case @endian
+    when BigEndian then read_u16_be
+    when LittleEndian then read_u16_le
+    end
+  end
+
+  def read_u32
+    case @endian
+    when BigEndian then read_u32_be
+    when LittleEndian then read_u32_le
+    end
+  end
+
+  def read_u64
+    case @endian
+    when BigEndian then read_u64_be
+    when LittleEndian then read_u64_le
+    end
+  end
+
   def set_endian(endian)
     case endian
-    when BigEndian
-      alias :read_s16 :read_s16_be
-      alias :read_s32 :read_s32_be
-      alias :read_s64 :read_s64_be
-      alias :read_u16 :read_u16_be
-      alias :read_u32 :read_u32_be
-      alias :read_u64 :read_u64_be
-    when LittleEndian
-      alias :read_s16 :read_s16_le
-      alias :read_s32 :read_s32_le
-      alias :read_s64 :read_s64_le
-      alias :read_u16 :read_u16_le
-      alias :read_u32 :read_u32_le
-      alias :read_u64 :read_u64_le
+    when BigEndian, LittleEndian
+      @endian = endian
     else
       raise InvalidArgument
     end
