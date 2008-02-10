@@ -21,7 +21,7 @@ require 'elf'
 require Pathname.new(__FILE__).dirname + 'tests_elf'
 
 # Test proper handling of Executable ELF files.
-class TC_Executable < Test::Unit::TestCase
+class TC_Dynamic_Executable < Test::Unit::TestCase
   TestBaseFilename = "dynamic_executable"
   TestElfType = Elf::File::Type::Exec
   include ElfTests
