@@ -130,3 +130,6 @@
 
 # ZSH
 .*/lib(|32|64)/zsh/.*/zsh/.*\.so$	^(enables|features)_$
+
+# OSS wrappers and other LD_PRELOAD libraries
+lib((pa|esd|arts)dsp|aoss)		^m(un)?map$
