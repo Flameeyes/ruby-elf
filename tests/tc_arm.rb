@@ -22,7 +22,7 @@ require 'elf'
 # ARM ELF files contain an extra section called .ARM.attributes, this
 # test is intended to properly check for presence and parsing of this
 # section, and to avoid possible misreading of it.
-class TC_Exceptions < Test::Unit::TestCase
+class TC_ARM < Test::Unit::TestCase
   TestDir = Pathname.new(__FILE__).dirname + "binaries"
 
   def test_section_presence
