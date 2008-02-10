@@ -16,22 +16,23 @@
 
 module ElfTests
   TestDir = Pathname.new(__FILE__).dirname + "binaries"
-  OSes = [ "linux" ]
-  Arches = [ "x86", "amd64", "sparc", "arm" ]
-  
+  OS_Arches = [
+               "linux_x86",
+               "linux_amd64",
+               "linux_sparc",
+               "linux_arm"
+              ]
   def setup
     @elfs = {}
 
     # Check for presence of all the executables for the arches to test.
     # Make sure to check all the operating systems too.
     # Also open the ELF files for testing
-    OSes.each do |os|
-      Arches.each do |arch|
-        filename = "#{os}_#{arch}_#{self.class::TestBaseFilename}"
-        assert(File.exists?( TestDir + filename ),
-               "Missing test file #{filename}")
-        @elfs["#{os}_#{arch}"] = Elf::File.open(TestDir + filename)
-      end
+    OS_Arches.each do |os_arch|
+      filename = "#{os_arch}_#{self.class::TestBaseFilename}"
+      assert(File.exists?( TestDir + filename ),
+             "Missing test file #{filename}")
+      @elfs["#{os_arch}"] = Elf::File.open(TestDir + filename)
     end
   end
   
