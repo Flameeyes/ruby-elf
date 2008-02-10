@@ -20,7 +20,8 @@ module ElfTests
                "linux_x86",
                "linux_amd64",
                "linux_sparc",
-               "linux_arm"
+               "linux_arm",
+               "bare_h8300"
               ]
   def setup
     @elfs = {}
@@ -63,7 +64,7 @@ module ElfTests
   def test_elfclass
     @elfs.each_pair do |name, elf|
       expectedclass = case name
-                      when /.*_x86/, /.*_arm/, /linux_sparc/
+                      when /.*_x86/, /.*_arm/, /linux_sparc/, /.*_h8300/
                         Elf::Class::Elf32
                       when /.*_amd64/
                         Elf::Class::Elf64
@@ -79,7 +80,7 @@ module ElfTests
       expectedencoding = case name
                          when /.*_x86/, /.*_amd64/, /.*_arm/
                            Elf::DataEncoding::Lsb
-                         when /.*_sparc/
+                         when /.*_sparc/, /.*_h8300/
                            Elf::DataEncoding::Msb
                          end
 
@@ -93,11 +94,11 @@ module ElfTests
       expectedabi = case name
                     when /linux_arm/
                       Elf::OsAbi::ARM
-                    when /linux_.*/
+                    when /linux_.*/, /bare_.*/
                       Elf::OsAbi::SysV
                     end
       expectedabiversion = case name
-                           when /linux_.*/
+                           when /linux_.*/, /bare_.*/
                              0
                            end
 
@@ -122,6 +123,8 @@ module ElfTests
                           when Elf::File::Type::Rel then Elf::Machine::Sparc
                           when Elf::File::Type::Exec then Elf::Machine::Sparc32Plus
                           end
+                        when /.*_h8300/
+                          Elf::Machine::H8300
                         end
 
       assert(elf.machine == expectedmachine,
