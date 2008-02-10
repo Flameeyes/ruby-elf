@@ -17,7 +17,7 @@
 module ElfTests
   TestDir = Pathname.new(__FILE__).dirname + "binaries"
   OSes = [ "linux" ]
-  Arches = [ "x86", "amd64" ]
+  Arches = [ "x86", "amd64", "sparc", "arm" ]
   
   def setup
     @elfs = {}
@@ -58,7 +58,7 @@ module ElfTests
   def test_elfclass
     @elfs.each_pair do |name, elf|
       expectedclass = case name
-                      when /.*_x86/
+                      when /.*_x86/, /.*_arm/, /linux_sparc/
                         Elf::Class::Elf32
                       when /.*_amd64/
                         Elf::Class::Elf64
@@ -72,8 +72,10 @@ module ElfTests
   def test_dataencoding
     @elfs.each_pair do |name, elf|
       expectedencoding = case name
-                         when /.*_x86/, /.*_amd64/
+                         when /.*_x86/, /.*_amd64/, /.*_arm/
                            Elf::DataEncoding::Lsb
+                         when /.*_sparc/
+                           Elf::DataEncoding::Msb
                          end
 
       assert(elf.data_encoding == expectedencoding,
@@ -84,6 +86,8 @@ module ElfTests
   def test_abi
     @elfs.each_pair do |name, elf|
       expectedabi = case name
+                    when /linux_arm/
+                      Elf::OsAbi::ARM
                     when /linux_.*/
                       Elf::OsAbi::SysV
                     end
@@ -106,6 +110,13 @@ module ElfTests
                           Elf::Machine::I386
                         when /.*_amd64/
                           Elf::Machine::X8664
+                        when /.*_arm/
+                          Elf::Machine::ARM
+                        when /.*_sparc/
+                          case elf.type
+                          when Elf::File::Type::Rel then Elf::Machine::Sparc
+                          when Elf::File::Type::Exec then Elf::Machine::Sparc32Plus
+                          end
                         end
 
       assert(elf.machine == expectedmachine,
