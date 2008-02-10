@@ -20,11 +20,13 @@ require 'elf'
 
 require Pathname.new(__FILE__).dirname + 'tests_elf'
 
+# Test proper handling of Executable ELF files.
 class TC_Executable < Test::Unit::TestCase
   TestBaseFilename = "executable"
   TestElfType = Elf::File::Type::Exec
   include ElfTests
 
+  # Test for the presence of .dynsym section on the file.
   def test_dynsym_presence
     @elfs.each_pair do |name, elf|
       assert(elf.sections['.dynsym'],
@@ -32,6 +34,7 @@ class TC_Executable < Test::Unit::TestCase
     end
   end
 
+  # Test for presence of an undefined printf symbol.
   def test_printf_symbol
     @elfs.each_pair do |name, elf|
       printf_found = false

@@ -18,9 +18,18 @@ require 'test/unit'
 require 'pathname'
 require 'elf'
 
+# Test for proper exception handling in the RubyElf library.  This
+# test unit should make sure that proper error handling is present
+# whenever the file is invalid, contains broken or invalid data, and
+# similar.  This test should cover all the possible cases of broken
+# ELF files, so that reading a non-ELF file won't cause unexpected
+# problems.
 class TC_Exceptions < Test::Unit::TestCase
   TestDir = Pathname.new(__FILE__).dirname + "binaries"
 
+  # Test behaviour when a file that is not an ELF file is opened.
+  #
+  # Expected behaviour: Elf::File::NotAnElf exception is raised.
   def test_notanelf
     assert(File.exist?(TestDir + "invalid_nonelf"),
            "Missing test file invalid_nonelf")
@@ -36,6 +45,11 @@ class TC_Exceptions < Test::Unit::TestCase
     assert(exception_received, "Elf::File::NotAnElf exception not received")
   end
 
+  # Test behaviour when a file too short to be an ELF file is opened
+  # (that has not enough data to read the four magic bytes at the
+  # start of the file).
+  #
+  # Expected behaviour: Elf::File::NotAnElf exception is raised.
   def test_shortfile
     assert(File.exist?(TestDir + "invalid_shortfile"),
            "Missing test file invalid_shortfile")
@@ -51,6 +65,11 @@ class TC_Exceptions < Test::Unit::TestCase
     assert(exception_received, "Elf::File::NotAnElf exception not received")
   end
 
+  # Test behaviour when a file with an invalid ELF class value is
+  # opened
+  #
+  # Expected behaviour: Elf::File::InvalidElfClass exception is
+  # raised.
   def test_invalid_elfclass
     assert(File.exist?(TestDir + "invalid_invalidclass"),
            "Missing test file invalid_invalidclass")
@@ -66,6 +85,11 @@ class TC_Exceptions < Test::Unit::TestCase
     assert(exception_received, "Elf::File::InvalidElfClass exception not received.")
   end
 
+  # Test behaviour when a file with an invalid ELF data encoding value
+  # is opened
+  #
+  # Expected behaviour: Elf::File::InvalidDataEncoding exception is
+  # raised.
   def test_invalid_encoding
     assert(File.exist?(TestDir + "invalid_invalidencoding"),
            "Missing test file invalid_invalidencoding")
@@ -81,6 +105,11 @@ class TC_Exceptions < Test::Unit::TestCase
     assert(exception_received, "Elf::File::InvalidDataEncoding exception not received.")
   end
 
+  # Test behaviour when a file with an unsupported ELF version value
+  # is opened
+  #
+  # Expected behaviour: Elf::File::UnsupportedElfVersion exception is
+  # raised.
   def test_unsupported_version
     assert(File.exist?(TestDir + "invalid_unsupportedversion"),
            "Missing test file invalid_unsupportedversion")
@@ -96,6 +125,9 @@ class TC_Exceptions < Test::Unit::TestCase
     assert(exception_received, "Elf::File::UnsupportedElfVersion exception not received.")
   end
 
+  # Test behaviour when a file with an invalid ELF ABI value is opened
+  #
+  # Expected behaviour: Elf::File::InvalidOsAbi exception is raised.
   def test_invalid_abi
     assert(File.exist?(TestDir + "invalid_invalidabi"),
            "Missing test file invalid_invalidabi")
@@ -111,6 +143,10 @@ class TC_Exceptions < Test::Unit::TestCase
     assert(exception_received, "Elf::File::InvalidOsAbi exception not received.")
   end
 
+  # Test behaviour when a file with an invalid ELF Type value is
+  # opened
+  #
+  # Expected behaviour: Elf::File::InvalidElfType exception is raised.
   def test_invalid_type
     assert(File.exist?(TestDir + "invalid_invalidtype"),
            "Missing test file invalid_invalidtype")
@@ -126,6 +162,10 @@ class TC_Exceptions < Test::Unit::TestCase
     assert(exception_received, "Elf::File::InvalidElfType exception not received.")
   end
 
+  # Test behaviour when a file with an invalid ELF machine value is
+  # opened
+  #
+  # Expected behaviour: Elf::File::InvalidMachine exception is raised.
   def test_invalid_machine
     assert(File.exist?(TestDir + "invalid_invalidmachine"),
            "Missing test file invalid_invalidmachine")
