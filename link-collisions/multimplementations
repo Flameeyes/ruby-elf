@@ -22,6 +22,6 @@ php5			php5/bin/php(-cgi)?$
 mysqlclient		^/usr/lib(|32|64)/mysql/libmysqlclient(_r)?\.so
 libldap			^/usr/lib(|32|64)/libldap(_r)?\.so
 
-libXaw			^/usr/lib(|32|64)/libXaw[67]\.so
+libXaw			^/usr/lib(|32|64)/libXaw(6|7|3d)\.so
 
 osswrappers		^/usr/lib(|32|64)/lib(aoss|(esd|pa|)dsp)\.so$
