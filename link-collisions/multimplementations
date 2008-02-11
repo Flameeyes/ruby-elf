@@ -8,7 +8,9 @@ perl			/usr/lib(|32|64)/libperl\.so\..*
 
 libgpgme		.*/libgpgme(-pth(read)?)?\.so.*
 
+# JAVA libraries, especially graphic libraries.
 java-libawt		jre/lib/(amd64|i386)/libawt\.so$
+java-libmawt		jre/lib/(amd64|i386)/(xawt|motif21|headless)/libmawt.so
 
 ncurses-libcurses	^/lib(|32|64)/libn?cursesw?\.so
 ncurses-libform		^/usr/lib(|32|64)/libformw?\.so
