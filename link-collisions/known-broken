@@ -6,3 +6,7 @@
 /usr/bin/gdbtui
 
 /usr/lib32/dri/.*
+
+# KPDF contains XPDF code, which is also contained in libpoppler.
+# Ignore KPDF symbols then.
+libkpdfpart.so
