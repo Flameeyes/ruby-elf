@@ -28,7 +28,7 @@
 .*/kde3/.*panel(applet|extension)\.so	^init$
 .*/kde3/libaudiocd_encoder_.*\.so	^create_audiocd_encoders$
 .*/kde3/plugins/.*\.so			^(qt_ucm_query_verification_data|ucm_instantiate)$
-.*/kde3/kwin3_.*\.so			^(create_factory|allocate_config)$
+.*/kde3/kwin3?_.*\.so			^(create_factory|allocate_config)$
 .*/kde3/libamarok_.*\.so		^create_plugin$
 .*/kde[34]/kstyle_.*\.so		^allocate_kstyle_config$
 					# KApplication::KApp
