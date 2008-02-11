@@ -56,3 +56,8 @@ libevent-1.4		/lib(|32|64)/libevent(_(extra|core))?-1.4\.so
 
 # GNU libbfd
 libbfd			libbfd-2\..*\.so
+
+# GNU libmudflap
+gnu-libmudflap		libmudflap(th)?\.so
+
+libgvc			libgvc(_builtins)?\.so
