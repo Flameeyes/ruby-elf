@@ -46,11 +46,11 @@ libboost_wave		^/usr/lib(|32|64)/libboost_wave(-mt)?.so
 libboost_wserialization	^/usr/lib(|32|64)/libboost_wserialization(-mt)?.so
 
 # KDE's libgpgme++
-libgpgme++		/lib(|32|64)/libgpgme\+\+(-pth)?\.so
+libgpgme++		/lib(|32|64)/libgpgme\+\+(-pth(read)?)?\.so
 
 # libevent, _core and _extra replace the original, for now consider them a single
 # implementation, until libevent itself is deprecated.
 libevent-1.4		/lib(|32|64)/libevent(_(extra|core))?-1.4\.so
 
 # GNU libbfd
-libbfd			libbfd-2\..\.so
+libbfd			libbfd-2\..*\.so
