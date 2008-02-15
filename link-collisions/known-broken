@@ -10,3 +10,8 @@
 # KPDF contains XPDF code, which is also contained in libpoppler.
 # Ignore KPDF symbols then.
 libkpdfpart.so
+
+# Net-SNMP for some reasons build two separate libraries out of the
+# same object files, their code is 1:1 the same. Ignore one of them
+# until it's sorted out upstream.
+libsnmp\.so
