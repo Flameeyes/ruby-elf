@@ -61,3 +61,6 @@ libbfd			libbfd-2\..*\.so
 gnu-libmudflap		libmudflap(th)?\.so
 
 libgvc			libgvc(_builtins)?\.so
+
+# OpenLDAP
+libldap-2.3		libldap(_r)?-2.3
