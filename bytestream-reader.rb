@@ -56,34 +56,110 @@ class BytestreamReader < File
     return buf
   end
 
+  def read_array_u8(size)
+    readbytes(1*size).unpack("C*")
+  end
+
+  def read_array_u16_be(size)
+    readbytes(2*size).unpack("n*")
+  end
+
+  def read_array_u16_le(size)
+    readbytes(2*size).unpack("v*")
+  end
+
+  def read_array_u32_be(size)
+    readbytes(4*size).unpack("N*")
+  end
+
+  def read_array_u32_le(size)
+    readbytes(4*size).unpack("V*")
+  end
+
+  def read_array_u64_be(size)
+    buf = readbytes(8*size).unpack("N*")
+    val = []
+    size.times do |i|
+      val[i] = buf[i*2] << 32 | buf[i*2+1];
+    end
+    return val
+  end
+
+  def read_array_u64_le(size)
+    buf = readbytes(8*size).unpack("V*")
+    val = []
+    size.times do |i|
+      val[i] = buf[i*2+1] << 32 | buf[i*2];
+    end
+    return val
+  end
+
   def read_u8
-    buf = readbytes(1)[0]
+    read_array_u8(1)[0]
   end
 
   def read_u16_be
-    readbytes(2).unpack("n*")[0]
+    read_array_u16_be(1)[0]
   end
 
   def read_u16_le
-    readbytes(2).unpack("v*")[0]
+    read_array_u16_le(1)[0]
   end
 
   def read_u32_be
-    readbytes(4).unpack("N*")[0]
+    read_array_u32_be(1)[0]
   end
 
   def read_u32_le
-    readbytes(4).unpack("V*")[0]
+    read_array_u32_le(1)[0]
   end
 
   def read_u64_be
+    # As there is no direct unpack method for 64-bit words, the one-value
+    # function is considered a special case.
     buf = readbytes(8).unpack("N*")
     return buf[0] << 32 | buf[1]
   end
 
   def read_u64_le
+    # As there is no direct unpack method for 64-bit words, the one-value
+    # function is considered a special case.
     buf = readbytes(8).unpack("V*")
     return buf[1] << 32 | buf[0]
+  end
+
+  def read_array_s8(size)
+    readbytes(1*size).unpack("c*")
+  end
+
+  def read_array_s16_be(size)
+    tmp = read_array_u16_be(size)
+    tmp.collect { |val| (val & ~(1 << 15)) - (val & (1 << 15)) }
+  end
+
+  def read_array_s16_le(size)
+    tmp = read_array_u16_le(size)
+    tmp.collect { |val| (val & ~(1 << 15)) - (val & (1 << 15)) }
+  end
+
+  def read_array_s32_be(size)
+    tmp = read_array_u32_be(size)
+    tmp.collect { |val| (val & ~(1 << 31)) - (val & (1 << 31)) }
+  end
+
+  def read_array_s32_le(size)
+    tmp = read_array_u32_le(size)
+    tmp.collect { |val| (val & ~(1 << 31)) - (val & (1 << 31)) }
+  end
+
+  def read_array_s64_be(size)
+    tmp = read_array_u64_be(size)
+    tmp.collect { |val| (val & ~(1 << 63)) - (val & (1 << 63)) }
+  end
+
+  def read_array_s64_le(size)
+    tmp = read_array_u64_le(size)
+    tmp.collect { |val| (val & ~(1 << 63)) - (val & (1 << 63)) }
   end
 
   def read_s8
