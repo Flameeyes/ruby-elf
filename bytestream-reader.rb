@@ -82,15 +82,13 @@ class BytestreamReader < File
   end
 
   def read_u64_be
-    buf = readbytes(8)
-    return buf[0] << 56 | buf[1] << 48 | buf[2] << 40 | buf[3] << 32 |
-      buf[4] << 24 | buf[5] << 16 | buf[6] << 8 | buf[7]
+    buf = readbytes(8).unpack("N*")
+    return buf[0] << 32 | buf[1]
   end
 
   def read_u64_le
-    buf = readbytes(8)
-    return buf[7] << 56 | buf[6] << 48 | buf[5] << 40 | buf[4] << 32 |
-      buf[3] << 24 | buf[2] << 16 | buf[1] << 8 | buf[0]
+    buf = readbytes(8).unpack("V*")
+    return buf[1] << 32 | buf[0]
   end
 
   def read_s8
