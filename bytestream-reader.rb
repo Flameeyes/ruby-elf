@@ -57,28 +57,23 @@ class BytestreamReader < File
   end
 
   def read_u8
-    buf = readbytes(1)
-    return buf[0]
+    buf = readbytes(1)[0]
   end
 
   def read_u16_be
-    buf = readbytes(2)
-    buf.unpack("n*")[0]
+    readbytes(2).unpack("n*")[0]
   end
 
   def read_u16_le
-    buf = readbytes(2)
-    buf.unpack("v*")[0]
+    readbytes(2).unpack("v*")[0]
   end
 
   def read_u32_be
-    buf = readbytes(4)
-    buf.unpack("N*")[0]
+    readbytes(4).unpack("N*")[0]
   end
 
   def read_u32_le
-    buf = readbytes(4)
-    buf.unpack("V*")[0]
+    readbytes(4).unpack("V*")[0]
   end
 
   def read_u64_be
