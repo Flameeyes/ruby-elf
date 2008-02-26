@@ -1,0 +1,5 @@
+These scripts are some extra tools that I've written and aren't really
+part of ruby-elf as they don't relate to parsing ELF files directly.
+
+binding-parser.rb: a parser for the output of LD_DEBUG=bindings from
+  glibc's dynamic loader.
