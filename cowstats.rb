@@ -151,9 +151,11 @@ if not stats_only
     end
     rel_total += rel_size
 
-    puts "  Total writable variables size: #{data_size}" unless data_size == 0
-    puts "  Total non-initialised variables size: #{bss_size}" unless bss_size == 0
-    puts "  Total variables needing runtime relocation size: #{rel_size}" unless rel_size == 0
+    if show_total
+      puts "  Total writable variables size: #{data_size}" unless data_size == 0
+      puts "  Total non-initialised variables size: #{bss_size}" unless bss_size == 0
+      puts "  Total variables needing runtime relocation size: #{rel_size}" unless rel_size == 0
+    end
 
   end
 else
