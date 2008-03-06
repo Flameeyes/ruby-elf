@@ -26,12 +26,15 @@ opts = GetoptLong.new(
   # Show the total size of COW pages
   ["--total", "-t", GetoptLong::NO_ARGUMENT],
   # Read the file to check from a file rather than commandline
-  ["--filelist", "-f", GetoptLong::REQUIRED_ARGUMENT]
+  ["--filelist", "-f", GetoptLong::REQUIRED_ARGUMENT],
+  # Ignore C++ "false positives" (vtables and typeinfo)
+  ["--ignore-cxx", "-x", GetoptLong::NO_ARGUMENT ]
 )
 
 stats_only = false
 show_total = false
 file_list = nil
+$ignore_cxx = false
 
 opts.each do |opt, arg|
   case opt
@@ -45,6 +48,8 @@ opts.each do |opt, arg|
     else
       file_list = File.new(arg)
     end
+  when '--ignore-cxx'
+    $ignore_cxx = true
   end
 end
 
@@ -77,6 +82,8 @@ def cowstats_scan(file)
         # When the symbol name is empty, it refers to the
         # section itself.
         next if symbol.name == ""
+
+        next if $ignore_cxx and symbol.name =~ /^_ZT[VI](N[0-9]+[A-Z_].*)*[0-9]+[A-Z_].*/
         
         case symbol.section.name
         when /^\.data\.rel(\.ro)?(\.local)?(\..*)?/
