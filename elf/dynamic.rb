@@ -253,6 +253,14 @@ module Elf
 
         @defined_versions[idx]
       end
+
+      # Allow to iterate over all the versions defined in the ELF
+      # file.
+      def each(&block)
+        load unless @defined_versions
+
+        @defined_versions.each(&block)
+      end
     end
 
     class SymbolVersionNeed < Section
@@ -298,6 +306,14 @@ module Elf
         load unless @needed_versions
 
         @needed_versions[idx]
+      end
+
+      # Allow to iterate over all the versions needed in the ELF
+      # file.
+      def each(&block)
+        load unless @needed_versions
+
+        @needed_versions.each(&block)
       end
     end
   end
