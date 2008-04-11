@@ -47,7 +47,7 @@ module Elf
              12 => [ :Init, "INIT", :Address ],
              13 => [ :Fini, "FINI", :Address ],
              14 => [ :SoName, "SONAME", :Value ],
-             15 => [ :RPath, "RPATH", :Ignore ],
+             15 => [ :RPath, "RPATH", :Value ],
              16 => [ :Symbolic, "SYMBOLIC", :Ignore ],
              17 => [ :Rel, "REL", :Address ],
              18 => [ :RelSz, "RELSZ", :Value ],
@@ -61,7 +61,7 @@ module Elf
              26 => [ :FiniArray, "FINI_ARRAY", :Address ],
              27 => [ :InitArraySz, "INIT_ARRAYSZ", :Value ],
              28 => [ :FiniArraySz, "FINI_ARRAYSZ", :Value ],
-             29 => [ :RunPath, "RUNPATH", :Ignore ],
+             29 => [ :RunPath, "RUNPATH", :Value ],
              30 => [ :Flags, "FLAGS", :Value ],
              32 => [ :PreinitArray, "PREINIT_ARRAY", :Address ],
              33 => [ :PreinitArraySz, "PREINIT_ARRAYSZ", :Value ],
@@ -162,7 +162,9 @@ module Elf
 
         entry[:parsed] = 
           case entry[:type]
-          when Type::Needed, Type::SoName
+          when Type::Needed, Type::SoName,
+            Type::RPath, Type::RunPath
+
             @file.sections['.dynstr'][entry[:attribute]]
           when Type::GNUPrelinked
             Time.at(entry[:attribute])
