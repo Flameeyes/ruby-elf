@@ -77,7 +77,9 @@ def assess_save(file)
 
           elf.sections['.dynamic'].entries.each do |entry|
             case entry[:type]
-            when Elf::Dynamic::Type::Needed, Elf::Dynamic::Type::SoName
+            when Elf::Dynamic::Type::Needed, Elf::Dynamic::Type::SoName,
+              Elf::Dynamic::Type::RPath, Elf::Dynamic::Type::RunPath
+
               next if seenstr.include? entry[:parsed]
               seenstr.add entry[:parsed]
               fullsize += entry[:parsed].length+1
