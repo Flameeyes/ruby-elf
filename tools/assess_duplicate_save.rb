@@ -33,63 +33,56 @@ def assess_save(file)
     Elf::File.open(file) do |elf|
       seenstr = Set.new
 
-      [ ['.dynsym', '.dynstr'], ['.symtab', '.strtab'] ].each do
-        |symbols_section, strings_section|
+      symsec = elf.sections['.dynsym']
+      strsec = elf.sections['.dynstr']
 
-        symsec = elf.sections[symbols_section]
-        strsec = elf.sections[strings_section]
+      next unless symsec and strsec
 
-        next unless symsec and strsec
+      # The NULL-entry can be aliased on the last string anyway by
+      # letting it point to sectionsize-1
+      fullsize = 0
 
-        # The NULL-entry can be aliased on the last string anyway by
-        # letting it point to sectionsize-1
-        fullsize = 0
-
-        symsec.symbols.each do |sym|
-          next if seenstr.include? sym.name
-          seenstr.add sym.name
-          fullsize += sym.name.length+1
-        end
-        
-        # Dynamic executables and shared objects keep more data into the
-        # .dynstr than static executables, in particular they have symbols
-        # versions, their soname and their NEEDED sections strings.
-        if strings_section == ".dynstr"
-          versec = elf.sections['.gnu.version_d']
-          if versec
-            versec.each do |veridx, ver|
-              ver[:names].each do |vername|
-                next if seenstr.include? vername
-                seenstr.add vername
-                fullsize += vername.length+1
-              end
-            end
-          end
-
-          versec = elf.sections['.gnu.version_r']
-          if versec
-            versec.each do |veridx, ver|
-              next if seenstr.include? ver[:name]
-              seenstr.add ver[:name]
-              fullsize += ver[:name].length+1
-            end
-          end
-
-          elf.sections['.dynamic'].entries.each do |entry|
-            case entry[:type]
-            when Elf::Dynamic::Type::Needed, Elf::Dynamic::Type::SoName,
-              Elf::Dynamic::Type::RPath, Elf::Dynamic::Type::RunPath
-
-              next if seenstr.include? entry[:parsed]
-              seenstr.add entry[:parsed]
-              fullsize += entry[:parsed].length+1
-            end
-          end
-
-        end
-
-        puts "#{file}: current size #{strsec.size}, full size #{fullsize} difference #{fullsize-strsec.size}"
+      symsec.symbols.each do |sym|
+        next if seenstr.include? sym.name
+        seenstr.add sym.name
+        fullsize += sym.name.length+1
       end
+      
+      # Dynamic executables and shared objects keep more data into the
+      # .dynstr than static executables, in particular they have symbols
+      # versions, their soname and their NEEDED sections strings.
+      versec = elf.sections['.gnu.version_d']
+      if versec
+        versec.each do |veridx, ver|
+          ver[:names].each do |vername|
+            next if seenstr.include? vername
+            seenstr.add vername
+            fullsize += vername.length+1
+          end
+        end
+      end
+
+      versec = elf.sections['.gnu.version_r']
+      if versec
+        versec.each do |veridx, ver|
+          next if seenstr.include? ver[:name]
+          seenstr.add ver[:name]
+          fullsize += ver[:name].length+1
+        end
+      end
+
+      elf.sections['.dynamic'].entries.each do |entry|
+        case entry[:type]
+        when Elf::Dynamic::Type::Needed, Elf::Dynamic::Type::SoName,
+          Elf::Dynamic::Type::RPath, Elf::Dynamic::Type::RunPath
+
+          next if seenstr.include? entry[:parsed]
+          seenstr.add entry[:parsed]
+          fullsize += entry[:parsed].length+1
+        end
+      end
+      
+      puts "#{file}: current size #{strsec.size}, full size #{fullsize} difference #{fullsize-strsec.size}"
     end
   rescue Errno::ENOENT
     $stderr.puts "assess_duplicate_save.rb: #{file}: no such file"
