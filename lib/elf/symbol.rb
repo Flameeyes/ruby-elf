@@ -52,7 +52,16 @@ module Elf
            })
     end
 
-    attr_reader :value, :size, :other, :bind, :type, :idx
+    class Visibility < Value
+      fill({
+             0 => [ :Default, 'Default visibility' ],
+             1 => [ :Internal, 'Processor-specific hidden visibility' ],
+             2 => [ :Hidden, 'Hidden visibility' ],
+             3 => [ :Protected, 'Protected visibility' ]
+           })
+    end
+
+    attr_reader :value, :size, :other, :bind, :type, :idx, :visibility
 
     # Create a new Symbol object reading the symbol structure from the file.
     # This function assumes that the elf file is aligned ad the
@@ -84,6 +93,13 @@ module Elf
         @type = Type[info & 0xF]
       rescue Elf::Value::OutOfBound => e
         e.append_message("While processing symbol #{@idx}. Symbol info: 0x#{info.hex}")
+        raise e
+      end
+
+      begin
+        @visibility = Visibility[@other & 0x03]
+      rescue Elf::Value::OutOfBound => e
+        e.append_message("While procesing symbol #{@idx}. Symbol other info: 0x#{@other.hex}")
         raise e
       end
 
