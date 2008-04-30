@@ -25,11 +25,14 @@ opts = GetoptLong.new(
   # Read the files to scan from a file rather than commandline
   ["--filelist", "-f", GetoptLong::REQUIRED_ARGUMENT],
   # Exclude functions with a given prefix (exported functions)
-  ["--exclude-regexp", "-x", GetoptLong::REQUIRED_ARGUMENT]
+  ["--exclude-regexp", "-x", GetoptLong::REQUIRED_ARGUMENT],
+  # Only scan hidden symbols, ignore exported ones
+  ["--hidden-only", "-h", GetoptLong::NO_ARGUMENT ]
 )
 
 exclude_regexps = []
 files_list = nil
+$hidden_only = false
 
 opts.each do |opt, arg|
   case opt
@@ -41,6 +44,8 @@ opts.each do |opt, arg|
     end
   when '--exclude-regexp'
     exclude_regexps << Regexp.new(arg)
+  when '--hidden-only'
+    $hidden_only = true
   end
 end
 
@@ -65,6 +70,9 @@ def scanfile(filename)
       this_using = Set.new
 
       elf.sections['.symtab'].symbols.each do |sym|
+        next if $hidden_only and
+          sym.visibility != Elf::Symbol::Visibility::Hidden
+
         if sym.section == Elf::Section::Undef
           this_using << sym.name
         elsif sym.bind == Elf::Symbol::Binding::Local
