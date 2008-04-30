@@ -25,10 +25,10 @@ opts = GetoptLong.new(
   # Read the files to scan from a file rather than commandline
   ["--filelist", "-f", GetoptLong::REQUIRED_ARGUMENT],
   # Exclude functions with a given prefix (exported functions)
-  ["--exclude-prefix", "-x", GetoptLong::REQUIRED_ARGUMENT]
+  ["--exclude-regexp", "-x", GetoptLong::REQUIRED_ARGUMENT]
 )
 
-exclude_prefixes = []
+exclude_regexps = []
 files_list = nil
 
 opts.each do |opt, arg|
@@ -39,8 +39,8 @@ opts.each do |opt, arg|
     else
       files_list = File.new(arg)
     end
-  when '--exclude-prefix'
-    exclude_prefixes << arg
+  when '--exclude-regexp'
+    exclude_regexps << Regexp.new(arg)
   end
 end
 
@@ -107,6 +107,17 @@ else
 end
 
 $all_defined.subtract $all_using
+
+$all_defined.delete_if do |symbol|
+  excluded = false
+
+  exclude_regexps.each do |re|
+    excluded = true if symbol =~ re
+    break if excluded
+  end
+
+  excluded
+end
 
 $all_defined.each do |sym|
   puts "#{sym} (#{$symbol_objects[sym]})"
