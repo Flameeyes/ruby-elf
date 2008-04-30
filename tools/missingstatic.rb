@@ -70,14 +70,14 @@ def scanfile(filename)
       this_using = Set.new
 
       elf.sections['.symtab'].symbols.each do |sym|
-        next if $hidden_only and
-          sym.visibility != Elf::Symbol::Visibility::Hidden
-
         if sym.section == Elf::Section::Undef
           this_using << sym.name
         elsif sym.bind == Elf::Symbol::Binding::Local
           next
         elsif sym.section.is_a? Elf::Section
+          next if $hidden_only and
+            sym.visibility != Elf::Symbol::Visibility::Hidden
+
           this_defined << sym.name
           $symbol_objects[sym.name] = filename
         end
