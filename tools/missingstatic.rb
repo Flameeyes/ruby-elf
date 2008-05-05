@@ -83,11 +83,6 @@ def scanfile(filename)
         end
       end
 
-      # Remove the symbols that are being used which are defined in this
-      # translation unit. We need to find which symbols are _only_ used
-      # in the same translation unit anyway.
-      this_using.subtract this_defined
-
       $all_using.merge this_using
       $all_defined.merge this_defined
     end
