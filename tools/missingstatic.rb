@@ -111,6 +111,11 @@ end
 
 $all_defined.subtract $all_using
 
+# The main symbol is used by all the standalone executables, reporting
+# it is pointless as it will always be a false positive. It cannot be
+# marked static.
+$all_defined.delete "main"
+
 $all_defined.delete_if do |symbol|
   excluded = false
 
