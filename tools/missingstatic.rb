@@ -27,16 +27,12 @@ opts = GetoptLong.new(
   # Exclude functions with a given prefix (exported functions)
   ["--exclude-regexp", "-x", GetoptLong::REQUIRED_ARGUMENT],
   # Only scan hidden symbols, ignore exported ones
-  ["--hidden-only", "-h", GetoptLong::NO_ARGUMENT],
-  # Don't show unused functions, list only those functions that
-  # are used in the translation unit they are defined.
-  ["--not-unused", "-U", GetoptLong::NO_ARGUMENT]
+  ["--hidden-only", "-h", GetoptLong::NO_ARGUMENT]
 )
 
 exclude_regexps = []
 files_list = nil
 $hidden_only = false
-$show_unused = true
 
 opts.each do |opt, arg|
   case opt
@@ -50,8 +46,6 @@ opts.each do |opt, arg|
     exclude_regexps << Regexp.new(arg)
   when '--hidden-only'
     $hidden_only = true
-  when '--not-unused'
-    $show_unused = false
   end
 end
 
@@ -88,9 +82,6 @@ def scanfile(filename)
           $symbol_objects[sym.name] = filename
         end
       end
-
-      this_defined = this_defined.intersection this_using unless
-        $show_unused
 
       # Remove the symbols that are being used which are defined in this
       # translation unit. We need to find which symbols are _only_ used
