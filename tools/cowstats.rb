@@ -60,8 +60,11 @@ $rel_total = 0
 
 def cowstats_scan(file, stats_only)
   data_vars = []
+  data_size = 0
   bss_vars = []
+  bss_size = 0
   rel_vars = []
+  rel_size = 0
   
   begin
     Elf::File.open(file) do |elf|
@@ -86,10 +89,13 @@ def cowstats_scan(file, stats_only)
         case symbol.section.name
         when /^\.data\.rel(\.ro)?(\.local)?(\..*)?/
           rel_vars << symbol
+          rel_size += symbol.size
         when /^\.data(\.local)?(\..*)?/
           data_vars << symbol
+          data_size += symbol.size
         when /^\.bss(\..*)?/
           bss_vars << symbol
+          bss_size += symbol.size
         end
       end
       
@@ -101,49 +107,44 @@ def cowstats_scan(file, stats_only)
     $stderr.puts "cowstats.rb: #{file}: not a valid ELF file."
     return
   end
+
+  return unless (data_vars + bss_vars + rel_vars ).length > 0
+
+  $data_total += data_size
+  $bss_total += bss_size
+  $rel_total += rel_size
     
   if stats_only
     $files_info[file] = {
-      "data_vars" => data_vars,
-      "bss_vars" => bss_vars,
-      "rel_vars" => rel_vars
+      :data_size => data_size,
+      :bss_size => bss_size,
+      :rel_size => rel_size
     }
     return
   end
 
-  return unless (data_vars + bss_vars + rel_vars ).length > 0
   puts "Processing file #{file}"
     
-  data_size = 0
-  bss_size = 0
-  rel_size = 0
-  
   if data_vars.length > 0
     puts "  The following variables are writable (Copy-On-Write):"
     data_vars.each do |sym|
       puts "    #{sym} (size: #{sym.size})"
-      data_size += sym.size
     end
   end
-  $data_total += data_size
   
   if bss_vars.length > 0
     puts "  The following variables aren't initialised (Copy-On-Write):"
     bss_vars.each do |sym|
       puts "    #{sym} (size: #{sym.size})"
-      bss_size += sym.size
     end
   end
-  $bss_total += bss_size
   
   if rel_vars.length > 0
     puts "  The following variables need runtime relocation (Copy-On-Write):"
     rel_vars.each do |sym|
       puts "    #{sym} (size: #{sym.size})"
-      rel_size += sym.size
     end
   end
-  $rel_total += rel_size
   
   if $show_total
     puts "  Total writable variables size: #{data_size}" unless data_size == 0
@@ -172,38 +173,27 @@ if not stats_only
   $files_info.each_pair do |file, info|
   end
 else
-  maxlen = "File name".length
-  max_data_len = ".data size".length
-  max_bss_len = ".bss size".length
-  max_rel_len = ".data.rel.* size".length
-
   output_info = []
 
+  file_lengths = ["File name".length]
+  data_lengths = [".data size".length]
+  bss_lengths  = [".bss size".length]
+  rel_lengths  = [".data.rel.* size".length]
   $files_info.each_pair do |file, info|
-    next unless (info["data_vars"] + info["bss_vars"] + info["rel_vars"] ).length > 0
-    maxlen = file.length if maxlen < file.length
-
-    data_size = 0
-    info["data_vars"].each { |sym| data_size += sym.size }
-    $data_total += data_size
-    max_data_len = data_size.to_s.length if max_data_len < data_size.to_s.length
-
-    bss_size = 0
-    info["bss_vars"].each { |sym| bss_size += sym.size }
-    $bss_total += bss_size
-    max_bss_len = bss_size.to_s.length if max_bss_len < bss_size.to_s.length
-
-    rel_size = 0
-    info["rel_vars"].each { |sym| rel_size += sym.size }
-    $rel_total += rel_size
-    max_rel_len = rel_size.to_s.length if max_rel_len < rel_size.to_s.length
-
-    output_info << [file, data_size, bss_size, rel_size]
+    file_lengths << file.length
+    data_lengths << info[:data_size].to_s.length
+    bss_lengths  << info[:bss_size] .to_s.length
+    rel_lengths  << info[:rel_size] .to_s.length
   end
 
+  maxlen       = file_lengths.max
+  max_data_len = data_lengths.max
+  max_bss_len  = bss_lengths .max
+  max_rel_len  = rel_lengths .max
+
   puts "#{'File name'.ljust maxlen} | #{'.data size'.ljust max_data_len} | #{'.bss size'.ljust max_data_len} | #{'.data.rel.* size'.ljust max_data_len}"
-  output_info.each do |info|
-    puts "#{info[0].ljust maxlen}   #{info[1].to_s.rjust max_data_len}   #{info[2].to_s.rjust max_data_len}   #{info[3].to_s.rjust max_data_len}"
+  $files_info.each do |file, info|
+    puts "#{file.ljust maxlen}   #{info[:data_size].to_s.rjust max_data_len}   #{info[:bss_size].to_s.rjust max_bss_len}   #{info[:rel_size].to_s.rjust max_rel_len}"
   end
 end
 
