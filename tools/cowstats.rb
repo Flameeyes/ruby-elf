@@ -175,8 +175,6 @@ else
 end
 
 if $stats_only
-  output_info = []
-
   file_lengths = ["File name".length]
   data_lengths = [".data size".length]
   bss_lengths  = [".bss size".length]
