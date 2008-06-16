@@ -169,10 +169,7 @@ else
   end
 end
 
-if not stats_only
-  $files_info.each_pair do |file, info|
-  end
-else
+if stats_only
   output_info = []
 
   file_lengths = ["File name".length]
