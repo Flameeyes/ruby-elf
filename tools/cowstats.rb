@@ -54,9 +54,12 @@ opts.each do |opt, arg|
 end
 
 $files_info = {}
-$data_total = 0
-$bss_total = 0
-$rel_total = 0
+
+if $show_total
+  $data_total = 0
+  $bss_total = 0
+  $rel_total = 0
+end
 
 def cowstats_scan(file)
   data_vars = []
@@ -108,11 +111,13 @@ def cowstats_scan(file)
     return
   end
 
-  return unless (data_vars + bss_vars + rel_vars ).length > 0
+  return unless (data_size + bss_size + rel_size ) > 0
 
-  $data_total += data_size
-  $bss_total += bss_size
-  $rel_total += rel_size
+  if $show_total
+    $data_total += data_size
+    $bss_total += bss_size
+    $rel_total += rel_size
+  end
     
   if $stats_only
     $files_info[file] = {
@@ -194,11 +199,11 @@ if $stats_only
   end
 end
 
-data_total_real = $data_total > 0 ? (($data_total/4096) + ($data_total % 4096 ? 1 : 0)) * 4096 : 0
-bss_total_real = $bss_total > 0 ? (($bss_total/4096) + ($bss_total % 4096 ? 1 : 0)) * 4096 : 0 
-rel_total_real = $rel_total > 0 ? (($rel_total/4096) + ($rel_total % 4096 ? 1 : 0)) * 4096 : 0
-
 if $show_total
+  data_total_real = $data_total > 0 ? (($data_total/4096) + ($data_total % 4096 ? 1 : 0)) * 4096 : 0
+  bss_total_real = $bss_total > 0 ? (($bss_total/4096) + ($bss_total % 4096 ? 1 : 0)) * 4096 : 0 
+  rel_total_real = $rel_total > 0 ? (($rel_total/4096) + ($rel_total % 4096 ? 1 : 0)) * 4096 : 0
+
   puts "Totals:"
   puts "    #{$data_total} (#{data_total_real} \"real\") bytes of writable variables."
   puts "    #{$bss_total} (#{bss_total_real} \"real\") bytes of non-initialised variables."
