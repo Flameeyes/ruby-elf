@@ -88,13 +88,13 @@ def cowstats_scan(file)
         
         case symbol.section.name
         when /^\.data\.rel(\.ro)?(\.local)?(\..*)?/
-          rel_vars << symbol
+          rel_vars << symbol unless $stats_only
           rel_size += symbol.size
         when /^\.data(\.local)?(\..*)?/
-          data_vars << symbol
+          data_vars << symbol unless $stats_only
           data_size += symbol.size
         when /^\.bss(\..*)?/
-          bss_vars << symbol
+          bss_vars << symbol unless $stats_only
           bss_size += symbol.size
         end
       end
