@@ -32,7 +32,7 @@ opts = GetoptLong.new(
 )
 
 stats_only = false
-show_total = false
+$show_total = false
 file_list = nil
 $ignore_cxx = false
 
@@ -41,7 +41,7 @@ opts.each do |opt, arg|
   when '--statistics'
     stats_only = true
   when '--total'
-    show_total = true
+    $show_total = true
   when '--filelist'
     if arg == '-'
       file_list = $stdin
@@ -54,11 +54,15 @@ opts.each do |opt, arg|
 end
 
 $files_info = {}
-data_total = 0
-bss_total = 0
-rel_total = 0
+$data_total = 0
+$bss_total = 0
+$rel_total = 0
 
-def cowstats_scan(file)
+def cowstats_scan(file, stats_only)
+  data_vars = []
+  bss_vars = []
+  rel_vars = []
+  
   begin
     Elf::File.open(file) do |elf|
       if elf.type != Elf::File::Type::Rel
@@ -70,12 +74,6 @@ def cowstats_scan(file)
         next
       end
 
-      $files_info[file] = {}
-      
-      data_vars = []
-      bss_vars = []
-      rel_vars = []
-      
       elf.sections['.symtab'].symbols.each do |symbol|
         # Ignore undefined, absolute and common symbols.
         next unless symbol.section.is_a? Elf::Section
@@ -95,14 +93,62 @@ def cowstats_scan(file)
         end
       end
       
-      $files_info[file]["data_vars"] = data_vars
-      $files_info[file]["bss_vars"] = bss_vars
-      $files_info[file]["rel_vars"] = rel_vars
     end
   rescue Errno::ENOENT
     $stderr.puts "cowstats.rb: #{file}: no such file"
+    return
   rescue Elf::File::NotAnELF
     $stderr.puts "cowstats.rb: #{file}: not a valid ELF file."
+    return
+  end
+    
+  if stats_only
+    $files_info[file] = {
+      "data_vars" => data_vars,
+      "bss_vars" => bss_vars,
+      "rel_vars" => rel_vars
+    }
+    return
+  end
+
+  return unless (data_vars + bss_vars + rel_vars ).length > 0
+  puts "Processing file #{file}"
+    
+  data_size = 0
+  bss_size = 0
+  rel_size = 0
+  
+  if data_vars.length > 0
+    puts "  The following variables are writable (Copy-On-Write):"
+    data_vars.each do |sym|
+      puts "    #{sym} (size: #{sym.size})"
+      data_size += sym.size
+    end
+  end
+  $data_total += data_size
+  
+  if bss_vars.length > 0
+    puts "  The following variables aren't initialised (Copy-On-Write):"
+    bss_vars.each do |sym|
+      puts "    #{sym} (size: #{sym.size})"
+      bss_size += sym.size
+    end
+  end
+  $bss_total += bss_size
+  
+  if rel_vars.length > 0
+    puts "  The following variables need runtime relocation (Copy-On-Write):"
+    rel_vars.each do |sym|
+      puts "    #{sym} (size: #{sym.size})"
+      rel_size += sym.size
+    end
+  end
+  $rel_total += rel_size
+  
+  if $show_total
+    puts "  Total writable variables size: #{data_size}" unless data_size == 0
+    puts "  Total non-initialised variables size: #{bss_size}" unless bss_size == 0
+    puts "  Total variables needing runtime relocation size: #{rel_size}" unless rel_size == 0
   end
 end
 
@@ -114,56 +160,16 @@ end
 
 if file_list
   file_list.each_line do |file|
-    cowstats_scan(file.chomp)
+    cowstats_scan(file.chomp, stats_only)
   end
 else
   ARGV.each do |file|
-    cowstats_scan(file)
+    cowstats_scan(file, stats_only)
   end
 end
 
 if not stats_only
   $files_info.each_pair do |file, info|
-    next unless (info["data_vars"] + info["bss_vars"] + info["rel_vars"] ).length > 0
-    puts "Processing file #{file}"
-    
-    data_size = 0
-    bss_size = 0
-    rel_size = 0
-    
-    if info["data_vars"].length > 0
-      puts "  The following variables are writable (Copy-On-Write):"
-      info["data_vars"].each do |sym|
-        puts "    #{sym} (size: #{sym.size})"
-        data_size += sym.size
-      end
-    end
-    data_total += data_size
-
-    if info["bss_vars"].length > 0
-      puts "  The following variables aren't initialised (Copy-On-Write):"
-      info["bss_vars"].each do |sym|
-        puts "    #{sym} (size: #{sym.size})"
-        bss_size += sym.size
-      end
-    end
-    bss_total += bss_size
-
-    if info["rel_vars"].length > 0
-      puts "  The following variables need runtime relocation (Copy-On-Write):"
-      info["rel_vars"].each do |sym|
-        puts "    #{sym} (size: #{sym.size})"
-        rel_size += sym.size
-      end
-    end
-    rel_total += rel_size
-
-    if show_total
-      puts "  Total writable variables size: #{data_size}" unless data_size == 0
-      puts "  Total non-initialised variables size: #{bss_size}" unless bss_size == 0
-      puts "  Total variables needing runtime relocation size: #{rel_size}" unless rel_size == 0
-    end
-
   end
 else
   maxlen = "File name".length
@@ -179,17 +185,17 @@ else
 
     data_size = 0
     info["data_vars"].each { |sym| data_size += sym.size }
-    data_total += data_size
+    $data_total += data_size
     max_data_len = data_size.to_s.length if max_data_len < data_size.to_s.length
 
     bss_size = 0
     info["bss_vars"].each { |sym| bss_size += sym.size }
-    bss_total += bss_size
+    $bss_total += bss_size
     max_bss_len = bss_size.to_s.length if max_bss_len < bss_size.to_s.length
 
     rel_size = 0
     info["rel_vars"].each { |sym| rel_size += sym.size }
-    rel_total += rel_size
+    $rel_total += rel_size
     max_rel_len = rel_size.to_s.length if max_rel_len < rel_size.to_s.length
 
     output_info << [file, data_size, bss_size, rel_size]
@@ -201,14 +207,14 @@ else
   end
 end
 
-data_total_real = data_total > 0 ? ((data_total/4096) + (data_total % 4096 ? 1 : 0)) * 4096 : 0
-bss_total_real = bss_total > 0 ? ((bss_total/4096) + (bss_total % 4096 ? 1 : 0)) * 4096 : 0 
-rel_total_real = rel_total > 0 ? ((rel_total/4096) + (rel_total % 4096 ? 1 : 0)) * 4096 : 0
+data_total_real = $data_total > 0 ? (($data_total/4096) + ($data_total % 4096 ? 1 : 0)) * 4096 : 0
+bss_total_real = $bss_total > 0 ? (($bss_total/4096) + ($bss_total % 4096 ? 1 : 0)) * 4096 : 0 
+rel_total_real = $rel_total > 0 ? (($rel_total/4096) + ($rel_total % 4096 ? 1 : 0)) * 4096 : 0
 
-if show_total
+if $show_total
   puts "Totals:"
-  puts "    #{data_total} (#{data_total_real} \"real\") bytes of writable variables."
-  puts "    #{bss_total} (#{bss_total_real} \"real\") bytes of non-initialised variables."
-  puts "    #{rel_total} (#{rel_total_real} \"real\") bytes of variables needing runtime relocation."
-  puts "  Total #{data_total+bss_total+rel_total} (#{data_total_real+bss_total_real+rel_total_real} \"real\") bytes of variables in copy-on-write sections"
+  puts "    #{$data_total} (#{data_total_real} \"real\") bytes of writable variables."
+  puts "    #{$bss_total} (#{bss_total_real} \"real\") bytes of non-initialised variables."
+  puts "    #{$rel_total} (#{rel_total_real} \"real\") bytes of variables needing runtime relocation."
+  puts "  Total #{$data_total+$bss_total+$rel_total} (#{data_total_real+bss_total_real+rel_total_real} \"real\") bytes of variables in copy-on-write sections"
 end
