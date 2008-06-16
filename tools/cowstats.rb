@@ -31,7 +31,7 @@ opts = GetoptLong.new(
   ["--ignore-cxx", "-x", GetoptLong::NO_ARGUMENT ]
 )
 
-stats_only = false
+$stats_only = false
 $show_total = false
 file_list = nil
 $ignore_cxx = false
@@ -39,7 +39,7 @@ $ignore_cxx = false
 opts.each do |opt, arg|
   case opt
   when '--statistics'
-    stats_only = true
+    $stats_only = true
   when '--total'
     $show_total = true
   when '--filelist'
@@ -58,7 +58,7 @@ $data_total = 0
 $bss_total = 0
 $rel_total = 0
 
-def cowstats_scan(file, stats_only)
+def cowstats_scan(file)
   data_vars = []
   data_size = 0
   bss_vars = []
@@ -114,7 +114,7 @@ def cowstats_scan(file, stats_only)
   $bss_total += bss_size
   $rel_total += rel_size
     
-  if stats_only
+  if $stats_only
     $files_info[file] = {
       :data_size => data_size,
       :bss_size => bss_size,
@@ -161,15 +161,15 @@ end
 
 if file_list
   file_list.each_line do |file|
-    cowstats_scan(file.chomp, stats_only)
+    cowstats_scan(file.chomp)
   end
 else
   ARGV.each do |file|
-    cowstats_scan(file, stats_only)
+    cowstats_scan(file)
   end
 end
 
-if stats_only
+if $stats_only
   output_info = []
 
   file_lengths = ["File name".length]
