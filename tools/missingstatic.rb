@@ -74,7 +74,8 @@ def scanfile(filename)
           this_using << sym.name
         elsif sym.bind == Elf::Symbol::Binding::Local
           next
-        elsif sym.section.is_a? Elf::Section
+        elsif (sym.section.is_a? Elf::Section) or
+            (sym.section == Elf::Section::Common)
           next if $hidden_only and
             sym.visibility != Elf::Symbol::Visibility::Hidden
 
