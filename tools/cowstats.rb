@@ -28,13 +28,16 @@ opts = GetoptLong.new(
   # Read the file to check from a file rather than commandline
   ["--filelist", "-f", GetoptLong::REQUIRED_ARGUMENT],
   # Ignore C++ "false positives" (vtables and typeinfo)
-  ["--ignore-cxx", "-x", GetoptLong::NO_ARGUMENT ]
+  ["--ignore-cxx", "-x", GetoptLong::NO_ARGUMENT ],
+  # Ignore Profiling false positives
+  ["--ignore-profiling", "-p", GetoptLong::NO_ARGUMENT ]
 )
 
 $stats_only = false
 $show_total = false
 file_list = nil
 $ignore_cxx = false
+$ignore_profiling = false
 
 opts.each do |opt, arg|
   case opt
@@ -50,6 +53,8 @@ opts.each do |opt, arg|
     end
   when '--ignore-cxx'
     $ignore_cxx = true
+  when '--ignore-profiling'
+    $ignore_profiling = true
   end
 end
 
@@ -88,6 +93,7 @@ def cowstats_scan(file)
         next if symbol.name == ""
 
         next if $ignore_cxx and symbol.name =~ /^_ZT[VI](N[0-9]+[A-Z_].*)*[0-9]+[A-Z_].*/
+        next if $ignore_profiling and symbol.name =~ /^__gcov_/
         
         case symbol.section.name
         when /^\.data\.rel(\.ro)?(\.local)?(\..*)?/
