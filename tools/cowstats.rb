@@ -92,9 +92,30 @@ def cowstats_scan(file)
         # section itself.
         next if symbol.name == ""
 
+        # Ignore C++ vtables and other symbols when requested
         next if $ignore_cxx and symbol.name =~ /^_ZT[VI](N[0-9]+[A-Z_].*)*[0-9]+[A-Z_].*/
+        # Ignore profiling symbols when requested by user
         next if $ignore_profiling and symbol.name =~ /^__gcov_/
         
+        # If the section is NoBits, then it's .bss or equivalent, handle
+        # and skip right away.
+        if symbol.section.type == Elf::Section::Type::NoBits
+          bss_vars << symbol unless $stats_only
+          bss_size += symbol.size
+          next
+        end
+
+        # Ignore executable code (.text, .init, .fini)
+        next if symbol.section.flags.include? Elf::Section::Flags::ExecInstr
+        # Ignore read-only sections (.rodata)
+        next unless symbol.section.flags.include? Elf::Section::Flags::Write
+        # Ignore non-allocated sections (all data sections are allocated)
+        next unless symbol.section.flags.include? Elf::Section::Flags::Alloc
+
+        # Until I can find a way to distinguish between relocated and
+        # non-relocated sections, still use the name to choose between
+        # them. If the name is not in this list, at least warn now
+        # about it.
         case symbol.section.name
         when /^\.data\.rel(\.ro)?(\.local)?(\..*)?/
           rel_vars << symbol unless $stats_only
@@ -102,9 +123,8 @@ def cowstats_scan(file)
         when /^\.t?data(\.local)?(\..*)?/
           data_vars << symbol unless $stats_only
           data_size += symbol.size
-        when /^\.t?bss(\..*)?/
-          bss_vars << symbol unless $stats_only
-          bss_size += symbol.size
+        else
+          $stderr.puts "symbol #{symbol.name} in unknown section #{symbol.section.name}"
         end
       end
       
