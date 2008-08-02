@@ -99,10 +99,10 @@ def cowstats_scan(file)
         when /^\.data\.rel(\.ro)?(\.local)?(\..*)?/
           rel_vars << symbol unless $stats_only
           rel_size += symbol.size
-        when /^\.data(\.local)?(\..*)?/
+        when /^\.t?data(\.local)?(\..*)?/
           data_vars << symbol unless $stats_only
           data_size += symbol.size
-        when /^\.bss(\..*)?/
+        when /^\.t?bss(\..*)?/
           bss_vars << symbol unless $stats_only
           bss_size += symbol.size
         end
