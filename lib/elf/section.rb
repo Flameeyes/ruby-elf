@@ -43,7 +43,21 @@ module Elf
         when Elf::Machine::ARM
           type = Type::ProcARM[type_id]
         end
-      # elsif type_id >= Type::LoOs.val && type_id <= Type::HiOs.val
+      # We can't use LoOs and HiOs because HiOs is also
+      # the value of a valid section type.
+      elsif type_id >= 0x60000000 && type_id <= 0x6fffffff
+        case elf.abi
+        when Elf::OsAbi::Solaris
+          type = Type::OsSolaris[type_id]
+        else
+          begin
+            type = Type[type_id]
+          rescue Elf::Value::OutOfBound
+            # Unknown OS-specific section type, ignore it
+            # TODO: maybe we could output a warning?
+            type = nil
+          end
+        end
       else
         type = Type[type_id]
       end
@@ -173,14 +187,11 @@ module Elf
              0x6ffffff7 => [ :GnuLiblist, 'Prelink library list' ],
              0x6ffffff8 => [ :Checksum, 'Checksum for DSO content' ],
 #             0x6ffffffa => [ :LoSunW, 'Sun-specific range start' ],
-             0x6ffffffa => [ :SunWMove, nil ],
-             0x6ffffffb => [ :SunWComDat, nil ],
-             0x6ffffffc => [ :SunWSymInfo, nil ],
              0x6ffffffd => [ :GNUVerDef, 'Version definition section' ],
              0x6ffffffe => [ :GNUVerNeed, 'Version needs section' ],
+             0x6fffffff => [ :GNUVerSym, 'Version symbol table' ],
 #             0x6fffffff => [ :HiSunW, 'Sun-specific range end' ],
 #             0x6fffffff => [ :HiOs, 'OS-specific range end' ],
-             0x6fffffff => [ :GNUVerSym, 'Version symbol table' ],
              0x70000000 => [ :LoProc, 'Processor-specific range start' ],
              0x7fffffff => [ :HiProc, 'Processor-specific range end' ],
              0x80000000 => [ :LoUser, 'Application-specific range start' ],
@@ -200,6 +211,18 @@ module Elf
       class ProcARM < Value
         fill({
              0x70000003 => [ :ARMAttributes, 'ARM Attributes' ],
+             })
+      end
+
+      class OsSolaris < Value
+        fill({
+               0x6ffffff1 => [ :SunWDynSymSort, nil ],
+               0x6ffffff3 => [ :SunWLDynSym, nil ],
+               0x6ffffff5 => [ :SunWCap, nil ],
+               0x6ffffffa => [ :SunWMove, nil ],
+               0x6ffffffb => [ :SunWComDat, nil ],
+               0x6ffffffc => [ :SunWSymInfo, nil ],
+               0x6ffffffe => [ :SunWVersion, 'Sun version information' ],
              })
       end
     end
