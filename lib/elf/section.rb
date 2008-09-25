@@ -53,9 +53,8 @@ module Elf
           begin
             type = Type[type_id]
           rescue Elf::Value::OutOfBound
-            # Unknown OS-specific section type, ignore it
-            # TODO: maybe we could output a warning?
-            type = nil
+            # Unknown OS-specific section type, provide a dummy
+            type = Elf::Value::Unknown.new(type_id, "SHT_LOOS+#{type_id}")
           end
         end
       else

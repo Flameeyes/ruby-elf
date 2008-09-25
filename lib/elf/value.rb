@@ -70,5 +70,24 @@ module Elf
     def Value.each(&block)
       @enums.each_value(&block)
     end
+
+    # Class for unknown values
+    #
+    # This class is used to provide a way to access at least basic
+    # data for values that are not known but are known valid (like OS-
+    # or CPU-specific types for files, sections and symbols).
+    #
+    # It mimics the basis of a Value but is custom-filled by the using
+    # code.
+    class Unknown
+      def initialize(val, desc)
+        @val = val
+        @desc = desc
+      end
+
+      attr_reader :desc, :val
+      alias :to_i :val
+      alias :to_s :desc
+    end
   end
 end
