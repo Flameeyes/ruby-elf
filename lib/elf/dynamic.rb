@@ -204,6 +204,12 @@ module Elf
         end
       end
 
+      def count
+        load unless @versions
+
+        @versions.size
+      end
+
       def [](idx)
         load unless @versions
 
@@ -248,6 +254,12 @@ module Elf
 
           entry_off += next_entry_off
         end
+      end
+
+      def count
+        load unless @defined_versions
+
+        @defined_versions.size
       end
  
       def [](idx)
@@ -303,7 +315,12 @@ module Elf
         end
       end
  
+      def count
+        load unless @needed_versions
 
+        @needed_versions.size
+      end
+ 
       def [](idx)
         load unless @needed_versions
 
