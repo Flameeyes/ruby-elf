@@ -54,7 +54,7 @@ module Elf
             type = Type[type_id]
           rescue Elf::Value::OutOfBound
             # Unknown OS-specific section type, provide a dummy
-            type = Elf::Value::Unknown.new(type_id, "SHT_LOOS+#{type_id}")
+            type = Elf::Value::Unknown.new(type_id, sprintf("SHT_LOOS+%07x", type_id-0x60000000))
           end
         end
       else
