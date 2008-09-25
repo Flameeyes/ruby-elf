@@ -180,4 +180,33 @@ class TC_Exceptions < Test::Unit::TestCase
 
     assert(exception_received, "Elf::File::InvalidMachine exception not received.")
   end
+
+  # Test behaviour when a file contains an invalid section type
+  # (unknown and outside specific ranges).
+  #
+  # Expected behaviour: Elf::Section::UnknownType exception is raised
+  def test_unknown_section_type
+    assert(File.exist?(TestDir + "invalid_unknown_section_type"),
+           "Missing test file invalid_unknown_section_type")
+
+    exception_received = false
+    begin
+      elf = Elf::File.new(TestDir + "invalid_unknown_section_type")
+      elf.close
+    rescue Elf::Section::UnknownType => e
+      exception_received = true
+
+      assert(e.type_id == 0x0000ff02,
+             "Wrong type_id reported for unknown section type (#{sprintf '0x%08x', e.type_id})")
+
+      # We expect an integer as the test file will stop processing
+      # _before_ strtab is identified, so there is no string table.
+      assert(e.section_name.is_a?(Integer),
+             "Non-integer section name provided")
+      assert(e.section_name == 1,
+             "Wrong section_name reported for unknown section type #{e.section_name}")
+    end
+    
+    assert(exception_received, "Elf::Section::UnknownType exception not received.")
+  end
 end

@@ -28,6 +28,19 @@ module Elf
     Undef  = nil    # Would be '0', but this fits enough
     Abs    = 0xfff1 # Absolute symbols
     Common = 0xfff2 # Common symbols
+    
+    class UnknownType < Exception
+      def initialize(type_id, section_name)
+        @type_id = type_id
+        @section_name = section_name
+      end
+
+      def message
+        sprintf "Unknown section type 0x%08x for section #{@section_name}", @type_id
+      end
+
+      attr_reader :type_id, :section_name
+    end
 
     # Create a new Section object reading the section's header from
     # the file.
@@ -42,6 +55,14 @@ module Elf
         case elf.machine
         when Elf::Machine::ARM
           type = Type::ProcARM[type_id]
+        else
+          begin
+            # Accept general processor-specific section types
+            type = Type[type_id]
+          rescue Elf::Value::OutOfBound
+            # Uknown processor-specific section type, provide a dummy
+            type = Elf::Value::Unknown.new(type_id, sprintf("SHT_LOPROC+%07x", type_id-Type::LoProc))
+          end
         end
       elsif type_id >= Type::LoOs && type_id <= Type::HiOs
         case elf.abi
@@ -49,14 +70,26 @@ module Elf
           type = Type::OsSolaris[type_id]
         else
           begin
+            # Accept general OS-specific section types, like GNU's
             type = Type[type_id]
           rescue Elf::Value::OutOfBound
             # Unknown OS-specific section type, provide a dummy
             type = Elf::Value::Unknown.new(type_id, sprintf("SHT_LOOS+%07x", type_id-Type::LoOs))
           end
         end
+      elsif type_id >= Type::LoUser && type_id <= Type::HiUser
+        begin
+          type = Type[type_id]
+        rescue Elf::Value::OutOfBound
+          # Unknown application-specific section type, provide a dummy
+          type = Elf::Value::Unknown.new(type_id, sprintf("SHT_LOUSER+%07x", type_id-Type::LoUser))
+        end
       else
-        type = Type[type_id]
+        begin
+          type = Type[type_id]
+        rescue Elf::Value::OutOfBound
+          raise UnknownType.new(type_id, elf.string_table ? elf.string_table[name] : name)
+        end
       end
 
       if Type::Class[type]
