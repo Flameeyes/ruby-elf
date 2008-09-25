@@ -38,14 +38,12 @@ module Elf
       name = elf.read_word
       type_id = elf.read_word
       
-      if type_id >= Type::LoProc.val && type_id <= Type::HiProc.val
+      if type_id >= Type::LoProc && type_id <= Type::HiProc
         case elf.machine
         when Elf::Machine::ARM
           type = Type::ProcARM[type_id]
         end
-      # We can't use LoOs and HiOs because HiOs is also
-      # the value of a valid section type.
-      elsif type_id >= 0x60000000 && type_id <= 0x6fffffff
+      elsif type_id >= Type::LoOs && type_id <= Type::HiOs
         case elf.abi
         when Elf::OsAbi::Solaris
           type = Type::OsSolaris[type_id]
@@ -54,7 +52,7 @@ module Elf
             type = Type[type_id]
           rescue Elf::Value::OutOfBound
             # Unknown OS-specific section type, provide a dummy
-            type = Elf::Value::Unknown.new(type_id, sprintf("SHT_LOOS+%07x", type_id-0x60000000))
+            type = Elf::Value::Unknown.new(type_id, sprintf("SHT_LOOS+%07x", type_id-Type::LoOs))
           end
         end
       else
@@ -181,21 +179,33 @@ module Elf
              16 => [ :PreinitArray, 'Array of pre-constructors' ],
              17 => [ :Group, 'Section group' ],
              18 => [ :SymTabShndx, 'Extended section indeces' ],
-#             0x60000000 => [ :LoOs, 'OS-specific range start' ],
+             # OS-specific range start
              0x6ffffff6 => [ :GnuHash, 'GNU-style hash table' ],
              0x6ffffff7 => [ :GnuLiblist, 'Prelink library list' ],
              0x6ffffff8 => [ :Checksum, 'Checksum for DSO content' ],
-#             0x6ffffffa => [ :LoSunW, 'Sun-specific range start' ],
+             # Sun-specific range start
              0x6ffffffd => [ :GNUVerDef, 'Version definition section' ],
              0x6ffffffe => [ :GNUVerNeed, 'Version needs section' ],
-             0x6fffffff => [ :GNUVerSym, 'Version symbol table' ],
-#             0x6fffffff => [ :HiSunW, 'Sun-specific range end' ],
-#             0x6fffffff => [ :HiOs, 'OS-specific range end' ],
-             0x70000000 => [ :LoProc, 'Processor-specific range start' ],
-             0x7fffffff => [ :HiProc, 'Processor-specific range end' ],
-             0x80000000 => [ :LoUser, 'Application-specific range start' ],
-             0x8fffffff => [ :HiUser, 'Application-specific range end' ]
+             0x6fffffff => [ :GNUVerSym, 'Version symbol table' ]
+             # Sun-specific range end
+             # OS-specific range end
            })
+
+      # OS-specific range
+      LoOs = 0x60000000
+      HiOs = 0x6fffffff
+      
+      # Sun-specific range
+      LoSunW = 0x6ffffffa
+      HiSunW = 0x6fffffff
+
+      # Processor-specific range
+      LoProc = 0x70000000
+      HiProc = 0x7fffffff
+
+      # Application-specific range
+      LoUser = 0x80000000
+      HiUser = 0x8fffffff
 
       Class = {
         StrTab => Elf::StringTable,

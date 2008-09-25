@@ -90,12 +90,16 @@ module Elf
              1 => [ :Rel, 'Relocatable file' ],
              2 => [ :Exec, 'Executable file' ],
              3 => [ :Dyn, 'Shared object file' ],
-             4 => [ :Core, 'Core file' ],
-             0xfe00 => [ :LoOs, 'OS-specific range start' ],
-             0xfeff => [ :HiOs, 'OS-specific range end' ],
-             0xff00 => [ :LoProc, 'Processor-specific range start' ],
-             0xffff => [ :HiProc, 'Processor-specific range end' ]
+             4 => [ :Core, 'Core file' ]
            })
+
+      # OS-specific range
+      LoOs = 0xfe00
+      HiOs = 0xfeff
+      
+      # Processor-specific range
+      LoProc = 0xff00
+      HiProc = 0xffff
     end
 
     attr_reader :elf_class, :data_encoding, :type, :version, :abi,

@@ -28,12 +28,16 @@ module Elf
               1 => [ :Global, 'Global symbol' ],
               2 => [ :Weak, 'Weak symbol' ],
              # This one is inferred out of libpam.so
-              3 => [ :Number, 'Number of defined type' ],
-             10 => [ :LoOs, 'OS-specific range start' ],
-             12 => [ :HiOs, 'OS-specific range end' ],
-             13 => [ :LoProc, 'Processor-specific range start' ],
-             15 => [ :HiProc, 'Processor-specific range end' ]
+              3 => [ :Number, 'Number of defined type' ]
            })
+      
+      # OS-specific range
+      LoOs = 10
+      HiOs = 12
+      
+      # Processor-specific range
+      LoProc = 13
+      HiProc = 15
     end
 
     class Type < Value
@@ -44,12 +48,16 @@ module Elf
               3 => [ :Section, 'Associated with a section' ],
               4 => [ :File, 'File name' ],
               5 => [ :Common, 'Common data object' ],
-              6 => [ :TLS, 'Thread-local data object' ],
-             10 => [ :LoOs, 'OS-specific range start' ],
-             12 => [ :HiOs, 'OS-specific range end' ],
-             13 => [ :LoProc, 'Processor-specific range start' ],
-             15 => [ :HiProc, 'Processor-specific range end' ]
+              6 => [ :TLS, 'Thread-local data object' ]
            })
+
+      # OS-specific range
+      LoOs = 10
+      HiOs = 12
+
+      # Processor-specific range
+      LoProc = 13
+      HiProc = 15
     end
 
     class Visibility < Value
