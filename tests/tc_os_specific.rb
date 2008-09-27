@@ -49,38 +49,38 @@ class TC_OsSpecific < Test::Unit::TestCase
   end
 
   def test_sections_presence
-    assert(@elf.sections[".SUNW_cap"],
+    assert(@elf[".SUNW_cap"],
            ".SUNW_cap section not found")
-    assert(@elf.sections[".SUNW_ldynsym"],
+    assert(@elf[".SUNW_ldynsym"],
            ".SUNW_ldynsym section not found")
-    assert(@elf.sections[".SUNW_dynsymsort"],
+    assert(@elf[".SUNW_dynsymsort"],
            ".SUNW_dynsymsort section not found")
   end
 
   def test_sections_type_classes
-    assert(@elf.sections[".SUNW_cap"].type.class == Elf::Value::Unknown,
-           "section .SUNW_cap not of unknown type (#{@elf.sections[".SUNW_cap"].type.class})")
-    assert(@elf.sections[".SUNW_ldynsym"].type.class == Elf::Value::Unknown,
-           "section .SUNW_ldynsym not of unknown type (#{@elf.sections[".SUNW_ldynsym"].type.class})")
-    assert(@elf.sections[".SUNW_dynsymsort"].type.class == Elf::Value::Unknown,
-           "section .SUNW_dynsymsort not of unknown type (#{@elf.sections[".SUNW_dynsymsort"].type.class})")
+    assert(@elf[".SUNW_cap"].type.class == Elf::Value::Unknown,
+           "section .SUNW_cap not of unknown type (#{@elf[".SUNW_cap"].type.class})")
+    assert(@elf[".SUNW_ldynsym"].type.class == Elf::Value::Unknown,
+           "section .SUNW_ldynsym not of unknown type (#{@elf[".SUNW_ldynsym"].type.class})")
+    assert(@elf[".SUNW_dynsymsort"].type.class == Elf::Value::Unknown,
+           "section .SUNW_dynsymsort not of unknown type (#{@elf[".SUNW_dynsymsort"].type.class})")
   end
 
   def test_sections_type_ids
-    assert(@elf.sections[".SUNW_cap"].type.to_i == 0x6ffffff5,
-           "section .SUNW_cap not of type number 0x6ffffff5 (0x#{sprintf "%08x", @elf.sections[".SUNW_cap"].type.to_i})")
-    assert(@elf.sections[".SUNW_ldynsym"].type.to_i == 0x6ffffff3,
-           "section .SUNW_ldynsym not of type number 0x6ffffff5 (0x#{sprintf "%08x", @elf.sections[".SUNW_ldynsym"].type.to_i})")
-    assert(@elf.sections[".SUNW_dynsymsort"].type.to_i == 0x6ffffff1,
-           "section .SUNW_dynsymsort not of type number 0x6ffffff5 (0x#{sprintf "%08x", @elf.sections[".SUNW_dynsymsort"].type.to_i})")
+    assert(@elf[".SUNW_cap"].type.to_i == 0x6ffffff5,
+           "section .SUNW_cap not of type number 0x6ffffff5 (0x#{sprintf "%08x", @elf[".SUNW_cap"].type.to_i})")
+    assert(@elf[".SUNW_ldynsym"].type.to_i == 0x6ffffff3,
+           "section .SUNW_ldynsym not of type number 0x6ffffff5 (0x#{sprintf "%08x", @elf[".SUNW_ldynsym"].type.to_i})")
+    assert(@elf[".SUNW_dynsymsort"].type.to_i == 0x6ffffff1,
+           "section .SUNW_dynsymsort not of type number 0x6ffffff5 (0x#{sprintf "%08x", @elf[".SUNW_dynsymsort"].type.to_i})")
   end
 
   def test_sections_type_names
-    assert(@elf.sections[".SUNW_cap"].type.to_s == "SHT_LOOS+ffffff5",
-           "section .SUNW_cap name is not the expected one (#{@elf.sections[".SUNW_cap"].type.to_s})")
-    assert(@elf.sections[".SUNW_ldynsym"].type.to_s == "SHT_LOOS+ffffff3",
-           "section .SUNW_ldynsym name is not the expected one (#{@elf.sections[".SUNW_ldynsym"].type.to_s})")
-    assert(@elf.sections[".SUNW_dynsymsort"].type.to_s == "SHT_LOOS+ffffff1",
-           "section .SUNW_dynsymsort name is not the expected one (#{@elf.sections[".SUNW_dynsymsort"].type.to_s})")
+    assert(@elf[".SUNW_cap"].type.to_s == "SHT_LOOS+ffffff5",
+           "section .SUNW_cap name is not the expected one (#{@elf[".SUNW_cap"].type.to_s})")
+    assert(@elf[".SUNW_ldynsym"].type.to_s == "SHT_LOOS+ffffff3",
+           "section .SUNW_ldynsym name is not the expected one (#{@elf[".SUNW_ldynsym"].type.to_s})")
+    assert(@elf[".SUNW_dynsymsort"].type.to_s == "SHT_LOOS+ffffff1",
+           "section .SUNW_dynsymsort name is not the expected one (#{@elf[".SUNW_dynsymsort"].type.to_s})")
   end
 end

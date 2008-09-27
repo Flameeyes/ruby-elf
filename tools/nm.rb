@@ -42,7 +42,7 @@ files.each do |file|
     Elf::File.open(file) do |elf|
       addrsize = (elf.elf_class == Elf::Class::Elf32 ? 8 : 16)
 
-      symsection = elf.sections[scan_section]
+      symsection = elf[scan_section]
 
       if symsection == nil
         $stderr.puts "nm.rb: #{elf.path}: No symbols"

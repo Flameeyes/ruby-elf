@@ -134,28 +134,28 @@ module Elf
       # We didn't read the section yet.
       @section = nil if @section == 0
 
-      if @section.is_a? Integer and @file.sections[@section]
-        @section = @file.sections[@section]
+      if @section.is_a? Integer and @file[@section]
+        @section = @file[@section]
       end
 
       @section
     end
 
     def version
-      return nil if @file.sections['.gnu.version'] == nil or
+      return nil if @file['.gnu.version'] == nil or
         section == Elf::Section::Abs or
         ( section.is_a? Elf::Section and section.name == ".bss" )
 
-      version_idx = @file.sections['.gnu.version'][@idx]
+      version_idx = @file['.gnu.version'][@idx]
       
       return nil unless version_idx && version_idx >= 2
 
-      return @file.sections['.gnu.version_r'][version_idx][:name] if section == nil
+      return @file['.gnu.version_r'][version_idx][:name] if section == nil
 
       name_idx = (version_idx & (1 << 15) == 0) ? 0 : 1
       version_idx = version_idx & ~(1 << 15)
       
-      return @file.sections['.gnu.version_d'][version_idx][:names][name_idx]
+      return @file['.gnu.version_d'][version_idx][:names][name_idx]
     end
   end
 end

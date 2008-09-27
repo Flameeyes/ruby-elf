@@ -165,7 +165,7 @@ module Elf
           when Type::Needed, Type::SoName,
             Type::RPath, Type::RunPath
 
-            @file.sections['.dynstr'][entry[:attribute]]
+            @file['.dynstr'][entry[:attribute]]
           when Type::GNUPrelinked
             Time.at(entry[:attribute])
           end

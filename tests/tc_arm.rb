@@ -25,14 +25,25 @@ require 'elf'
 class TC_ARM < Test::Unit::TestCase
   TestDir = Pathname.new(__FILE__).dirname + "binaries"
 
+  def setup
+    @elf = Elf::File.new(TestDir + "arm-crtn.o")
+
+    assert(@elf.machine == Elf::Machine::ARM,
+           "wrong ELF machine type (expected Elf::Machine::ARM, got #{@elf.machine}")
+  end
+
+  def teardown
+    @elf.close
+  end
+
   def test_section_presence
-    elf = Elf::File.new(TestDir + "arm-crtn.o")
-    assert(elf.machine == Elf::Machine::ARM,
-           "wrong ELF machine type (expected Elf::Machine::ARM, got #{elf.machine}")
-    assert(elf.sections[".ARM.attributes"],
+    assert(@elf.has_section?(".ARM.attributes"),
            ".ARM.attributes section not found.")
-    assert(elf.sections[".ARM.attributes"].type == Elf::Section::Type::ProcARM::ARMAttributes,
-           "wrong .ARM.attributes type (expected Elf::Section::Type::ProcARM::ARMAttributes, got #{elf.sections[".ARM.attributes"].type})")
+  end
+
+  def test_section_type
+    assert(@elf[".ARM.attributes"].type == Elf::Section::Type::ProcARM::ARMAttributes,
+           "wrong .ARM.attributes type (expected Elf::Section::Type::ProcARM::ARMAttributes, got #{@elf[".ARM.attributes"].type})")
   end
 
 end

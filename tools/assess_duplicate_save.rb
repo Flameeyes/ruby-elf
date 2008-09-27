@@ -33,8 +33,8 @@ def assess_save(file)
     Elf::File.open(file) do |elf|
       seenstr = Set.new
 
-      symsec = elf.sections['.dynsym']
-      strsec = elf.sections['.dynstr']
+      symsec = elf['.dynsym']
+      strsec = elf['.dynstr']
 
       next unless symsec and strsec
 
@@ -51,7 +51,7 @@ def assess_save(file)
       # Dynamic executables and shared objects keep more data into the
       # .dynstr than static executables, in particular they have symbols
       # versions, their soname and their NEEDED sections strings.
-      versec = elf.sections['.gnu.version_d']
+      versec = elf['.gnu.version_d']
       if versec
         versec.each do |veridx, ver|
           ver[:names].each do |vername|
@@ -62,7 +62,7 @@ def assess_save(file)
         end
       end
 
-      versec = elf.sections['.gnu.version_r']
+      versec = elf['.gnu.version_r']
       if versec
         versec.each do |veridx, ver|
           next if seenstr.include? ver[:name]
@@ -71,7 +71,7 @@ def assess_save(file)
         end
       end
 
-      elf.sections['.dynamic'].entries.each do |entry|
+      elf['.dynamic'].entries.each do |entry|
         case entry[:type]
         when Elf::Dynamic::Type::Needed, Elf::Dynamic::Type::SoName,
           Elf::Dynamic::Type::RPath, Elf::Dynamic::Type::RunPath

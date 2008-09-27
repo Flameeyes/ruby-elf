@@ -60,7 +60,7 @@ def scanfile(filename)
         $stderr.puts "missingstatic.rb: #{file}: not an object file"
         next
       end
-      if elf.sections['.symtab'] == nil
+      if elf['.symtab'] == nil
         $stderr.puts "missingstatic.rb: #{file}: no .symtab section found"
         next
       end
@@ -69,7 +69,7 @@ def scanfile(filename)
       this_defined = Set.new
       this_using = Set.new
 
-      elf.sections['.symtab'].symbols.each do |sym|
+      elf['.symtab'].symbols.each do |sym|
         if sym.section == Elf::Section::Undef
           this_using << sym.name
         elsif sym.bind == Elf::Symbol::Binding::Local

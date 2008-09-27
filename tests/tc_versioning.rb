@@ -36,36 +36,36 @@ class TC_Versioning < Test::Unit::TestCase
 
   def test_sections_presence
     [".gnu.version", ".gnu.version_d", ".gnu.version_r"].each do |sect|
-      assert(@elf.sections[sect],
+      assert(@elf[sect],
              "Missing section #{sect}")
     end
   end
 
   def test_sections_types
-    assert(@elf.sections[".gnu.version"].type == Elf::Section::Type::GNU::VerSym,
-          "Section .gnu.version of wrong type (#{@elf.sections[".gnu.version"].type})")
-    assert(@elf.sections[".gnu.version_d"].type == Elf::Section::Type::GNU::VerDef,
-          "Section .gnu.version_d of wrong type (#{@elf.sections[".gnu.version_d"].type})")
-    assert(@elf.sections[".gnu.version_r"].type == Elf::Section::Type::GNU::VerNeed,
-          "Section .gnu.version_r of wrong type (#{@elf.sections[".gnu.version_r"].type})")
+    assert(@elf[".gnu.version"].type == Elf::Section::Type::GNU::VerSym,
+          "Section .gnu.version of wrong type (#{@elf[".gnu.version"].type})")
+    assert(@elf[".gnu.version_d"].type == Elf::Section::Type::GNU::VerDef,
+          "Section .gnu.version_d of wrong type (#{@elf[".gnu.version_d"].type})")
+    assert(@elf[".gnu.version_r"].type == Elf::Section::Type::GNU::VerNeed,
+          "Section .gnu.version_r of wrong type (#{@elf[".gnu.version_r"].type})")
   end
 
   def test_sections_classes
-    assert(@elf.sections[".gnu.version"].class == Elf::GNU::SymbolVersionTable,
-           "Section .gnu.version of wrong class (#{@elf.sections[".gnu_version"].class})")
-    assert(@elf.sections[".gnu.version_d"].class == Elf::GNU::SymbolVersionDef,
-           "Section .gnu.version_d of wrong class (#{@elf.sections[".gnu_version_d"].class})")
-    assert(@elf.sections[".gnu.version_r"].class == Elf::GNU::SymbolVersionNeed,
-           "Section .gnu.version_r of wrong class (#{@elf.sections[".gnu_version_r"].class})")
+    assert(@elf[".gnu.version"].class == Elf::GNU::SymbolVersionTable,
+           "Section .gnu.version of wrong class (#{@elf[".gnu.version"].class})")
+    assert(@elf[".gnu.version_d"].class == Elf::GNU::SymbolVersionDef,
+           "Section .gnu.version_d of wrong class (#{@elf[".gnu.version_d"].class})")
+    assert(@elf[".gnu.version_r"].class == Elf::GNU::SymbolVersionNeed,
+           "Section .gnu.version_r of wrong class (#{@elf[".gnu.version_r"].class})")
   end
 
   def test__gnu_version
-    assert(@elf.sections[".gnu.version"].count == @elf.sections[".dynsym"].symbols.size,
-           "Wrong version information count (#{@elf.sections[".gnu.version"].count}, expected #{@elf.sections[".dynsym"].symbols.size})")
+    assert(@elf[".gnu.version"].count == @elf[".dynsym"].symbols.size,
+           "Wrong version information count (#{@elf[".gnu.version"].count}, expected #{@elf[".dynsym"].symbols.size})")
   end
 
   def test__gnu_version_d
-    section = @elf.sections[".gnu.version_d"]
+    section = @elf[".gnu.version_d"]
     
     # We always have a "latent" version with the soname of the
     # library, which is the one used by --default-symver option of GNU
@@ -87,7 +87,7 @@ class TC_Versioning < Test::Unit::TestCase
   end
 
   def test__gnu_version_r
-    section = @elf.sections[".gnu.version_r"]
+    section = @elf[".gnu.version_r"]
 
     
     assert(section.count == 1,
@@ -103,7 +103,7 @@ class TC_Versioning < Test::Unit::TestCase
 
   def test_symbols
     first_asymbol_seen = false
-    @elf.sections[".dynsym"].symbols.each do |sym|
+    @elf[".dynsym"].symbols.each do |sym|
       case sym.name
       when "tolower"
         assert(sym.version == "GLIBC_2.2.5",

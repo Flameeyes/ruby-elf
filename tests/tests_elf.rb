@@ -157,11 +157,11 @@ module ElfTests
   # enabled, like ExecInstr and Alloc.
   def test_text_flags
     @elfs.each_pair do |name, elf|
-      assert(elf.sections['.text'],
+      assert(elf['.text'],
              "ELF file #{elf.path} does not contain .text section")
-      assert(elf.sections['.text'].flags.include?(Elf::Section::Flags::ExecInstr),
+      assert(elf['.text'].flags.include?(Elf::Section::Flags::ExecInstr),
              "ELF file #{elf.path}'s .text section is not executable")
-      assert(elf.sections['.text'].flags.include?(Elf::Section::Flags::Alloc),
+      assert(elf['.text'].flags.include?(Elf::Section::Flags::Alloc),
              "ELF file #{elf.path}'s .text section is not allocated")
     end
   end

@@ -105,7 +105,6 @@ module Elf
     attr_reader :elf_class, :data_encoding, :type, :version, :abi,
                 :abi_version, :machine
     attr_reader :string_table
-    attr_reader :sections
 
     def read_addr
       case @elf_class
@@ -190,19 +189,96 @@ module Elf
       shnum = read_half
       shstrndx = read_half
 
-      sections = []
+      elf32 = elf_class == Class::Elf32
+      @sections = {}
+
+      @sections_data = []
       seek(shoff)
       for i in 1..shnum
-        sections << Section.read(self)
+        sectdata = {}
+        sectdata[:idx]       = i-1
+        sectdata[:name_idx]  = read_word
+        sectdata[:type_id]   = read_word
+        sectdata[:flags_val] = elf32 ? read_word : read_xword
+        sectdata[:addr]      = read_addr
+        sectdata[:offset]    = read_off
+        sectdata[:size]      = elf32 ? read_word : read_xword
+        sectdata[:link]      = read_word
+        sectdata[:info]      = read_word
+        sectdata[:addralign] = elf32 ? read_word : read_xword
+        sectdata[:entsize]   = elf32 ? read_word : read_xword
+        
+        @sections_data << sectdata
       end
 
-      @string_table = sections[shstrndx]
-      raise Exception unless @string_table.class == StringTable
+      # Maybe we should warn, but it's still possible that a corrupted
+      # ELF file needs to be read.
+      return unless self[shstrndx].is_a? StringTable
 
-      @sections = {}
-      sections.each_index do |idx|
-        @sections[idx] = sections[idx]
-        @sections[sections[idx].name] = sections[idx]
+      @string_table = self[shstrndx]
+
+      @sections_names = {}
+      @sections_data.each do |sectdata|
+        @sections_names[@string_table[sectdata[:name_idx]]] = sectdata[:idx]
+      end
+    end
+
+    class MissingSection < Exception
+      def initialise(sect_idx_or_name)
+        @idx_or_name = sect_idx_or_name
+      end
+
+      def message
+        "Requested section #{@idx_or_name} not found in the file"
+      end
+    end
+
+    def load_section(sect_idx_or_name)
+      if sect_idx_or_name.is_a? Integer
+        raise MissingSection.new(sect_idx_or_name) unless
+          @sections_data[sect_idx_or_name]
+
+        @sections[sect_idx_or_name] = Section.read(self, @sections_data[sect_idx_or_name])
+      else
+        raise MissingSection.new(sect_idx_or_name) unless
+          @sections_names[sect_idx_or_name]
+        
+        load_section @sections_names[sect_idx_or_name]
+
+        @sections[sect_idx_or_name] = @sections[@sections_names[sect_idx_or_name]]
+      end
+    end
+
+    class MissingStringTable < Exception
+      def initialize(sect_name)
+        @name = sect_name
+      end
+
+      def message
+        "Requested section '#{@name}' but there is no string table (yet)."
+      end
+    end
+
+    def [](sect_idx_or_name)
+      raise MissingStringTable.new(sect_idx_or_name) if 
+        sect_idx_or_name.is_a? String and @string_table == nil
+
+      load_section(sect_idx_or_name) unless
+        @sections.has_key? sect_idx_or_name
+
+      return @sections[sect_idx_or_name]
+    end
+
+    def has_section?(sect_idx_or_name)
+      raise MissingStringTable.new(sect_idx_or_name) if 
+        sect_idx_or_name.is_a? String and @string_table == nil
+
+      if sect_idx_or_name.is_a? Integer
+        return @sections_data[sect_idx_or_name] != nil
+      elsif sect_idx_or_name.is_a? String
+        return @sections_names.has_key?(sect_idx_or_name)
+      else
+        raise Exception
       end
     end
 

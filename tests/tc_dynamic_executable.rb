@@ -30,20 +30,20 @@ class TC_Dynamic_Executable < Test::Unit::TestCase
   # This is a prerequisite for dynamic executable files.
   def test_dynamic
     @elfs.each_pair do |name, elf|
-      assert(elf.sections['.dynamic'],
+      assert(elf['.dynamic'],
              "Missing .dynamic section on ELF file #{elf.path}")
-      assert(elf.sections['.dynamic'].type == Elf::Section::Type::Dynamic,
-             "Wrong type for section .dynamic (expected Elf::Section::Type::Dynamic, got #{elf.sections['.dynamic'].type})")
+      assert(elf['.dynamic'].type == Elf::Section::Type::Dynamic,
+             "Wrong type for section .dynamic (expected Elf::Section::Type::Dynamic, got #{elf['.dynamic'].type})")
     end
   end
 
   # Test for the presence of .dynsym section on the file.
   def test_dynsym_presence
     @elfs.each_pair do |name, elf|
-      assert(elf.sections['.dynsym'],
+      assert(elf['.dynsym'],
              "Missing .dynsym section on ELF file #{elf.path}")
-      assert(elf.sections['.dynsym'].type == Elf::Section::Type::DynSym,
-             "Wrong type for section .dynsym (expected Elf::Section::Type::DynSym, got #{elf.sections['.dynsym'].type})")
+      assert(elf['.dynsym'].type == Elf::Section::Type::DynSym,
+             "Wrong type for section .dynsym (expected Elf::Section::Type::DynSym, got #{elf['.dynsym'].type})")
     end
   end
 
@@ -51,7 +51,7 @@ class TC_Dynamic_Executable < Test::Unit::TestCase
   def test_printf_symbol
     @elfs.each_pair do |name, elf|
       printf_found = false
-      elf.sections['.dynsym'].symbols.each do |sym|
+      elf['.dynsym'].symbols.each do |sym|
         next unless sym.name == "printf"
         printf_found = true
         

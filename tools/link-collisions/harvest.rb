@@ -241,16 +241,16 @@ so_files.each do |so|
 
   begin
     Elf::File.open(so) do |elf|
-      next unless elf.sections['.dynsym'] and elf.sections['.dynstr']
+      next unless elf['.dynsym'] and elf['.dynstr']
 
       abi = "#{elf.elf_class} #{elf.abi} #{elf.machine}"
       soname = ""
 
-      if elf.sections['.dynamic']
-        elf.sections['.dynamic'].entries.each do |entry|
+      if elf['.dynamic']
+        elf['.dynamic'].entries.each do |entry|
           case entry[:type]
           when Elf::Dynamic::Type::SoName
-            soname = elf.sections['.dynstr'][entry[:attribute]]
+            soname = elf['.dynstr'][entry[:attribute]]
           end
         end
       end
@@ -274,7 +274,7 @@ so_files.each do |so|
         db.exec("EXECUTE newobject(#{impid}, '#{so}', '#{elf.elf_class} #{elf.abi} #{elf.machine.to_s.gsub("'", "\\'" )}', '#{soname}')")
       end
         
-      elf.sections['.dynsym'].symbols.each do |sym|
+      elf['.dynsym'].symbols.each do |sym|
         begin
           next if sym.idx == 0 or
             sym.bind != Elf::Symbol::Binding::Global or

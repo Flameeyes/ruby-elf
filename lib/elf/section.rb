@@ -67,76 +67,71 @@ module Elf
     # This function assumes that the elf file is aligned ad the
     # start of a section header, and returns the file moved at the
     # start of the next header.
-    def Section.read(elf)
-      name = elf.read_word
-      type_id = elf.read_word
-      
-      if type_id >= Type::LoProc && type_id <= Type::HiProc
+    def Section.read(elf, sectdata)
+      if sectdata[:type_id] >= Type::LoProc && sectdata[:type_id] <= Type::HiProc
         case elf.machine
         when Elf::Machine::ARM
-          type = Type::ProcARM[type_id]
+          type = Type::ProcARM[sectdata[:type_id]]
         else
           begin
-            # Accept general processor-specific section types
-            type = Type[type_id]
+            # Accept general processor-specific section type_ids
+            type = Type[sectdata[:type_id]]
           rescue Elf::Value::OutOfBound
-            # Uknown processor-specific section type, provide a dummy
-            type = Elf::Value::Unknown.new(type_id, sprintf("SHT_LOPROC+%07x", type_id-Type::LoProc))
+            # Uknown processor-specific section type_id, provide a dummy
+            type = Elf::Value::Unknown.new(sectdata[:type_id], sprintf("SHT_LOPROC+%07x", sectdata[:type_id]-Type::LoProc))
           end
         end
-      elsif type_id >= Type::LoOs && type_id <= Type::HiOs
+      elsif sectdata[:type_id] >= Type::LoOs && sectdata[:type_id] <= Type::HiOs
         case elf.abi
         when Elf::OsAbi::Solaris
-          type = Type::OsSolaris[type_id]
+          type = Type::OsSolaris[sectdata[:type_id]]
         else
-          if Type.has_key? type_id
-            type = Type[type_id]
-          # Accept general OS-specific section types, like GNU's
-          elsif Type::GNU.has_key? type_id
-            type = Type::GNU[type_id]
+          if Type.has_key? sectdata[:type_id]
+            type = Type[sectdata[:type_id]]
+          # Accept general OS-specific section type_ids, like GNU's
+          elsif Type::GNU.has_key? sectdata[:type_id]
+            type = Type::GNU[sectdata[:type_id]]
           else
-            # Unknown OS-specific section type, provide a dummy
-            type = Elf::Value::Unknown.new(type_id, sprintf("SHT_LOOS+%07x", type_id-Type::LoOs))
+            # Unknown OS-specific section type_id, provide a dummy
+            type = Elf::Value::Unknown.new(sectdata[:type_id], sprintf("SHT_LOOS+%07x", sectdata[:type_id]-Type::LoOs))
           end
         end
-      elsif type_id >= Type::LoUser && type_id <= Type::HiUser
-        if type.has_key? type_id
-          type = Type[type_id]
+      elsif sectdata[:type_id] >= Type::LoUser && sectdata[:type_id] <= Type::HiUser
+        if Type.has_key? sectdata[:type_id]
+          type = Type[sectdata[:type_id]]
         else
-          # Unknown application-specific section type, provide a dummy
-          type = Elf::Value::Unknown.new(type_id, sprintf("SHT_LOUSER+%07x", type_id-Type::LoUser))
+          # Unknown application-specific section type_id, provide a dummy
+          type = Elf::Value::Unknown.new(sectdata[:type_id], sprintf("SHT_LOUSER+%07x", sectdata[:type_id]-Type::LoUser))
         end
       else
-        if type.has_key? type_id
-          type = Type[type_id]
-        rescue Elf::Value::OutOfBound
-          raise UnknownType.new(type_id, elf.string_table ? elf.string_table[name] : name)
+        if Type.has_key? sectdata[:type_id]
+          type = Type[sectdata[:type_id]]
+        else
+          raise UnknownType.new(sectdata[:type_id], elf.string_table ? elf.string_table[sectdata[:name_idx]] : sectdata[:name_idx])
         end
       end
 
       if Type::Class[type]
-        return Type::Class[type].new(elf, name, type)
+        return Type::Class[type].new(elf, sectdata, type)
       else
-        return Section.new(elf, name, type)
+        return Section.new(elf, sectdata, type)
       end
     end
 
     attr_reader :offset, :type, :size
 
-    def initialize(elf, name, type)
-      elf32 = elf.elf_class == Class::Elf32
-
-      @file = elf
-      @name = name
-      @type = type
-      @flags_val = elf32 ? elf.read_word : elf.read_xword
-      @addr = elf.read_addr
-      @offset = elf.read_off
-      @size = elf32 ? elf.read_word : elf.read_xword
-      @link = elf.read_word
-      @info = elf.read_word
-      @addralign = elf32 ? elf.read_word : elf.read_xword
-      @entsize = elf32 ? elf.read_word : elf.read_xword
+    def initialize(elf, sectdata, type)
+      @file =      elf
+      @type =      type
+      @name =      sectdata[:name_idx]
+      @flags_val = sectdata[:flags_val]
+      @addr =      sectdata[:addr]
+      @offset =    sectdata[:offset]
+      @size =      sectdata[:size]
+      @link =      sectdata[:link]
+      @info =      sectdata[:info]
+      @addralign = sectdata[:addralign]
+      @entsize =   sectdata[:entsize]
 
       @numentries = @size/@entsize unless @entsize == 0
     end
@@ -157,7 +152,7 @@ module Elf
     def link
       # We didn't get the linked section header yet
       if @link.is_a? Integer
-        @link = @file.sections[@link]
+        @link = @file[@link]
       end
 
       @link

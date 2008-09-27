@@ -30,7 +30,7 @@ class TC_Static_Executable < Test::Unit::TestCase
   # This is a prerequisite for static executable files.
   def test_staic
     @elfs.each_pair do |name, elf|
-      assert(!elf.sections['.dynamic'],
+      assert(!elf.has_section?('.dynamic'),
              ".dynamic section present on ELF file #{elf.path}")
     end
   end

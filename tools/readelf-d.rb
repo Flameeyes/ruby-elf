@@ -26,7 +26,7 @@ files.each do |file|
   puts
   begin
     Elf::File.open(file) do |elf|
-      dynsection = elf.sections['.dynamic']
+      dynsection = elf['.dynamic']
 
       unless dynsection
         puts "There is no dynamic section in this file."

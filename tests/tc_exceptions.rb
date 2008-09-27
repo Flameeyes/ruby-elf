@@ -192,6 +192,7 @@ class TC_Exceptions < Test::Unit::TestCase
     exception_received = false
     begin
       elf = Elf::File.new(TestDir + "invalid_unknown_section_type")
+      elf[11] # We need an explicit request for the corrupted section
       elf.close
     rescue Elf::Section::UnknownType => e
       exception_received = true
@@ -202,7 +203,7 @@ class TC_Exceptions < Test::Unit::TestCase
       # We expect an integer as the test file will stop processing
       # _before_ strtab is identified, so there is no string table.
       assert(e.section_name.is_a?(Integer),
-             "Non-integer section name provided")
+             "Non-integer section name provided: #{e.section_name.inspect}")
       assert(e.section_name == 1,
              "Wrong section_name reported for unknown section type #{e.section_name}")
     end

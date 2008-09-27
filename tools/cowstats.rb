@@ -80,12 +80,12 @@ def cowstats_scan(file)
         $stderr.puts "cowstats.rb: #{file}: not an object file"
         next
       end
-      if elf.sections['.symtab'] == nil
+      if elf['.symtab'] == nil
         $stderr.puts "cowstats.rb: #{file}: no .symtab section found"
         next
       end
 
-      elf.sections['.symtab'].symbols.each do |symbol|
+      elf['.symtab'].symbols.each do |symbol|
         # Ignore undefined, absolute and common symbols.
         next unless symbol.section.is_a? Elf::Section
         # When the symbol name is empty, it refers to the
