@@ -21,7 +21,9 @@ module ElfTests
                "linux_amd64",
                "linux_sparc",
                "linux_arm",
-               "bare_h8300"
+               "bare_h8300",
+               "solaris_x86_gcc",
+               "solaris_x86_suncc"
               ]
   def setup
     @elfs = {}
@@ -31,9 +33,26 @@ module ElfTests
     # Also open the ELF files for testing
     OS_Arches.each do |os_arch|
       basefilename = self.class::TestBaseFilename
-      next if basefilename == "dynamic_executable" and os_arch =~ /bare_.*/
-      
-      basefilename = "static_executable.o" if basefilename == "dynamic_executable.o" and os_arch =~ /bare_.*/
+
+      case os_arch
+
+      # We obviously cannot test dynamic executables for bare hardware
+      # targets
+      when /^bare_/
+        next if basefilename == "dynamic_executable"
+        basefilename = "static_executable.o" if basefilename == "dynamic_executable.o"
+        
+      # For some reasons building static executables on OpenSolaris
+      # does not look possible (misisng libc archive), thus just use
+      # executable for the filename.
+      when /^solaris_/
+        case basefilename
+        when "static_executable": next
+        when "dynamic_executable": basefilename = "executable"
+        when "dynamic_executable.o": basefilename = "executable.o"
+        end
+      end
+
       filename = "#{os_arch}_#{basefilename}"
       assert(File.exists?( TestDir + filename ),
              "Missing test file #{filename}")
@@ -94,11 +113,11 @@ module ElfTests
       expectedabi = case name
                     when /linux_arm/
                       Elf::OsAbi::ARM
-                    when /linux_.*/, /bare_.*/
+                    when /linux_.*/, /bare_.*/, /solaris_.*/
                       Elf::OsAbi::SysV
                     end
       expectedabiversion = case name
-                           when /linux_.*/, /bare_.*/
+                           when /linux_.*/, /bare_.*/, /solaris_.*/
                              0
                            end
 
