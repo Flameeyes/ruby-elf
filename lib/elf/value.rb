@@ -58,6 +58,10 @@ module Elf
       @enums[idx]
     end
 
+    def Value.has_key?(idx)
+      @enums.has_key?(idx)
+    end
+
     def Value.fill(hash)
       @enums = { }
 

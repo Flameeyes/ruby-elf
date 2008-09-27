@@ -26,8 +26,28 @@ module Elf
   class Section
     # Reserved sections' indexes
     Undef  = nil    # Would be '0', but this fits enough
-    Abs    = 0xfff1 # Absolute symbols
-    Common = 0xfff2 # Common symbols
+
+    # Reserved sections range
+    LoReserve = 0xff00
+    HiReserve = 0xffff
+
+    # Processor-specific reserved sections range
+    LoProc = 0xff00
+    HiProc = 0xff1f
+
+    # OS-specific reserved sections range
+    LoOs = 0xff20
+    HiOs = 0xff3f
+
+    # Sun-specific reserved sections range
+    # Subset of OS-specific reserved sections range
+    LoSunW = 0xff3f
+    HiSunW = 0xff3f
+
+    SunWIgnore = 0xff3f
+    Abs        = 0xfff1 # Absolute symbols
+    Common     = 0xfff2 # Common symbols
+    XIndex     = 0xffff
     
     class UnknownType < Exception
       def initialize(type_id, section_name)
@@ -69,23 +89,25 @@ module Elf
         when Elf::OsAbi::Solaris
           type = Type::OsSolaris[type_id]
         else
-          begin
-            # Accept general OS-specific section types, like GNU's
+          if Type.has_key? type_id
             type = Type[type_id]
-          rescue Elf::Value::OutOfBound
+          # Accept general OS-specific section types, like GNU's
+          elsif Type::GNU.has_key? type_id
+            type = Type::GNU[type_id]
+          else
             # Unknown OS-specific section type, provide a dummy
             type = Elf::Value::Unknown.new(type_id, sprintf("SHT_LOOS+%07x", type_id-Type::LoOs))
           end
         end
       elsif type_id >= Type::LoUser && type_id <= Type::HiUser
-        begin
+        if type.has_key? type_id
           type = Type[type_id]
-        rescue Elf::Value::OutOfBound
+        else
           # Unknown application-specific section type, provide a dummy
           type = Elf::Value::Unknown.new(type_id, sprintf("SHT_LOUSER+%07x", type_id-Type::LoUser))
         end
       else
-        begin
+        if type.has_key? type_id
           type = Type[type_id]
         rescue Elf::Value::OutOfBound
           raise UnknownType.new(type_id, elf.string_table ? elf.string_table[name] : name)
@@ -178,11 +200,14 @@ module Elf
              0x00000100 => [ :OsNonConforming, 'Non-standard OS specific handling required' ],
              0x00000200 => [ :Group, 'Section is member of a group' ],
              0x00000400 => [ :TLS, 'Section hold thread-local data' ],
-             0x0ff00000 => [ :MaskOS, 'OS-specific flags' ],
-             0xf0000000 => [ :MaskProc, 'Processor-specific flags' ],
              0x40000000 => [ :Ordered, 'Special ordering requirement' ],
              0x80000000 => [ :Exclude, 'Section is excluded unless referenced or allocated' ]
            })
+      
+      # OS-specific flags mask
+      MaskOS   = 0x0ff00000
+      # Processor-specific flags mask
+      MaskProc = 0xf0000000
     end
   end
 end
@@ -213,16 +238,48 @@ module Elf
              17 => [ :Group, 'Section group' ],
              18 => [ :SymTabShndx, 'Extended section indeces' ],
              # OS-specific range start
-             0x6ffffff6 => [ :GnuHash, 'GNU-style hash table' ],
-             0x6ffffff7 => [ :GnuLiblist, 'Prelink library list' ],
              0x6ffffff8 => [ :Checksum, 'Checksum for DSO content' ],
-             # Sun-specific range start
-             0x6ffffffd => [ :GNUVerDef, 'Version definition section' ],
-             0x6ffffffe => [ :GNUVerNeed, 'Version needs section' ],
-             0x6fffffff => [ :GNUVerSym, 'Version symbol table' ]
-             # Sun-specific range end
              # OS-specific range end
            })
+
+      class SunW < Value
+        fill({
+               LoSunW+0x0 => [ :SymSort, nil ],
+               LoSunW+0x1 => [ :TLSSort, nil ],
+               LoSunW+0x2 => [ :LDynSym, nil ],
+               LoSunW+0x3 => [ :DOF, nil ],
+               LoSunW+0x4 => [ :Cap, "Software/Hardware Capabilities" ],
+               LoSunW+0x5 => [ :Signature, nil ],
+               LoSunW+0x6 => [ :Annotate, nil ],
+               LoSunW+0x7 => [ :DebugStr, nil ],
+               LoSunW+0x8 => [ :Debug, nil ],
+               LoSunW+0x9 => [ :Move, nil ],
+               LoSunW+0xa => [ :ComDat, nil ],
+               LoSunW+0xb => [ :SymInfo, nil ],
+               LoSunW+0xc => [ :VerDef, nil ],
+               LoSunW+0xd => [ :VerNeed, nil ],
+               LoSunW+0xe => [ :VerSym, nil ]
+             })
+      end
+
+      # Type values for GNU-specific sections. These sections are
+      # generally available just for glibc-based systems using GNU
+      # binutils, but might be used by other Operating Systems too.
+      class GNU < Value
+        fill({
+               0x6ffffff6 => [ :Hash, 'GNU-style hash table' ],
+               0x6ffffff7 => [ :Liblist, 'Prelink library list' ],
+               0x6ffffffd => [ :VerDef, 'Version definition section' ],
+               0x6ffffffe => [ :VerNeed, 'Version needs section' ],
+               0x6fffffff => [ :VerSym, 'Version symbol table' ]
+             })
+      end
+
+      class ProcARM < Value
+        fill({
+             0x70000003 => [ :ARMAttributes, 'ARM Attributes' ],
+             })
+      end
 
       # OS-specific range
       LoOs = 0x60000000
@@ -245,28 +302,11 @@ module Elf
         SymTab => Elf::SymbolTable,
         DynSym => Elf::SymbolTable,
         Dynamic => Elf::Dynamic,
-        GNUVerSym => Elf::GNU::SymbolVersionTable,
-        GNUVerDef => Elf::GNU::SymbolVersionDef,
-        GNUVerNeed => Elf::GNU::SymbolVersionNeed
+        GNU::VerSym => Elf::GNU::SymbolVersionTable,
+        GNU::VerDef => Elf::GNU::SymbolVersionDef,
+        GNU::VerNeed => Elf::GNU::SymbolVersionNeed
       }
 
-      class ProcARM < Value
-        fill({
-             0x70000003 => [ :ARMAttributes, 'ARM Attributes' ],
-             })
-      end
-
-      class OsSolaris < Value
-        fill({
-               0x6ffffff1 => [ :SunWDynSymSort, nil ],
-               0x6ffffff3 => [ :SunWLDynSym, nil ],
-               0x6ffffff5 => [ :SunWCap, nil ],
-               0x6ffffffa => [ :SunWMove, nil ],
-               0x6ffffffb => [ :SunWComDat, nil ],
-               0x6ffffffc => [ :SunWSymInfo, nil ],
-               0x6ffffffe => [ :SunWVersion, 'Sun version information' ],
-             })
-      end
     end
   end
 end

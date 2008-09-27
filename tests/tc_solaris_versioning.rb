@@ -41,11 +41,11 @@ class TC_Solaris_Versioning < Test::Unit::TestCase
   end
 
   def test_sections_types
-    assert(@elf.sections[".gnu.version"].type == Elf::Section::Type::GNUVerSym,
+    assert(@elf.sections[".gnu.version"].type == Elf::Section::Type::GNU::VerSym,
           "Section .gnu.version of wrong type (#{@elf.sections[".gnu.version"].type})")
-    assert(@elf.sections[".gnu.version_d"].type == Elf::Section::Type::GNUVerDef,
+    assert(@elf.sections[".gnu.version_d"].type == Elf::Section::Type::GNU::VerDef,
           "Section .gnu.version_d of wrong type (#{@elf.sections[".gnu.version_d"].type})")
-    assert(@elf.sections[".gnu.version_r"].type == Elf::Section::Type::GNUVerNeed,
+    assert(@elf.sections[".gnu.version_r"].type == Elf::Section::Type::GNU::VerNeed,
           "Section .gnu.version_r of wrong type (#{@elf.sections[".gnu.version_r"].type})")
   end
 
