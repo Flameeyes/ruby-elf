@@ -82,19 +82,24 @@ module Elf
           end
         end
       elsif sectdata[:type_id] >= Type::LoOs && sectdata[:type_id] <= Type::HiOs
-        case elf.abi
-        when Elf::OsAbi::Solaris
-          type = Type::OsSolaris[sectdata[:type_id]]
+        # Unfortunately, even though OS ABIs are well-defined for both
+        # GNU/Linux and Solaris, they don't seem to get used at all.
+        #
+        # For this reason, instead of basing ourselves on (just) the
+        # OS ABI, the name of the section is used to identify the type
+        # of section to use
+
+        # Don't set the name if there is no string table loaded
+        name = elf.string_table ? elf.string_table[sectdata[:name_idx]] : ""
+        if elf.abi == Elf::OsAbi::Solaris or
+            name =~ /^\.SUNW_/
+          type = Type::SunW[sectdata[:type_id]]
+        elsif elf.abi == Elf::OsAbi::Linux or
+            name =~ /^\.gnu\./
+          type = Type::GNU[sectdata[:type_id]]
         else
-          if Type.has_key? sectdata[:type_id]
-            type = Type[sectdata[:type_id]]
-          # Accept general OS-specific section type_ids, like GNU's
-          elsif Type::GNU.has_key? sectdata[:type_id]
-            type = Type::GNU[sectdata[:type_id]]
-          else
-            # Unknown OS-specific section type_id, provide a dummy
-            type = Elf::Value::Unknown.new(sectdata[:type_id], sprintf("SHT_LOOS+%07x", sectdata[:type_id]-Type::LoOs))
-          end
+          # Unknown OS-specific section type_id, provide a dummy
+          type = Elf::Value::Unknown.new(sectdata[:type_id], sprintf("SHT_LOOS+%07x", sectdata[:type_id]-Type::LoOs))
         end
       elsif sectdata[:type_id] >= Type::LoUser && sectdata[:type_id] <= Type::HiUser
         if Type.has_key? sectdata[:type_id]
@@ -237,6 +242,10 @@ module Elf
              # OS-specific range end
            })
 
+      # Sun-specific range
+      LoSunW = 0x6ffffff1
+      HiSunW = 0x6fffffff
+
       class SunW < Value
         fill({
                LoSunW+0x0 => [ :SymSort, nil ],
@@ -280,10 +289,6 @@ module Elf
       LoOs = 0x60000000
       HiOs = 0x6fffffff
       
-      # Sun-specific range
-      LoSunW = 0x6ffffffa
-      HiSunW = 0x6fffffff
-
       # Processor-specific range
       LoProc = 0x70000000
       HiProc = 0x7fffffff
