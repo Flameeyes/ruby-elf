@@ -133,8 +133,11 @@ module Elf
     def section
       # We didn't read the section yet.
       @section = nil if @section == 0
+      
+      if @section.is_a? Integer and
+          not (@section >= Section::LoReserve and @section <= Section::HiReserve ) and
+          @file.has_section?(@section)
 
-      if @section.is_a? Integer and @file[@section]
         @section = @file[@section]
       end
 
