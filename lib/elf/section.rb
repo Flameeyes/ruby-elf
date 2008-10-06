@@ -215,6 +215,7 @@ end
 require 'elf/stringtable'
 require 'elf/symboltable'
 require 'elf/dynamic'
+require 'elf/sunw'
 
 module Elf
   class Section
@@ -304,7 +305,8 @@ module Elf
         Dynamic => Elf::Dynamic,
         GNU::VerSym => Elf::GNU::SymbolVersionTable,
         GNU::VerDef => Elf::GNU::SymbolVersionDef,
-        GNU::VerNeed => Elf::GNU::SymbolVersionNeed
+        GNU::VerNeed => Elf::GNU::SymbolVersionNeed,
+        SunW::Cap => Elf::SunW::Capabilities
       }
 
     end

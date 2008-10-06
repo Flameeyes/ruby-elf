@@ -65,4 +65,13 @@ class TC_SunWSpecific < Test::Unit::TestCase
     assert(@elf[".SUNW_dynsymsort"].type.to_i == 0x6ffffff1,
            "section .SUNW_dynsymsort not of type number 0x6ffffff5 (0x#{sprintf "%08x", @elf[".SUNW_dynsymsort"].type.to_i})")
   end
+
+  def test_sunw_cap
+    assert(@elf[".SUNW_cap"].is_a?(Elf::SunW::Capabilities),
+           "section .SUNW_cap is not of the intended class (#{@elf[".SUNW_cap"].class})")
+    assert(@elf[".SUNW_cap"].count == 1,
+           "section .SUNW_cap has not the expected entries count: #{@elf[".SUNW_cap"].count} rather than 1")
+    assert(@elf[".SUNW_cap"][0][:tag] == Elf::SunW::Capabilities::Tag::HW1,
+           "first entry in .SUNW_cap is not for hardware capabilities: #{@elf[".SUNW_cap"][0][:tag]}")
+  end
 end
