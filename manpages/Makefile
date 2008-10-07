@@ -1,4 +1,4 @@
-all: cowstats.1
+all: cowstats.1 missingstatic.1
 
 XSL_NS_ROOT=http://docbook.sourceforge.net/release/xsl-ns/current
 

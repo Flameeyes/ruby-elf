@@ -1,0 +1,151 @@
+<?xml version='1.0'?>
+<article xmlns="http://docbook.org/ns/docbook"
+	 xmlns:xl="http://www.w3.org/1999/xlink"
+	 version="5.0" xml:lang="en">
+  <info>
+    <title>missingstatic</title>
+
+    <authorgroup>
+      <author>
+	<personname>
+	  <firstname>Diego E.</firstname>
+	  <surname>Pettenò</surname>
+	</personname>
+        <affiliation>
+          <address><email>flameeyes@gmail.com</email></address>
+        </affiliation>
+      </author>
+    </authorgroup>
+
+    <copyright>
+      <year>2008</year>
+      <holder>Diego E. Pettenò</holder>
+    </copyright>
+
+  </info>
+
+  <section>
+    <title>Reference</title>
+
+    <refentry>
+      <info>
+	<date>October 2008</date>
+	<productname>ruby-elf</productname>
+      </info>
+      <refmeta>
+        <refentrytitle>missingstatic</refentrytitle>
+	<manvolnum>1</manvolnum>
+      </refmeta>
+      <refnamediv>
+        <refname>missingstatic</refname>
+	<refpurpose>ELF analyzer to identify missing static modifiers</refpurpose>
+      </refnamediv>
+      <refsynopsisdiv>
+        <cmdsynopsis>
+          <command>missingstatic</command>
+          <arg choice="opt"><option>--hidden-only</option></arg>
+          <arg choice="opt">
+	    <option>--exclude-regexp</option>
+	    <replaceable>regular-expression</replaceable>
+	  </arg>
+	  <arg choice="opt">
+	    <option>--filelist</option>
+	    <replaceable>path</replaceable>
+	  </arg>
+
+          <arg choice="opt">
+            <replaceable>files</replaceable>
+          </arg>
+        </cmdsynopsis>
+      </refsynopsisdiv>
+
+      <refsect1>
+        <title>Description</title>
+        <para>
+	  <command>missingstatic</command> is a script that analyses
+	  ELF object files to identify symbols that are unused outside
+	  their compilation unit. Those symbols are usually candidate
+	  for the <constant>static</constant> modifier, to make the
+	  symbol local to the unit.
+	</para>
+
+	<para>
+	  In addition to symbols that are used only internally to an
+	  unit, this script will most likely report the almost entire
+	  set of externally-visible API in the case of libraries. For
+	  this reason, options are provided to reduce the scope of
+	  action.
+	</para>
+      </refsect1>
+
+      <refsect1>
+        <title>Options</title>
+        
+        <variablelist>
+          <varlistentry>
+            <term><option>--hidden-only</option></term>
+            <term><option>-h</option></term>
+            <listitem>
+              <para>
+		Only show symbols that have hidden visibility. Hidden
+		symbols are not visible from outside the module, and
+		thus will ignore the external visible symbols that
+		compose the externally-visible API. This option is
+		only useful for libraries that make proper use of
+		visibility attributes.
+              </para>
+            </listitem>
+          </varlistentry>
+        
+          <varlistentry>
+            <term>
+      	      <option>--exclude-regexp</option>
+	      <replaceable>regular-expression</replaceable>
+	    </term>
+            <term>
+	      <option>-x</option>
+	      <replaceable>regular-expression</replaceable>
+	    </term>
+            <listitem>
+              <para>
+		Ignore symbols whose name triggers the given regular
+		expression. This option is useful to hide all the
+		symbols of the public API of a library if they all
+		have the same prefix.
+              </para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term>
+	      <option>--filelist</option>
+	      <replaceable>path</replaceable>
+	    </term>
+	    <term>
+	      <option>-f</option>
+	      <replaceable>path</replaceable>
+	    </term>
+            <listitem>
+              <para>
+		Read the list of files to analyse from the given file
+		(or standard input if <replaceable>path</replaceable>
+		is <filename>-</filename>) rather than from the
+		command line. Useful to pass a long list of files,
+		that is generated asynchronously.
+	      </para>
+	    </listitem>
+	  </varlistentry>
+
+	</variablelist>
+      </refsect1>
+
+      <refsect1>
+        <title>See Also</title>
+        <para>
+	  <citation xl:href="http://blog.flameeyes.eu/">Flameeyes's
+	  Weblog</citation> http://blog.flameeyes.eu/
+        </para>
+      </refsect1>
+    </refentry>
+  </section>
+</article>
