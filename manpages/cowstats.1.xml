@@ -1,0 +1,201 @@
+<?xml version='1.0'?>
+<article xmlns="http://docbook.org/ns/docbook"
+	 xmlns:xl="http://www.w3.org/1999/xlink"
+	 version="5.0" xml:lang="en">
+  <info>
+    <title>cowstats</title>
+
+    <authorgroup>
+      <author>
+	<personname>
+	  <firstname>Diego E.</firstname>
+	  <surname>Pettenò</surname>
+	</personname>
+        <affiliation>
+          <address><email>flameeyes@gmail.com</email></address>
+        </affiliation>
+      </author>
+    </authorgroup>
+
+    <copyright>
+      <year>2008</year>
+      <holder>Diego E. Pettenò</holder>
+    </copyright>
+
+  </info>
+
+  <section>
+    <title>Reference</title>
+
+    <refentry>
+      <info>
+	<date>October 2008</date>
+	<productname>cowstats</productname>
+      </info>
+      <refmeta>
+        <refentrytitle>cowstats</refentrytitle>
+	<manvolnum>1</manvolnum>
+      </refmeta>
+      <refnamediv>
+        <refname>cowstats</refname>
+	<refpurpose>ELF Copy-on-Write analyzer</refpurpose>
+      </refnamediv>
+      <refsynopsisdiv>
+        <cmdsynopsis>
+          <command>cowstats</command>
+          <arg choice="opt"><option>--statistics</option></arg>
+          <arg choice="opt"><option>--total</option></arg>
+          <arg choice="opt"><option>--ignore-cxx</option></arg>
+          <arg choice="opt"><option>--ignore-profiling</option></arg>
+	  <arg choice="opt">
+	    <option>--filelist</option>
+	    <replaceable>path</replaceable>
+	  </arg>
+
+          <arg choice="opt">
+            <replaceable>files</replaceable>
+          </arg>
+        </cmdsynopsis>
+      </refsynopsisdiv>
+
+      <refsect1>
+        <title>Description</title>
+        <para>
+	  <command>cowstats</command> is a script that analyses ELF
+	  object files, results of compilation of C, C++ or other
+	  languages on an Unix system, and reports about the variables
+	  that enter Copy-on-Write sections.
+	</para>
+
+	<para>
+	  Static variables (initialised and not) and constant pointers
+	  on PIC or PIE enabled object files are emitted in the
+	  so-called Copy-on-Write sections, which require copying over
+	  pages from the original ELF executable file to a private
+	  resident area of memory at runtime.
+	</para>
+
+	<para>
+	  <command>cowstats</command> reports the possible symbols
+	  that were emitted in Copy-on-Write sections so that they can
+	  be looked after to see if they can be made constant and/or
+	  removed or reworked.
+	</para>
+      </refsect1>
+
+      <refsect1>
+        <title>Options</title>
+        
+        <variablelist>
+          <varlistentry>
+            <term><option>--statistics</option></term>
+            <term><option>-s</option></term>
+            <listitem>
+              <para>
+                Instead of reporting all the variables found in
+                Copy-on-Write sections, only generate a table showing
+                the sie of data in Copy-on-Write sections per each
+                file, divided into <constant>.data</constant>,
+                <constant>.bss</constant> and
+                <constant>.data.rel</constant> (for variables,
+                uninitialised variables, and relocated variables and
+                constants).
+              </para>
+            </listitem>
+          </varlistentry>
+        
+          <varlistentry>
+            <term><option>--total</option></term>
+            <term><option>-t</option></term>
+            <listitem>
+              <para>
+		Shows some rough totals for the amount of data in
+		Copy-on-Write sections for the program, assuming all
+		the object files given are linked in the same
+		executable. This will also show a rough page-based
+		total, which bases itself on 4K-sized pages.
+              </para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term><option>--ignore-cxx</option></term>
+            <term><option>-x</option></term>
+            <listitem>
+              <para>
+		Ignore some C++ entries that could be considered false
+		positives. C++ object files will report as CoW data
+		the vtables and typeinfo objects for C++ classes,
+		since they are actually emitted in Copy-on-Write
+		sections. Since they cannot be moved from thre, this
+		option hides them on the output, to reduce clutter and
+		noise.
+	      </para>
+	    </listitem>
+	  </varlistentry>
+
+          <varlistentry>
+            <term><option>--ignore-profiling</option></term>
+            <term><option>-p</option></term>
+            <listitem>
+              <para>
+		Similarly to C++, also profiling (with
+		<command>gcov</command>) will add some symbols that
+		would be identified as CoW data. Use this option to
+		avoid reporting those symbols.
+	      </para>
+	    </listitem>
+	  </varlistentry>
+
+          <varlistentry>
+            <term>
+	      <option>--filelist</option>
+	      <replaceable>path</replaceable>
+	    </term>
+	    <term>
+	      <option>-f</option>
+	      <replaceable>path</replaceable>
+	    </term>
+            <listitem>
+              <para>
+		Read the list of files to analyse from the given file
+		(or standard input if <replaceable>path</replaceable>
+		is <filename>-</filename>) rather than from the
+		command line. Useful to pass a long list of files,
+		that is generated asynchronously.
+	      </para>
+	    </listitem>
+	  </varlistentry>
+
+	</variablelist>
+      </refsect1>
+
+      <refsect1>
+	<title>Bugs</title>
+
+	<para>
+	  <command>cowstats</command> is still an experiment, and is
+	  not yet entirely complete, there are thus a number of bugs
+	  that haven't been discovered or well tested yet.
+	</para>
+
+	<para>
+	  A known "bug" or misbehaviour is that
+	  <command>cowstats</command> cannot know whether multple
+	  object files will be linked together in the same module
+	  (executable or shared object) or not. For this reason the
+	  output of <option>--total</option> might not be consistent
+	  with the runtime behaviour of the module itself.
+	</para>
+      </refsect1>
+     
+      <refsect1>
+        <title>See Also</title>
+        <para>
+	  <citation xl:href="http://blog.flameeyes.eu/">Flameeyes's
+	  Weblog</citation> http://blog.flameeyes.eu/
+        </para>
+      </refsect1>
+    </refentry>
+  </section>
+</article>
