@@ -30,7 +30,7 @@
     <refentry>
       <info>
 	<date>October 2008</date>
-	<productname>cowstats</productname>
+	<productname>ruby-elf</productname>
       </info>
       <refmeta>
         <refentrytitle>cowstats</refentrytitle>
