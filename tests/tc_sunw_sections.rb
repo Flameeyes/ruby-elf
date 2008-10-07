@@ -73,5 +73,7 @@ class TC_SunWSpecific < Test::Unit::TestCase
            "section .SUNW_cap has not the expected entries count: #{@elf[".SUNW_cap"].count} rather than 1")
     assert(@elf[".SUNW_cap"][0][:tag] == Elf::SunW::Capabilities::Tag::HW1,
            "first entry in .SUNW_cap is not for hardware capabilities: #{@elf[".SUNW_cap"][0][:tag]}")
+    assert(@elf[".SUNW_cap"][0][:flags].include?(Elf::SunW::Capabilities::Hardware1::I386::FPU),
+           "the file does not advertise requirement for FPU capabilities")
   end
 end
