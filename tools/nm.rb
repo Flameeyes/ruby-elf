@@ -57,37 +57,12 @@ files.each do |file|
 
         addr = ' ' * addrsize unless sym.section
 
-        flag = '?'
-        if sym.idx == 0
-          next
-        elsif sym.bind == Elf::Symbol::Binding::Weak
-          flag = sym.type == Elf::Symbol::Type::Object ? 'V' : 'W'
-          
-          flag.downcase! if sym.value == 0
-          # The following are three 'reserved sections'
-        elsif sym.section == Elf::Section::Undef
-          flag = 'U'
-        elsif sym.section == Elf::Section::Abs
-          # Absolute symbols
-          flag = 'A'
-        elsif sym.section == Elf::Section::Common
-          # Common symbols
-          flag = 'C'
-        elsif sym.section.is_a? Integer
-          $stderr.puts sym.section.hex
-          flag = '!'
-        elsif sym.section.name == '.init'
-          next
-        else
-          flag = case sym.section.name
-                 when ".bss" then 'B'
-                 when /\.rodata.*/ then 'R'
-                 when ".text" then 'T'
-                 else '?'
-                 end
+        begin
+          flag = sym.nm_code
+        rescue Elf::Symbol::UnknownNMCode => e
+          $stderr.puts e.message
+          flag = "?"
         end
-
-        flag.downcase! if sym.bind == Elf::Symbol::Binding::Local
 
         version_name = sym.version
         version_name = version_name ? "@@#{version_name}" : ""

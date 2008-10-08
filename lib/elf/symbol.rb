@@ -160,5 +160,71 @@ module Elf
       
       return @file['.gnu.version_d'][version_idx][:names][name_idx]
     end
+
+    # Exception raised when the NM code for a given symbol is unknown.
+    class UnknownNMCode < Exception
+      def initialize(symbol)
+        @sym = symbol
+      end
+
+      def message
+        section = if @sym.section.is_a?(Integer)
+                    @sym.section.hex
+                  else
+                    @sym.section.name
+                  end
+
+        "Unknown NM code for symbol #{@sym.name} in section #{section}"
+      end
+    end
+
+    # Show the letter code as compatible with GNU nm
+    #
+    # This function has been moved inside the library since multiple
+    # tools based on ruby-elf would be using these code to report
+    # symbols, and since the code is complex it's easier to have it
+    # here.
+    #
+    # The resturned value is a one-letter string. The function may
+    # raise an UnknownNMCode exception.
+    def nm_code
+      return @nmflag unless @nmflag == nil
+      
+      if idx == 0
+        @nmflag = " "
+      elsif bind == Elf::Symbol::Binding::Weak
+        @nmflag = type == Elf::Symbol::Type::Object ? "V" : "W"
+        
+        @nmflag.downcase! if value == 0
+        
+        # The following are three 'reserved sections'
+      elsif section == Elf::Section::Undef
+        @nmflag = "U"
+      elsif section == Elf::Section::Abs
+        # Absolute symbols
+        @nmflag = "A"
+      elsif section == Elf::Section::Common
+        # Common symbols
+        @nmflag = "C"
+
+      elsif section.is_a? Integer
+        raise UnknownNMCode.new(self)
+      elsif section.name == '.init' || section.name == ".fini"
+        @nmflag = "T"
+      else
+        @nmflag = case section.name
+                  when ".bss" then "B"
+                  when /\.rodata.*/ then "R"
+                  when ".text" then "T"
+                  when ".data" then "D"
+                  else
+                    raise UnknownNMCode.new(self)
+                  end
+      end
+
+      @nmflag.downcase! if bind == Elf::Symbol::Binding::Local
+
+      return @nmflag
+    end
   end
 end
