@@ -100,11 +100,12 @@ class TC_NM_Codes < Elf::TestUnit
   #                    ".text"              => 't' })
   # end
 
+  class LinuxAMD64 < TC_NM_Codes
+    Filename = "linux_amd64_symboltypes.o"
+  end
+
   def self.subsuite
     suite = Test::Unit::TestSuite.new
-
-    klass = Class.new(TC_NM_Codes)
-    klass.const_set("Filename", "linux_amd64_symboltypes.o")
-    suite << klass.suite
+    suite << LinuxAMD64.suite
   end
 end
