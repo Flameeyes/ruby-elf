@@ -96,6 +96,9 @@ def scanfile(filename)
     $stderr.puts "missingstatic.rb: #{file}: no such file"
   rescue Elf::File::NotAnELF
     $stderr.puts "missingstatic.rb: #{file}: not a valid ELF file."
+  rescue Exception => e
+    $stderr.puts "missingstatic.rb: Processing #{filename}: #{e.message}"
+    $stderr.puts "\t#{e.backtrace.join("\n\t")}"
   end
 end
 
