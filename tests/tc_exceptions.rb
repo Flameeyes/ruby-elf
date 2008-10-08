@@ -34,15 +34,10 @@ class TC_Exceptions < Test::Unit::TestCase
     assert(File.exist?(TestDir + "invalid_nonelf"),
            "Missing test file invalid_nonelf")
 
-    exception_received = false
-    begin
+    assert_raise Elf::File::NotAnELF do
       elf = Elf::File.new(TestDir + "invalid_nonelf")
       elf.close
-    rescue Elf::File::NotAnELF
-      exception_received = true
     end
-
-    assert(exception_received, "Elf::File::NotAnElf exception not received")
   end
 
   # Test behaviour when a file too short to be an ELF file is opened
@@ -54,15 +49,10 @@ class TC_Exceptions < Test::Unit::TestCase
     assert(File.exist?(TestDir + "invalid_shortfile"),
            "Missing test file invalid_shortfile")
 
-    exception_received = false
-    begin
+    assert_raise Elf::File::NotAnELF do
       elf = Elf::File.new(TestDir + "invalid_shortfile")
       elf.close
-    rescue Elf::File::NotAnELF
-      exception_received = true
     end
-
-    assert(exception_received, "Elf::File::NotAnElf exception not received")
   end
 
   # Test behaviour when a file with an invalid ELF class value is
@@ -74,15 +64,10 @@ class TC_Exceptions < Test::Unit::TestCase
     assert(File.exist?(TestDir + "invalid_invalidclass"),
            "Missing test file invalid_invalidclass")
 
-    exception_received = false
-    begin
+    assert_raise Elf::File::InvalidElfClass do
       elf = Elf::File.new(TestDir + "invalid_invalidclass")
       elf.close
-    rescue Elf::File::InvalidElfClass
-      exception_received = true
     end
-
-    assert(exception_received, "Elf::File::InvalidElfClass exception not received.")
   end
 
   # Test behaviour when a file with an invalid ELF data encoding value
@@ -94,15 +79,10 @@ class TC_Exceptions < Test::Unit::TestCase
     assert(File.exist?(TestDir + "invalid_invalidencoding"),
            "Missing test file invalid_invalidencoding")
 
-    exception_received = false
-    begin
+    assert_raise Elf::File::InvalidDataEncoding do
       elf = Elf::File.new(TestDir + "invalid_invalidencoding")
       elf.close
-    rescue Elf::File::InvalidDataEncoding
-      exception_received = true
     end
-
-    assert(exception_received, "Elf::File::InvalidDataEncoding exception not received.")
   end
 
   # Test behaviour when a file with an unsupported ELF version value
@@ -114,15 +94,10 @@ class TC_Exceptions < Test::Unit::TestCase
     assert(File.exist?(TestDir + "invalid_unsupportedversion"),
            "Missing test file invalid_unsupportedversion")
 
-    exception_received = false
-    begin
+    assert_raise Elf::File::UnsupportedElfVersion do
       elf = Elf::File.new(TestDir + "invalid_unsupportedversion")
       elf.close
-    rescue Elf::File::UnsupportedElfVersion
-      exception_received = true
     end
-
-    assert(exception_received, "Elf::File::UnsupportedElfVersion exception not received.")
   end
 
   # Test behaviour when a file with an invalid ELF ABI value is opened
@@ -132,15 +107,10 @@ class TC_Exceptions < Test::Unit::TestCase
     assert(File.exist?(TestDir + "invalid_invalidabi"),
            "Missing test file invalid_invalidabi")
 
-    exception_received = false
-    begin
+    assert_raise Elf::File::InvalidOsAbi do
       elf = Elf::File.new(TestDir + "invalid_invalidabi")
       elf.close
-    rescue Elf::File::InvalidOsAbi
-      exception_received = true
     end
-
-    assert(exception_received, "Elf::File::InvalidOsAbi exception not received.")
   end
 
   # Test behaviour when a file with an invalid ELF Type value is
@@ -151,15 +121,10 @@ class TC_Exceptions < Test::Unit::TestCase
     assert(File.exist?(TestDir + "invalid_invalidtype"),
            "Missing test file invalid_invalidtype")
 
-    exception_received = false
-    begin
+    assert_raise Elf::File::InvalidElfType do
       elf = Elf::File.new(TestDir + "invalid_invalidtype")
       elf.close
-    rescue Elf::File::InvalidElfType
-      exception_received = true
     end
-
-    assert(exception_received, "Elf::File::InvalidElfType exception not received.")
   end
 
   # Test behaviour when a file with an invalid ELF machine value is
@@ -170,15 +135,10 @@ class TC_Exceptions < Test::Unit::TestCase
     assert(File.exist?(TestDir + "invalid_invalidmachine"),
            "Missing test file invalid_invalidmachine")
 
-    exception_received = false
-    begin
+    assert_raise Elf::File::InvalidMachine do
       elf = Elf::File.new(TestDir + "invalid_invalidmachine")
       elf.close
-    rescue Elf::File::InvalidMachine
-      exception_received = true
     end
-
-    assert(exception_received, "Elf::File::InvalidMachine exception not received.")
   end
 
   # Test behaviour when a file contains an invalid section type
@@ -189,25 +149,23 @@ class TC_Exceptions < Test::Unit::TestCase
     assert(File.exist?(TestDir + "invalid_unknown_section_type"),
            "Missing test file invalid_unknown_section_type")
 
-    exception_received = false
     begin
       elf = Elf::File.new(TestDir + "invalid_unknown_section_type")
       elf[11] # We need an explicit request for the corrupted section
       elf.close
     rescue Elf::Section::UnknownType => e
-      exception_received = true
-
-      assert(e.type_id == 0x0000ff02,
-             "Wrong type_id reported for unknown section type (#{sprintf '0x%08x', e.type_id})")
+      assert_equal(0x0000ff02, e.type_id,
+                   "Wrong type_id reported for unknown section type")
 
       # We expect an integer as the test file will stop processing
       # _before_ strtab is identified, so there is no string table.
-      assert(e.section_name.is_a?(Integer),
-             "Non-integer section name provided: #{e.section_name.inspect}")
-      assert(e.section_name == 1,
-             "Wrong section_name reported for unknown section type #{e.section_name}")
+      assert_instance_of(Fixnum, e.section_name,
+                         "Non-integer section name provided")
+      assert_equal(1, e.section_name,
+                   "Wrong section_name reported for unknown section type")
+      return
     end
     
-    assert(exception_received, "Elf::Section::UnknownType exception not received.")
+    flunk("Elf::Section::UnknownType exception not received.")
   end
 end
