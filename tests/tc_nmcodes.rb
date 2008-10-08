@@ -101,8 +101,38 @@ class TC_NM_Codes < Elf::TestUnit
     Filename = "linux_amd64_symboltypes.o"
   end
 
+  class LinuxAMD64_SunStudio < TC_NM_Codes
+    Filename = "linux_amd64_suncc_symboltypes.o"
+
+    # Sun Studio generates different code!
+    def test_tls
+      dotest_symbols({ "external_tls_variable"               => 'D',
+                       "static_tls_variable"                 => 'd',
+                       "external_uninitialised_tls_variable" => 'C',
+                       "static_uninitialised_tls_variable"   => 'b',
+                       "relocated_external_tls_variable"     => 'D',
+                       "relocated_static_tls_variable"       => 'd' })
+    end
+  end
+
+  class SolarisX86_SunStudio < TC_NM_Codes
+    Filename = "solaris_x86_suncc_symboltypes.o"
+
+    # Sun Studio generates different code!
+    def test_tls
+      dotest_symbols({ "external_tls_variable"               => 'D',
+                       "static_tls_variable"                 => 'd',
+                       "external_uninitialised_tls_variable" => 'C',
+                       "static_uninitialised_tls_variable"   => 'b',
+                       "relocated_external_tls_variable"     => 'D',
+                       "relocated_static_tls_variable"       => 'd' })
+    end
+  end
+
   def self.subsuite
     suite = Test::Unit::TestSuite.new
     suite << LinuxAMD64.suite
+    suite << LinuxAMD64_SunStudio.suite
+    suite << SolarisX86_SunStudio.suite
   end
 end
