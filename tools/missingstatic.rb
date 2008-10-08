@@ -56,7 +56,6 @@ end
 
 $all_defined = Set.new
 $all_using = Set.new
-$symbol_objects = {}
 
 def scanfile(filename)
   begin
@@ -85,7 +84,6 @@ def scanfile(filename)
             sym.visibility != Elf::Symbol::Visibility::Hidden
 
           this_defined << sym
-          $symbol_objects[sym.name] = filename
         end
       end
 
@@ -145,5 +143,5 @@ $all_defined.each do |sym|
       prefix = "? "
     end
   end
-  puts "#{prefix}#{sym.name} (#{$symbol_objects[sym.to_s]})"
+  puts "#{prefix}#{sym.name} (#{sym.file.path})"
 end

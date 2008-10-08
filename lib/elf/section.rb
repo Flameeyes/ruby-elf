@@ -123,7 +123,7 @@ module Elf
       end
     end
 
-    attr_reader :offset, :type, :size
+    attr_reader :offset, :type, :size, :file
 
     def initialize(elf, sectdata, type)
       @file =      elf

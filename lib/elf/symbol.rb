@@ -72,7 +72,7 @@ module Elf
            })
     end
 
-    attr_reader :value, :size, :other, :bind, :type, :idx, :visibility
+    attr_reader :value, :size, :other, :bind, :type, :idx, :visibility, :file
 
     # Create a new Symbol object reading the symbol structure from the file.
     # This function assumes that the elf file is aligned ad the
