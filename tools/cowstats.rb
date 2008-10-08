@@ -117,7 +117,7 @@ def cowstats_scan(file)
         # them. If the name is not in this list, at least warn now
         # about it.
         case symbol.section.name
-        when /^\.data\.rel(\.ro)?(\.local)?(\..*)?/
+        when /^\.data\.rel(\.ro)?(\.local)?(\..*)?/, /^\.picdata/
           rel_vars << symbol unless $stats_only
           rel_size += symbol.size
         when /^\.t?data(\.local)?(\..*)?/
