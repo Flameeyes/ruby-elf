@@ -199,6 +199,30 @@
 
 	</variablelist>
       </refsect1>
+      
+      <refsect1>
+	<title>Bugs and Missing Features</title>
+	<para>
+	  <command>missingstatic</command> assumes that all the
+	  sources for a module and just that module will be passed to
+	  it, if more or less sources will be passed to the command,
+	  the results might not be the expected ones.
+	</para>
+
+	<para>
+	  Sorting by translation unit is non-trivial inside the
+	  script, instead, piping through <command>sort</command> is
+	  suggested.
+	</para>
+
+	<example>
+	  <title>Sorting <command>missingstatic</command> output</title>
+	  
+	  <programlisting>
+	    find . -name '*.o' | missingstatic -h | sort -k2
+	  </programlisting>
+	</example>
+      </refsect1>
 
       <refsect1>
         <title>See Also</title>
