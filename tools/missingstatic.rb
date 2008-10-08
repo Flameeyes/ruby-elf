@@ -118,15 +118,15 @@ else
   end
 end
 
-$all_defined.subtract $all_using
+$all_defined.delete_if do |symbol|
+  $all_using.include? symbol.name
+end
 
 # The main symbol is used by all the standalone executables, reporting
 # it is pointless as it will always be a false positive. It cannot be
 # marked static.
-$all_defined.delete "main"
-
 $all_defined.delete_if do |symbol|
-  excluded = false
+  excluded = $symbol.name == "main"
 
   exclude_regexps.each do |re|
     excluded = true if symbol.name =~ re
