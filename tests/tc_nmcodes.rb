@@ -26,10 +26,7 @@ require 'elf'
 #
 # Right now only Linux/AMD64 version of the file is tested
 class TC_NM_Codes < Elf::TestUnit
-  def test_symtab
-    assert(@elf.has_section?(".symtab"),
-           "ELF file #{filename} lacks symbol table!")
-  end
+  ExpectedSections = [".symtab"]
 
   def dotest_symbols(table)
     table.each_pair do |sym, code|
