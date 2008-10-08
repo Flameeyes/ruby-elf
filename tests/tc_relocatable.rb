@@ -80,5 +80,7 @@ class TC_Relocatable < Elf::TestExecutable
     suite << LinuxSparc.suite
     suite << LinuxArm.suite
     suite << BareH8300.suite
+    suite << SolarisX86_GCC.suite
+    suite << SolarisX86_SunStudio.suite
   end
 end
