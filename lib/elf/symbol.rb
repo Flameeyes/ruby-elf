@@ -227,7 +227,7 @@ module Elf
                   when /\.t?bss.*/ then "B"
                   when /\.rodata.*/ then "R"
                   when /\.text.*/ then 'T'
-                  when /\.t?data.*/ then "D"
+                  when /\.(t|pic)?data.*/ then "D"
                   else
                     raise UnknownNMCode.new(self)
                   end
