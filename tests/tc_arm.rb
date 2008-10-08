@@ -29,6 +29,10 @@ class TC_ARM < Elf::TestUnit
   ExpectedSectionTypes = {
     ".ARM.attributes" => Elf::Section::Type::ProcARM::ARMAttributes
   }
+  
+  ExpectedSectionTypeClasses = {
+    ".ARM.attributes" => Elf::Section::Type::ProcARM
+  }
 
   def test_machine
     assert_equal(Elf::Machine::ARM, @elf.machine,
