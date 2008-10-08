@@ -116,11 +116,22 @@ module Elf
 
       @file = elf
     end
+    
+    class InvalidName < Exception
+      attr_reader :message
+      def initialize(name_idx, sym, symsect)
+        @message = "Invalid name index in #{symsect.link.name} #{name_idx} for symbol #{sym.idx}"
+      end
+    end
 
     def name
       # We didn't read the name in form of string yet;
       if @name.is_a? Integer and @symsect.link
-        name = @symsect.link[@name]
+        begin
+          name = @symsect.link[@name]
+        rescue StringTable::InvalidIndex
+          raise InvalidName.new(@name, self, @symsect)
+        end
         @name = name if name
       end
 
