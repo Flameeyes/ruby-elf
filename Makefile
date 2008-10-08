@@ -1,4 +1,4 @@
-all: manpags
+all: manpages
 
 manpages: manpages/cowstats.1 manpages/missingstatic.1
 
