@@ -28,7 +28,7 @@ class TC_Static_Executable < Test::Unit::TestCase
 
   # Test for _not_ of .dynamic section on the file.
   # This is a prerequisite for static executable files.
-  def test_staic
+  def test_static
     @elfs.each_pair do |name, elf|
       assert(!elf.has_section?('.dynamic'),
              ".dynamic section present on ELF file #{elf.path}")
