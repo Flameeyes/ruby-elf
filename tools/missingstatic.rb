@@ -65,7 +65,7 @@ def scanfile(filename)
         $stderr.puts "missingstatic.rb: #{file}: not an object file"
         next
       end
-      if elf['.symtab'] == nil
+      unless elf.has_section?('.symtab')
         $stderr.puts "missingstatic.rb: #{file}: no .symtab section found"
         next
       end
