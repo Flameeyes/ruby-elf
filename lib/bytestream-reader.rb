@@ -25,35 +25,17 @@
 # SOFTWARE.
 # 
 
+require 'readbytes'
+
 class BytestreamReader < File
   # This exists in the documentation but not in implementation (?!)
 
-  class TruncatedDataError < Exception
-    def initialize(req, got)
-      @req = req; @got = got
+  class UndefinedEndian < Exception
+    attr_reader :message
+    
+    def initialize
+      message = "Requested default-endianness reads but no endianness defined"
     end
-
-    def message
-      "The read data (#{@got}) is not the same amount as requested (#{@req})."
-    end
-  end
-
-  def readbytes(req)
-    buf = ''
-    n = req
-
-    loop do
-      new = readpartial(n)
-      buf += new
-      
-      break if buf.size >= req
-
-      raise TruncateDataError.new(req, buf.size) if new.size == 0
-      
-      n -= new.size
-    end
-
-    return buf
   end
 
   def read_array_u8(size)
@@ -204,6 +186,7 @@ class BytestreamReader < File
     case @endian
     when BigEndian then read_s16_be
     when LittleEndian then read_s16_le
+    else raise UndefinedEndianness.new
     end
   end
 
@@ -211,6 +194,7 @@ class BytestreamReader < File
     case @endian
     when BigEndian then read_s32_be
     when LittleEndian then read_s32_le
+    else raise UndefinedEndianness.new
     end
   end
 
@@ -218,6 +202,7 @@ class BytestreamReader < File
     case @endian
     when BigEndian then read_s64_be
     when LittleEndian then read_s64_le
+    else raise UndefinedEndianness.new
     end
   end
 
@@ -225,6 +210,7 @@ class BytestreamReader < File
     case @endian
     when BigEndian then read_u16_be
     when LittleEndian then read_u16_le
+    else raise UndefinedEndianness.new
     end
   end
 
@@ -232,6 +218,7 @@ class BytestreamReader < File
     case @endian
     when BigEndian then read_u32_be
     when LittleEndian then read_u32_le
+    else raise UndefinedEndianness.new
     end
   end
 
@@ -239,6 +226,7 @@ class BytestreamReader < File
     case @endian
     when BigEndian then read_u64_be
     when LittleEndian then read_u64_le
+    else raise UndefinedEndianness.new
     end
   end
 
