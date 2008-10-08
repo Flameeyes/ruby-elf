@@ -25,7 +25,7 @@ require 'elf'
 # nm(1)-style code.
 #
 # Right now only Linux/AMD64 version of the file is tested
-class TC_SunWSpecific < Test::Unit::TestCase
+class TC_NM_Codes < Test::Unit::TestCase
   TestDir = Pathname.new(__FILE__).dirname + "binaries"
 
   def setup
