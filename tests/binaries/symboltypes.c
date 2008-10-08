@@ -15,15 +15,14 @@
  * SOFTWARE.
  */
 
-/* Attributes cold and hot needs to be supported */
-#if !defined(__GNUC__) || defined(__ICC) || \
-  !(__GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 3))
-
-# define tc_cold
-# define tc_hot
+/* We need static unused symbols to be emitted nonetheless.  ICC
+ * avoids emitting all the static unused symbols unless it's told
+ * explicitly to emit them by the used attribute.
+ */
+#if defined(__GNUC__)
+# define tc_used __attribute__((used))
 #else
-# define tc_cold __attribute__((cold))
-# define tc_hot __attribute__((hot))
+# define tc_used
 #endif
 
 /* We need .data.rel symbols to be emitted */
@@ -31,49 +30,50 @@
 # error "This testcase has to be built with PIC enabled"
 #endif
 
-/* We don't want to fill the static variables with used attributes */
-#if defined(__OPTIMIZE__)
-# error "This testcase cannot be built with optimisations"
-#endif
-
 char external_variable[] = "foo";
-static char static_variable[] = "foo";
+static char static_variable[] tc_used = "foo";
 
 const char external_constant[] = "foo";
-static const char static_constant[] = "foo";
+static const char static_constant[] tc_used = "foo";
 
 const char *relocated_external_variable = "foo";
 const char *const relocated_external_constant = "foo";
 
-static const char *relocated_static_variable = "foo";
-static const char *const relocated_static_constant = "foo";
+static const char *relocated_static_variable tc_used = "foo";
+static const char *const relocated_static_constant tc_used = "foo";
 
 char external_uninitialised_variable;
-static char static_uninitialised_variable;
+static char static_uninitialised_variable tc_used;
 
 __thread char external_tls_variable[] = "foo";
-static __thread char static_tls_variable[] = "foo";
+static __thread char static_tls_variable[] tc_used = "foo";
 
 __thread char external_uninitialised_tls_variable;
-static __thread char static_uninitialised_tls_variable;
+static __thread char static_uninitialised_tls_variable tc_used;
 
 __thread const char *relocated_external_tls_variable = "foo";
-static __thread const char *relocated_static_tls_variable = "foo";
+static __thread const char *relocated_static_tls_variable tc_used = "foo";
 
 void external_function() {
 }
 
-static void static_function() {
+static void tc_used static_function() {
 }
 
-void tc_cold external_cold_function() {
+/* Attributes cold and hot needs to be supported */
+#if defined(__GNUC__) && !defined(__ICC) && \
+  (__GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 3))
+
+void __attribute__((cold)) external_cold_function() {
 }
 
-static tc_cold void static_cold_function() {
+static void __attribute__((cold)) tc_used static_cold_function() {
 }
 
-void tc_hot external_hot_function() {
+void __attribute__((hot)) external_hot_function() {
 }
 
-static void tc_hot static_hot_function() {
+static void __attribute__((hot)) tc_used static_hot_function() {
 }
+
+#endif
