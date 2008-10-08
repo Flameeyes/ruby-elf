@@ -145,5 +145,5 @@ $all_defined.each do |sym|
       prefix = "? "
     end
   end
-  puts "#{prefix} #{sym.name} (#{$symbol_objects[sym.to_s]})"
+  puts "#{prefix}#{sym.name} (#{$symbol_objects[sym.to_s]})"
 end
