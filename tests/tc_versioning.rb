@@ -27,23 +27,17 @@ class TC_Versioning < Elf::TestUnit
   Filename = "linux_amd64_versioning.so"
   ExpectedSections = [".gnu.version", ".gnu.version_d", ".gnu.version_r"]
 
-  def test_sections_types
-    assert_equal(Elf::Section::Type::GNU::VerSym, @elf[".gnu.version"].type,
-                 "Section .gnu.version of wrong type")
-    assert_equal(Elf::Section::Type::GNU::VerDef, @elf[".gnu.version_d"].type,
-                 "Section .gnu.version_d of wrong type")
-    assert_equal(Elf::Section::Type::GNU::VerNeed, @elf[".gnu.version_r"].type,
-                 "Section .gnu.version_r of wrong type")
-  end
+  ExpectedSectionTypes = {
+    ".gnu.version"   => Elf::Section::Type::GNU::VerSym,
+    ".gnu.version_d" => Elf::Section::Type::GNU::VerDef,
+    ".gnu.version_r" => Elf::Section::Type::GNU::VerNeed
+  }
 
-  def test_sections_classes
-    assert_equal(Elf::GNU::SymbolVersionTable, @elf[".gnu.version"].class,
-                 "Section .gnu.version of wrong class")
-    assert_equal(Elf::GNU::SymbolVersionDef, @elf[".gnu.version_d"].class,
-                 "Section .gnu.version_d of wrong class")
-    assert_equal(Elf::GNU::SymbolVersionNeed, @elf[".gnu.version_r"].class,
-                 "Section .gnu.version_r of wrong class")
-  end
+  ExpectedSectionClasses = {
+    ".gnu.version"   => Elf::GNU::SymbolVersionTable,
+    ".gnu.version_d" => Elf::GNU::SymbolVersionDef,
+    ".gnu.version_r" => Elf::GNU::SymbolVersionNeed
+  }
 
   def test__gnu_version
     assert_equal(@elf[".dynsym"].symbols.size, @elf[".gnu.version"].count,

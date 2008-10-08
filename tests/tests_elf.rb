@@ -32,9 +32,12 @@ class Elf::TestUnit < Test::Unit::TestCase
     @elf.close
   end
 
+  # Do a generalised test for presence of given sections
+  #
+  # Subclasses can fill the ExpectedSections array with the sections
+  # they expect to be present in their testfile.
   ExpectedSections = []
 
-  # Do a generalised test on sections' presence
   def test_sections_presence
     self.class::ExpectedSections.each do |section|
       assert(@elf.has_section?(section),
@@ -43,6 +46,32 @@ class Elf::TestUnit < Test::Unit::TestCase
       # Now that we know the section is present, try accessing it to
       # ensure it's available for test.
       assert_not_nil(@elf[section])
+    end
+  end
+
+  # Do a generalised test for section types
+  #
+  # Subclasses can fill the ExpectedSectionTypes hash with section
+  # names as index, and section type as value.
+  ExpectedSectionTypes = {}
+
+  def test_section_types
+    self.class::ExpectedSectionTypes.each_pair do |section, type_id|
+      assert_equal(type_id, @elf[section].type,
+                   "Section type for #{section} differs from expectations")
+    end
+  end
+
+  # Do a generalised test for section classes
+  #
+  # Subclasses can fill the ExpectedSectionClasses hash with section
+  # names as index, and section class as value.
+  ExpectedSectionClasses = {}
+  
+  def test_section_classes
+    self.class::ExpectedSectionClasses.each_pair do |section, klass|
+      assert_instance_of(klass, @elf[section],
+                         "Object for #{section} of different class than expected")
     end
   end
 end

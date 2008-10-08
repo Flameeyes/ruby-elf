@@ -22,41 +22,21 @@ require 'elf'
 #
 # This test makes sure that ruby-elf can read versioning info out of
 # Solaris ELF files too.
-class TC_Solaris_Versioning < Test::Unit::TestCase
-  TestDir = Pathname.new(__FILE__).dirname + "binaries"
+class TC_Solaris_Versioning < Elf::TestUnit
+  Filename = "solaris_x86_gcc_versioning.so"
+  ExpectedSections = [".gnu.version", ".gnu.version_d", ".gnu.version_r"]
 
-  def setup
-    @elf = Elf::File.new(TestDir + "solaris_x86_gcc_versioning.so")
-  end
+  ExpectedSectionTypes = {
+    ".gnu.version"   => Elf::Section::Type::GNU::VerSym,
+    ".gnu.version_d" => Elf::Section::Type::GNU::VerDef,
+    ".gnu.version_r" => Elf::Section::Type::GNU::VerNeed
+  }
 
-  def teardown
-    @elf.close
-  end
-
-  def test_sections_presence
-    [".gnu.version", ".gnu.version_d", ".gnu.version_r"].each do |sect|
-      assert(@elf[sect],
-             "Missing section #{sect}")
-    end
-  end
-
-  def test_sections_types
-    assert_equal(Elf::Section::Type::GNU::VerSym, @elf[".gnu.version"].type,
-                 "Section .gnu.version of wrong type")
-    assert_equal(Elf::Section::Type::GNU::VerDef, @elf[".gnu.version_d"].type,
-                 "Section .gnu.version_d of wrong type")
-    assert_equal(Elf::Section::Type::GNU::VerNeed, @elf[".gnu.version_r"].type,
-                 "Section .gnu.version_r of wrong type")
-  end
-
-  def test_sections_classes
-    assert_equal(Elf::GNU::SymbolVersionTable, @elf[".gnu.version"].class,
-                 "Section .gnu.version of wrong class")
-    assert_equal(Elf::GNU::SymbolVersionDef, @elf[".gnu.version_d"].class,
-                 "Section .gnu.version_d of wrong class")
-    assert_equal(Elf::GNU::SymbolVersionNeed, @elf[".gnu.version_r"].class,
-           "Section .gnu.version_r of wrong class")
-  end
+  ExpectedSectionClasses = {
+    ".gnu.version"   => Elf::GNU::SymbolVersionTable,
+    ".gnu.version_d" => Elf::GNU::SymbolVersionDef,
+    ".gnu.version_r" => Elf::GNU::SymbolVersionNeed
+  }
 
   def test__gnu_version
     assert_equal(@elf[".dynsym"].symbols.size, @elf[".gnu.version"].count,
