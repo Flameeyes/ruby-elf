@@ -67,13 +67,42 @@ class Elf::TestUnit < Test::Unit::TestCase
   # Do a generalised test for section classes
   #
   # Subclasses can fill the ExpectedSectionClasses hash with section
-  # names as index, and section class as value.
+  # names as indexes, and section class as values.
   ExpectedSectionClasses = {}
   
   def test_section_classes
     self.class::ExpectedSectionClasses.each_pair do |section, klass|
       assert_instance_of(klass, @elf[section],
                          "Object for #{section} of different class than expected")
+    end
+  end
+
+  # Do a generalised test for section type classes
+  #
+  # Subclasses can fill the ExpectedSectionTypeClasses hash with
+  # section names as indexes, and section type classes as values.
+  #
+  # This is useful to ensure that not only section types but also
+  # section type classes (for unknown types) are detected properly
+  ExpectedSectionTypeClasses = {}
+  
+  def test_section_type_classes
+    self.class::ExpectedSectionTypeClasses.each_pair do |section, klass|
+      assert_instance_of(klass, @elf[section].type,
+                         "Type for #{section} of different class than expected")
+    end
+  end
+
+  # Do a generalised test for section type IDs
+  #
+  # Subclasses can fill the ExpectedSectionTypeIDs hash with section
+  # names as indexes and section type IDs as values.
+  ExpectedSectionTypeIDs = {}
+
+  def test_section_type_ids
+    self.class::ExpectedSectionTypeIDs.each_pair do |section, type_id|
+      assert_equal(type_id, @elf[section].type.to_i,
+                   "Type for #{section} of different ID than expected")
     end
   end
 end
