@@ -49,7 +49,7 @@ module Elf
     alias :to_s :desc
 
     def ==(other)
-      @val == other.to_i and self.class == other.class
+      self.class == other.class and @val == other.to_i
     end
 
     def Value.[](idx)
