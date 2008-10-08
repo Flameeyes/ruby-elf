@@ -23,23 +23,9 @@ require 'elf'
 # GNU binutils and glibc support a versioning feature that allows to
 # create symbols with multiple versions; this test ensures that
 # ruby-elf can read the versioning information correctly.
-class TC_Versioning < Test::Unit::TestCase
-  TestDir = Pathname.new(__FILE__).dirname + "binaries"
-
-  def setup
-    @elf = Elf::File.new(TestDir + "linux_amd64_versioning.so")
-  end
-
-  def teardown
-    @elf.close
-  end
-
-  def test_sections_presence
-    [".gnu.version", ".gnu.version_d", ".gnu.version_r"].each do |sect|
-      assert(@elf[sect],
-             "Missing section #{sect}")
-    end
-  end
+class TC_Versioning < Elf::TestUnit
+  Filename = "linux_amd64_versioning.so"
+  ExpectedSections = [".gnu.version", ".gnu.version_d", ".gnu.version_r"]
 
   def test_sections_types
     assert_equal(Elf::Section::Type::GNU::VerSym, @elf[".gnu.version"].type,

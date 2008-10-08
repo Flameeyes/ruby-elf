@@ -31,6 +31,20 @@ class Elf::TestUnit < Test::Unit::TestCase
   def teardown
     @elf.close
   end
+
+  ExpectedSections = []
+
+  # Do a generalised test on sections' presence
+  def test_sections_presence
+    self.class::ExpectedSections.each do |section|
+      assert(@elf.has_section?(section),
+             "Section #{section} missing from the file")
+
+      # Now that we know the section is present, try accessing it to
+      # ensure it's available for test.
+      assert_not_nil(@elf[section])
+    end
+  end
 end
 
 module ElfTests
