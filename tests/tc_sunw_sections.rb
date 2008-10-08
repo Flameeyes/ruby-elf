@@ -35,10 +35,10 @@ class TC_SunW_Sections < Test::Unit::TestCase
   end
 
   def test_types
-    assert(@elf.abi == Elf::OsAbi::SysV,
-           "Expected ABI not found (got #{@elf.abi}, wanted Elf::OsAbi::SysV)")
-    assert(@elf.type == Elf::File::Type::Exec,
-           "Expected ELF Type not found (got #{@elf.type}, wanted Elf::Type::Exec")
+    assert_equal(Elf::OsAbi::SysV, @elf.abi,
+                 "Expected ABI not found")
+    assert_equal(Elf::File::Type::Exec, @elf.type,
+                 "Expected ELF Type not found")
   end
 
   def test_sections_presence
@@ -52,27 +52,27 @@ class TC_SunW_Sections < Test::Unit::TestCase
   def test_sections_type_classes
     [".SUNW_cap", ".SUNW_ldynsym", ".SUNW_version",
      ".SUNW_dynsymsort"].each do |section|
-      assert(@elf[section].type.class == Elf::Section::Type::SunW,
-             "#{section} section not of SunW type: #{@elf[section].type.class}")
+      assert_equal(Elf::Section::Type::SunW, @elf[section].type.class,
+                   "#{section} section not of SunW type")
     end
   end
 
   def test_sections_type_ids
-    assert(@elf[".SUNW_cap"].type.to_i == 0x6ffffff5,
-           "section .SUNW_cap not of type number 0x6ffffff5 (0x#{sprintf "%08x", @elf[".SUNW_cap"].type.to_i})")
-    assert(@elf[".SUNW_ldynsym"].type.to_i == 0x6ffffff3,
-           "section .SUNW_ldynsym not of type number 0x6ffffff5 (0x#{sprintf "%08x", @elf[".SUNW_ldynsym"].type.to_i})")
-    assert(@elf[".SUNW_dynsymsort"].type.to_i == 0x6ffffff1,
-           "section .SUNW_dynsymsort not of type number 0x6ffffff5 (0x#{sprintf "%08x", @elf[".SUNW_dynsymsort"].type.to_i})")
+    { ".SUNW_cap"        => 0x6ffffff5,
+      ".SUNW_ldynsym"    => 0x6ffffff3,
+      ".SUNW_dynsymsort" => 0x6ffffff1 }.each_pair do |name, type_id|
+      assert_equal(type_id, @elf[name].type.to_i,
+                   "Section #{name} has wrong type ID")
+    end
   end
 
   def test_sunw_cap
     assert(@elf[".SUNW_cap"].is_a?(Elf::SunW::Capabilities),
            "section .SUNW_cap is not of the intended class (#{@elf[".SUNW_cap"].class})")
-    assert(@elf[".SUNW_cap"].count == 1,
-           "section .SUNW_cap has not the expected entries count: #{@elf[".SUNW_cap"].count} rather than 1")
-    assert(@elf[".SUNW_cap"][0][:tag] == Elf::SunW::Capabilities::Tag::HW1,
-           "first entry in .SUNW_cap is not for hardware capabilities: #{@elf[".SUNW_cap"][0][:tag]}")
+    assert_equal(1, @elf[".SUNW_cap"].count,
+                 "Section .SUNW_cap has wrong entry count")
+    assert_equal(Elf::SunW::Capabilities::Tag::HW1, @elf[".SUNW_cap"][0][:tag],
+                 "First entry in .SUNW_cap has wrong tag")
     assert(@elf[".SUNW_cap"][0][:flags].include?(Elf::SunW::Capabilities::Hardware1::I386::FPU),
            "the file does not advertise requirement for FPU capabilities")
   end
