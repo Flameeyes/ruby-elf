@@ -18,7 +18,12 @@
 /* Attributes cold and hot needs to be supported */
 #if !defined(__GNUC__) || defined(__ICC) || \
   !(__GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 3))
-# error "This testcase has to be built with GCC 4.3"
+
+# define tc_cold
+# define tc_hot
+#else
+# define tc_cold __attribute__((cold))
+# define tc_hot __attribute__((hot))
 #endif
 
 /* We need .data.rel symbols to be emitted */
@@ -61,14 +66,14 @@ void external_function() {
 static void static_function() {
 }
 
-void __attribute__((cold)) external_cold_function() {
+void tc_cold external_cold_function() {
 }
 
-static __attribute__((cold)) void static_cold_function() {
+static tc_cold void static_cold_function() {
 }
 
-void __attribute__((hot)) external_hot_function() {
+void tc_hot external_hot_function() {
 }
 
-static void  __attribute__((hot)) static_hot_function() {
+static void tc_hot static_hot_function() {
 }
