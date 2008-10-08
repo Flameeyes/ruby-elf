@@ -26,19 +26,13 @@ require Pathname.new(__FILE__).dirname + 'tests_elf'
 class TC_ARM < Elf::TestUnit
   Filename = "arm-crtn.o"
 
+  ExpectedSections = [ ".ARM.attributes" ]
+  ExpectedSectionTypes = {
+    ".ARM.attributes" => Elf::Section::Type::ProcARM::ARMAttributes
+  }
+
   def test_machine
     assert_equal(Elf::Machine::ARM, @elf.machine,
                  "Wrong ELF machine type")
   end
-
-  def test_section_presence
-    assert(@elf.has_section?(".ARM.attributes"),
-           ".ARM.attributes section not found.")
-  end
-
-  def test_section_type
-    assert_equal(Elf::Section::Type::ProcARM::ARMAttributes, @elf[".ARM.attributes"].type,
-                 "Wrong .ARM.attributes type")
-  end
-
 end
