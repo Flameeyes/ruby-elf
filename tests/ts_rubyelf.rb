@@ -14,7 +14,8 @@
 # along with this generator; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
-require 'test/unit'
+require 'test/unit/ui/console/testrunner'
+require 'test/unit/testsuite'
 require 'pathname'
 
 require Pathname.new(__FILE__).dirname + 'tc_bytestream'
@@ -27,3 +28,21 @@ require Pathname.new(__FILE__).dirname + 'tc_sunw_sections'
 require Pathname.new(__FILE__).dirname + 'tc_versioning'
 require Pathname.new(__FILE__).dirname + 'tc_solaris_versioning'
 require Pathname.new(__FILE__).dirname + 'tc_nmcodes'
+
+class TS_RubyElf
+  def self.suite
+    suite = Test::Unit::TestSuite.new
+    suite << TC_Bytestream.suite
+    suite << TC_Dynamic_Executable.suite
+    suite << TC_Static_Executable.suite
+    suite << TC_Relocatable.suite
+    suite << TC_Exceptions.suite
+    suite << TC_ARM.suite
+    suite << TC_SunW_Sections.suite
+    suite << TC_Versioning.suite
+    suite << TC_Solaris_Versioning.suite
+    suite << TC_NM_Codes.suite
+  end
+end
+
+Test::Unit::UI::Console::TestRunner.run(TS_RubyElf)
