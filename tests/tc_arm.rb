@@ -17,7 +17,6 @@
 require 'test/unit'
 require 'pathname'
 require 'elf'
-require Pathname.new(__FILE__).dirname + 'tests_elf'
 
 # Test for special ARM sections.
 # ARM ELF files contain an extra section called .ARM.attributes, this

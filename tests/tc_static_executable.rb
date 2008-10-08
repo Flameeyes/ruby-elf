@@ -18,8 +18,6 @@ require 'test/unit'
 require 'pathname'
 require 'elf'
 
-require Pathname.new(__FILE__).dirname + 'tests_elf'
-
 # Test proper handling of Static Executable ELF files.
 class TC_Static_Executable < Test::Unit::TestCase
   TestBaseFilename = "static_executable"

@@ -18,6 +18,8 @@ require 'test/unit/ui/console/testrunner'
 require 'test/unit/testsuite'
 require 'pathname'
 
+require Pathname.new(__FILE__).dirname + 'tests_elf'
+
 require Pathname.new(__FILE__).dirname + 'tc_bytestream'
 require Pathname.new(__FILE__).dirname + 'tc_dynamic_executable'
 require Pathname.new(__FILE__).dirname + 'tc_static_executable'

@@ -14,6 +14,8 @@
 # along with this generator; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
+require 'elf'
+
 class Elf::TestUnit < Test::Unit::TestCase
   TestDir = Pathname.new(__FILE__).dirname + "binaries"
 

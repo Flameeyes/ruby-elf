@@ -18,8 +18,6 @@ require 'test/unit'
 require 'pathname'
 require 'elf'
 
-require Pathname.new(__FILE__).dirname + 'tests_elf'
-
 class TC_Relocatable < Test::Unit::TestCase
   TestBaseFilename = "dynamic_executable.o"
   TestElfType = Elf::File::Type::Rel
