@@ -145,7 +145,7 @@ module Elf
     end
 
     def version
-      return nil if @file['.gnu.version'] == nil or
+      return nil if !@file.has_section?('.gnu.version') or
         section == Elf::Section::Abs or
         ( section.is_a? Elf::Section and section.name == ".bss" )
 
