@@ -34,6 +34,19 @@ class Elf::TestUnit < Test::Unit::TestCase
     @elf.close
   end
 
+  # Test for ELF file version.
+  #
+  # We assume that all the ELF files we test are ELF version 1 files,
+  # since there is no other version for now.
+  ExpectedVersion = 1
+
+  def test_version
+    if self.class.const_defined? "ExpectedVersion"
+      assert_equal(ExpectedVersion, elf.version,
+                   "Unexpected ELF version")
+    end
+  end
+
   # Do a generalised test for presence of given sections
   #
   # Subclasses can fill the ExpectedSections array with the sections
