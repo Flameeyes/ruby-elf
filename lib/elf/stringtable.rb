@@ -36,12 +36,22 @@ module Elf
       end
     end
 
+    class InvalidIndex < Exception
+      attr_reader :message
+      def initialize(idx, max_idx)
+        @message = "Invalid index #{idx} (maximum index: #{max_idx})"
+      end
+    end
+
     def [](idx)
       load unless @table
 
       # Sometimes the linker can reduce the table by overloading
       # two names that are substrings
       if not @table[idx]
+        raise InvalidIndex.new(idx, @rawtable.size-1) if
+          idx >= @rawtable.size
+
         @table[idx] = ''
 
         ptr = idx
