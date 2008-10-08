@@ -126,7 +126,7 @@ end
 # it is pointless as it will always be a false positive. It cannot be
 # marked static.
 $all_defined.delete_if do |symbol|
-  excluded = $symbol.name == "main"
+  excluded = symbol.name == "main"
 
   exclude_regexps.each do |re|
     excluded = true if symbol.name =~ re
