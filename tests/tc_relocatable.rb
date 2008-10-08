@@ -38,6 +38,13 @@ class TC_Relocatable < Elf::TestExecutable
     Filename = "linux_amd64_" + BaseFilename
     include Elf::TestExecutable::LinuxAMD64
   end
+ 
+  class LinuxAMD64_ICC < self
+    Filename = "linux_amd64_icc_" + BaseFilename
+    include Elf::TestExecutable::LinuxAMD64
+
+    ExpectedABI = Elf::OsAbi::Linux
+  end
 
   class LinuxSparc < self
     Filename = "linux_sparc_" + BaseFilename
@@ -69,6 +76,7 @@ class TC_Relocatable < Elf::TestExecutable
     suite = Test::Unit::TestSuite.new
     suite << LinuxX86.suite
     suite << LinuxAMD64.suite
+    suite << LinuxAMD64_ICC.suite
     suite << LinuxSparc.suite
     suite << LinuxArm.suite
     suite << BareH8300.suite

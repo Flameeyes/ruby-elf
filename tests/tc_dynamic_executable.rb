@@ -54,6 +54,11 @@ class TC_Dynamic_Executable < Elf::TestExecutable
     include Elf::TestExecutable::LinuxAMD64
   end
 
+  class LinuxAMD64_ICC < self
+    Filename = "linux_amd64_icc_" + BaseFilename
+    include Elf::TestExecutable::LinuxAMD64
+  end
+
   class LinuxSparc < self
     Filename = "linux_sparc_" + BaseFilename
     include Elf::TestExecutable::LinuxSparc
@@ -78,6 +83,7 @@ class TC_Dynamic_Executable < Elf::TestExecutable
     suite = Test::Unit::TestSuite.new
     suite << LinuxX86.suite
     suite << LinuxAMD64.suite
+    suite << LinuxAMD64_ICC.suite
     suite << LinuxSparc.suite
     suite << LinuxArm.suite
     suite << SolarisX86_GCC.suite
