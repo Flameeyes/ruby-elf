@@ -69,14 +69,14 @@ module ElfTests
   # We assume that all the ELF files we test are ELF 1 files.
   def test_version
     @elfs.each_pair do |name, elf|
-      assert(elf.version == 1,
-             "ELF version for #{elf.path} (#{elf.version}) differs from expected version (1)")
+      assert_equal(1, elf.version,
+                   "ELF version for #{elf.path} differs from expected version")
     end
   end
 
   def test_type
     @elfs.each_pair do |name, elf|
-      assert(elf.type == self.class::TestElfType)
+      assert_equal(self.class::TestElfType, elf.type)
     end
   end
   
@@ -89,8 +89,8 @@ module ElfTests
                         Elf::Class::Elf64
                       end
 
-      assert(elf.elf_class == expectedclass,
-             "ELF class for #{elf.path} (#{elf.elf_class}) differs from expected class (#{expectedclass})")
+      assert_equal(expectedclass, elf.elf_class,
+             "ELF class for #{elf.path} differs from expected class")
     end
   end
 
@@ -103,8 +103,8 @@ module ElfTests
                            Elf::DataEncoding::Msb
                          end
 
-      assert(elf.data_encoding == expectedencoding,
-             "ELF encoding for #{elf.path} (#{elf.data_encoding}) differs from expected encoding (#{expectedencoding})")
+      assert_equal(expectedencoding, elf.data_encoding,
+                   "ELF encoding for #{elf.path} differs from expected encoding")
     end
   end
 
@@ -121,10 +121,10 @@ module ElfTests
                              0
                            end
 
-      assert(elf.abi == expectedabi,
-             "ELF ABI for #{elf.path} (#{elf.abi}) differs from expected ABI (#{expectedabi})")
-      assert(elf.abi_version == expectedabiversion,
-             "ELF ABI version for #{elf.path} (#{elf.abi_version}) differs from expected ABI version (#{expectedabiversion})")
+      assert_equal(expectedabi, elf.abi,
+                   "ELF ABI for #{elf.path} differs from expected ABI")
+      assert_equal(expectedabiversion, elf.abi_version,
+                   "ELF ABI version for #{elf.path} differs from expected ABI version")
     end
   end
 
@@ -146,8 +146,8 @@ module ElfTests
                           Elf::Machine::H8300
                         end
 
-      assert(elf.machine == expectedmachine,
-             "ELF machine for #{elf.path} (#{elf.machine}) differs from expected amchine (#{expectedmachine})")
+      assert_equal(expectedmachine, elf.machine,
+                   "ELF machine for #{elf.path} differs from expected machine")
     end
   end
 

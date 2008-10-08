@@ -28,8 +28,8 @@ class TC_ARM < Test::Unit::TestCase
   def setup
     @elf = Elf::File.new(TestDir + "arm-crtn.o")
 
-    assert(@elf.machine == Elf::Machine::ARM,
-           "wrong ELF machine type (expected Elf::Machine::ARM, got #{@elf.machine}")
+    assert_equal(Elf::Machine::ARM, @elf.machine,
+                 "Wrong ELF machine type")
   end
 
   def teardown
@@ -42,8 +42,8 @@ class TC_ARM < Test::Unit::TestCase
   end
 
   def test_section_type
-    assert(@elf[".ARM.attributes"].type == Elf::Section::Type::ProcARM::ARMAttributes,
-           "wrong .ARM.attributes type (expected Elf::Section::Type::ProcARM::ARMAttributes, got #{@elf[".ARM.attributes"].type})")
+    assert_equal(Elf::Section::Type::ProcARM::ARMAttributes, @elf[".ARM.attributes"].type,
+                 "Wrong .ARM.attributes type")
   end
 
 end

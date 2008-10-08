@@ -42,26 +42,26 @@ class TC_Versioning < Test::Unit::TestCase
   end
 
   def test_sections_types
-    assert(@elf[".gnu.version"].type == Elf::Section::Type::GNU::VerSym,
-          "Section .gnu.version of wrong type (#{@elf[".gnu.version"].type})")
-    assert(@elf[".gnu.version_d"].type == Elf::Section::Type::GNU::VerDef,
-          "Section .gnu.version_d of wrong type (#{@elf[".gnu.version_d"].type})")
-    assert(@elf[".gnu.version_r"].type == Elf::Section::Type::GNU::VerNeed,
-          "Section .gnu.version_r of wrong type (#{@elf[".gnu.version_r"].type})")
+    assert_equal(Elf::Section::Type::GNU::VerSym, @elf[".gnu.version"].type,
+                 "Section .gnu.version of wrong type")
+    assert_equal(Elf::Section::Type::GNU::VerDef, @elf[".gnu.version_d"].type,
+                 "Section .gnu.version_d of wrong type")
+    assert_equal(Elf::Section::Type::GNU::VerNeed, @elf[".gnu.version_r"].type,
+                 "Section .gnu.version_r of wrong type")
   end
 
   def test_sections_classes
-    assert(@elf[".gnu.version"].class == Elf::GNU::SymbolVersionTable,
-           "Section .gnu.version of wrong class (#{@elf[".gnu.version"].class})")
-    assert(@elf[".gnu.version_d"].class == Elf::GNU::SymbolVersionDef,
-           "Section .gnu.version_d of wrong class (#{@elf[".gnu.version_d"].class})")
-    assert(@elf[".gnu.version_r"].class == Elf::GNU::SymbolVersionNeed,
-           "Section .gnu.version_r of wrong class (#{@elf[".gnu.version_r"].class})")
+    assert_equal(Elf::GNU::SymbolVersionTable, @elf[".gnu.version"].class,
+                 "Section .gnu.version of wrong class")
+    assert_equal(Elf::GNU::SymbolVersionDef, @elf[".gnu.version_d"].class,
+                 "Section .gnu.version_d of wrong class")
+    assert_equal(Elf::GNU::SymbolVersionNeed, @elf[".gnu.version_r"].class,
+                 "Section .gnu.version_r of wrong class")
   end
 
   def test__gnu_version
-    assert(@elf[".gnu.version"].count == @elf[".dynsym"].symbols.size,
-           "Wrong version information count (#{@elf[".gnu.version"].count}, expected #{@elf[".dynsym"].symbols.size})")
+    assert_equal(@elf[".dynsym"].symbols.size, @elf[".gnu.version"].count,
+                 "Wrong version information count")
   end
 
   def test__gnu_version_d
@@ -70,35 +70,35 @@ class TC_Versioning < Test::Unit::TestCase
     # We always have a "latent" version with the soname of the
     # library, which is the one used by --default-symver option of GNU
     # ld.
-    assert(section.count == 2,
-           "Wrong amount of versions defined (#{section.count}, expected 2)")
+    assert_equal(2, section.count,
+                 "Wrong amount of versions defined")
 
-    assert(section[1][:names].size == 1,
-           "First version has more than one expected name (#{section[1][:names].size})")
-    assert(section[1][:names][0] == Pathname(@elf.path).basename.to_s,
-           "First version name does not coincide with the filename (#{section[1][:names][0]})")
-    assert(section[1][:flags] & Elf::GNU::SymbolVersionDef::FlagBase == Elf::GNU::SymbolVersionDef::FlagBase,
-           "First version does not report as base version (#{section[1][:flags]})")
+    assert_equal(1, section[1][:names].size,
+                 "First version has more than one expected name")
+    assert_equal(Pathname(@elf.path).basename.to_s, section[1][:names][0],
+                 "First version name does not coincide with the filename")
+    assert_equal(Elf::GNU::SymbolVersionDef::FlagBase, section[1][:flags] & Elf::GNU::SymbolVersionDef::FlagBase,
+                  "First version does not report as base version")
 
-    assert(section[2][:names].size == 1,
-           "Second version has more than one expected name (#{section[2][:names].size})")
-    assert(section[2][:names][0] == "VERSION1",
-           "Second version name is not what is expected (#{section[2][:names][0]})")
+    assert_equal(1, section[2][:names].size,
+                 "Second version has more than one expected name")
+    assert_equal("VERSION1", section[2][:names][0],
+                 "Second version name is not what is expected")
   end
 
   def test__gnu_version_r
     section = @elf[".gnu.version_r"]
 
     
-    assert(section.count == 1,
-           "Wrong amount of needed versions (#{section.count}, expected 1)")
+    assert_equal(1, section.count,
+                 "Wrong amount of needed versions")
 
     # The indexes are incremental between defined and needed
     assert(section[3],
            "Version with index 3 not found.")
 
-    assert(section[3][:name] == "GLIBC_2.2.5",
-           "The needed version is not the right name (#{section[3][:name]})")
+    assert_equal("GLIBC_2.2.5", section[3][:name],
+                 "The needed version is not the right name")
   end
 
   def test_symbols
@@ -106,16 +106,16 @@ class TC_Versioning < Test::Unit::TestCase
     @elf[".dynsym"].symbols.each do |sym|
       case sym.name
       when "tolower"
-        assert(sym.version == "GLIBC_2.2.5",
-               "Imported \"tolower\" symbol is not reporting the expected version (#{sym.version})")
+        assert_equal("GLIBC_2.2.5", sym.version,
+                     "Imported \"tolower\" symbol is not reporting the expected version")
       when "asymbol"
         unless first_asymbol_seen
-          assert(sym.version == "VERSION1",
-                 "Defined symbol \"asymbol\" is not reporting the expected version (#{sym.version})")
+          assert_equal("VERSION1", sym.version,
+                       "Defined symbol \"asymbol\" is not reporting the expected version")
           first_asymbol_seen = true
         else
-          assert(sym.version == nil,
-                 "Defined symbol \"asymbol\" is reporting an unexpected version (#{sym.version})")
+          assert_equal(nil, sym.version,
+                        "Defined symbol \"asymbol\" is reporting an unexpected version")
         end
       end
     end

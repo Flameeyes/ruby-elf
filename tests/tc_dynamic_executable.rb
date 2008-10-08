@@ -32,7 +32,7 @@ class TC_Dynamic_Executable < Test::Unit::TestCase
     @elfs.each_pair do |name, elf|
       assert(elf['.dynamic'],
              "Missing .dynamic section on ELF file #{elf.path}")
-      assert(elf['.dynamic'].type == Elf::Section::Type::Dynamic,
+      assert_equal(Elf::Section::Type::Dynamic, elf['.dynamic'].type,
              "Wrong type for section .dynamic (expected Elf::Section::Type::Dynamic, got #{elf['.dynamic'].type})")
     end
   end
@@ -42,8 +42,8 @@ class TC_Dynamic_Executable < Test::Unit::TestCase
     @elfs.each_pair do |name, elf|
       assert(elf['.dynsym'],
              "Missing .dynsym section on ELF file #{elf.path}")
-      assert(elf['.dynsym'].type == Elf::Section::Type::DynSym,
-             "Wrong type for section .dynsym (expected Elf::Section::Type::DynSym, got #{elf['.dynsym'].type})")
+      assert_equal(Elf::Section::Type::DynSym, elf['.dynsym'].type,
+                   "Wrong type for section .dynsym (expected Elf::Section::Type::DynSym, got #{elf['.dynsym'].type})")
     end
   end
 
@@ -55,8 +55,8 @@ class TC_Dynamic_Executable < Test::Unit::TestCase
         next unless sym.name == "printf"
         printf_found = true
         
-        assert(sym.section == Elf::Section::Undef,
-               "printf symbol not in Undefined section")
+        assert_equal(Elf::Section::Undef, sym.section,
+                     "printf symbol not in Undefined section")
       end
       assert(printf_found, "printf symbol not found")
     end

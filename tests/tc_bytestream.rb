@@ -65,20 +65,20 @@ class TC_Bytestream < Test::Unit::TestCase
   end
 
   def test_readbytes
-    assert( @bs.readbytes(16) == TestFile,
-            "The content of the file does not coincide.")
+    assert_equal(TestFile, @bs.readbytes(16),
+                 "The content of the file does not coincide.")
   end
 
   def test_read_array_u8
-    assert( @bs.read_array_u8(TestFile.size) == TestFile.unpack("C*"),
-            "The content of the 8-bit array does not coincide.")
+    assert_equal(TestFile.unpack("C*"), @bs.read_array_u8(TestFile.size),
+                 "The content of the 8-bit array does not coincide.")
   end
 
   def test_read_u8
     i = 0
     12.times do
-      assert( @bs.read_u8 == TestFile[i],
-              "Byte of index #{i} does not coincide." )
+      assert_equal(TestFile[i], @bs.read_u8,
+                   "Byte of index #{i} does not coincide." )
       i += 1
     end
   end
@@ -86,19 +86,19 @@ class TC_Bytestream < Test::Unit::TestCase
   # Only test current endian, for now.
   def test_read_array_u16
     if @@endian == :little
-      assert( @bs.read_array_u16_le(TestFile.size/2) == TestFile.unpack("S*"),
-              "The content of the 16-bit array does not coincide.")
+      assert_equal(TestFile.unpack("S*"), @bs.read_array_u16_le(TestFile.size/2),
+                   "The content of the 16-bit array does not coincide.")
     else
-      assert( @bs.read_array_u16_be(TestFile.size/2) == TestFile.unpack("S*"),
-              "The content of the 16-bit array does not coincide.")
+      assert_equal(TestFile.unpack("S*"), @bs.read_array_u16_be(TestFile.size/2),
+                   "The content of the 16-bit array does not coincide.")
     end
   end
 
   def test_read_u16_le
     i = 0
     6.times do
-      assert( @bs.read_u16_le == TestValues_u16le[i],
-              "16-bit LE word of index #{i} does not coincide" )
+      assert_equal(TestValues_u16le[i], @bs.read_u16_le,
+                   "16-bit LE word of index #{i} does not coincide" )
       i += 1
     end
   end
@@ -106,8 +106,8 @@ class TC_Bytestream < Test::Unit::TestCase
   def test_read_u16_be
     i = 0
     6.times do
-      assert( @bs.read_u16_be == TestValues_u16be[i],
-              "16-bit BE word of index #{i} does not coincide" )
+      assert_equal( TestValues_u16be[i], @bs.read_u16_be,
+                    "16-bit BE word of index #{i} does not coincide" )
       i += 1
     end
   end
@@ -115,19 +115,19 @@ class TC_Bytestream < Test::Unit::TestCase
   # Only test current endian, for now.
   def test_read_array_u32
     if @@endian == :little
-      assert( @bs.read_array_u32_le(TestFile.size/4) == TestFile.unpack("L*"),
+      assert_equal( TestFile.unpack("L*"), @bs.read_array_u32_le(TestFile.size/4),
               "The content of the 16-bit array does not coincide.")
     else
-      assert( @bs.read_array_u32_be(TestFile.size/4) == TestFile.unpack("L*"),
-              "The content of the 16-bit array does not coincide.")
+      assert_equal( TestFile.unpack("L*"), @bs.read_array_u32_be(TestFile.size/4),
+                    "The content of the 16-bit array does not coincide.")
     end
   end
 
   def test_read_u32_le
     i = 0
     3.times do
-      assert( @bs.read_u32_le == TestValues_u32le[i],
-              "32-bit LE word of index #{i} does not coincide" )
+      assert_equal( TestValues_u32le[i], @bs.read_u32_le,
+                    "32-bit LE word of index #{i} does not coincide" )
       i += 1
     end
   end
@@ -135,8 +135,8 @@ class TC_Bytestream < Test::Unit::TestCase
   def test_read_u32_be
     i = 0
     3.times do
-      assert( @bs.read_u32_be == TestValues_u32be[i],
-              "32-bit BE word of index #{i} does not coincide" )
+      assert_equal( TestValues_u32be[i], @bs.read_u32_be,
+                    "32-bit BE word of index #{i} does not coincide" )
       i += 1
     end
   end
@@ -144,79 +144,79 @@ class TC_Bytestream < Test::Unit::TestCase
   # Only test current endian, for now.
   def test_read_array_u64
     if @@endian == :little
-      assert( @bs.read_array_u64_le(TestFile.size/8) == TestFile.unpack("Q*"),
-              "The content of the 16-bit array does not coincide.")
+      assert_equal( TestFile.unpack("Q*"), @bs.read_array_u64_le(TestFile.size/8),
+                    "The content of the 16-bit array does not coincide.")
     else
-      assert( @bs.read_array_u64_be(TestFile.size/8) == TestFile.unpack("Q*"),
-              "The content of the 16-bit array does not coincide.")
+      assert_equal( TestFile.unpack("Q*"), @bs.read_array_u64_be(TestFile.size/8),
+                    "The content of the 16-bit array does not coincide.")
     end
   end
 
   def test_read_u64_le
-    assert( @bs.read_u64_le == TestValue_u64le,
-            "64-bit LE word does not coincide" )
+    assert_equal( TestValue_u64le, @bs.read_u64_le,
+                  "64-bit LE word does not coincide" )
   end
 
   def test_read_u64_be
-    assert( @bs.read_u64_be == TestValue_u64be,
-            "64-bit BE word does not coincide" )
+    assert_equal( TestValue_u64be, @bs.read_u64_be,
+                  "64-bit BE word does not coincide" )
   end
 
   def test_read_array_s8
-    assert( @bs.read_array_s8(TestFile.size) == TestFile.unpack("c*"),
-            "The content of the file does not coincide.")
+    assert_equal( TestFile.unpack("c*"), @bs.read_array_s8(TestFile.size),
+                  "The content of the file does not coincide.")
   end
 
   # Only test current endian, for now.
   def test_read_array_s16
     if @@endian == :little
-      assert( @bs.read_array_s16_le(TestFile.size/2) == TestFile.unpack("s*"),
-              "The content of the 16-bit array does not coincide.")
+      assert_equal( TestFile.unpack("s*"), @bs.read_array_s16_le(TestFile.size/2),
+                    "The content of the 16-bit array does not coincide.")
     else
-      assert( @bs.read_array_s16_be(TestFile.size/2) == TestFile.unpack("s*"),
-              "The content of the 16-bit array does not coincide.")
+      assert_equal( TestFile.unpack("s*"), @bs.read_array_s16_be(TestFile.size/2),
+                    "The content of the 16-bit array does not coincide.")
     end
   end
 
   # Only test current endian, for now.
   def test_read_array_s32
     if @@endian == :little
-      assert( @bs.read_array_s32_le(TestFile.size/4) == TestFile.unpack("l*"),
-              "The content of the 16-bit array does not coincide.")
+      assert_equal( TestFile.unpack("l*"), @bs.read_array_s32_le(TestFile.size/4),
+                    "The content of the 16-bit array does not coincide.")
     else
-      assert( @bs.read_array_s32_be(TestFile.size/4) == TestFile.unpack("l*"),
-              "The content of the 16-bit array does not coincide.")
+      assert_equal( TestFile.unpack("l*"), @bs.read_array_s32_be(TestFile.size/4),
+                    "The content of the 16-bit array does not coincide.")
     end
   end
 
   # Only test current endian, for now.
   def test_read_array_s64
     if @@endian == :little
-      assert( @bs.read_array_s64_le(TestFile.size/8) == TestFile.unpack("q*"),
-              "The content of the 16-bit array does not coincide.")
+      assert_equal( TestFile.unpack("q*"), @bs.read_array_s64_le(TestFile.size/8),
+                    "The content of the 16-bit array does not coincide.")
     else
-      assert( @bs.read_array_s64_be(TestFile.size/8) == TestFile.unpack("q*"),
-              "The content of the 16-bit array does not coincide.")
+      assert_equal( TestFile.unpack("q*"), @bs.read_array_s64_be(TestFile.size/8),
+                    "The content of the 16-bit array does not coincide.")
     end
   end
 
   def test_endian_le
     @bs.set_endian(BytestreamReader::LittleEndian)
-    assert( @bs.read_u16 == TestValues_u16le[0],
-            "16-bit (LE) word of index 0 does not coincide.")
+    assert_equal( TestValues_u16le[0], @bs.read_u16,
+                  "16-bit (LE) word of index 0 does not coincide.")
     @bs.read_u16 # Ignore this, should check for 16-bit signed though
-    assert( @bs.read_u32 == TestValues_u32le[1],
-            "32-bit (LE) word of index 1 does not coincide.")
+    assert_equal( TestValues_u32le[1], @bs.read_u32,
+                  "32-bit (LE) word of index 1 does not coincide.")
     @bs.read_u32 # Ignore this, should check for 32-bit signed though
   end
 
   def test_endian_be
     @bs.set_endian(BytestreamReader::BigEndian)
-    assert( @bs.read_u16 == TestValues_u16be[0],
-            "16-bit (BE) word of index 0 does not coincide.")
+    assert_equal( TestValues_u16be[0], @bs.read_u16,
+                  "16-bit (BE) word of index 0 does not coincide.")
     @bs.read_u16 # Ignore this, should check for 16-bit signed though
-    assert( @bs.read_u32 == TestValues_u32be[1],
-            "32-bit (BE) word of index 1 does not coincide.")
+    assert_equal( TestValues_u32be[1], @bs.read_u32,
+                  "32-bit (BE) word of index 1 does not coincide.")
     @bs.read_u32 # Ignore this, should check for 32-bit signed though
   end
 
