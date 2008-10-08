@@ -213,10 +213,10 @@ module Elf
         @nmflag = "T"
       else
         @nmflag = case section.name
-                  when ".bss" then "B"
+                  when /\.t?bss.*/ then "B"
                   when /\.rodata.*/ then "R"
-                  when ".text" then "T"
-                  when ".data" then "D"
+                  when /\.text.*/ then 'T'
+                  when /\.t?data.*/ then "D"
                   else
                     raise UnknownNMCode.new(self)
                   end
