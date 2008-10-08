@@ -24,8 +24,11 @@ module Elf
   class SymbolTable < Section
     def load_internal
       @symbols = []
+      @symbol_names = {}
       for i in 1..(@numentries)
-        @symbols << Symbol.new(@file, self, i-1)
+        sym = Symbol.new(@file, self, i-1)
+        @symbols << sym
+        @symbol_names[sym.name] = sym.idx
       end
 
       return nil
@@ -35,6 +38,27 @@ module Elf
       load unless @symbols
 
       @symbols
+    end
+
+    # Exception thrown when requesting a symbol that is not in the
+    # table
+    class UnknownSymbol < Exception
+      attr_reader :message
+      def initialize(name_or_idx, section)
+        @message = "Symbol #{name_or_idx} not found in section #{section.name}"
+      end
+    end
+
+    def [](idx)
+      load unless @symbols
+
+      if idx.is_a?(Integer)
+        raise UnknownSymbol.new(idx, self) unless @symbols[idx] != nil
+        return @symbols[idx]
+      else
+        raise UnknownSymbol.new(idx, self) unless @symbol_names.has_key?(idx)
+        return @symbols[@symbol_names[idx]]
+      end
     end
   end
 end
