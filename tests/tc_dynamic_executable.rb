@@ -19,44 +19,68 @@ require 'pathname'
 require 'elf'
 
 # Test proper handling of Executable ELF files.
-class TC_Dynamic_Executable < Test::Unit::TestCase
-  TestBaseFilename = "dynamic_executable"
-  TestElfType = Elf::File::Type::Exec
-  include ElfTests
+class TC_Dynamic_Executable < Elf::TestExecutable
+  BaseFilename = "dynamic_executable"
+  ExpectedElfFileType = Elf::File::Type::Exec
 
-  # Test for presence of .dynamic section on the file.
-  # This is a prerequisite for dynamic executable files.
-  def test_dynamic
-    @elfs.each_pair do |name, elf|
-      assert(elf['.dynamic'],
-             "Missing .dynamic section on ELF file #{elf.path}")
-      assert_equal(Elf::Section::Type::Dynamic, elf['.dynamic'].type,
-             "Wrong type for section .dynamic (expected Elf::Section::Type::Dynamic, got #{elf['.dynamic'].type})")
-    end
-  end
+  ExpectedSections = Elf::TestExecutable::ExpectedSections +
+    [ ".dynamic", ".dynsym", ".dynstr" ]
 
-  # Test for the presence of .dynsym section on the file.
-  def test_dynsym_presence
-    @elfs.each_pair do |name, elf|
-      assert(elf['.dynsym'],
-             "Missing .dynsym section on ELF file #{elf.path}")
-      assert_equal(Elf::Section::Type::DynSym, elf['.dynsym'].type,
-                   "Wrong type for section .dynsym (expected Elf::Section::Type::DynSym, got #{elf['.dynsym'].type})")
-    end
-  end
+  ExpectedSectionTypes = {
+    ".dynamic" => Elf::Section::Type::Dynamic,
+    ".dynsym"  => Elf::Section::Type::DynSym,
+    ".dynstr"  => Elf::Section::Type::StrTab
+  }
 
   # Test for presence of an undefined printf symbol.
   def test_printf_symbol
-    @elfs.each_pair do |name, elf|
-      printf_found = false
-      elf['.dynsym'].symbols.each do |sym|
-        next unless sym.name == "printf"
-        printf_found = true
-        
-        assert_equal(Elf::Section::Undef, sym.section,
-                     "printf symbol not in Undefined section")
-      end
-      assert(printf_found, "printf symbol not found")
+    printf_found = false
+    @elf['.dynsym'].symbols.each do |sym|
+      next unless sym.name == "printf"
+      printf_found = true
+      
+      assert_equal(Elf::Section::Undef, sym.section,
+                   "printf symbol not in Undefined section")
     end
+  end
+
+  class LinuxX86 < self
+    Filename = "linux_x86_" + BaseFilename
+    include Elf::TestExecutable::LinuxX86
+  end
+
+  class LinuxAMD64 < self
+    Filename = "linux_amd64_" + BaseFilename
+    include Elf::TestExecutable::LinuxAMD64
+  end
+
+  class LinuxSparc < self
+    Filename = "linux_sparc_" + BaseFilename
+    include Elf::TestExecutable::LinuxSparc
+  end
+
+  class LinuxArm < self
+    Filename = "linux_arm_" + BaseFilename
+    include Elf::TestExecutable::LinuxArm
+  end
+
+  class SolarisX86_GCC < self
+    Filename = "solaris_x86_gcc_executable"
+    include Elf::TestExecutable::SolarisX86_GCC
+  end
+
+  class SolarisX86_SunStudio < self
+    Filename = "solaris_x86_suncc_executable"
+    include Elf::TestExecutable::SolarisX86_SunStudio
+  end
+
+  def self.subsuite
+    suite = Test::Unit::TestSuite.new
+    suite << LinuxX86.suite
+    suite << LinuxAMD64.suite
+    suite << LinuxSparc.suite
+    suite << LinuxArm.suite
+    suite << SolarisX86_GCC.suite
+    suite << SolarisX86_SunStudio.suite
   end
 end

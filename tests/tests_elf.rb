@@ -41,9 +41,69 @@ class Elf::TestUnit < Test::Unit::TestCase
   ExpectedVersion = 1
 
   def test_version
-    if self.class.const_defined? "ExpectedVersion"
-      assert_equal(ExpectedVersion, elf.version,
+    if !self.class::ExpectedVersion.nil?
+      assert_equal(self.class::ExpectedVersion, @elf.version,
                    "Unexpected ELF version")
+    end
+  end
+
+  # Test for ELF file type
+  ExpectedFileType = nil
+
+  def test_elf_filetype
+    if !self.class::ExpectedFileType.nil?
+      assert_equal(self.class::ExpectedFileType, @elf.type,
+                   "Unexpected ELF file type")
+    end
+  end
+
+  # Test for ELF class
+  ExpectedElfClass = nil
+
+  def test_elf_class
+    if !self.class::ExpectedElfClass.nil?
+      assert_equal(self.class::ExpectedElfClass, @elf.elf_class,
+                   "Unexpected ELF class")
+    end
+  end
+
+  # Test for ELF endiannes
+  ExpectedDataEncoding = nil
+
+  def test_elf_dataencoding
+    if !self.class::ExpectedDataEncoding.nil?
+      assert_equal(self.class::ExpectedDataEncoding, @elf.data_encoding,
+                   "Unexpected ELF data encoding")
+    end
+  end
+
+  # Test for ELF ABI
+  ExpectedABI = nil
+
+  def test_elf_abi
+    if !self.class::ExpectedABI.nil?
+      assert_equal(self.class::ExpectedABI, @elf.abi,
+                   "Unexpected ELF ABI")
+    end
+  end
+
+  # Test for ELF ABI version
+  ExpectedABIVersion = nil
+
+  def test_elf_abi_version
+    if !self.class::ExpectedABIVersion.nil?
+      assert_equal(self.class::ExpectedABIVersion, @elf.abi_version,
+                   "Unexpected ELF ABI version")
+    end
+  end
+
+  # Test for ELF Machine
+  ExpectedMachine = nil
+
+  def test_elf_abi_version
+    if !self.class::ExpectedMachine.nil?
+      assert_equal(self.class::ExpectedMachine, @elf.machine,
+                   "Unexpected ELF machine")
     end
   end
 
@@ -120,155 +180,74 @@ class Elf::TestUnit < Test::Unit::TestCase
   end
 end
 
-module ElfTests
-  OS_Arches = [
-               "linux_x86",
-               "linux_amd64",
-               "linux_sparc",
-               "linux_arm",
-               "bare_h8300",
-               "solaris_x86_gcc",
-               "solaris_x86_suncc"
-              ]
-  def setup
-    @elfs = {}
-
-    # Check for presence of all the executables for the arches to test.
-    # Make sure to check all the operating systems too.
-    # Also open the ELF files for testing
-    OS_Arches.each do |os_arch|
-      basefilename = self.class::TestBaseFilename
-
-      case os_arch
-
-      # We obviously cannot test dynamic executables for bare hardware
-      # targets
-      when /^bare_/
-        next if basefilename == "dynamic_executable"
-        basefilename = "static_executable.o" if basefilename == "dynamic_executable.o"
-        
-      # For some reasons building static executables on OpenSolaris
-      # does not look possible (misisng libc archive), thus just use
-      # executable for the filename.
-      when /^solaris_/
-        case basefilename
-        when "static_executable": next
-        when "dynamic_executable": basefilename = "executable"
-        when "dynamic_executable.o": basefilename = "executable.o"
-        end
-      end
-
-      filename = "#{os_arch}_#{basefilename}"
-      assert(File.exists?( Elf::TestUnit::TestDir + filename ),
-             "Missing test file #{filename}")
-      @elfs["#{os_arch}"] = Elf::File.open(Elf::TestUnit::TestDir + filename)
-    end
-  end
-  
-  def teardown
-    @elfs.each_pair do |name, elf|
-      elf.close
-    end
-  end
-
-  # We assume that all the ELF files we test are ELF 1 files.
-  def test_version
-    @elfs.each_pair do |name, elf|
-      assert_equal(1, elf.version,
-                   "ELF version for #{elf.path} differs from expected version")
-    end
-  end
-
-  def test_type
-    @elfs.each_pair do |name, elf|
-      assert_equal(self.class::TestElfType, elf.type)
-    end
-  end
-  
-  def test_elfclass
-    @elfs.each_pair do |name, elf|
-      expectedclass = case name
-                      when /.*_x86/, /.*_arm/, /linux_sparc/, /.*_h8300/
-                        Elf::Class::Elf32
-                      when /.*_amd64/
-                        Elf::Class::Elf64
-                      end
-
-      assert_equal(expectedclass, elf.elf_class,
-             "ELF class for #{elf.path} differs from expected class")
-    end
-  end
-
-  def test_dataencoding
-    @elfs.each_pair do |name, elf|
-      expectedencoding = case name
-                         when /.*_x86/, /.*_amd64/, /.*_arm/
-                           Elf::DataEncoding::Lsb
-                         when /.*_sparc/, /.*_h8300/
-                           Elf::DataEncoding::Msb
-                         end
-
-      assert_equal(expectedencoding, elf.data_encoding,
-                   "ELF encoding for #{elf.path} differs from expected encoding")
-    end
-  end
-
-  def test_abi
-    @elfs.each_pair do |name, elf|
-      expectedabi = case name
-                    when /linux_arm/
-                      Elf::OsAbi::ARM
-                    when /linux_.*/, /bare_.*/, /solaris_.*/
-                      Elf::OsAbi::SysV
-                    end
-      expectedabiversion = case name
-                           when /linux_.*/, /bare_.*/, /solaris_.*/
-                             0
-                           end
-
-      assert_equal(expectedabi, elf.abi,
-                   "ELF ABI for #{elf.path} differs from expected ABI")
-      assert_equal(expectedabiversion, elf.abi_version,
-                   "ELF ABI version for #{elf.path} differs from expected ABI version")
-    end
-  end
-
-  def test_machine
-    @elfs.each_pair do |name, elf|
-      expectedmachine = case name
-                        when /.*_x86/
-                          Elf::Machine::I386
-                        when /.*_amd64/
-                          Elf::Machine::X8664
-                        when /.*_arm/
-                          Elf::Machine::ARM
-                        when /.*_sparc/
-                          case elf.type
-                          when Elf::File::Type::Rel then Elf::Machine::Sparc
-                          when Elf::File::Type::Exec then Elf::Machine::Sparc32Plus
-                          end
-                        when /.*_h8300/
-                          Elf::Machine::H8300
-                        end
-
-      assert_equal(expectedmachine, elf.machine,
-                   "ELF machine for #{elf.path} differs from expected machine")
-    end
-  end
+class Elf::TestExecutable < Elf::TestUnit
+  ExpectedSections = [ ".text" ]
 
   # Test section flags handling.
   #
   # For each file make sure that .text has at least some flags
   # enabled, like ExecInstr and Alloc.
   def test_text_flags
-    @elfs.each_pair do |name, elf|
-      assert(elf['.text'],
-             "ELF file #{elf.path} does not contain .text section")
-      assert(elf['.text'].flags.include?(Elf::Section::Flags::ExecInstr),
-             "ELF file #{elf.path}'s .text section is not executable")
-      assert(elf['.text'].flags.include?(Elf::Section::Flags::Alloc),
-             "ELF file #{elf.path}'s .text section is not allocated")
-    end
+    assert(@elf['.text'].flags.include?(Elf::Section::Flags::ExecInstr),
+           "ELF file #{@elf.path}'s .text section is not executable")
+    assert(@elf['.text'].flags.include?(Elf::Section::Flags::Alloc),
+           "ELF file #{@elf.path}'s .text section is not allocated")
+  end
+
+  module LinuxX86
+    ExpectedElfClass = Elf::Class::Elf32
+    ExpectedDataEncoding = Elf::DataEncoding::Lsb
+    ExpectedABI = Elf::OsAbi::SysV
+    ExpectedABIVersion = 0
+    ExpectedMachine = Elf::Machine::I386
+  end
+
+  module LinuxAMD64
+    ExpectedElfClass = Elf::Class::Elf64
+    ExpectedDataEncoding = Elf::DataEncoding::Lsb
+    ExpectedABI = Elf::OsAbi::SysV
+    ExpectedABIVersion = 0
+    ExpectedMachine = Elf::Machine::X8664
+  end
+
+  module LinuxSparc
+    ExpectedElfClass = Elf::Class::Elf32
+    ExpectedDataEncoding = Elf::DataEncoding::Msb
+    ExpectedABI = Elf::OsAbi::SysV
+    ExpectedABIVersion = 0
+    ExpectedMachine = Elf::Machine::Sparc32Plus
+  end
+
+  module LinuxArm
+    ExpectedElfClass = Elf::Class::Elf32
+    ExpectedDataEncoding = Elf::DataEncoding::Lsb
+    ExpectedABI = Elf::OsAbi::ARM
+    ExpectedABIVersion = 0
+    ExpectedMachine = Elf::Machine::ARM
+  end
+
+  module SolarisX86_GCC
+    ExpectedElfClass = Elf::Class::Elf32
+    ExpectedDataEncoding = Elf::DataEncoding::Lsb
+    ExpectedABI = Elf::OsAbi::SysV
+    ExpectedABIVersion = 0
+    ExpectedMachine = Elf::Machine::I386
+  end
+
+  module SolarisX86_SunStudio
+    ExpectedElfClass = Elf::Class::Elf32
+    ExpectedDataEncoding = Elf::DataEncoding::Lsb
+    ExpectedABI = Elf::OsAbi::SysV
+    ExpectedABIVersion = 0
+    ExpectedMachine = Elf::Machine::I386
+  end
+
+  module BareH8300
+    ExpectedElfClass = Elf::Class::Elf32
+    ExpectedDataEncoding = Elf::DataEncoding::Msb
+    ExpectedABI = Elf::OsAbi::SysV
+    ExpectedABIVersion = 0
+    ExpectedMachine = Elf::Machine::H8300
   end
 
 end

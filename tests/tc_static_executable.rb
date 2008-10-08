@@ -19,17 +19,48 @@ require 'pathname'
 require 'elf'
 
 # Test proper handling of Static Executable ELF files.
-class TC_Static_Executable < Test::Unit::TestCase
-  TestBaseFilename = "static_executable"
-  TestElfType = Elf::File::Type::Exec
-  include ElfTests
+class TC_Static_Executable < Elf::TestExecutable
+  BaseFilename = "static_executable"
+  ExpectedFileType = Elf::File::Type::Exec
 
   # Test for _not_ of .dynamic section on the file.
   # This is a prerequisite for static executable files.
   def test_static
-    @elfs.each_pair do |name, elf|
-      assert(!elf.has_section?('.dynamic'),
-             ".dynamic section present on ELF file #{elf.path}")
-    end
+    assert(!@elf.has_section?('.dynamic'),
+           ".dynamic section present on ELF file #{@elf.path}")
+  end
+
+  class LinuxX86 < self
+    Filename = "linux_x86_" + BaseFilename
+    include Elf::TestExecutable::LinuxX86
+  end
+
+  class LinuxAMD64 < self
+    Filename = "linux_amd64_" + BaseFilename
+    include Elf::TestExecutable::LinuxAMD64
+  end
+
+  class LinuxSparc < self
+    Filename = "linux_sparc_" + BaseFilename
+    include Elf::TestExecutable::LinuxSparc
+  end
+
+  class LinuxArm < self
+    Filename = "linux_arm_" + BaseFilename
+    include Elf::TestExecutable::LinuxArm
+  end
+
+  class BareH8300 < self
+    Filename = "bare_h8300_" + BaseFilename
+    include Elf::TestExecutable::BareH8300
+  end
+
+  def self.subsuite
+    suite = Test::Unit::TestSuite.new
+    suite << LinuxX86.suite
+    suite << LinuxAMD64.suite
+    suite << LinuxSparc.suite
+    suite << LinuxArm.suite
+    suite << BareH8300.suite
   end
 end

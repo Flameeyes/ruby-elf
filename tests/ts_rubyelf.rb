@@ -35,9 +35,9 @@ class TS_RubyElf
   def self.suite
     suite = Test::Unit::TestSuite.new
     suite << TC_Bytestream.suite
-    suite << TC_Dynamic_Executable.suite
-    suite << TC_Static_Executable.suite
-    suite << TC_Relocatable.suite
+    suite << TC_Dynamic_Executable.subsuite
+    suite << TC_Static_Executable.subsuite
+    suite << TC_Relocatable.subsuite
     suite << TC_Exceptions.suite
     suite << TC_ARM.suite
     suite << TC_SunW_Sections.suite

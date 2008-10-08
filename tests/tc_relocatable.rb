@@ -18,9 +18,59 @@ require 'test/unit'
 require 'pathname'
 require 'elf'
 
-class TC_Relocatable < Test::Unit::TestCase
-  TestBaseFilename = "dynamic_executable.o"
-  TestElfType = Elf::File::Type::Rel
-  include ElfTests
+class TC_Relocatable < Elf::TestExecutable
+  BaseFilename = "dynamic_executable.o"
+  ExpectedFileType = Elf::File::Type::Rel
 
+  # Test for _not_ of .dynamic section on the file.
+  # This is a prerequisite for static executable files.
+  def test_static
+    assert(!@elf.has_section?('.dynamic'),
+           ".dynamic section present on ELF file #{@elf.path}")
+  end
+
+  class LinuxX86 < self
+    Filename = "linux_x86_" + BaseFilename
+    include Elf::TestExecutable::LinuxX86
+  end
+
+  class LinuxAMD64 < self
+    Filename = "linux_amd64_" + BaseFilename
+    include Elf::TestExecutable::LinuxAMD64
+  end
+
+  class LinuxSparc < self
+    Filename = "linux_sparc_" + BaseFilename
+    include Elf::TestExecutable::LinuxSparc
+    ExpectedMachine = Elf::Machine::Sparc
+  end
+
+  class LinuxArm < self
+    Filename = "linux_arm_" + BaseFilename
+    include Elf::TestExecutable::LinuxArm
+  end
+
+  class BareH8300 < self
+    Filename = "bare_h8300_static_executable.o"
+    include Elf::TestExecutable::BareH8300
+  end
+
+  class SolarisX86_GCC < self
+    Filename = "solaris_x86_gcc_executable.o"
+    include Elf::TestExecutable::SolarisX86_GCC
+  end
+
+  class SolarisX86_SunStudio < self
+    Filename = "solaris_x86_suncc_executable.o"
+    include Elf::TestExecutable::SolarisX86_SunStudio
+  end
+
+  def self.subsuite
+    suite = Test::Unit::TestSuite.new
+    suite << LinuxX86.suite
+    suite << LinuxAMD64.suite
+    suite << LinuxSparc.suite
+    suite << LinuxArm.suite
+    suite << BareH8300.suite
+  end
 end
