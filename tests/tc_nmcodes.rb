@@ -25,18 +25,10 @@ require 'elf'
 # nm(1)-style code.
 #
 # Right now only Linux/AMD64 version of the file is tested
-class TC_NM_Codes < Test::Unit::TestCase
-  TestDir = Pathname.new(__FILE__).dirname + "binaries"
-
-  def setup
-    @elf = Elf::File.new(TestDir + "linux_amd64_symboltypes.o")
-
+class TC_NM_Codes < Elf::TestUnit
+  def test_symtab
     assert(@elf.has_section?(".symtab"),
-           "ELF file #{TestDir + "linux_amd64_symboltypes.o"} lacks symbol table!")
-  end
-
-  def teardown
-    @elf.close
+           "ELF file #{filename} lacks symbol table!")
   end
 
   def dotest_symbols(table)
@@ -108,4 +100,11 @@ class TC_NM_Codes < Test::Unit::TestCase
   #                    ".text"              => 't' })
   # end
 
+  def self.subsuite
+    suite = Test::Unit::TestSuite.new
+
+    klass = Class.new(TC_NM_Codes)
+    klass.const_set("Filename", "linux_amd64_symboltypes.o")
+    suite << klass.suite
+  end
 end

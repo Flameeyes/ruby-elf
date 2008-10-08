@@ -17,23 +17,18 @@
 require 'test/unit'
 require 'pathname'
 require 'elf'
+require Pathname.new(__FILE__).dirname + 'tests_elf'
 
 # Test for special ARM sections.
 # ARM ELF files contain an extra section called .ARM.attributes, this
 # test is intended to properly check for presence and parsing of this
 # section, and to avoid possible misreading of it.
-class TC_ARM < Test::Unit::TestCase
-  TestDir = Pathname.new(__FILE__).dirname + "binaries"
+class TC_ARM < Elf::TestUnit
+  Filename = "arm-crtn.o"
 
-  def setup
-    @elf = Elf::File.new(TestDir + "arm-crtn.o")
-
+  def test_machine
     assert_equal(Elf::Machine::ARM, @elf.machine,
                  "Wrong ELF machine type")
-  end
-
-  def teardown
-    @elf.close
   end
 
   def test_section_presence

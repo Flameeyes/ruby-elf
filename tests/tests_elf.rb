@@ -14,8 +14,26 @@
 # along with this generator; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
-module ElfTests
+class Elf::TestUnit < Test::Unit::TestCase
   TestDir = Pathname.new(__FILE__).dirname + "binaries"
+
+  def filename
+    self.class::Filename
+  end
+
+  def setup
+    assert(File.exist?( TestDir + filename ),
+           "File #{filename} not found in testsuite data directory")
+
+    @elf = Elf::File.new( TestDir + filename )
+  end
+
+  def teardown
+    @elf.close
+  end
+end
+
+module ElfTests
   OS_Arches = [
                "linux_x86",
                "linux_amd64",
@@ -54,9 +72,9 @@ module ElfTests
       end
 
       filename = "#{os_arch}_#{basefilename}"
-      assert(File.exists?( TestDir + filename ),
+      assert(File.exists?( Elf::TestUnit::TestDir + filename ),
              "Missing test file #{filename}")
-      @elfs["#{os_arch}"] = Elf::File.open(TestDir + filename)
+      @elfs["#{os_arch}"] = Elf::File.open(Elf::TestUnit::TestDir + filename)
     end
   end
   

@@ -41,7 +41,7 @@ class TS_RubyElf
     suite << TC_SunW_Sections.suite
     suite << TC_Versioning.suite
     suite << TC_Solaris_Versioning.suite
-    suite << TC_NM_Codes.suite
+    suite << TC_NM_Codes.subsuite
   end
 end
 
