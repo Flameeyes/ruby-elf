@@ -125,7 +125,7 @@ module Elf
 
       begin
         raise NotAnELF unless readbytes(4) == MagicString
-      rescue EOFError
+      rescue EOFError, TruncatedDataError
         raise NotAnELF
       end
 
