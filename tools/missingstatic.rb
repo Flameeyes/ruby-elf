@@ -27,12 +27,15 @@ opts = GetoptLong.new(
   # Exclude functions with a given prefix (exported functions)
   ["--exclude-regexp", "-x", GetoptLong::REQUIRED_ARGUMENT],
   # Only scan hidden symbols, ignore exported ones
-  ["--hidden-only", "-h", GetoptLong::NO_ARGUMENT]
+  ["--hidden-only", "-h", GetoptLong::NO_ARGUMENT],
+  # Show the type of symbol (function, variable, constant)
+  ["--show-type", "-t", GetoptLong::NO_ARGUMENT]
 )
 
 exclude_regexps = []
 files_list = nil
 $hidden_only = false
+show_type = false
 
 opts.each do |opt, arg|
   case opt
@@ -46,6 +49,8 @@ opts.each do |opt, arg|
     exclude_regexps << Regexp.new(arg)
   when '--hidden-only'
     $hidden_only = true
+  when '--show-type'
+    show_type = true
   end
 end
 
@@ -79,7 +84,7 @@ def scanfile(filename)
           next if $hidden_only and
             sym.visibility != Elf::Symbol::Visibility::Hidden
 
-          this_defined << sym.name
+          this_defined << sym
           $symbol_objects[sym.name] = filename
         end
       end
@@ -121,7 +126,7 @@ $all_defined.delete_if do |symbol|
   excluded = false
 
   exclude_regexps.each do |re|
-    excluded = true if symbol =~ re
+    excluded = true if symbol.name =~ re
     break if excluded
   end
 
@@ -129,5 +134,13 @@ $all_defined.delete_if do |symbol|
 end
 
 $all_defined.each do |sym|
-  puts "#{sym} (#{$symbol_objects[sym]})"
+  if show_type
+    begin
+      prefix = "#{sym.nm_code} "
+    rescue Elf::Symbol::UnknownNMCode => e
+      $stderr.puts e.message
+      prefix = "? "
+    end
+  end
+  puts "#{prefix} #{sym.name} (#{$symbol_objects[sym]})"
 end

@@ -44,6 +44,7 @@
         <cmdsynopsis>
           <command>missingstatic</command>
           <arg choice="opt"><option>--hidden-only</option></arg>
+	  <arg choice="opt"><option>--show-type</option></arg>
           <arg choice="opt">
 	    <option>--exclude-regexp</option>
 	    <replaceable>regular-expression</replaceable>
@@ -96,6 +97,66 @@
               </para>
             </listitem>
           </varlistentry>
+
+	  <varlistentry>
+	    <term><option>--show-type</option></term>
+	    <term><option>-t</option></term>
+	    <listitem>
+	      <para>
+		Show the type of the symbol. The symbols reported by
+		the script might be functions, variables, or
+		constants. By default, only the name of the symbol,
+		with this option, a letter in front of the symbol will
+		tell you the type of it; the letters are the same as
+		used by GNU <command>nm</command>:
+
+		<variablelist>
+		  <varlistentry>
+		    <term>T</term>
+		    <listitem>
+		      <para>
+			The symbol is in the text (code) section, and
+			is thus a function
+		      </para>
+		    </listitem>
+		  </varlistentry>
+
+		  <varlistentry>
+		    <term>B</term>
+		    <listitem>
+		      <para>
+			The symbol is in the uninitialised data
+			section (known as BSS), and is thus a
+			variable.
+		      </para>
+		    </listitem>
+		  </varlistentry>
+
+		  <varlistentry>
+		    <term>D</term>
+		    <listitem>
+		      <para>
+			The symbol is in the initialised data section,
+			and is thus a variable.
+		      </para>
+		    </listitem>
+		  </varlistentry>
+
+		  <varlistentry>
+		    <term>D</term>
+		    <listitem>
+		      <para>
+			The symbol is in the read only data section,
+			and is thus a constant.
+		      </para>
+		    </listitem>
+		  </varlistentry>
+
+		</variablelist>
+
+	      </para>
+	    </listitem>
+	  </varlistentry>
         
           <varlistentry>
             <term>
