@@ -135,6 +135,9 @@ def cowstats_scan(file)
   rescue Elf::File::NotAnELF
     $stderr.puts "cowstats.rb: #{file}: not a valid ELF file."
     return
+  rescue Interrupt
+    $stderr.puts "cowstats.rb: Interrupted"
+    exit 1
   rescue Exception => e
     $stderr.puts "cowstats.rb: #{file}: #{e.message}"
     $stderr.puts "\t" + e.backtrace.join("\n\t")
