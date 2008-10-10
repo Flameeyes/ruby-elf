@@ -216,6 +216,7 @@ require 'elf/stringtable'
 require 'elf/symboltable'
 require 'elf/dynamic'
 require 'elf/sunw'
+require 'elf/gnu'
 
 module Elf
   class Section
