@@ -19,7 +19,6 @@
 
 require 'elf'
 require 'getoptlong'
-require 'set'
 
 opts = GetoptLong.new(
   # Read the files to scan from a file rather than commandline
@@ -39,7 +38,10 @@ opts = GetoptLong.new(
 # The main symbol is used by all the standalone executables,
 # reporting it is pointless as it will always be a false
 # positive. It cannot be marked static.
-exclude = ["main"]
+#
+# The excluded_names variable will contain also all the used symbols
+$exclude_names = ["main"]
+exclude_regexps = []
 files_list = nil
 $hidden_only = false
 show_type = false
@@ -61,9 +63,9 @@ opts.each do |opt, arg|
       files_list = File.new(arg)
     end
   when '--exclude-regexp'
-    exclude << Regexp.new(arg)
+    exclude_regexps << Regexp.new(arg)
   when '--exclude-tags'
-    exclude += load_tags_file(arg)
+    $exclude_names += load_tags_file(arg)
   when '--hidden-only'
     $hidden_only = true
   when '--show-type'
@@ -83,7 +85,6 @@ opts.each do |opt, arg|
 end
 
 $all_defined = []
-$all_using = Set.new
 
 def scanfile(filename)
   begin
@@ -98,11 +99,9 @@ def scanfile(filename)
       end
 
       # Gather all the symbols, defined and missing in the translation unit
-      this_using = Set.new
-
       elf['.symtab'].symbols.each do |sym|
         if sym.section == Elf::Section::Undef
-          this_using << sym.name
+          $exclude_names << sym.name
         elsif sym.bind == Elf::Symbol::Binding::Local
           next
         elsif (sym.section.is_a? Elf::Section) or
@@ -113,8 +112,6 @@ def scanfile(filename)
           $all_defined << sym
         end
       end
-
-      $all_using.merge this_using
     end
   rescue Errno::ENOENT
     $stderr.puts "missingstatic.rb: #{file}: no such file"
@@ -145,13 +142,13 @@ else
   end
 end
 
-$all_using = $all_using.to_a
+$exclude_names.uniq!
+
 $all_defined.each do |symbol|
-  # If the symbol is being used, delete it now
-  next if $all_using.include? symbol.name
+  next if $exclude_names.include? symbol.name
 
   excluded = false
-  exclude.each do |exclude_sym|
+  exclude_regexps.each do |exclude_sym|
     break if excluded = exclude_sym.match(symbol.name)
   end
   next if excluded
