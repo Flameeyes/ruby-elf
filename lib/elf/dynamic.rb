@@ -205,6 +205,8 @@ module Elf
             @file['.dynstr'][entry[:attribute]]
           when Type::GNUPrelinked
             Time.at(entry[:attribute])
+          else
+            entry[:parsed ] = entry[:attribute]
           end
 
         @entries << entry
