@@ -31,6 +31,7 @@ require Pathname.new(__FILE__).dirname + 'tc_versioning'
 require Pathname.new(__FILE__).dirname + 'tc_solaris_versioning'
 require Pathname.new(__FILE__).dirname + 'tc_nmcodes'
 require Pathname.new(__FILE__).dirname + 'tc_symboltable'
+require Pathname.new(__FILE__).dirname + 'tc_stringtable'
 
 class TS_RubyElf
   def self.suite
@@ -42,6 +43,7 @@ class TS_RubyElf
     suite << TC_Versioning.suite
     suite << TC_Solaris_Versioning.suite
     suite << TC_SymbolTable.suite
+    suite << TC_StringTable.suite
   end
 end
 
