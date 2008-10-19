@@ -39,7 +39,7 @@ opts = GetoptLong.new(
 # The main symbol is used by all the standalone executables,
 # reporting it is pointless as it will always be a false
 # positive. It cannot be marked static.
-exclude = Set.new("main")
+exclude = ["main"]
 files_list = nil
 $hidden_only = false
 show_type = false
@@ -84,7 +84,7 @@ opts.each do |opt, arg|
   end
 end
 
-$all_defined = Set.new
+$all_defined = []
 $all_using = Set.new
 
 def scanfile(filename)
@@ -100,7 +100,6 @@ def scanfile(filename)
       end
 
       # Gather all the symbols, defined and missing in the translation unit
-      this_defined = Set.new
       this_using = Set.new
 
       elf['.symtab'].symbols.each do |sym|
@@ -113,12 +112,11 @@ def scanfile(filename)
           next if $hidden_only and
             sym.visibility != Elf::Symbol::Visibility::Hidden
 
-          this_defined << sym
+          $all_defined << sym
         end
       end
 
       $all_using.merge this_using
-      $all_defined.merge this_defined
     end
   rescue Errno::ENOENT
     $stderr.puts "missingstatic.rb: #{file}: no such file"
@@ -149,6 +147,7 @@ else
   end
 end
 
+$all_using = $all_using.to_a
 $all_defined.delete_if do |symbol|
   # If the symbol is being used, delete it now
   if $all_using.include? symbol.name
