@@ -163,6 +163,59 @@ module Elf
       GroupPerm  = 0x00000002
     end
 
+    # A .dynamic section entry
+    class Entry
+      attr_reader :type, :value
+
+      def initialize(type, file)
+        @file = file
+        @type = type
+        @value = case type.attribute
+                 when :Address then @file.read_addr
+                 when :Value then @file.elf_class == Class::Elf32 ? @file.read_word : @file.read_xword
+                 else @file.read_addr
+                 end
+      end
+    end
+
+    # An entry for a string value
+    class StringEntry < Entry
+      def parsed
+        @parsed = @file['.dynstr'][@value] unless @parsed
+        return @parsed
+      end
+    end
+
+    # An entry for a timestamp value
+    class TimestampEntry < Entry
+      def parsed
+        @parsed = Time.at(@value) unless @parsed
+        return @parsed
+      end
+    end
+
+    # An entry for the address of another section
+    class SectionLink < Entry
+      def parsed
+        @parsed = @file.find_section_by_addr(@value) unless @parsed
+        return @parsed
+      end
+    end
+
+    ClassMap = {
+      Type::Needed       => StringEntry,
+      Type::Hash         => SectionLink,
+      Type::StrTab       => SectionLink,
+      Type::SymTab       => SectionLink,
+      Type::Init         => SectionLink,
+      Type::Fini         => SectionLink,
+      Type::SoName       => StringEntry,
+      Type::RPath        => StringEntry,
+      Type::RunPath      => StringEntry,
+      Type::GNUPrelinked => TimestampEntry,
+      Type::GNUHash      => SectionLink
+    }
+
     def load_internal
       elf32 = @file.elf_class == Class::Elf32
 
@@ -170,48 +223,34 @@ module Elf
 
       for i in 1..@numentries
         entry = {}
-        
-        type = elf32 ? @file.read_sword : @file.read_sxword
 
-        if type >= Type::LoOs && type <= Type::HiOs
-          if Type.has_key? type
-            entry[:type] = Type[type]
-          else
-            # Unknown OS-specific dynamic entry type, provide a dummy
-            entry[:type] = Type::Unknown.new(type, sprintf("DT_LOOS+%07x", type-Type::LoOs))
-          end
-        elsif type >= Type::LoProc && type <= HiProc
-          if Type.has_key? type
-            entry[:type] = Type[type]
-          else
-            # Unknown OS-specific dynamic entry type, provide a dummy
-            entry[:type] = Type::Unknown.new(type, sprintf("DT_LOPROC+%07x", type-Type::LoProc))
-          end
-        else
-          entry[:type] = Type[type]
-        end
+        type_id = elf32 ? @file.read_sword : @file.read_sxword
 
-        entry[:attribute] = case entry[:type].attribute
-                            when :Address then @file.read_addr
-                            when :Value then elf32 ? @file.read_word : @file.read_xword
-                            else @file.read_addr
-                            end
+        type = if type_id >= Type::LoOs && type_id <= Type::HiOs
+                 if Type.has_key? type_id
+                   Type[type_id]
+                 else
+                   # Unknown OS-specific dynamic entry type, provide a dummy
+                   Type::Unknown.new(type_id, sprintf("DT_LOOS+%07x", type_id-Type::LoOs))
+                 end
+               elsif type_id >= Type::LoProc && type_id <= HiProc
+                 if Type.has_key? type_id
+                   Type[type_id]
+                 else
+                   # Unknown Processor-specific dynamic entry type, provide a dummy
+                   Type::Unknown.new(type_id, sprintf("DT_LOPROC+%07x", type_id-Type::LoProc))
+                 end
+               else
+                 Type[type_id]
+               end
 
-        entry[:parsed] = 
-          case entry[:type]
-          when Type::Needed, Type::SoName,
-            Type::RPath, Type::RunPath
+        @entries << if ClassMap.has_key? type
+                      ClassMap[type].new(type, @file)
+                    else
+                      Entry.new(type, @file)
+                    end
 
-            @file['.dynstr'][entry[:attribute]]
-          when Type::GNUPrelinked
-            Time.at(entry[:attribute])
-          else
-            entry[:parsed ] = entry[:attribute]
-          end
-
-        @entries << entry
-
-        break if entry[:type] == Type::Null
+        break if type == Type::Null
       end
     end
 
