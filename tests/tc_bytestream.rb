@@ -222,9 +222,39 @@ class TC_Bytestream < Test::Unit::TestCase
 
   # Test the behaviour of BytestreamReader when asking to read with
   # default endian but no endian was provided.
-  def test_no_endian
+  def test_no_endian_u16
     assert_raise BytestreamReader::UndefinedEndianness do
       @bs.read_u16
+    end
+  end
+
+  def test_no_endian_u32
+    assert_raise BytestreamReader::UndefinedEndianness do
+      @bs.read_u32
+    end
+  end
+
+  def test_no_endian_u64
+    assert_raise BytestreamReader::UndefinedEndianness do
+      @bs.read_u64
+    end
+  end
+
+  def test_no_endian_s16
+    assert_raise BytestreamReader::UndefinedEndianness do
+      @bs.read_s16
+    end
+  end
+
+  def test_no_endian_s32
+    assert_raise BytestreamReader::UndefinedEndianness do
+      @bs.read_s32
+    end
+  end
+
+  def test_no_endian_s64
+    assert_raise BytestreamReader::UndefinedEndianness do
+      @bs.read_s64
     end
   end
 
