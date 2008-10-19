@@ -228,4 +228,19 @@ class TC_Exceptions < Test::Unit::TestCase
 
     elf.close
   end
+
+  # Test behaviour when comparing a section instance with something
+  # that is not a section.
+  #
+  # Expected behaviour: TypeError exception is raised
+  def test_invalid_section_comparison
+    elf = Elf::File.new(Elf::TestUnit::TestDir + "arm-crtn.o")
+
+    assert_raise TypeError do
+      elf[".ARM.attributes"] == "Foobar"
+    end
+
+    elf.close
+  end
+
 end
