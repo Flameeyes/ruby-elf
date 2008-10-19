@@ -155,6 +155,32 @@ class TC_Exceptions < Test::Unit::TestCase
     flunk("Elf::Section::UnknownType exception not received.")
   end
 
+  # Test behaviour when a file lacks a string table and a section is
+  # requested by name.
+  #
+  # Expected behaviour: Elf::File::MissingStringTable exception is
+  # raised
+  def test_missing_string_table_request
+    assert_raise Elf::File::MissingStringTable do
+      elf = Elf::File.new(Elf::TestUnit::TestDir + "invalid_unknown_section_type")
+      elf[".symtab"]
+      elf.close
+    end
+  end
+
+  # Test behaviour when a file lacks a string table and a section is
+  # tested by name.
+  #
+  # Expected behaviour: Elf::File::MissingStringTable exception is
+  # raised
+  def test_missing_string_table_test
+    assert_raise Elf::File::MissingStringTable do
+      elf = Elf::File.new(Elf::TestUnit::TestDir + "invalid_unknown_section_type")
+      elf.has_section?(".symtab")
+      elf.close
+    end
+  end
+
   # Test behaviour when a section is requested in a file that does not
   # have it.
   #
