@@ -50,7 +50,7 @@ files.each do |file|
         next
       end
 
-      symsection.symbols.each do |sym|
+      symsection.each_symbol do |sym|
         next if sym.name == ''
 
         addr = sprintf("%0#{addrsize}x", sym.value)

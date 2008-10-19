@@ -274,7 +274,7 @@ so_files.each do |so|
         db.exec("EXECUTE newobject(#{impid}, '#{so}', '#{elf.elf_class} #{elf.abi} #{elf.machine.to_s.gsub("'", "\\'" )}', '#{soname}')")
       end
         
-      elf['.dynsym'].symbols.each do |sym|
+      elf['.dynsym'].each_symbol do |sym|
         begin
           next if sym.idx == 0 or
             sym.bind != Elf::Symbol::Binding::Global or

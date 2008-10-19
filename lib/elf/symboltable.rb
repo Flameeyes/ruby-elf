@@ -34,12 +34,6 @@ module Elf
       return nil
     end
 
-    def symbols
-      load unless @symbols
-
-      @symbols
-    end
-
     # Exception thrown when requesting a symbol that is not in the
     # table
     class UnknownSymbol < Exception
@@ -62,6 +56,20 @@ module Elf
       else
         raise TypeError.new("Only Integers or String-compatible arguments accepted")
       end
+    end
+
+    # Iterate over each symbols, replaces section.symbol.each
+    def each_symbol(&block)
+      load unless @symbols
+
+      @symbols.each(&block)
+    end
+
+    # Return the number of symbols in the section
+    def count
+      load unless @symbols
+
+      @symbols.size
     end
   end
 end

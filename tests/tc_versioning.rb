@@ -40,7 +40,7 @@ class TC_Versioning < Elf::TestUnit
   }
 
   def test__gnu_version
-    assert_equal(@elf[".dynsym"].symbols.size, @elf[".gnu.version"].count,
+    assert_equal(@elf[".dynsym"].count, @elf[".gnu.version"].count,
                  "Wrong version information count")
   end
 
@@ -83,7 +83,7 @@ class TC_Versioning < Elf::TestUnit
 
   def test_symbols
     first_asymbol_seen = false
-    @elf[".dynsym"].symbols.each do |sym|
+    @elf[".dynsym"].each_symbol do |sym|
       case sym.name
       when "tolower"
         assert_equal("GLIBC_2.2.5", sym.version,

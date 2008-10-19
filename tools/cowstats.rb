@@ -98,7 +98,7 @@ def cowstats_scan(file)
         next
       end
 
-      elf['.symtab'].symbols.each do |symbol|
+      elf['.symtab'].each_symbol do |symbol|
         # Ignore undefined, absolute and common symbols.
         next unless symbol.section.is_a? Elf::Section
         # When the symbol name is empty, it refers to the
