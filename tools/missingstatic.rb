@@ -42,10 +42,12 @@ $hidden_only = false
 show_type = false
 
 def load_tags_file(filename)
-  File.readlines(filename).delete_if do |line|
-    line[0..0] == '!' # Internal exuberant-ctags symbol
-  end.collect do |line|
-    line.split[0]
+  File.readlines(filename).collect do |line|
+    if line[0..0] == '!' # Internal exuberant-ctags symbol
+      nil
+    else
+      line.split[0]
+    end
   end
 end
 
@@ -145,25 +147,28 @@ else
 end
 
 $all_defined.delete_if do |symbol|
-  $all_using.include? symbol.name
-end
+  # If the symbol is being used, delete it now
+  if $all_using.include? symbol.name
+    true
+  elsif symbol.name == "main"
+    # The main symbol is used by all the standalone executables,
+    # reporting it is pointless as it will always be a false
+    # positive. It cannot be marked static.
+    true
+  else
+    excluded = false
 
-# The main symbol is used by all the standalone executables, reporting
-# it is pointless as it will always be a false positive. It cannot be
-# marked static.
-$all_defined.delete_if do |symbol|
-  excluded = symbol.name == "main"
-
-  exclude.each do |exclude_sym|
-    if exclude_sym.is_a? Regexp
-      excluded = true if symbol.name =~ exclude_sym
-    elsif exclude_sym.is_a? String
-      excluded = true if symbol.name == exclude_sym
+    exclude.each do |exclude_sym|
+      if exclude_sym.is_a? Regexp
+        excluded = true if symbol.name =~ exclude_sym
+      elsif exclude_sym.is_a? String
+        excluded = true if symbol.name == exclude_sym
+      end
+      break if excluded
     end
-    break if excluded
-  end
 
-  excluded
+    excluded
+  end
 end
 
 $all_defined.each do |sym|
