@@ -36,7 +36,10 @@ opts = GetoptLong.new(
   ["--help", '-?', GetoptLong::NO_ARGUMENT]
 )
 
-exclude = []
+# The main symbol is used by all the standalone executables,
+# reporting it is pointless as it will always be a false
+# positive. It cannot be marked static.
+exclude = Set.new("main")
 files_list = nil
 $hidden_only = false
 show_type = false
@@ -149,11 +152,6 @@ end
 $all_defined.delete_if do |symbol|
   # If the symbol is being used, delete it now
   if $all_using.include? symbol.name
-    true
-  elsif symbol.name == "main"
-    # The main symbol is used by all the standalone executables,
-    # reporting it is pointless as it will always be a false
-    # positive. It cannot be marked static.
     true
   else
     excluded = false
