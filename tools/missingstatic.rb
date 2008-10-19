@@ -29,13 +29,23 @@ opts = GetoptLong.new(
   # Only scan hidden symbols, ignore exported ones
   ["--hidden-only", "-h", GetoptLong::NO_ARGUMENT],
   # Show the type of symbol (function, variable, constant)
-  ["--show-type", "-t", GetoptLong::NO_ARGUMENT]
+  ["--show-type", "-t", GetoptLong::NO_ARGUMENT],
+  # Exclude symbols present in a tags file (from exuberant-ctags)
+  ["--exclude-tags", "-X", GetoptLong::REQUIRED_ARGUMENT]
 )
 
 exclude_regexps = []
 files_list = nil
 $hidden_only = false
 show_type = false
+
+def load_tags_file(filename)
+  File.readlines(filename).delete_if do |line|
+    line[0..0] == '!' # Internal exuberant-ctags symbol
+  end.collect do |line|
+    Regexp.new(Regexp.quote(line.split[0]))
+  end
+end
 
 opts.each do |opt, arg|
   case opt
@@ -47,6 +57,8 @@ opts.each do |opt, arg|
     end
   when '--exclude-regexp'
     exclude_regexps << Regexp.new(arg)
+  when '--exclude-tags'
+    exclude_regexps += load_tags_file(arg)
   when '--hidden-only'
     $hidden_only = true
   when '--show-type'
