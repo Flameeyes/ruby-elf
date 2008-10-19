@@ -172,7 +172,7 @@
 		Ignore symbols whose name triggers the given regular
 		expression. This option is useful to hide all the
 		symbols of the public API of a library if they all
-		have the same prefix.
+		have the same prefix. It can be used multiple times.
               </para>
             </listitem>
           </varlistentry>
@@ -194,7 +194,8 @@
 		files of a project, by creating a list of
 		public-visible symbols. See the <link
 		linkend="examples">EXAMPLES</link> section for how to
-		generate such an header.
+		generate such a tags file.  It can be used multiple
+		times.
 	      </para>
 	      
 	    </listitem>
@@ -215,7 +216,8 @@
 		(or standard input if <replaceable>path</replaceable>
 		is <filename>-</filename>) rather than from the
 		command line. Useful to pass a long list of files,
-		that is generated asynchronously.
+		that is generated asynchronously. It can only be used
+		once.
 	      </para>
 	    </listitem>
 	  </varlistentry>
