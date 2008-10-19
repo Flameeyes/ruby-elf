@@ -147,11 +147,9 @@ $exclude_names.uniq!
 $all_defined.each do |symbol|
   next if $exclude_names.include? symbol.name
 
-  excluded = false
   exclude_regexps.each do |exclude_sym|
-    break if excluded = exclude_sym.match(symbol.name)
+    next symbol if exclude_sym.match(symbol.name)
   end
-  next if excluded
 
   if show_type
     begin
