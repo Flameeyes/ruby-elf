@@ -168,4 +168,26 @@ class TC_Exceptions < Test::Unit::TestCase
     
     flunk("Elf::Section::UnknownType exception not received.")
   end
+
+  # Test behaviour when a section is requested in a file that does not
+  # have it.
+  #
+  # Expected behaviour: Elf::Section::MissingSection exception is raised
+  def test_missing_section
+    assert(File.exist?(TestDir + "arm-crtn.o"),
+           "Missing test file arm-crtn.o")
+
+    elf = Elf::File.new(TestDir + "arm-crtn.o")
+
+    # Make sure that the has_section? function behaves correctly and
+    # _don't_ throw an exception.
+    assert(!elf.has_section?(".symtab"),
+           ".symtab section present in arm-crtn.o (?!?)")
+
+    assert_raise Elf::File::MissingSection do
+      elf[".symtab"]
+    end
+
+    elf.close
+  end
 end
