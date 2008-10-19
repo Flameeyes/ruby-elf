@@ -93,7 +93,7 @@ def cowstats_scan(file)
         $stderr.puts "cowstats.rb: #{file}: not an object file"
         next
       end
-      if elf['.symtab'] == nil
+      if not elf.has_section?(".symtab")
         $stderr.puts "cowstats.rb: #{file}: no .symtab section found"
         next
       end
