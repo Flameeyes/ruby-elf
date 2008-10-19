@@ -61,7 +61,7 @@ class TC_Static_Executable < Elf::TestExecutable
   end
 
   def self.subsuite
-    suite = Test::Unit::TestSuite.new
+    suite = Test::Unit::TestSuite.new("Static executables")
     suite << LinuxX86.suite
     suite << LinuxAMD64.suite
     suite << LinuxAMD64_ICC.suite

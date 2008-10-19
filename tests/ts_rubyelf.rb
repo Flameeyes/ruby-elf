@@ -33,18 +33,20 @@ require Pathname.new(__FILE__).dirname + 'tc_nmcodes'
 
 class TS_RubyElf
   def self.suite
-    suite = Test::Unit::TestSuite.new
+    suite = Test::Unit::TestSuite.new("Ruby-Elf testsuite")
     suite << TC_Bytestream.suite
-    suite << TC_Dynamic_Executable.subsuite
-    suite << TC_Static_Executable.subsuite
-    suite << TC_Relocatable.subsuite
     suite << TC_Exceptions.suite
     suite << TC_ARM.suite
     suite << TC_SunW_Sections.suite
     suite << TC_Versioning.suite
     suite << TC_Solaris_Versioning.suite
-    suite << TC_NM_Codes.subsuite
   end
 end
 
-Test::Unit::UI::Console::TestRunner.run(TS_RubyElf)
+[TS_RubyElf,
+ TC_Dynamic_Executable.subsuite,
+ TC_Static_Executable.subsuite,
+ TC_Relocatable.subsuite,
+ TC_NM_Codes.subsuite].each do |suite|
+  Test::Unit::UI::Console::TestRunner.run(suite)
+end

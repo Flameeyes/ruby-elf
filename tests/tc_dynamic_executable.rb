@@ -85,7 +85,7 @@ class TC_Dynamic_Executable < Elf::TestExecutable
   end
 
   def self.subsuite
-    suite = Test::Unit::TestSuite.new
+    suite = Test::Unit::TestSuite.new("Dynamic executables")
     suite << LinuxX86.suite
     suite << LinuxAMD64.suite
     suite << LinuxAMD64_ICC.suite

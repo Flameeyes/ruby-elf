@@ -155,7 +155,7 @@ class TC_NM_Codes < Elf::TestUnit
   end
 
   def self.subsuite
-    suite = Test::Unit::TestSuite.new
+    suite = Test::Unit::TestSuite.new("nm(1)-style codes")
     suite << LinuxAMD64.suite
     suite << LinuxAMD64_ICC.suite
     suite << LinuxAMD64_SunStudio.suite
