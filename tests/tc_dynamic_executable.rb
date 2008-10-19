@@ -50,20 +50,31 @@ class TC_Dynamic_Executable < Elf::TestExecutable
   # per-file
 
   ExpectedDynamicValues = {
-    Elf::Dynamic::Type::Needed => "self.class::ExpectedLibC",
-    Elf::Dynamic::Type::Init   => "@elf['.init'].addr",
-    Elf::Dynamic::Type::Fini   => "@elf['.fini'].addr",
-    Elf::Dynamic::Type::Hash   => "@elf['.hash'].addr",
-    Elf::Dynamic::Type::StrTab => "@elf['.dynstr'].addr",
-    Elf::Dynamic::Type::SymTab => "@elf['.dynsym'].addr",
-    Elf::Dynamic::Type::Debug  => "0x0"
+    Elf::Dynamic::Type::Needed => "self.class::ExpectedLibC"
+  }
+
+  ExpectedDynamicLinks = {
+    Elf::Dynamic::Type::Init   => ".init",
+    Elf::Dynamic::Type::Fini   => ".fini",
+    Elf::Dynamic::Type::Hash   => ".hash",
+    Elf::Dynamic::Type::StrTab => ".dynstr",
+    Elf::Dynamic::Type::SymTab => ".dynsym"
   }
   
-  def test_section_entries
+  def test_section_values
     @elf[".dynamic"].entries.each do |entry|
-      if self.class::ExpectedDynamicValues.has_key? entry[:type]
-        assert_equal(eval(self.class::ExpectedDynamicValues[entry[:type]]),
-                     entry[:parsed], "Testing #{entry[:type]}")
+      if self.class::ExpectedDynamicValues.has_key? entry.type
+        assert_equal(eval(self.class::ExpectedDynamicValues[entry.type]),
+                     entry.parsed, "Testing #{entry.type}")
+      end
+    end
+  end
+
+  def test_section_links
+    @elf[".dynamic"].entries.each do |entry|
+      if self.class::ExpectedDynamicLinks.has_key? entry.type
+        assert_equal(@elf[self.class::ExpectedDynamicLinks[entry.type]].addr,
+                     entry.parsed.addr, "Testing #{entry.type}")
       end
     end
   end
@@ -80,9 +91,9 @@ class TC_Dynamic_Executable < Elf::TestExecutable
   end
 
   module GLIBC
-    ExpectedDynamicValues = TC_Dynamic_Executable::ExpectedDynamicValues.
+    ExpectedDynamicLinks = TC_Dynamic_Executable::ExpectedDynamicLinks.
       merge({
-              Elf::Dynamic::Type::GNUHash => "@elf['.gnu.hash'].addr"
+              Elf::Dynamic::Type::GNUHash => ".gnu.hash"
             })
   end
 
