@@ -27,7 +27,7 @@
 
 require 'readbytes'
 
-class BytestreamReader < File
+module BytestreamReader
   # This exists in the documentation but not in implementation (?!)
 
   class UndefinedEndian < Exception
@@ -237,5 +237,13 @@ class BytestreamReader < File
     else
       raise InvalidArgument
     end
+  end
+
+  # This is a commodity class of File that is simply extended with the
+  # BytestreamReader.
+  #
+  # Right now it's only used for testing
+  class File < ::File
+    include BytestreamReader
   end
 end

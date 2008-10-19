@@ -56,7 +56,7 @@ class TC_Bytestream < Test::Unit::TestCase
     @tf.write(TestFile)
     @tf.close
 
-    @bs = BytestreamReader.new(@tf.path)
+    @bs = BytestreamReader::File.new(@tf.path)
   end
 
   def teardown

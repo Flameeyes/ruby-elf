@@ -23,7 +23,9 @@
 require 'bytestream-reader'
 
 module Elf
-  class File < BytestreamReader
+  class File < ::File
+    include BytestreamReader
+
     class NotAnELF < Exception
       def message
         "The file is not an ELF file."
