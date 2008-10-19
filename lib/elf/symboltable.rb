@@ -52,7 +52,7 @@ module Elf
     def [](idx)
       load unless @symbols
 
-      if idx.is_a?(Integer)
+      if idx.is_a?(Numeric)
         raise UnknownSymbol.new(idx, self) unless @symbols[idx] != nil
         return @symbols[idx]
       elsif idx.respond_to?("to_s")
