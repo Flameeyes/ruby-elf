@@ -247,7 +247,7 @@ module Elf
 
     def [](sect_idx_or_name)
       raise MissingStringTable.new(sect_idx_or_name) if 
-        sect_idx_or_name.is_a? String and @string_table == nil
+        sect_idx_or_name.is_a? String and @string_table.nil?
 
       load_section(sect_idx_or_name) unless
         @sections.has_key? sect_idx_or_name
@@ -272,7 +272,7 @@ module Elf
 
     def has_section?(sect_idx_or_name)
       raise MissingStringTable.new(sect_idx_or_name) if 
-        sect_idx_or_name.is_a? String and @string_table == nil
+        sect_idx_or_name.is_a? String and @string_table.nil?
 
       if sect_idx_or_name.is_a? Integer
         return @sections_data[sect_idx_or_name] != nil

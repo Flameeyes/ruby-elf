@@ -164,7 +164,7 @@ module Elf
       
       return nil unless version_idx && version_idx >= 2
 
-      return @file['.gnu.version_r'][version_idx][:name] if section == nil
+      return @file['.gnu.version_r'][version_idx][:name] if section.nil?
 
       name_idx = (version_idx & (1 << 15) == 0) ? 0 : 1
       version_idx = version_idx & ~(1 << 15)
@@ -196,7 +196,7 @@ module Elf
     # The resturned value is a one-letter string. The function may
     # raise an UnknownNMCode exception.
     def nm_code
-      return @nmflag unless @nmflag == nil
+      return @nmflag unless @nmflag.nil?
       
       if idx == 0
         @nmflag = " "

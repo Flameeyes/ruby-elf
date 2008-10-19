@@ -278,7 +278,7 @@ so_files.each do |so|
         begin
           next if sym.idx == 0 or
             sym.bind != Elf::Symbol::Binding::Global or
-            sym.section == nil or
+            sym.section.nil? or
             sym.value == 0 or
             sym.section.is_a? Integer or
             sym.section.name == '.init' or
