@@ -138,6 +138,17 @@ module Elf
       @numentries = @size/@entsize unless @entsize == 0
     end
 
+    def ==(other)
+      # For the sake of retrocompatibility and code readability,
+      # accept these two types as a valid (albeit false) comparison.
+      return false if other.nil? or other.is_a? Integer
+
+      raise TypeError.new("wrong argument type #{other.class} (expected Elf::Section)") unless
+        other.is_a? Section
+
+      other.file == @file and other.addr == @addr
+    end
+
     def name
       # We didn't read the name in form of string yet;
       # Check if the file has loaded a string table yet

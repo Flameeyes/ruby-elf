@@ -73,8 +73,8 @@ class TC_Dynamic_Executable < Elf::TestExecutable
   def test_section_links
     @elf[".dynamic"].entries.each do |entry|
       if self.class::ExpectedDynamicLinks.has_key? entry.type
-        assert_equal(@elf[self.class::ExpectedDynamicLinks[entry.type]].addr,
-                     entry.parsed.addr, "Testing #{entry.type}")
+        assert_equal(@elf[self.class::ExpectedDynamicLinks[entry.type]],
+                     entry.parsed, "Testing #{entry.type}")
       end
     end
   end
