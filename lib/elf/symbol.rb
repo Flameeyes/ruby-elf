@@ -143,7 +143,7 @@ module Elf
 
     def section
       # We didn't read the section yet.
-      @section = nil if @section == 0
+      @section = nil if @section.is_a? Integer and @section == 0
       
       if @section.is_a? Integer and
           not (@section >= Section::LoReserve and @section <= Section::HiReserve ) and
@@ -157,7 +157,7 @@ module Elf
 
     def version
       return nil if !@file.has_section?('.gnu.version') or
-        section == Elf::Section::Abs or
+        section.is_a?(Integer) and section == Elf::Section::Abs or
         ( section.is_a? Elf::Section and section.name == ".bss" )
 
       version_idx = @file['.gnu.version'][@idx]
@@ -205,18 +205,19 @@ module Elf
         
         @nmflag.downcase! if value == 0
         
-        # The following are three 'reserved sections'
-      elsif section == Elf::Section::Undef
-        @nmflag = "U"
-      elsif section == Elf::Section::Abs
-        # Absolute symbols
-        @nmflag = "A"
-      elsif section == Elf::Section::Common
-        # Common symbols
-        @nmflag = "C"
-
       elsif section.is_a? Integer
-        raise UnknownNMCode.new(self)
+        # The following are three 'reserved sections'
+        if section == Elf::Section::Undef
+          @nmflag = "U"
+        elsif section == Elf::Section::Abs
+          # Absolute symbols
+          @nmflag = "A"
+        elsif section == Elf::Section::Common
+          # Common symbols
+          @nmflag = "C"
+        else
+          raise UnknownNMCode.new(self)
+        end
       elsif section.name == '.init' || section.name == ".fini"
         @nmflag = "T"
       else
