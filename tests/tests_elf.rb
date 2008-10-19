@@ -24,14 +24,11 @@ class Elf::TestUnit < Test::Unit::TestCase
   end
 
   def setup
-    assert(File.exist?( TestDir + filename ),
-           "File #{filename} not found in testsuite data directory")
-
     @elf = Elf::File.new( TestDir + filename )
   end
 
   def teardown
-    @elf.close
+    @elf.close if @elf
   end
 
   # Test for ELF file version.
