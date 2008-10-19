@@ -42,15 +42,13 @@ files.each do |file|
     Elf::File.open(file) do |elf|
       addrsize = (elf.elf_class == Elf::Class::Elf32 ? 8 : 16)
 
-      symsection = elf[scan_section]
-
-      if symsection == nil
+      if not elf.has_section? scan_section
         $stderr.puts "nm.rb: #{elf.path}: No symbols"
         exitval = 1
         next
       end
 
-      symsection.each_symbol do |sym|
+      elf[scan_section].each_symbol do |sym|
         next if sym.name == ''
 
         addr = sprintf("%0#{addrsize}x", sym.value)
