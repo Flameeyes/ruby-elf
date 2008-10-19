@@ -255,6 +255,21 @@ module Elf
       return @sections[sect_idx_or_name]
     end
 
+    def each_section
+      @sections_data.each do |sectdata|
+        load_section(sectdata[:idx])
+        yield @sections[sectdata[:idx]]
+      end
+    end
+
+    def find_section_by_addr(addr)
+      @sections_data.each do |sectdata|
+        next unless sectdata[:addr] == addr
+        load_section(sectdata[:idx])
+        return @sections[sectdata[:idx]]
+      end
+    end
+
     def has_section?(sect_idx_or_name)
       raise MissingStringTable.new(sect_idx_or_name) if 
         sect_idx_or_name.is_a? String and @string_table == nil
