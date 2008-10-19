@@ -97,7 +97,7 @@ class Elf::TestUnit < Test::Unit::TestCase
   # Test for ELF Machine
   ExpectedMachine = nil
 
-  def test_elf_abi_version
+  def test_elf_machine
     if !self.class::ExpectedMachine.nil?
       assert_equal(self.class::ExpectedMachine, @elf.machine,
                    "Unexpected ELF machine")
