@@ -79,6 +79,19 @@ class TC_Solaris_Versioning < Elf::TestUnit
                  "The needed version is not the right name")
   end
 
+  def test_each_defined
+    @elf[".gnu.version_d"].each_version do |version|
+      assert_instance_of(Array, version[:names])
+    end
+  end
+
+  def test_each_needed
+    @elf[".gnu.version_r"].each_version do |version|
+      assert_equal("libgcc_s.so.1", version[:file])
+      assert_equal(0, version[:flags])
+    end
+  end
+
   def test_symbols
     first_asymbol_seen = false
     @elf[".dynsym"].each_symbol do |sym|

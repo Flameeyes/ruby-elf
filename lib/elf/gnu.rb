@@ -105,10 +105,10 @@ module Elf
 
       # Allow to iterate over all the versions defined in the ELF
       # file.
-      def each(&block)
+      def each_version(&block)
         load unless @defined_versions
 
-        @defined_versions.each(&block)
+        @defined_versions.each_value(&block)
       end
     end
 
@@ -164,10 +164,10 @@ module Elf
 
       # Allow to iterate over all the versions needed in the ELF
       # file.
-      def each(&block)
+      def each_version(&block)
         load unless @needed_versions
 
-        @needed_versions.each(&block)
+        @needed_versions.each_value(&block)
       end
     end
   end
