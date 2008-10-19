@@ -34,6 +34,10 @@ class TC_NM_Codes < Elf::TestUnit
     end
   end
 
+  def test_first_idx
+    assert_equal " ", @elf[".symtab"][0].nm_code, "Testing first symbol"
+  end
+
   # Test the general symbols
   def test_general
     dotest_symbols({ "symboltypes.c"     => 'a',
