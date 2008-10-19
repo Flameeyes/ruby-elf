@@ -173,4 +173,18 @@ class TC_Exceptions < Test::Unit::TestCase
 
     elf.close
   end
+
+  # Test behaviour when trying to check for presence of a section
+  # through an invalid type.
+  #
+  # Expected behaviour: TypeError exception is raised
+  def test_has_section_invalid_argument
+    elf = Elf::File.new(Elf::TestUnit::TestDir + "arm-crtn.o")
+
+    assert_raise TypeError do
+      elf.has_section?({:a => :b})
+    end
+
+    elf.close
+  end
 end
