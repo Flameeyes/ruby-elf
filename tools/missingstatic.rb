@@ -156,11 +156,13 @@ $all_defined.delete_if do |symbol|
     excluded = false
 
     exclude.each do |exclude_sym|
-      if exclude_sym.is_a? Regexp
-        excluded = true if symbol.name =~ exclude_sym
-      elsif exclude_sym.is_a? String
-        excluded = true if symbol.name == exclude_sym
-      end
+      excluded = 
+        if exclude_sym.is_a? Regexp
+          symbol.name =~ exclude_sym
+        elsif exclude_sym.is_a? String
+          symbol.name == exclude_sym
+        end
+
       break if excluded
     end
 
