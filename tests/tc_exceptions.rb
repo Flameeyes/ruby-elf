@@ -200,6 +200,21 @@ class TC_Exceptions < Test::Unit::TestCase
     elf.close
   end
 
+  # Test behaviour when a section is requested by index, in a file
+  # that does not have such an indexed section.
+  #
+  # Expected behaviour: Elf::Section:MissingSection exception is
+  # raised
+  def test_missing_section_index
+    elf = Elf::File.new(Elf::TestUnit::TestDir + "arm-crtn.o")
+
+    assert_raise Elf::File::MissingSection do
+      elf[12300]
+    end
+
+    elf.close
+  end
+
   # Test behaviour when trying to check for presence of a section
   # through an invalid type.
   #
