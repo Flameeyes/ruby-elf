@@ -50,6 +50,10 @@
 	    <replaceable>regular-expression</replaceable>
 	  </arg>
 	  <arg choice="opt">
+	    <option>--exclude-tags</option>
+	    <replaceable>tags-file</replaceable>
+	  </arg>
+	  <arg choice="opt">
 	    <option>--filelist</option>
 	    <replaceable>path</replaceable>
 	  </arg>
