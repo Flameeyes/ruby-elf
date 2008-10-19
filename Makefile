@@ -1,11 +1,16 @@
+MANPAGES = manpages/cowstats.1 manpages/missingstatic.1
+
 all: manpages
 
-manpages: manpages/cowstats.1 manpages/missingstatic.1
+manpages: $(MANPAGES)
 
 XSL_NS_ROOT=http://docbook.sourceforge.net/release/xsl-ns/current
 
 %: %.xml
 	xsltproc -o $@ $(XSL_NS_ROOT)/manpages/docbook.xsl $<
+
+clean:
+	-rm $(MANPAGES)
 
 RUBY = ruby
 RCOV = rcov --comments
