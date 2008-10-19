@@ -25,6 +25,21 @@ require 'elf'
 # ELF files, so that reading a non-ELF file won't cause unexpected
 # problems.
 class TC_Exceptions < Test::Unit::TestCase
+  # Test behaviour when a file is requested that is not present.
+  #
+  # Expected behaviour: Errno::ENOENT exception is raised
+  def test_nofile
+    # Check that the file does not exist or we're going to throw an
+    # exception to signal an error in the test.
+    if File.exists? Elf::TestUnit::TestDir + "invalid_notfound"
+      raise Exception.new("A file named 'invalid_notfound' is present in the test directory")
+    end
+
+    assert_raise Errno::ENOENT do
+      elf = Elf::File.new(Elf::TestUnit::TestDir + "invalid_notfound")
+    end
+  end
+
   # Test behaviour when a file that is not an ELF file is opened.
   #
   # Expected behaviour: Elf::File::NotAnElf exception is raised.
