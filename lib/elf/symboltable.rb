@@ -54,7 +54,7 @@ module Elf
         raise UnknownSymbol.new(idx, self) unless @symbol_names.has_key?(idx)
         return @symbols[@symbol_names[idx]]
       else
-        raise TypeError.new("Only Integers or String-compatible arguments accepted")
+        raise TypeError.new("wrong argument type #{sect_idx_or_name.class} (expected String or Integer)")
       end
     end
 
