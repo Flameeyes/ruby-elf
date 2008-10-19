@@ -31,6 +31,15 @@ class Elf::TestUnit < Test::Unit::TestCase
     @elf.close if @elf
   end
 
+  # Test iteration over sections.
+  #
+  # This test forces all sections to be loaded and instances created.
+  def test_sections_iteration
+    @elf.each_section do |section|
+      assert_kind_of(Elf::Section, section)
+    end
+  end
+
   # Test for ELF file version.
   #
   # We assume that all the ELF files we test are ELF version 1 files,
