@@ -279,7 +279,7 @@ module Elf
       elsif sect_idx_or_name.is_a? String
         return @sections_names.has_key?(sect_idx_or_name)
       else
-        raise Exception
+        raise TypeError.new("wrong argument type #{sect_idx_or_name.class} (expected String or Integer)")
       end
     end
 
