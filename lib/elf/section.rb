@@ -53,13 +53,10 @@ module Elf
       def initialize(type_id, section_name)
         @type_id = type_id
         @section_name = section_name
+        @message = sprintf "Unknown section type 0x%08x for section #{@section_name}", @type_id
       end
 
-      def message
-        sprintf "Unknown section type 0x%08x for section #{@section_name}", @type_id
-      end
-
-      attr_reader :type_id, :section_name
+      attr_reader :type_id, :section_name, :message
     end
 
     # Create a new Section object reading the section's header from

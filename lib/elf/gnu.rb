@@ -25,12 +25,9 @@ module Elf
   # 'nuff said.
   module GNU
     class SymbolVersionUnknown < Exception
+      attr_reader :message
       def initialize(val)
-        @val = val
-      end
-
-      def message
-        "GNU Symbol versioning version #{@val} unknown"
+        @message = "GNU Symbol versioning version #{val} unknown"
       end
     end
 

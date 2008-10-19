@@ -174,18 +174,15 @@ module Elf
 
     # Exception raised when the NM code for a given symbol is unknown.
     class UnknownNMCode < Exception
+      attr_reader :message
       def initialize(symbol)
-        @sym = symbol
-      end
-
-      def message
         section = if @sym.section.is_a?(Integer)
                     @sym.section.hex
                   else
                     @sym.section.name
                   end
 
-        "Unknown NM code for symbol #{@sym.name} in section #{section}"
+        @message = "Unknown NM code for symbol #{sym.name} in section #{section}"
       end
     end
 

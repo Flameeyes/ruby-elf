@@ -31,56 +31,44 @@ module Elf
     end
 
     class InvalidElfClass < Exception
+      attr_reader :message
       def initialize(klass)
-        @klass = klass
-      end
-      def message
-        "Invalid Elf Class #{@klass}"
+        @message = "Invalid Elf Class #{klass}"
       end
     end
 
     class InvalidDataEncoding < Exception
+      attr_reader :message
       def initialize(encoding)
-        @encoding = encoding
-      end
-      def message
-        "Invalid Elf Data Encoding #{@encoding}"
+        @message = "Invalid Elf Data Encoding #{encoding}"
       end
     end
 
     class UnsupportedElfVersion < Exception
+      attr_reader :message
       def initialize(version)
-        @version = version
-      end
-      def message
-        "Unsupported Elf version #{@version}"
+        @message = "Unsupported Elf version #{version}"
       end
     end
 
     class InvalidOsAbi < Exception
+      attr_reader :message
       def initialize(abi)
-        @abi = abi
-      end
-      def message
-        "Invalid Elf ABI #{@abi}"
+        @message = "Invalid Elf ABI #{abi}"
       end
     end
 
     class InvalidElfType < Exception
+      attr_reader :message
       def initialize(type)
-        @type = type
-      end
-      def message
-        "Invalid Elf type #{@type}"
+        @message = "Invalid Elf type #{type}"
       end
     end
 
     class InvalidMachine < Exception
+      attr_reader :message
       def initialize(machine)
-        @machine = machine
-      end
-      def message
-        "Invalid Elf machine #{@machine}"
+        @message = "Invalid Elf machine #{machine}"
       end
     end
 
@@ -248,12 +236,10 @@ module Elf
     end
 
     class MissingStringTable < Exception
-      def initialize(sect_name)
-        @name = sect_name
-      end
+      attr_reader :message
 
-      def message
-        "Requested section '#{@name}' but there is no string table (yet)."
+      def initialize(sect_name)
+        "Requested section '#{sect_name}' but there is no string table (yet)."
       end
     end
 
