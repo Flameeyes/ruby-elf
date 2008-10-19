@@ -30,7 +30,7 @@ require 'readbytes'
 module BytestreamReader
   # This exists in the documentation but not in implementation (?!)
 
-  class UndefinedEndian < Exception
+  class UndefinedEndianness < Exception
     attr_reader :message
     
     def initialize

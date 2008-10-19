@@ -220,4 +220,11 @@ class TC_Bytestream < Test::Unit::TestCase
     @bs.read_u32 # Ignore this, should check for 32-bit signed though
   end
 
+  # Test the behaviour of BytestreamReader when asking to read with
+  # default endian but no endian was provided.
+  def test_no_endian
+    assert_raise BytestreamReader::UndefinedEndianness do
+      @bs.read_u16
+    end
+  end
 end
