@@ -55,9 +55,12 @@ module Elf
       if idx.is_a?(Integer)
         raise UnknownSymbol.new(idx, self) unless @symbols[idx] != nil
         return @symbols[idx]
-      else
+      elsif idx.respond_to?("to_s")
+        idx = idx.to_s
         raise UnknownSymbol.new(idx, self) unless @symbol_names.has_key?(idx)
         return @symbols[@symbol_names[idx]]
+      else
+        raise TypeError.new("Only Integers or String-compatible arguments accepted")
       end
     end
   end
