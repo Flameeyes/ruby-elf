@@ -64,11 +64,5 @@ module Elf
 
       return @table[idx]
     end
-
-    def debug
-      load unless @table
-
-      $stderr.puts @table.inspect
-    end
   end
 end
