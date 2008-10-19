@@ -235,7 +235,7 @@ module BytestreamReader
     when BigEndian, LittleEndian
       @endian = endian
     else
-      raise InvalidArgument
+      raise ArgumentError.new
     end
   end
 

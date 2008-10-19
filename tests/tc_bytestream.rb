@@ -227,4 +227,12 @@ class TC_Bytestream < Test::Unit::TestCase
       @bs.read_u16
     end
   end
+
+  # Test the behaviour of BytestreamReader when providing an invalid
+  # endianness value.
+  def test_invalid_endian
+    assert_raise ArgumentError do
+      @bs.set_endian("foobar")
+    end
+  end
 end
