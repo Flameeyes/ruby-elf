@@ -224,12 +224,10 @@ module Elf
     end
 
     class MissingSection < Exception
-      def initialise(sect_idx_or_name)
-        @idx_or_name = sect_idx_or_name
-      end
+      attr_reader :message
 
-      def message
-        "Requested section #{@idx_or_name} not found in the file"
+      def initialize(sect_identifier)
+        @message = "Requested section #{sect_identifier} not found in the file"
       end
     end
 
