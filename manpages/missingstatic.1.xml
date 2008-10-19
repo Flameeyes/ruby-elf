@@ -225,29 +225,58 @@
 
       <refsect1 xml:id="examples">
 	<title>Examples</title>
+	
+	<refsect2>
+	  <title>Generating the tags file</title>
 
-	<para>
-	  To generate a tags file compatible with the
-	  <option>--exclude-tags</option> command-line option, you can
-	  use
-	  <citerefentry>
-	    <refentrytitle>exuberant-ctags</refentrytitle>
-	    <manvolnum>1</manvolnum>
-	  </citerefentry> 
-	  with a command similar to the following:
-	</para>
-
-	<example>
-	  <title>
-	    Generate a tags file for public header files
-	  </title>
+	  <para>
+	    To generate a tags file compatible with the
+	    <option>--exclude-tags</option> command-line option, you can
+	    use
+	    <citerefentry>
+	      <refentrytitle>exuberant-ctags</refentrytitle>
+	      <manvolnum>1</manvolnum>
+	    </citerefentry> 
+	    with a command similar to the following:
+	  </para>
 	  
-	  <programlisting>
-	    exuberant-ctags --c-kinds=px -f public-symbols include/public/*.h
-	  </programlisting>
-	</example>
+	  <example>
+	    <title>
+	      Generate a tags file for public header files
+	    </title>
+	    
+	    <programlisting>
+	      exuberant-ctags --c-kinds=px -f public-symbols include/public/*.h
+	    </programlisting>
+	  </example>
+	</refsect2>
+
+	<refsect2>
+	  <title>Sorting <command>missingstatic</command> output</title>
+	  
+	  <para>
+	    Sine sorting by translation unit is non-trivial inside the
+	    script, piping through 
+	    <citerefentry>
+	      <refentrytitle>sort</refentrytitle>
+	      <manvolnum>1</manvolnum>
+	    </citerefentry>
+	    is suggested. Using the <option>-k</option> option it's
+	    possible to sort for the desired key, may it be the symbol
+	    name, the translation unit name or the symbol type.
+	  </para>
+	  
+	  <example>
+	    <title>Sorting <command>missingstatic</command> output for
+	    translation unit name </title>
+	    
+	    <programlisting>
+	      find . -name '*.o' | missingstatic -h | sort -k2
+	    </programlisting>
+	  </example>
+	</refsect2>
       </refsect1>
-      
+	
       <refsect1>
 	<title>Bugs and Missing Features</title>
 	<para>
@@ -257,19 +286,6 @@
 	  the results might not be the expected ones.
 	</para>
 
-	<para>
-	  Sorting by translation unit is non-trivial inside the
-	  script, instead, piping through <command>sort</command> is
-	  suggested.
-	</para>
-
-	<example>
-	  <title>Sorting <command>missingstatic</command> output</title>
-	  
-	  <programlisting>
-	    find . -name '*.o' | missingstatic -h | sort -k2
-	  </programlisting>
-	</example>
       </refsect1>
 
       <refsect1>
