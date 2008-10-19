@@ -35,7 +35,7 @@ class TC_Dynamic_Executable < Elf::TestExecutable
   # Test for presence of an undefined printf symbol.
   def test_printf_symbol
     printf_found = false
-    @elf['.dynsym'].symbols.each do |sym|
+    @elf['.dynsym'].each_symbol do |sym|
       next unless sym.name == "printf"
       printf_found = true
       
@@ -44,40 +44,67 @@ class TC_Dynamic_Executable < Elf::TestExecutable
     end
   end
 
-  # Test some values in the .dynamic section:
-
-  # Test the NEEDED line in the dynamic section
+  # Test some values in the .dynamic section.
   #
-  # The subclasses will define the proper value to use since it's
-  # operating system dependent.
-  def test_dynamic_needed
+  # Please note that the value is evaluated since it usually is
+  # per-file
+
+  ExpectedDynamicValues = {
+    Elf::Dynamic::Type::Needed => "self.class::ExpectedLibC",
+    Elf::Dynamic::Type::Init   => "@elf['.init'].addr",
+    Elf::Dynamic::Type::Fini   => "@elf['.fini'].addr",
+    Elf::Dynamic::Type::Hash   => "@elf['.hash'].addr",
+    Elf::Dynamic::Type::StrTab => "@elf['.dynstr'].addr",
+    Elf::Dynamic::Type::SymTab => "@elf['.dynsym'].addr",
+    Elf::Dynamic::Type::Debug  => "0x0"
+  }
+  
+  def test_section_entries
     @elf[".dynamic"].entries.each do |entry|
-      if entry[:type] == Elf::Dynamic::Type::Needed
-        assert_equal(self.class::ExpectedLibC, entry[:parsed],
-                     "C library NEEDED differs from expectation")
+      if self.class::ExpectedDynamicValues.has_key? entry[:type]
+        assert_equal(eval(self.class::ExpectedDynamicValues[entry[:type]]),
+                     entry[:parsed], "Testing #{entry[:type]}")
+      end
+    end
+  end
+
+  def dotest_entry_type(type, fail_notfound = true)
+    @elf[".dynamic"].entries.each do |entry|
+      if entry[:type] == type
+        yield entry
         return
       end
     end
 
-    flunk("NEEDED entry not found in .dynamic")
+    flunk("#{type} entry not found in .dynamic")
+  end
+
+  module GLIBC
+    ExpectedDynamicValues = TC_Dynamic_Executable::ExpectedDynamicValues.
+      merge({
+              Elf::Dynamic::Type::GNUHash => "@elf['.gnu.hash'].addr"
+            })
   end
 
   class LinuxX86 < self
     Filename = "linux_x86_" + BaseFilename
     ExpectedLibC = "libc.so.6"
     include Elf::TestExecutable::LinuxX86
+    include GLIBC
   end
 
   class LinuxAMD64 < self
     Filename = "linux_amd64_" + BaseFilename
     ExpectedLibC = "libc.so.6"
     include Elf::TestExecutable::LinuxAMD64
+    include GLIBC
   end
 
   class LinuxAMD64_ICC < self
     Filename = "linux_amd64_icc_" + BaseFilename
     ExpectedLibC = "libc.so.6"
     include Elf::TestExecutable::LinuxAMD64
+    include GLIBC
   end
 
   class LinuxAMD64_SunStudio < self
@@ -90,12 +117,14 @@ class TC_Dynamic_Executable < Elf::TestExecutable
     Filename = "linux_sparc_" + BaseFilename
     ExpectedLibC = "libc.so.6"
     include Elf::TestExecutable::LinuxSparc
+    include GLIBC
   end
 
   class LinuxArm < self
     Filename = "linux_arm_" + BaseFilename
     ExpectedLibC = "libc.so.6"
     include Elf::TestExecutable::LinuxArm
+    include GLIBC
   end
 
   class SolarisX86_GCC < self
