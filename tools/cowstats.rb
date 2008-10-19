@@ -30,7 +30,9 @@ opts = GetoptLong.new(
   # Ignore C++ "false positives" (vtables and typeinfo)
   ["--ignore-cxx", "-x", GetoptLong::NO_ARGUMENT ],
   # Ignore Profiling false positives
-  ["--ignore-profiling", "-p", GetoptLong::NO_ARGUMENT ]
+  ["--ignore-profiling", "-p", GetoptLong::NO_ARGUMENT ],
+  # Show help (man page)
+  ["--help", '-?', GetoptLong::NO_ARGUMENT]
 )
 
 $stats_only = false
@@ -55,6 +57,17 @@ opts.each do |opt, arg|
     $ignore_cxx = true
   when '--ignore-profiling'
     $ignore_profiling = true
+  when '--help' # Open the man page and go bye...
+    # check if we're executing from a tarball or the git repository,
+    # if so we can't use the system man page.
+    require 'pathname'
+    filepath = Pathname.new(__FILE__)
+    localman = filepath.dirname + "../manpages" + filepath.basename.sub(".rb", ".1")
+    if localman.exist?
+      exec("man #{localman.to_s}")
+    else
+      exec("man missingstatic")
+    end
   end
 end
 

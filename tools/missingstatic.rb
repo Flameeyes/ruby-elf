@@ -31,7 +31,9 @@ opts = GetoptLong.new(
   # Show the type of symbol (function, variable, constant)
   ["--show-type", "-t", GetoptLong::NO_ARGUMENT],
   # Exclude symbols present in a tags file (from exuberant-ctags)
-  ["--exclude-tags", "-X", GetoptLong::REQUIRED_ARGUMENT]
+  ["--exclude-tags", "-X", GetoptLong::REQUIRED_ARGUMENT],
+  # Show help (man page)
+  ["--help", '-?', GetoptLong::NO_ARGUMENT]
 )
 
 exclude_regexps = []
@@ -63,6 +65,17 @@ opts.each do |opt, arg|
     $hidden_only = true
   when '--show-type'
     show_type = true
+  when '--help' # Open the man page and go bye...
+    # check if we're executing from a tarball or the git repository,
+    # if so we can't use the system man page.
+    require 'pathname'
+    filepath = Pathname.new(__FILE__)
+    localman = filepath.dirname + "../manpages" + filepath.basename.sub(".rb", ".1")
+    if localman.exist?
+      exec("man #{localman.to_s}")
+    else
+      exec("man missingstatic")
+    end
   end
 end
 
