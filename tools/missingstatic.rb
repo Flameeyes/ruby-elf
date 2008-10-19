@@ -45,7 +45,7 @@ def load_tags_file(filename)
   File.readlines(filename).delete_if do |line|
     line[0..0] == '!' # Internal exuberant-ctags symbol
   end.collect do |line|
-    Regexp.new(Regexp.quote(line.split[0]))
+    Regexp.new("^" + Regexp.quote(line.split[0]) + "$")
   end
 end
 
