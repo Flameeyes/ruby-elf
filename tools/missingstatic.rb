@@ -36,7 +36,7 @@ opts = GetoptLong.new(
   ["--help", '-?', GetoptLong::NO_ARGUMENT]
 )
 
-exclude_regexps = []
+exclude = []
 files_list = nil
 $hidden_only = false
 show_type = false
@@ -45,7 +45,7 @@ def load_tags_file(filename)
   File.readlines(filename).delete_if do |line|
     line[0..0] == '!' # Internal exuberant-ctags symbol
   end.collect do |line|
-    Regexp.new("^" + Regexp.quote(line.split[0]) + "$")
+    line.split[0]
   end
 end
 
@@ -58,9 +58,9 @@ opts.each do |opt, arg|
       files_list = File.new(arg)
     end
   when '--exclude-regexp'
-    exclude_regexps << Regexp.new(arg)
+    exclude << Regexp.new(arg)
   when '--exclude-tags'
-    exclude_regexps += load_tags_file(arg)
+    exclude += load_tags_file(arg)
   when '--hidden-only'
     $hidden_only = true
   when '--show-type'
@@ -154,8 +154,12 @@ end
 $all_defined.delete_if do |symbol|
   excluded = symbol.name == "main"
 
-  exclude_regexps.each do |re|
-    excluded = true if symbol.name =~ re
+  exclude.each do |exclude_sym|
+    if exclude_sym.is_a? Regexp
+      excluded = true if symbol.name =~ exclude_sym
+    elsif exclude_sym.is_a? String
+      excluded = true if symbol.name == exclude_sym
+    end
     break if excluded
   end
 
