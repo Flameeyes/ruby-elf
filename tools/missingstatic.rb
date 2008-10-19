@@ -148,36 +148,30 @@ else
 end
 
 $all_using = $all_using.to_a
-$all_defined.delete_if do |symbol|
+$all_defined.each do |symbol|
   # If the symbol is being used, delete it now
-  if $all_using.include? symbol.name
-    true
-  else
-    excluded = false
+  next if $all_using.include? symbol.name
 
-    exclude.each do |exclude_sym|
-      excluded = 
-        if exclude_sym.is_a? Regexp
-          symbol.name =~ exclude_sym
-        elsif exclude_sym.is_a? String
-          symbol.name == exclude_sym
-        end
-
-      break if excluded
-    end
-
-    excluded
+  excluded = false
+  exclude.each do |exclude_sym|
+    excluded = 
+      if exclude_sym.is_a? Regexp
+        symbol.name =~ exclude_sym
+      elsif exclude_sym.is_a? String
+        symbol.name == exclude_sym
+      end
+    
+    break if excluded
   end
-end
+  next if excluded
 
-$all_defined.each do |sym|
   if show_type
     begin
-      prefix = "#{sym.nm_code} "
+      prefix = "#{symbol.nm_code} "
     rescue Elf::Symbol::UnknownNMCode => e
       $stderr.puts e.message
       prefix = "? "
     end
   end
-  puts "#{prefix}#{sym.name} (#{sym.file.path})"
+  puts "#{prefix}#{symbol.name} (#{symbol.file.path})"
 end
