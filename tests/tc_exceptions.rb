@@ -25,17 +25,15 @@ require 'elf'
 # ELF files, so that reading a non-ELF file won't cause unexpected
 # problems.
 class TC_Exceptions < Test::Unit::TestCase
-  TestDir = Pathname.new(__FILE__).dirname + "binaries"
-
   # Test behaviour when a file that is not an ELF file is opened.
   #
   # Expected behaviour: Elf::File::NotAnElf exception is raised.
   def test_notanelf
-    assert(File.exist?(TestDir + "invalid_nonelf"),
+    assert(File.exist?(Elf::TestUnit::TestDir + "invalid_nonelf"),
            "Missing test file invalid_nonelf")
 
     assert_raise Elf::File::NotAnELF do
-      elf = Elf::File.new(TestDir + "invalid_nonelf")
+      elf = Elf::File.new(Elf::TestUnit::TestDir + "invalid_nonelf")
       elf.close
     end
   end
@@ -46,11 +44,11 @@ class TC_Exceptions < Test::Unit::TestCase
   #
   # Expected behaviour: Elf::File::NotAnElf exception is raised.
   def test_shortfile
-    assert(File.exist?(TestDir + "invalid_shortfile"),
+    assert(File.exist?(Elf::TestUnit::TestDir + "invalid_shortfile"),
            "Missing test file invalid_shortfile")
 
     assert_raise Elf::File::NotAnELF do
-      elf = Elf::File.new(TestDir + "invalid_shortfile")
+      elf = Elf::File.new(Elf::TestUnit::TestDir + "invalid_shortfile")
       elf.close
     end
   end
@@ -61,11 +59,11 @@ class TC_Exceptions < Test::Unit::TestCase
   # Expected behaviour: Elf::File::InvalidElfClass exception is
   # raised.
   def test_invalid_elfclass
-    assert(File.exist?(TestDir + "invalid_invalidclass"),
+    assert(File.exist?(Elf::TestUnit::TestDir + "invalid_invalidclass"),
            "Missing test file invalid_invalidclass")
 
     assert_raise Elf::File::InvalidElfClass do
-      elf = Elf::File.new(TestDir + "invalid_invalidclass")
+      elf = Elf::File.new(Elf::TestUnit::TestDir + "invalid_invalidclass")
       elf.close
     end
   end
@@ -76,11 +74,11 @@ class TC_Exceptions < Test::Unit::TestCase
   # Expected behaviour: Elf::File::InvalidDataEncoding exception is
   # raised.
   def test_invalid_encoding
-    assert(File.exist?(TestDir + "invalid_invalidencoding"),
+    assert(File.exist?(Elf::TestUnit::TestDir + "invalid_invalidencoding"),
            "Missing test file invalid_invalidencoding")
 
     assert_raise Elf::File::InvalidDataEncoding do
-      elf = Elf::File.new(TestDir + "invalid_invalidencoding")
+      elf = Elf::File.new(Elf::TestUnit::TestDir + "invalid_invalidencoding")
       elf.close
     end
   end
@@ -91,11 +89,11 @@ class TC_Exceptions < Test::Unit::TestCase
   # Expected behaviour: Elf::File::UnsupportedElfVersion exception is
   # raised.
   def test_unsupported_version
-    assert(File.exist?(TestDir + "invalid_unsupportedversion"),
+    assert(File.exist?(Elf::TestUnit::TestDir + "invalid_unsupportedversion"),
            "Missing test file invalid_unsupportedversion")
 
     assert_raise Elf::File::UnsupportedElfVersion do
-      elf = Elf::File.new(TestDir + "invalid_unsupportedversion")
+      elf = Elf::File.new(Elf::TestUnit::TestDir + "invalid_unsupportedversion")
       elf.close
     end
   end
@@ -104,11 +102,11 @@ class TC_Exceptions < Test::Unit::TestCase
   #
   # Expected behaviour: Elf::File::InvalidOsAbi exception is raised.
   def test_invalid_abi
-    assert(File.exist?(TestDir + "invalid_invalidabi"),
+    assert(File.exist?(Elf::TestUnit::TestDir + "invalid_invalidabi"),
            "Missing test file invalid_invalidabi")
 
     assert_raise Elf::File::InvalidOsAbi do
-      elf = Elf::File.new(TestDir + "invalid_invalidabi")
+      elf = Elf::File.new(Elf::TestUnit::TestDir + "invalid_invalidabi")
       elf.close
     end
   end
@@ -118,11 +116,11 @@ class TC_Exceptions < Test::Unit::TestCase
   #
   # Expected behaviour: Elf::File::InvalidElfType exception is raised.
   def test_invalid_type
-    assert(File.exist?(TestDir + "invalid_invalidtype"),
+    assert(File.exist?(Elf::TestUnit::TestDir + "invalid_invalidtype"),
            "Missing test file invalid_invalidtype")
 
     assert_raise Elf::File::InvalidElfType do
-      elf = Elf::File.new(TestDir + "invalid_invalidtype")
+      elf = Elf::File.new(Elf::TestUnit::TestDir + "invalid_invalidtype")
       elf.close
     end
   end
@@ -132,11 +130,11 @@ class TC_Exceptions < Test::Unit::TestCase
   #
   # Expected behaviour: Elf::File::InvalidMachine exception is raised.
   def test_invalid_machine
-    assert(File.exist?(TestDir + "invalid_invalidmachine"),
+    assert(File.exist?(Elf::TestUnit::TestDir + "invalid_invalidmachine"),
            "Missing test file invalid_invalidmachine")
 
     assert_raise Elf::File::InvalidMachine do
-      elf = Elf::File.new(TestDir + "invalid_invalidmachine")
+      elf = Elf::File.new(Elf::TestUnit::TestDir + "invalid_invalidmachine")
       elf.close
     end
   end
@@ -146,11 +144,11 @@ class TC_Exceptions < Test::Unit::TestCase
   #
   # Expected behaviour: Elf::Section::UnknownType exception is raised
   def test_unknown_section_type
-    assert(File.exist?(TestDir + "invalid_unknown_section_type"),
+    assert(File.exist?(Elf::TestUnit::TestDir + "invalid_unknown_section_type"),
            "Missing test file invalid_unknown_section_type")
 
     begin
-      elf = Elf::File.new(TestDir + "invalid_unknown_section_type")
+      elf = Elf::File.new(Elf::TestUnit::TestDir + "invalid_unknown_section_type")
       elf[11] # We need an explicit request for the corrupted section
       elf.close
     rescue Elf::Section::UnknownType => e
@@ -174,10 +172,10 @@ class TC_Exceptions < Test::Unit::TestCase
   #
   # Expected behaviour: Elf::Section::MissingSection exception is raised
   def test_missing_section
-    assert(File.exist?(TestDir + "arm-crtn.o"),
+    assert(File.exist?(Elf::TestUnit::TestDir + "arm-crtn.o"),
            "Missing test file arm-crtn.o")
 
-    elf = Elf::File.new(TestDir + "arm-crtn.o")
+    elf = Elf::File.new(Elf::TestUnit::TestDir + "arm-crtn.o")
 
     # Make sure that the has_section? function behaves correctly and
     # _don't_ throw an exception.
