@@ -45,12 +45,10 @@ $hidden_only = false
 show_type = false
 
 def load_tags_file(filename)
-  File.readlines(filename).collect do |line|
-    if line[0..0] == '!' # Internal exuberant-ctags symbol
-      nil
-    else
-      line.split[0]
-    end
+  File.readlines(filename).delete_if do |line|
+    line[0..0] == '!' # Internal exuberant-ctags symbol
+  end.collect do |line|
+    line.split[0]
   end
 end
 
@@ -154,14 +152,7 @@ $all_defined.each do |symbol|
 
   excluded = false
   exclude.each do |exclude_sym|
-    excluded = 
-      if exclude_sym.is_a? Regexp
-        symbol.name =~ exclude_sym
-      elsif exclude_sym.is_a? String
-        symbol.name == exclude_sym
-      end
-    
-    break if excluded
+    break if excluded = exclude_sym.match(symbol.name)
   end
   next if excluded
 
