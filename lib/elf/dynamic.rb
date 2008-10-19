@@ -23,6 +23,17 @@
 module Elf
   class Dynamic < Section
     class Type < Value
+      class Unknown < Elf::Value::Unknown
+        def initialize(val, desc)
+          super(val, desc)
+        end
+
+        # For unknown types, guess Value is the key.
+        def attribute
+          :Value
+        end
+      end
+
       attr_reader :attribute
 
       def initialize(val, params)
@@ -104,6 +115,14 @@ module Elf
              0x6ffffffe => [ :VerNeed, "VERNEED", :Address ],
              0x6fffffff => [ :VerNeedNum, "VERNEEDNUM", :Value ]
            })
+
+      # OS-specific range
+      LoOs = 0x6000000d
+      HiOs = 0x6ffff000
+
+      # Processor-specific range
+      LoProc = 0x70000000
+      HiProc = 0x7fffffff
     end
 
     module Flags
@@ -153,7 +172,25 @@ module Elf
         entry = {}
         
         type = elf32 ? @file.read_sword : @file.read_sxword
-        entry[:type] = Type[ type ]
+
+        if type >= Type::LoOs && type <= Type::HiOs
+          if Type.has_key? type
+            entry[:type] = Type[type]
+          else
+            # Unknown OS-specific dynamic entry type, provide a dummy
+            entry[:type] = Type::Unknown.new(type, sprintf("DT_LOOS+%07x", type-Type::LoOs))
+          end
+        elsif type >= Type::LoProc && type <= HiProc
+          if Type.has_key? type
+            entry[:type] = Type[type]
+          else
+            # Unknown OS-specific dynamic entry type, provide a dummy
+            entry[:type] = Type::Unknown.new(type, sprintf("DT_LOPROC+%07x", type-Type::LoProc))
+          end
+        else
+          entry[:type] = Type[type]
+        end
+
         entry[:attribute] = case entry[:type].attribute
                             when :Address then @file.read_addr
                             when :Value then elf32 ? @file.read_word : @file.read_xword
