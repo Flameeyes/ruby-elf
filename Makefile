@@ -8,6 +8,13 @@ XSL_NS_ROOT=http://docbook.sourceforge.net/release/xsl-ns/current
 	xsltproc -o $@ $(XSL_NS_ROOT)/manpages/docbook.xsl $<
 
 RUBY = ruby
+RCOV = rcov --comments
 
 test check:
 	$(RUBY) -I lib tests/ts_rubyelf.rb
+
+cov:
+	$(RCOV) -I lib tests/ts_rubyelf.rb lib/elf.rb lib/elf/*.rb
+
+cov-harsh:
+	$(MAKE) RCOV="$(RCOV) --test-unit-only" cov
