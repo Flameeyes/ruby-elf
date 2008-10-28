@@ -114,9 +114,9 @@ def scanfile(filename)
       end
     end
   rescue Errno::ENOENT
-    $stderr.puts "missingstatic.rb: #{file}: no such file"
+    $stderr.puts "missingstatic.rb: #{filename}: no such file"
   rescue Elf::File::NotAnELF
-    $stderr.puts "missingstatic.rb: #{file}: not a valid ELF file."
+    $stderr.puts "missingstatic.rb: #{filename}: not a valid ELF file."
   rescue Interrupt
     $stderr.puts "missingstatic.rb: Interrupted"
     exit 1
