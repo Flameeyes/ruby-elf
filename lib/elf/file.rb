@@ -110,6 +110,17 @@ module Elf
       end
     end
 
+    alias :read_half :read_u16
+
+    alias :read_word :read_u32
+    alias :read_sword :read_s32
+
+    alias :read_xword :read_u64
+    alias :read_sxword :read_s64
+
+    alias :read_section :read_u16
+    alias :read_versym :read_half
+    
     def initialize(path)
       super(path, "rb")
 
@@ -144,17 +155,6 @@ module Elf
       seek(16, IO::SEEK_SET)
       set_endian(DataEncoding::BytestreamMapping[@data_encoding])
 
-      alias :read_half :read_u16
-
-      alias :read_word :read_u32
-      alias :read_sword :read_s32
-
-      alias :read_xword :read_u64
-      alias :read_sxword :read_s64
-
-      alias :read_section :read_u16
-      alias :read_versym :read_half
-      
       begin
         @type = Type[read_half]
       rescue Value::OutOfBound => e
