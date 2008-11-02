@@ -31,10 +31,8 @@ module BytestreamReader
   # This exists in the documentation but not in implementation (?!)
 
   class UndefinedEndianness < Exception
-    attr_reader :message
-    
     def initialize
-      message = "Requested default-endianness reads but no endianness defined"
+      super("Requested default-endianness reads but no endianness defined")
     end
   end
 

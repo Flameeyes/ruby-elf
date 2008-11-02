@@ -37,9 +37,8 @@ module Elf
     end
 
     class InvalidIndex < Exception
-      attr_reader :message
       def initialize(idx, max_idx)
-        @message = "Invalid index #{idx} (maximum index: #{max_idx})"
+        super("Invalid index #{idx} (maximum index: #{max_idx})")
       end
     end
 

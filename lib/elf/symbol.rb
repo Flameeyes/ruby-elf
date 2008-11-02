@@ -118,9 +118,8 @@ module Elf
     end
     
     class InvalidName < Exception
-      attr_reader :message
       def initialize(name_idx, sym, symsect)
-        @message = "Invalid name index in #{symsect.link.name} #{name_idx} for symbol #{sym.idx}"
+        super("Invalid name index in #{symsect.link.name} #{name_idx} for symbol #{sym.idx}")
       end
     end
 
@@ -174,7 +173,6 @@ module Elf
 
     # Exception raised when the NM code for a given symbol is unknown.
     class UnknownNMCode < Exception
-      attr_reader :message
       def initialize(symbol)
         section = if @sym.section.is_a?(Integer)
                     @sym.section.hex
@@ -182,7 +180,7 @@ module Elf
                     @sym.section.name
                   end
 
-        @message = "Unknown NM code for symbol #{sym.name} in section #{section}"
+        super("Unknown NM code for symbol #{sym.name} in section #{section}")
       end
     end
 

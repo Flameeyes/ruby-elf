@@ -33,44 +33,38 @@ module Elf
     end
 
     class InvalidElfClass < Exception
-      attr_reader :message
       def initialize(klass)
-        @message = "Invalid Elf Class #{klass}"
+        super("Invalid Elf Class #{klass}")
       end
     end
 
     class InvalidDataEncoding < Exception
-      attr_reader :message
       def initialize(encoding)
-        @message = "Invalid Elf Data Encoding #{encoding}"
+        super("Invalid Elf Data Encoding #{encoding}")
       end
     end
 
     class UnsupportedElfVersion < Exception
-      attr_reader :message
       def initialize(version)
-        @message = "Unsupported Elf version #{version}"
+        super("Unsupported Elf version #{version}")
       end
     end
 
     class InvalidOsAbi < Exception
-      attr_reader :message
       def initialize(abi)
-        @message = "Invalid Elf ABI #{abi}"
+        super("Invalid Elf ABI #{abi}")
       end
     end
 
     class InvalidElfType < Exception
-      attr_reader :message
       def initialize(type)
-        @message = "Invalid Elf type #{type}"
+        super("Invalid Elf type #{type}")
       end
     end
 
     class InvalidMachine < Exception
-      attr_reader :message
       def initialize(machine)
-        @message = "Invalid Elf machine #{machine}"
+        super("Invalid Elf machine #{machine}")
       end
     end
 
@@ -214,10 +208,8 @@ module Elf
     end
 
     class MissingSection < Exception
-      attr_reader :message
-
       def initialize(sect_identifier)
-        @message = "Requested section #{sect_identifier} not found in the file"
+        super("Requested section #{sect_identifier} not found in the file")
       end
     end
 
@@ -238,10 +230,8 @@ module Elf
     end
 
     class MissingStringTable < Exception
-      attr_reader :message
-
       def initialize(sect_name)
-        "Requested section '#{sect_name}' but there is no string table (yet)."
+        super("Requested section '#{sect_name}' but there is no string table (yet).")
       end
     end
 

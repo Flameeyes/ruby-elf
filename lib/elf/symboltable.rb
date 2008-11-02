@@ -37,9 +37,8 @@ module Elf
     # Exception thrown when requesting a symbol that is not in the
     # table
     class UnknownSymbol < Exception
-      attr_reader :message
       def initialize(name_or_idx, section)
-        @message = "Symbol #{name_or_idx} not found in section #{section.name}"
+        super("Symbol #{name_or_idx} not found in section #{section.name}")
       end
     end
 
