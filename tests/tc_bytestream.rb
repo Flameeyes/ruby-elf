@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 # Tests for the bytestrem reader
 #
 # Copyright 2007 Diego Pettenò <flameeyes@gmail.com>

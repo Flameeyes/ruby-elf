@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 # Simple bytestream reader.
 # This class is a simple File derivative from which you can read
 # integers of different sizes, in any endianness.

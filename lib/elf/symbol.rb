@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 # Simple ELF parser for Ruby
 #
 # Copyright 2007 Diego Pettenò <flameeyes@gmail.com>
