@@ -32,6 +32,8 @@ opts = GetoptLong.new(
   ["--ignore-cxx", "-x", GetoptLong::NO_ARGUMENT ],
   # Ignore Profiling false positives
   ["--ignore-profiling", "-p", GetoptLong::NO_ARGUMENT ],
+  # Ignore .data.rel.ro relocated constants
+  ["--ignore-data-rel-ro", "-R", GetoptLong::NO_ARGUMENT ],
   # Show help (man page)
   ["--help", '-?', GetoptLong::NO_ARGUMENT]
 )
@@ -41,6 +43,7 @@ $show_total = false
 file_list = nil
 $ignore_cxx = false
 $ignore_profiling = false
+$no_datarelro = false
 
 opts.each do |opt, arg|
   case opt
@@ -58,6 +61,8 @@ opts.each do |opt, arg|
     $ignore_cxx = true
   when '--ignore-profiling'
     $ignore_profiling = true
+  when '--ignore-data-rel-ro'
+    $no_datarelro = true
   when '--help' # Open the man page and go bye...
     # check if we're executing from a tarball or the git repository,
     # if so we can't use the system man page.
@@ -135,8 +140,10 @@ def cowstats_scan(file)
         # about it.
         case symbol.section.name
         when /^\.data\.rel\.ro(\..*)?/
-          relro_vars << symbol unless $stats_only
-          relro_size += symbol.size
+          unless $no_datarelro
+            relro_vars << symbol unless $stats_only
+            relro_size += symbol.size
+          end
         when /^\.data\.rel(\..*)?/, /^\.picdata/
           rel_vars << symbol unless $stats_only
           rel_size += symbol.size
@@ -216,7 +223,9 @@ def cowstats_scan(file)
     puts "  Total non-initialised variables size: #{bss_size}" unless bss_size == 0
     puts "  Total writable variables size: #{data_size}" unless data_size == 0
     puts "  Total variables needing runtime relocation size: #{rel_size}" unless rel_size == 0
-    puts "  Total constants needing runtime relocation size: #{relro_size}" unless relro_size == 0
+    unless $no_datarelro
+      puts "  Total constants needing runtime relocation size: #{relro_size}" unless relro_size == 0
+    end
   end
 end
 
@@ -241,7 +250,7 @@ if $stats_only
   bss_lengths  = [".bss size".length]
   data_lengths = [".data size".length]
   rel_lengths  = [".data.rel size".length]
-  relro_lengths  = [".data.rel.ro size".length]
+  relro_lengths  = [".data.rel.ro size".length] unless $no_datalrero
   $files_info.each_pair do |file, info|
     file_lengths << file.length
     bss_lengths  << info[:bss_size] .to_s.length
@@ -256,9 +265,11 @@ if $stats_only
   max_rel_len  = rel_lengths .max
   max_relro_len= relro_lengths .max
 
-  puts "#{'File name'.ljust maxlen} | #{'.bss size'.ljust max_data_len} | #{'.data size'.ljust max_data_len} | #{'.data.rel size'.ljust max_rel_len} | #{'.data.rel.ro size'.ljust max_relro_len}"
+  datarelro_header = $no_datarelro ? "" : " | #{'.data.rel.ro size'.ljust max_relro_len}"
+  puts "#{'File name'.ljust maxlen} | #{'.bss size'.ljust max_data_len} | #{'.data size'.ljust max_data_len} | #{'.data.rel size'.ljust max_rel_len}#{datarelro_header}"
   $files_info.each do |file, info|
-    puts "#{file.ljust maxlen}   #{info[:bss_size].to_s.rjust max_bss_len}   #{info[:data_size].to_s.rjust max_data_len}   #{info[:rel_size].to_s.rjust max_rel_len}   #{info[:relro_size].to_s.rjust max_relro_len}"
+    datarelro_line = $no_datarelro ? "" : "   #{info[:relro_size].to_s.rjust max_relro_len}"
+    puts "#{file.ljust maxlen}   #{info[:bss_size].to_s.rjust max_bss_len}   #{info[:data_size].to_s.rjust max_data_len}   #{info[:rel_size].to_s.rjust max_rel_len}#{datarelro_line}"
   end
 end
 
@@ -272,6 +283,6 @@ if $show_total
   puts "    #{$bss_total} (#{bss_total_real} \"real\") bytes of non-initialised variables."
   puts "    #{$data_total} (#{data_total_real} \"real\") bytes of writable variables."
   puts "    #{$rel_total} (#{rel_total_real} \"real\") bytes of variables needing runtime relocation."
-  puts "    #{$relro_total} (#{relro_total_real} \"real\") bytes of constants needing runtime relocation."
+  puts "    #{$relro_total} (#{relro_total_real} \"real\") bytes of constants needing runtime relocation." unless $no_datalrero
   puts "  Total #{$data_total+$bss_total+$rel_total+$relro_total} (#{data_total_real+bss_total_real+rel_total_real+relro_total_real} \"real\") bytes of variables in copy-on-write sections"
 end
