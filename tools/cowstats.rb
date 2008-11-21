@@ -78,6 +78,7 @@ if $show_total
   $data_total = 0
   $bss_total = 0
   $rel_total = 0
+  $relro_total = 0
 end
 
 def cowstats_scan(file)
@@ -87,6 +88,8 @@ def cowstats_scan(file)
   bss_size = 0
   rel_vars = []
   rel_size = 0
+  relro_vars = []
+  relro_size = 0
   
   begin
     Elf::File.open(file) do |elf|
@@ -131,7 +134,10 @@ def cowstats_scan(file)
         # them. If the name is not in this list, at least warn now
         # about it.
         case symbol.section.name
-        when /^\.data\.rel(\.ro)?(\.local)?(\..*)?/, /^\.picdata/
+        when /^\.data\.rel\.ro(\..*)?/
+          relro_vars << symbol unless $stats_only
+          relro_size += symbol.size
+        when /^\.data\.rel(\..*)?/, /^\.picdata/
           rel_vars << symbol unless $stats_only
           rel_size += symbol.size
         when /^\.t?data(\.local)?(\..*)?/
@@ -157,35 +163,37 @@ def cowstats_scan(file)
     $stderr.puts "\t" + e.backtrace.join("\n\t")
   end
 
-  return unless (data_size + bss_size + rel_size ) > 0
+  return unless (data_size + bss_size + rel_size + relro_size ) > 0
 
   if $show_total
     $data_total += data_size
     $bss_total += bss_size
     $rel_total += rel_size
+    $relro_total += relro_size
   end
     
   if $stats_only
     $files_info[file] = {
       :data_size => data_size,
       :bss_size => bss_size,
-      :rel_size => rel_size
+      :rel_size => rel_size,
+      :relro_size => relro_size
     }
     return
   end
 
   puts "Processing file #{file}"
     
-  if data_vars.length > 0
-    puts "  The following variables are writable (Copy-On-Write):"
-    data_vars.each do |sym|
+  if bss_vars.length > 0
+    puts "  The following variables aren't initialised (Copy-On-Write):"
+    bss_vars.each do |sym|
       puts "    #{sym} (size: #{sym.size})"
     end
   end
   
-  if bss_vars.length > 0
-    puts "  The following variables aren't initialised (Copy-On-Write):"
-    bss_vars.each do |sym|
+  if data_vars.length > 0
+    puts "  The following variables are writable (Copy-On-Write):"
+    data_vars.each do |sym|
       puts "    #{sym} (size: #{sym.size})"
     end
   end
@@ -197,10 +205,18 @@ def cowstats_scan(file)
     end
   end
   
+  if relro_vars.length > 0
+    puts "  The following constants need runtime relocation (Prelinkable Copy-On-Write):"
+    relro_vars.each do |sym|
+      puts "    #{sym} (size: #{sym.size})"
+    end
+  end
+  
   if $show_total
-    puts "  Total writable variables size: #{data_size}" unless data_size == 0
     puts "  Total non-initialised variables size: #{bss_size}" unless bss_size == 0
+    puts "  Total writable variables size: #{data_size}" unless data_size == 0
     puts "  Total variables needing runtime relocation size: #{rel_size}" unless rel_size == 0
+    puts "  Total constants needing runtime relocation size: #{relro_size}" unless relro_size == 0
   end
 end
 
@@ -222,24 +238,27 @@ end
 
 if $stats_only
   file_lengths = ["File name".length]
-  data_lengths = [".data size".length]
   bss_lengths  = [".bss size".length]
-  rel_lengths  = [".data.rel.* size".length]
+  data_lengths = [".data size".length]
+  rel_lengths  = [".data.rel size".length]
+  relro_lengths  = [".data.rel.ro size".length]
   $files_info.each_pair do |file, info|
     file_lengths << file.length
-    data_lengths << info[:data_size].to_s.length
     bss_lengths  << info[:bss_size] .to_s.length
+    data_lengths << info[:data_size].to_s.length
     rel_lengths  << info[:rel_size] .to_s.length
+    relro_lengths<< info[:relro_size] .to_s.length
   end
 
   maxlen       = file_lengths.max
-  max_data_len = data_lengths.max
   max_bss_len  = bss_lengths .max
+  max_data_len = data_lengths.max
   max_rel_len  = rel_lengths .max
+  max_relro_len= relro_lengths .max
 
-  puts "#{'File name'.ljust maxlen} | #{'.data size'.ljust max_data_len} | #{'.bss size'.ljust max_data_len} | #{'.data.rel.* size'.ljust max_data_len}"
+  puts "#{'File name'.ljust maxlen} | #{'.bss size'.ljust max_data_len} | #{'.data size'.ljust max_data_len} | #{'.data.rel size'.ljust max_rel_len} | #{'.data.rel.ro size'.ljust max_relro_len}"
   $files_info.each do |file, info|
-    puts "#{file.ljust maxlen}   #{info[:data_size].to_s.rjust max_data_len}   #{info[:bss_size].to_s.rjust max_bss_len}   #{info[:rel_size].to_s.rjust max_rel_len}"
+    puts "#{file.ljust maxlen}   #{info[:bss_size].to_s.rjust max_bss_len}   #{info[:data_size].to_s.rjust max_data_len}   #{info[:rel_size].to_s.rjust max_rel_len}   #{info[:relro_size].to_s.rjust max_relro_len}"
   end
 end
 
@@ -247,10 +266,12 @@ if $show_total
   data_total_real = $data_total > 0 ? (($data_total/4096) + ($data_total % 4096 ? 1 : 0)) * 4096 : 0
   bss_total_real = $bss_total > 0 ? (($bss_total/4096) + ($bss_total % 4096 ? 1 : 0)) * 4096 : 0 
   rel_total_real = $rel_total > 0 ? (($rel_total/4096) + ($rel_total % 4096 ? 1 : 0)) * 4096 : 0
+  relro_total_real = $relro_total > 0 ? (($relro_total/4096) + ($relro_total % 4096 ? 1 : 0)) * 4096 : 0
 
   puts "Totals:"
-  puts "    #{$data_total} (#{data_total_real} \"real\") bytes of writable variables."
   puts "    #{$bss_total} (#{bss_total_real} \"real\") bytes of non-initialised variables."
+  puts "    #{$data_total} (#{data_total_real} \"real\") bytes of writable variables."
   puts "    #{$rel_total} (#{rel_total_real} \"real\") bytes of variables needing runtime relocation."
-  puts "  Total #{$data_total+$bss_total+$rel_total} (#{data_total_real+bss_total_real+rel_total_real} \"real\") bytes of variables in copy-on-write sections"
+  puts "    #{$relro_total} (#{relro_total_real} \"real\") bytes of constants needing runtime relocation."
+  puts "  Total #{$data_total+$bss_total+$rel_total+$relro_total} (#{data_total_real+bss_total_real+rel_total_real+relro_total_real} \"real\") bytes of variables in copy-on-write sections"
 end
