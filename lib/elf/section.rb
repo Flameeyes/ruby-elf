@@ -54,7 +54,7 @@ module Elf
       def initialize(type_id, section_name)
         @type_id = type_id
         @section_name = section_name
-        super(sprintf "Unknown section type 0x%08x for section #{@section_name}", @type_id)
+        super(sprintf("Unknown section type 0x%08x for section #{@section_name}", @type_id))
       end
 
       attr_reader :type_id, :section_name
