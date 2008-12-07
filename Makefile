@@ -7,7 +7,7 @@ manpages: $(MANPAGES)
 XSL_NS_ROOT=http://docbook.sourceforge.net/release/xsl-ns/current
 
 %: %.xml $(wildcard manpages/*.xmli)
-	xsltproc --xinclude -o $@ $(XSL_NS_ROOT)/manpages/docbook.xsl $<
+	xsltproc --stringparam man.copyright.section.enabled 0 --xinclude -o $@ $(XSL_NS_ROOT)/manpages/docbook.xsl $<
 
 clean:
 	-rm $(MANPAGES)
