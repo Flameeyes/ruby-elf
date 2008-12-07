@@ -76,12 +76,14 @@ end
 def self.execute(filename)
   begin
     analysis(filename)
-  rescue Errno::ENOENT
-    puterror "#{filename}: no such file"
-  rescue Elf::File::NotAnELF
-    puterror "#{filename}: not a valid ELF file."
+  rescue Errno::ENOENT, Errno::EACCES, Elf::File::NotAnELF => e
+    # The Errno exceptions have their message ending in " - FILENAME",
+    # so we take the FILENAME out and just use the one we know
+    # already.  We also take out the final dot on the phrase so that
+    # we follow the output messages from other tools, like cat.
+    puterror "#{filename}: #{e.message.gsub(/\.? - .*/, '')}"
   rescue Exception => e
-    e.message = "#{file}: #{e.message}"
+    e.message = "#{filename}: #{e.message}"
     raise e
   end
 end
