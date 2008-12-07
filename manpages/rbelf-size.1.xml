@@ -28,9 +28,8 @@
       <refsynopsisdiv>
         <cmdsynopsis>
           <command>rbelf-size</command>
-          <arg choice="opt">
-	    <option>@</option><replaceable>file</replaceable>
-          </arg>
+
+	  <xi:include href="filelists.xmli"  xpointer="xpointer(id('filelist.synopsis'))" />
 
           <arg choice="opt">
             <replaceable>files</replaceable>
@@ -57,23 +56,14 @@
         <title>Options</title>
 
 	<variablelist>
-
-          <varlistentry>
-            <term>
-	      <option>@</option><replaceable>file</replaceable>
-	    </term>
-            <listitem>
-              <para>
-		Read the list of files to analyse from the given file
-		(or standard input if <replaceable>path</replaceable>
-		is <filename>-</filename>). Useful to pass a long list
-		of files. When used with stdin or named pipes, this
-		also allows asynchronous analysis.
-	      </para>
-	    </listitem>
-	  </varlistentry>
-
+	  <xi:include href="filelists.xmli" xpointer="xpointer(id('filelist.option'))" />
 	</variablelist>
+      </refsect1>
+
+      <refsect1>
+	<title>Bugs and Missing Features</title>
+
+	<xi:include href="filelists.xmli" xpointer="xpointer(id('filelist.bugpara'))" />
       </refsect1>
 
       <refsect1>

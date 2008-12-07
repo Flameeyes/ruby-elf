@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<fragment>
+  <arg xmlns="http://docbook.org/ns/docbook" xml:id="filelist.synopsis" choice="opt">
+    <option>@</option><replaceable>file</replaceable>
+  </arg>
+  
+  <varlistentry xmlns="http://docbook.org/ns/docbook" xml:id="filelist.option">
+    <term>
+      <option>@</option><replaceable>file</replaceable>
+    </term>
+    <listitem>
+      <para>
+	Read the list of files to analyse from the given file
+	(or standard input if <replaceable>path</replaceable>
+	is <filename>-</filename>). Useful to pass a long list
+	of files. When used with stdin or named pipes, this
+	also allows asynchronous analysis.
+      </para>
+    </listitem>
+  </varlistentry>
+
+  <para xmlns="http://docbook.org/ns/docbook" xml:id="filelist.bugpara">
+    Parsing of files to provide further arguments
+    (<option>@</option><replaceable>file</replaceable>) is not
+    entirely comforming to other tools handling of the same syntax. No
+    options are parsed from the file, and filenames are expected to be
+    separated by newlines rather than whitespace.
+  </para>
+</fragment>
