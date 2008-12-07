@@ -19,7 +19,6 @@
 # check for functions that are not used but in their translation unit
 
 require 'elf/tools'
-include Elf::Tool
 
 Options = [
            # Exclude functions with a given prefix (exported functions)

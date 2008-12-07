@@ -20,8 +20,6 @@
 
 require 'elf/tools'
 
-include Elf::Tool
-
 Options = [
            # Only show statistics for the various files
            ["--statistics", "-s", GetoptLong::NO_ARGUMENT],
