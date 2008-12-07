@@ -50,10 +50,17 @@ module Elf::Tool
         end
       end
 
-      attrname = "@" + opt.gsub(/^--/, "").gsub("-", "_")
+      attrname = opt.gsub(/^--/, "").gsub("-", "_")
       attrval = arg.size == 0 ? true : arg
-      
-      instance_variable_set(attrname, attrval)
+
+      # If there is a function with the same name of the parameter
+      # defined (with a _cb suffix), call that, otherwise set the
+      # attribute with the same name to the given value.
+      if respond_to? attrname
+        method(attrname + "_cb").call(attrval)
+      else
+        instance_variable_set("@#{attrname}", attrval)
+      end
     end
   end
 

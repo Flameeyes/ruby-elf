@@ -53,10 +53,10 @@
 	    <option>--exclude-tags</option>
 	    <replaceable>tags-file</replaceable>
 	  </arg>
-	  <arg choice="opt">
-	    <option>--filelist</option>
-	    <replaceable>path</replaceable>
-	  </arg>
+
+          <arg choice="opt">
+	    <option>@</option><replaceable>file</replaceable>
+          </arg>
 
           <arg choice="opt">
             <replaceable>files</replaceable>
@@ -207,21 +207,15 @@
 
           <varlistentry>
             <term>
-	      <option>--filelist</option>
-	      <replaceable>path</replaceable>
-	    </term>
-	    <term>
-	      <option>-f</option>
-	      <replaceable>path</replaceable>
+	      <option>@</option><replaceable>file</replaceable>
 	    </term>
             <listitem>
               <para>
 		Read the list of files to analyse from the given file
 		(or standard input if <replaceable>path</replaceable>
-		is <filename>-</filename>) rather than from the
-		command line. Useful to pass a long list of files,
-		that is generated asynchronously. It can only be used
-		once.
+		is <filename>-</filename>). Useful to pass a long list
+		of files. When used with stdin or named pipes, this
+		also allows asynchronous analysis.
 	      </para>
 	    </listitem>
 	  </varlistentry>
