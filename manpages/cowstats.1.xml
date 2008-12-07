@@ -190,6 +190,20 @@
 	  <citation xl:href="http://blog.flameeyes.eu/">Flameeyes's
 	  Weblog</citation> http://blog.flameeyes.eu/
         </para>
+
+	<para>
+	  Related tools:
+
+	  <citerefentry>
+	    <refentrytitle>rbelf-size</refentrytitle>
+	    <manvolnum>1</manvolnum>
+	  </citerefentry>,
+	  
+	  <citerefentry>
+	    <refentrytitle>objdump</refentrytitle>
+	    <manvolnum>1</manvolnum>
+	  </citerefentry>.
+	</para>
       </refsect1>
     </refentry>
   </section>

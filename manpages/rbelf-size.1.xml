@@ -99,8 +99,17 @@
         </para>
 
 	<para>
-	  Similar tools: 
-	  <citerefentry><refentrytitle>size</refentrytitle><manvolnum>1</manvolnum></citerefentry>
+	  Related tools:
+
+	  <citerefentry>
+	    <refentrytitle>cowstats</refentrytitle>
+	    <manvolnum>1</manvolnum>
+	  </citerefentry>,
+	  
+	  <citerefentry>
+	    <refentrytitle>size</refentrytitle>
+	    <manvolnum>1</manvolnum>
+	  </citerefentry>.
 	</para>
       </refsect1>
     </refentry>

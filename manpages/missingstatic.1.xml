@@ -112,7 +112,8 @@
 		constants. By default, only the name of the symbol,
 		with this option, a letter in front of the symbol will
 		tell you the type of it; the letters are the same as
-		used by GNU <command>nm</command>:
+		used by GNU
+		<citerefentry><refentrytitle>nm</refentrytitle><manvolnum>1</manvolnum></citerefentry>:
 
 		<variablelist>
 		  <varlistentry>
@@ -294,6 +295,19 @@
 	  <citation xl:href="http://blog.flameeyes.eu/">Flameeyes's
 	  Weblog</citation> http://blog.flameeyes.eu/
         </para>
+
+	<para>
+	  Related tools:
+	  <citerefentry>
+	    <refentrytitle>nm</refentrytitle>
+	    <manvolnum>1</manvolnum>
+	  </citerefentry>,
+
+	  <citerefentry>
+	    <refentrytitle>exuberant-ctags</refentrytitle>
+	    <manvolnum>1</manvolnum>
+	  </citerefentry>.
+	</para>
       </refsect1>
     </refentry>
   </section>
