@@ -1,4 +1,4 @@
-MANPAGES = manpages/cowstats.1 manpages/missingstatic.1
+MANPAGES = $(patsubst %.xml,%,$(wildcard manpages/*.xml))
 
 all: manpages
 
