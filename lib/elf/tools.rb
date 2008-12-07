@@ -27,6 +27,11 @@ require 'elf'
 # require arguments (in that latter case they are considered on/off
 # switches), and so on.
 
+# Gets the name of the tool
+def self.to_s
+  File.basename($0)
+end
+
 # Parse the arguments for the tool; it does not parse the @file
 # options, since they are only expected to contain file names,
 # rather than options.
@@ -44,7 +49,7 @@ def self.parse_arguments
       if localman.exist?
         exec("man #{localman.to_s}")
       else
-        exec("man missingstatic")
+        exec("man #{to_s}")
       end
     end
 
