@@ -65,11 +65,11 @@ def self.analysis(file)
   begin
     Elf::File.open(file) do |elf|
       if elf.type != Elf::File::Type::Rel
-        $stderr.puts "cowstats.rb: #{file}: not an object file"
+        puterror "#{file}: not an object file"
         next
       end
       if not elf.has_section?(".symtab")
-        $stderr.puts "cowstats.rb: #{file}: no .symtab section found"
+        puterror "#{file}: no .symtab section found"
         next
       end
 
@@ -123,16 +123,16 @@ def self.analysis(file)
       
     end
   rescue Errno::ENOENT
-    $stderr.puts "cowstats.rb: #{file}: no such file"
+    puterror "#{file}: no such file"
     return
   rescue Elf::File::NotAnELF
-    $stderr.puts "cowstats.rb: #{file}: not a valid ELF file."
+    puterror "#{file}: not a valid ELF file."
     return
   rescue Interrupt
-    $stderr.puts "cowstats.rb: Interrupted"
+    puterror "Interrupted"
     exit 1
   rescue Exception => e
-    $stderr.puts "cowstats.rb: #{file}: #{e.message}"
+    puterror "#{file}: #{e.message}"
     $stderr.puts "\t" + e.backtrace.join("\n\t")
   end
 

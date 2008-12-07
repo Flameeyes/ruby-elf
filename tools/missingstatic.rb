@@ -63,11 +63,11 @@ def self.analysis(filename)
   begin
     Elf::File.open(filename) do |elf|
       if elf.type != Elf::File::Type::Rel
-        $stderr.puts "missingstatic.rb: #{file}: not an object file"
+        puterror "#{file}: not an object file"
         next
       end
       unless elf.has_section?('.symtab')
-        $stderr.puts "missingstatic.rb: #{file}: no .symtab section found"
+        puterror "#{file}: no .symtab section found"
         next
       end
 
@@ -87,14 +87,14 @@ def self.analysis(filename)
       end
     end
   rescue Errno::ENOENT
-    $stderr.puts "missingstatic.rb: #{filename}: no such file"
+    puterror "#{filename}: no such file"
   rescue Elf::File::NotAnELF
-    $stderr.puts "missingstatic.rb: #{filename}: not a valid ELF file."
+    puterror "#{filename}: not a valid ELF file."
   rescue Interrupt
-    $stderr.puts "missingstatic.rb: Interrupted"
+    puterror "Interrupted"
     exit 1
   rescue Exception => e
-    $stderr.puts "missingstatic.rb: Processing #{filename}: #{e.message}"
+    puterror "Processing #{filename}: #{e.message}"
     $stderr.puts "\t#{e.backtrace.join("\n\t")}"
   end
 end

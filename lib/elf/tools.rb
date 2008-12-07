@@ -32,6 +32,11 @@ def self.to_s
   File.basename($0)
 end
 
+# Output an error message, prefixed with the tool name.
+def self.puterror(string)
+  $stderr.puts "#{to_s}: #{string}"
+end
+
 # Parse the arguments for the tool; it does not parse the @file
 # options, since they are only expected to contain file names,
 # rather than options.
