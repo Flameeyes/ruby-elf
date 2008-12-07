@@ -103,7 +103,7 @@ def self.results
       begin
         prefix = "#{symbol.nm_code} "
       rescue Elf::Symbol::UnknownNMCode => e
-        $stderr.puts e.message
+        puterror e.message
         prefix = "? "
       end
     end

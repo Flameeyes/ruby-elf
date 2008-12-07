@@ -116,7 +116,7 @@ def self.analysis(file)
         data_vars << symbol unless @statistics
         data_size += symbol.size
       else
-        $stderr.puts "symbol #{symbol.name} in unknown section #{symbol.section.name}"
+        puterror "symbol #{symbol.name} in unknown section #{symbol.section.name}"
       end
     end
     
