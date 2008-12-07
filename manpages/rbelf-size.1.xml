@@ -1,0 +1,108 @@
+<?xml version='1.0'?>
+<article xmlns="http://docbook.org/ns/docbook"
+	 xmlns:xl="http://www.w3.org/1999/xlink"
+	 version="5.0" xml:lang="en">
+  <info>
+    <title>rbelf-size</title>
+
+    <authorgroup>
+      <author>
+	<personname>
+	  <firstname>Diego E.</firstname>
+	  <surname>Pettenò</surname>
+	</personname>
+        <affiliation>
+          <address><email>flameeyes@gmail.com</email></address>
+        </affiliation>
+      </author>
+    </authorgroup>
+
+    <copyright>
+      <year>2008</year>
+      <holder>Diego E. Pettenò</holder>
+    </copyright>
+
+  </info>
+
+  <section>
+    <title>Reference</title>
+
+    <refentry>
+      <info>
+	<date>October 2008</date>
+	<productname>ruby-elf</productname>
+      </info>
+      <refmeta>
+        <refentrytitle>rbelf-size</refentrytitle>
+	<manvolnum>1</manvolnum>
+      </refmeta>
+      <refnamediv>
+        <refname>rbelf-size</refname>
+	<refpurpose>List section sizes of ELF files</refpurpose>
+      </refnamediv>
+      <refsynopsisdiv>
+        <cmdsynopsis>
+          <command>rbelf-size</command>
+          <arg choice="opt">
+	    <option>@</option><replaceable>file</replaceable>
+          </arg>
+
+          <arg choice="opt">
+            <replaceable>files</replaceable>
+          </arg>
+        </cmdsynopsis>
+      </refsynopsisdiv>
+
+      <refsect1>
+        <title>Description</title>
+        <para>
+	  <command>rbelf-size</command> is a replacement for the
+	  standard
+	  <citerefentry><refentrytitle>size</refentrytitle><manvolnum>1</manvolnum></citerefentry>
+	  utility, as provided by GNU binutils and similar
+	  suites. Instead of showing the sum of all the invariant,
+	  variant and unallocated sections as the size, it divides
+	  them depending on how they are treated, differentiating
+	  between invariant data, invariant code, variant data and
+	  relocated invariant data.
+	</para>
+      </refsect1>
+
+      <refsect1>
+        <title>Options</title>
+
+	<variablelist>
+
+          <varlistentry>
+            <term>
+	      <option>@</option><replaceable>file</replaceable>
+	    </term>
+            <listitem>
+              <para>
+		Read the list of files to analyse from the given file
+		(or standard input if <replaceable>path</replaceable>
+		is <filename>-</filename>). Useful to pass a long list
+		of files. When used with stdin or named pipes, this
+		also allows asynchronous analysis.
+	      </para>
+	    </listitem>
+	  </varlistentry>
+
+	</variablelist>
+      </refsect1>
+
+      <refsect1>
+        <title>See Also</title>
+        <para>
+	  <citation xl:href="http://blog.flameeyes.eu/">Flameeyes's
+	  Weblog</citation> http://blog.flameeyes.eu/
+        </para>
+
+	<para>
+	  Similar tools: 
+	  <citerefentry><refentrytitle>size</refentrytitle><manvolnum>1</manvolnum></citerefentry>
+	</para>
+      </refsect1>
+    </refentry>
+  </section>
+</article>
