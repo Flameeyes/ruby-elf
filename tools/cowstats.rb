@@ -18,75 +18,43 @@
 
 # simple script to check for variables in copy-on-write sections
 
-require 'elf'
-require 'getoptlong'
+require 'elf/tools'
 
-opts = GetoptLong.new(
-  # Only show statistics for the various files
-  ["--statistics", "-s", GetoptLong::NO_ARGUMENT],
-  # Show the total size of COW pages
-  ["--total", "-t", GetoptLong::NO_ARGUMENT],
-  # Read the file to check from a file rather than commandline
-  ["--filelist", "-f", GetoptLong::REQUIRED_ARGUMENT],
-  # Ignore C++ "false positives" (vtables and typeinfo)
-  ["--ignore-cxx", "-x", GetoptLong::NO_ARGUMENT ],
-  # Ignore Profiling false positives
-  ["--ignore-profiling", "-p", GetoptLong::NO_ARGUMENT ],
-  # Ignore .data.rel.ro relocated constants
-  ["--ignore-data-rel-ro", "-R", GetoptLong::NO_ARGUMENT ],
-  # Show help (man page)
-  ["--help", '-?', GetoptLong::NO_ARGUMENT]
-)
+include Elf::Tool
 
-$stats_only = false
-$show_total = false
-file_list = nil
-$ignore_cxx = false
-$ignore_profiling = false
-$no_datarelro = false
+Options = [
+           # Only show statistics for the various files
+           ["--statistics", "-s", GetoptLong::NO_ARGUMENT],
+           # Show the total size of COW pages
+           ["--total", "-t", GetoptLong::NO_ARGUMENT],
+           # Ignore C++ "false positives" (vtables and typeinfo)
+           ["--ignore-cxx", "-x", GetoptLong::NO_ARGUMENT ],
+           # Ignore Profiling false positives
+           ["--ignore-profiling", "-p", GetoptLong::NO_ARGUMENT ],
+           # Ignore .data.rel.ro relocated constants
+           ["--ignore-data-rel-ro", "-R", GetoptLong::NO_ARGUMENT ]
+          ]
 
-opts.each do |opt, arg|
-  case opt
-  when '--statistics'
-    $stats_only = true
-  when '--total'
-    $show_total = true
-  when '--filelist'
-    if arg == '-'
-      file_list = $stdin
-    else
-      file_list = File.new(arg)
-    end
-  when '--ignore-cxx'
-    $ignore_cxx = true
-  when '--ignore-profiling'
-    $ignore_profiling = true
-  when '--ignore-data-rel-ro'
-    $no_datarelro = true
-  when '--help' # Open the man page and go bye...
-    # check if we're executing from a tarball or the git repository,
-    # if so we can't use the system man page.
-    require 'pathname'
-    filepath = Pathname.new(__FILE__)
-    localman = filepath.dirname + "../manpages" + filepath.basename.sub(".rb", ".1")
-    if localman.exist?
-      exec("man #{localman.to_s}")
-    else
-      exec("man missingstatic")
-    end
+def before_options
+  @statistics = false
+  @total = false
+  @ignore_cxx = false
+  @ignore_profiling = false
+  @ignore_data_rel_ro = false
+  
+  @files_info = {}
+end
+
+def after_options
+  if @total
+    @data_total = 0
+    @bss_total = 0
+    @rel_total = 0
+    @relro_total = 0
   end
 end
 
-$files_info = {}
-
-if $show_total
-  $data_total = 0
-  $bss_total = 0
-  $rel_total = 0
-  $relro_total = 0
-end
-
-def cowstats_scan(file)
+def analysis(file)
   data_vars = []
   data_size = 0
   bss_vars = []
@@ -115,14 +83,14 @@ def cowstats_scan(file)
         next if symbol.name == ""
 
         # Ignore C++ vtables and other symbols when requested
-        next if $ignore_cxx and symbol.name =~ /^_ZT[VI](N[0-9]+[A-Z_].*)*[0-9]+[A-Z_].*/
+        next if @ignore_cxx and symbol.name =~ /^_ZT[VI](N[0-9]+[A-Z_].*)*[0-9]+[A-Z_].*/
         # Ignore profiling symbols when requested by user
-        next if $ignore_profiling and symbol.name =~ /^__gcov_/
+        next if @ignore_profiling and symbol.name =~ /^__gcov_/
         
         # If the section is NoBits, then it's .bss or equivalent, handle
         # and skip right away.
         if symbol.section.type == Elf::Section::Type::NoBits
-          bss_vars << symbol unless $stats_only
+          bss_vars << symbol unless @statistics
           bss_size += symbol.size
           next
         end
@@ -140,15 +108,15 @@ def cowstats_scan(file)
         # about it.
         case symbol.section.name
         when /^\.data\.rel\.ro(\..*)?/
-          unless $no_datarelro
-            relro_vars << symbol unless $stats_only
+          unless @inore_data_rel_ro
+            relro_vars << symbol unless @statistics
             relro_size += symbol.size
           end
         when /^\.data\.rel(\..*)?/, /^\.picdata/
-          rel_vars << symbol unless $stats_only
+          rel_vars << symbol unless @statistics
           rel_size += symbol.size
         when /^\.t?data(\.local)?(\..*)?/
-          data_vars << symbol unless $stats_only
+          data_vars << symbol unless @statistics
           data_size += symbol.size
         else
           $stderr.puts "symbol #{symbol.name} in unknown section #{symbol.section.name}"
@@ -172,15 +140,15 @@ def cowstats_scan(file)
 
   return unless (data_size + bss_size + rel_size + relro_size ) > 0
 
-  if $show_total
-    $data_total += data_size
-    $bss_total += bss_size
-    $rel_total += rel_size
-    $relro_total += relro_size
+  if @total
+    @data_total += data_size
+    @bss_total += bss_size
+    @rel_total += rel_size
+    @relro_total += relro_size
   end
     
-  if $stats_only
-    $files_info[file] = {
+  if @statistics
+    @files_info[file] = {
       :data_size => data_size,
       :bss_size => bss_size,
       :rel_size => rel_size,
@@ -219,70 +187,56 @@ def cowstats_scan(file)
     end
   end
   
-  if $show_total
+  if @total
     puts "  Total non-initialised variables size: #{bss_size}" unless bss_size == 0
     puts "  Total writable variables size: #{data_size}" unless data_size == 0
     puts "  Total variables needing runtime relocation size: #{rel_size}" unless rel_size == 0
-    unless $no_datarelro
+    unless @ignore_data_rel_ro
       puts "  Total constants needing runtime relocation size: #{relro_size}" unless relro_size == 0
     end
   end
 end
 
-# If there are no arguments passed through the command line
-# consider it like we're going to act on stdin.
-if not file_list and ARGV.size == 0
-  file_list = $stdin
-end
+def results
+  if @statistics
+    file_lengths = ["File name".length]
+    bss_lengths  = [".bss size".length]
+    data_lengths = [".data size".length]
+    rel_lengths  = [".data.rel size".length]
+    relro_lengths  = [".data.rel.ro size".length] unless @no_datalrero
+    @files_info.each_pair do |file, info|
+      file_lengths << file.length
+      bss_lengths  << info[:bss_size] .to_s.length
+      data_lengths << info[:data_size].to_s.length
+      rel_lengths  << info[:rel_size] .to_s.length
+      relro_lengths<< info[:relro_size] .to_s.length
+    end
 
-if file_list
-  file_list.each_line do |file|
-    cowstats_scan(file.chomp)
+    maxlen       = file_lengths.max
+    max_bss_len  = bss_lengths .max
+    max_data_len = data_lengths.max
+    max_rel_len  = rel_lengths .max
+    max_relro_len= relro_lengths .max
+
+    datarelro_header = @ignore_data_rel_ro ? "" : " | #{'.data.rel.ro size'.ljust max_relro_len}"
+    puts "#{'File name'.ljust maxlen} | #{'.bss size'.ljust max_data_len} | #{'.data size'.ljust max_data_len} | #{'.data.rel size'.ljust max_rel_len}#{datarelro_header}"
+    @files_info.each do |file, info|
+      datarelro_line = @ignore_data_rel_ro ? "" : "   #{info[:relro_size].to_s.rjust max_relro_len}"
+      puts "#{file.ljust maxlen}   #{info[:bss_size].to_s.rjust max_bss_len}   #{info[:data_size].to_s.rjust max_data_len}   #{info[:rel_size].to_s.rjust max_rel_len}#{datarelro_line}"
+    end
   end
-else
-  ARGV.each do |file|
-    cowstats_scan(file)
+
+  if @total
+    data_total_real = @data_total > 0 ? ((@data_total/4096) + (@data_total % 4096 ? 1 : 0)) * 4096 : 0
+    bss_total_real = @bss_total > 0 ? ((@bss_total/4096) + (@bss_total % 4096 ? 1 : 0)) * 4096 : 0 
+    rel_total_real = @rel_total > 0 ? ((@rel_total/4096) + (@rel_total % 4096 ? 1 : 0)) * 4096 : 0
+    relro_total_real = @relro_total > 0 ? ((@relro_total/4096) + (@relro_total % 4096 ? 1 : 0)) * 4096 : 0
+
+    puts "Totals:"
+    puts "    #{@bss_total} (#{bss_total_real} \"real\") bytes of non-initialised variables."
+    puts "    #{@data_total} (#{data_total_real} \"real\") bytes of writable variables."
+    puts "    #{@rel_total} (#{rel_total_real} \"real\") bytes of variables needing runtime relocation."
+    puts "    #{@relro_total} (#{relro_total_real} \"real\") bytes of constants needing runtime relocation." unless @no_datalrero
+    puts "  Total #{@data_total+@bss_total+@rel_total+@relro_total} (#{data_total_real+bss_total_real+rel_total_real+relro_total_real} \"real\") bytes of variables in copy-on-write sections"
   end
-end
-
-if $stats_only
-  file_lengths = ["File name".length]
-  bss_lengths  = [".bss size".length]
-  data_lengths = [".data size".length]
-  rel_lengths  = [".data.rel size".length]
-  relro_lengths  = [".data.rel.ro size".length] unless $no_datalrero
-  $files_info.each_pair do |file, info|
-    file_lengths << file.length
-    bss_lengths  << info[:bss_size] .to_s.length
-    data_lengths << info[:data_size].to_s.length
-    rel_lengths  << info[:rel_size] .to_s.length
-    relro_lengths<< info[:relro_size] .to_s.length
-  end
-
-  maxlen       = file_lengths.max
-  max_bss_len  = bss_lengths .max
-  max_data_len = data_lengths.max
-  max_rel_len  = rel_lengths .max
-  max_relro_len= relro_lengths .max
-
-  datarelro_header = $no_datarelro ? "" : " | #{'.data.rel.ro size'.ljust max_relro_len}"
-  puts "#{'File name'.ljust maxlen} | #{'.bss size'.ljust max_data_len} | #{'.data size'.ljust max_data_len} | #{'.data.rel size'.ljust max_rel_len}#{datarelro_header}"
-  $files_info.each do |file, info|
-    datarelro_line = $no_datarelro ? "" : "   #{info[:relro_size].to_s.rjust max_relro_len}"
-    puts "#{file.ljust maxlen}   #{info[:bss_size].to_s.rjust max_bss_len}   #{info[:data_size].to_s.rjust max_data_len}   #{info[:rel_size].to_s.rjust max_rel_len}#{datarelro_line}"
-  end
-end
-
-if $show_total
-  data_total_real = $data_total > 0 ? (($data_total/4096) + ($data_total % 4096 ? 1 : 0)) * 4096 : 0
-  bss_total_real = $bss_total > 0 ? (($bss_total/4096) + ($bss_total % 4096 ? 1 : 0)) * 4096 : 0 
-  rel_total_real = $rel_total > 0 ? (($rel_total/4096) + ($rel_total % 4096 ? 1 : 0)) * 4096 : 0
-  relro_total_real = $relro_total > 0 ? (($relro_total/4096) + ($relro_total % 4096 ? 1 : 0)) * 4096 : 0
-
-  puts "Totals:"
-  puts "    #{$bss_total} (#{bss_total_real} \"real\") bytes of non-initialised variables."
-  puts "    #{$data_total} (#{data_total_real} \"real\") bytes of writable variables."
-  puts "    #{$rel_total} (#{rel_total_real} \"real\") bytes of variables needing runtime relocation."
-  puts "    #{$relro_total} (#{relro_total_real} \"real\") bytes of constants needing runtime relocation." unless $no_datalrero
-  puts "  Total #{$data_total+$bss_total+$rel_total+$relro_total} (#{data_total_real+bss_total_real+rel_total_real+relro_total_real} \"real\") bytes of variables in copy-on-write sections"
 end
