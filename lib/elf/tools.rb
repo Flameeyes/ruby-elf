@@ -72,22 +72,35 @@ def self.parse_arguments
   end
 end
 
-# Execute the analysis function on a given filename; but before
-# doing that, check if the first character is a @ character, in
-# which case load the rest of the parameter as filename and check
-# that.
+# Execute the analysis function, handling the common exception cases
 def self.execute(filename)
+  begin
+    analysis(filename)
+  rescue Errno::ENOENT
+    puterror "#{filename}: no such file"
+  rescue Elf::File::NotAnELF
+    puterror "#{filename}: not a valid ELF file."
+  rescue Exception => e
+    e.message = "#{file}: #{e.message}"
+    raise e
+  end
+end
+
+# Try to execute the analysis function on a given filename; before
+# doing that, check if the first character is a @ character, in which
+# case load the rest of the parameter as filename and check that.
+def self.try_execute(filename)
   if filename[0..1] == "@"
     execute_on_file(filename[1..-1])
   else
-    analysis(filename)
+    execute(filename)
   end
 end
 
 # Execute the analysis function on all the elements of an array.
 def self.execute_on_array(array)
   array.each do |filename|
-    execute(filename)
+    try_execute(filename)
   end
 end
 
@@ -97,7 +110,7 @@ def self.execute_on_file(file)
   file = File.new(file) if file.class == String
 
   file.each_line do |line|
-    execute(line.chomp("\n"))
+    try_execute(line.chomp("\n"))
   end
 end
 

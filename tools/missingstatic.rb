@@ -60,39 +60,30 @@ def self.after_options
 end
 
 def self.analysis(filename)
-  begin
-    Elf::File.open(filename) do |elf|
-      if elf.type != Elf::File::Type::Rel
-        puterror "#{file}: not an object file"
-        next
-      end
-      unless elf.has_section?('.symtab')
-        puterror "#{file}: no .symtab section found"
-        next
-      end
+  Elf::File.open(filename) do |elf|
+    if elf.type != Elf::File::Type::Rel
+      puterror "#{file}: not an object file"
+      next
+    end
+    unless elf.has_section?('.symtab')
+      puterror "#{file}: no .symtab section found"
+      next
+    end
 
-      # Gather all the symbols, defined and missing in the translation unit
-      elf['.symtab'].each_symbol do |sym|
-        if sym.section == Elf::Section::Undef
-          @exclude_names << sym.name
-        elsif sym.bind == Elf::Symbol::Binding::Local
-          next
-        elsif (sym.section.is_a? Elf::Section) or
-            (sym.section == Elf::Section::Common)
-          next if @hidden_only and
-            sym.visibility != Elf::Symbol::Visibility::Hidden
+    # Gather all the symbols, defined and missing in the translation unit
+    elf['.symtab'].each_symbol do |sym|
+      if sym.section == Elf::Section::Undef
+        @exclude_names << sym.name
+      elsif sym.bind == Elf::Symbol::Binding::Local
+        next
+      elsif (sym.section.is_a? Elf::Section) or
+          (sym.section == Elf::Section::Common)
+        next if @hidden_only and
+          sym.visibility != Elf::Symbol::Visibility::Hidden
 
-          @all_defined << sym
-        end
+        @all_defined << sym
       end
     end
-  rescue Errno::ENOENT
-    puterror "#{filename}: no such file"
-  rescue Elf::File::NotAnELF
-    puterror "#{filename}: not a valid ELF file."
-  rescue Exception => e
-    e.message = "#{file}: #{e.message}"
-    raise e
   end
 end
 

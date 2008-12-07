@@ -62,75 +62,64 @@ def self.analysis(file)
   relro_vars = []
   relro_size = 0
   
-  begin
-    Elf::File.open(file) do |elf|
-      if elf.type != Elf::File::Type::Rel
-        puterror "#{file}: not an object file"
-        next
-      end
-      if not elf.has_section?(".symtab")
-        puterror "#{file}: no .symtab section found"
-        next
-      end
-
-      elf['.symtab'].each_symbol do |symbol|
-        # Ignore undefined, absolute and common symbols.
-        next unless symbol.section.is_a? Elf::Section
-        # When the symbol name is empty, it refers to the
-        # section itself.
-        next if symbol.name == ""
-
-        # Ignore C++ vtables and other symbols when requested
-        next if @ignore_cxx and symbol.name =~ /^_ZT[VI](N[0-9]+[A-Z_].*)*[0-9]+[A-Z_].*/
-        # Ignore profiling symbols when requested by user
-        next if @ignore_profiling and symbol.name =~ /^__gcov_/
-        
-        # If the section is NoBits, then it's .bss or equivalent, handle
-        # and skip right away.
-        if symbol.section.type == Elf::Section::Type::NoBits
-          bss_vars << symbol unless @statistics
-          bss_size += symbol.size
-          next
-        end
-
-        # Ignore executable code (.text, .init, .fini)
-        next if symbol.section.flags.include? Elf::Section::Flags::ExecInstr
-        # Ignore read-only sections (.rodata)
-        next unless symbol.section.flags.include? Elf::Section::Flags::Write
-        # Ignore non-allocated sections (all data sections are allocated)
-        next unless symbol.section.flags.include? Elf::Section::Flags::Alloc
-
-        # Until I can find a way to distinguish between relocated and
-        # non-relocated sections, still use the name to choose between
-        # them. If the name is not in this list, at least warn now
-        # about it.
-        case symbol.section.name
-        when /^\.data\.rel\.ro(\..*)?/
-          unless @inore_data_rel_ro
-            relro_vars << symbol unless @statistics
-            relro_size += symbol.size
-          end
-        when /^\.data\.rel(\..*)?/, /^\.picdata/
-          rel_vars << symbol unless @statistics
-          rel_size += symbol.size
-        when /^\.t?data(\.local)?(\..*)?/
-          data_vars << symbol unless @statistics
-          data_size += symbol.size
-        else
-          $stderr.puts "symbol #{symbol.name} in unknown section #{symbol.section.name}"
-        end
-      end
-      
+  Elf::File.open(file) do |elf|
+    if elf.type != Elf::File::Type::Rel
+      puterror "#{file}: not an object file"
+      next
     end
-  rescue Errno::ENOENT
-    puterror "#{file}: no such file"
-    return
-  rescue Elf::File::NotAnELF
-    puterror "#{file}: not a valid ELF file."
-    return
-  rescue Exception => e
-    e.message = "#{file}: #{e.message}"
-    raise e
+    if not elf.has_section?(".symtab")
+      puterror "#{file}: no .symtab section found"
+      next
+    end
+
+    elf['.symtab'].each_symbol do |symbol|
+      # Ignore undefined, absolute and common symbols.
+      next unless symbol.section.is_a? Elf::Section
+      # When the symbol name is empty, it refers to the
+      # section itself.
+      next if symbol.name == ""
+
+      # Ignore C++ vtables and other symbols when requested
+      next if @ignore_cxx and symbol.name =~ /^_ZT[VI](N[0-9]+[A-Z_].*)*[0-9]+[A-Z_].*/
+      # Ignore profiling symbols when requested by user
+      next if @ignore_profiling and symbol.name =~ /^__gcov_/
+      
+      # If the section is NoBits, then it's .bss or equivalent, handle
+      # and skip right away.
+      if symbol.section.type == Elf::Section::Type::NoBits
+        bss_vars << symbol unless @statistics
+        bss_size += symbol.size
+        next
+      end
+
+      # Ignore executable code (.text, .init, .fini)
+      next if symbol.section.flags.include? Elf::Section::Flags::ExecInstr
+      # Ignore read-only sections (.rodata)
+      next unless symbol.section.flags.include? Elf::Section::Flags::Write
+      # Ignore non-allocated sections (all data sections are allocated)
+      next unless symbol.section.flags.include? Elf::Section::Flags::Alloc
+
+      # Until I can find a way to distinguish between relocated and
+      # non-relocated sections, still use the name to choose between
+      # them. If the name is not in this list, at least warn now
+      # about it.
+      case symbol.section.name
+      when /^\.data\.rel\.ro(\..*)?/
+        unless @inore_data_rel_ro
+          relro_vars << symbol unless @statistics
+          relro_size += symbol.size
+        end
+      when /^\.data\.rel(\..*)?/, /^\.picdata/
+        rel_vars << symbol unless @statistics
+        rel_size += symbol.size
+      when /^\.t?data(\.local)?(\..*)?/
+        data_vars << symbol unless @statistics
+        data_size += symbol.size
+      else
+        $stderr.puts "symbol #{symbol.name} in unknown section #{symbol.section.name}"
+      end
+    end
+    
   end
 
   return unless (data_size + bss_size + rel_size + relro_size ) > 0
