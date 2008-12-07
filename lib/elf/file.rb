@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 # Simple ELF parser for Ruby
 #
 # Copyright 2007-2008 Diego Pettenò <flameeyes@gmail.com>
@@ -27,8 +28,8 @@ module Elf
     include BytestreamReader
 
     class NotAnELF < Exception
-      def message
-        "The file is not an ELF file."
+      def initialize
+        super("not a valid ELF file")
       end
     end
 
