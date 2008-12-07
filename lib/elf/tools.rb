@@ -83,8 +83,8 @@ def self.execute(filename)
     # we follow the output messages from other tools, like cat.
     puterror "#{filename}: #{e.message.gsub(/\.? - .*/, '')}"
   rescue Exception => e
-    e.message = "#{filename}: #{e.message}"
-    raise e
+    puterror "#{filename}: #{e.message} (#{e.class})\n\t#{e.backtrace.join("\n\t")}"
+    exit -1
   end
 end
 
