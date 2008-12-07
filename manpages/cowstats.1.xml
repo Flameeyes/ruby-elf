@@ -1,27 +1,12 @@
 <?xml version='1.0'?>
 <article xmlns="http://docbook.org/ns/docbook"
 	 xmlns:xl="http://www.w3.org/1999/xlink"
+	 xmlns:xi="http://www.w3.org/2001/XInclude"
 	 version="5.0" xml:lang="en">
   <info>
     <title>cowstats</title>
 
-    <authorgroup>
-      <author>
-	<personname>
-	  <firstname>Diego E.</firstname>
-	  <surname>Pettenò</surname>
-	</personname>
-        <affiliation>
-          <address><email>flameeyes@gmail.com</email></address>
-        </affiliation>
-      </author>
-    </authorgroup>
-
-    <copyright>
-      <year>2008</year>
-      <holder>Diego E. Pettenò</holder>
-    </copyright>
-
+    <xi:include parse="xml" href="author.xmli" />
   </info>
 
   <section>
