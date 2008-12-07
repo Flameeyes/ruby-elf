@@ -116,9 +116,9 @@ end
 
 def self.main
   begin
-    before_options
+    before_options if respond_to? :before_options
     parse_arguments
-    after_options
+    after_options if respond_to? :after_options
     
     if ARGV.size == 0
       execute_on_file($stdin)
@@ -126,7 +126,7 @@ def self.main
       execute_on_array(ARGV)
     end
     
-    results
+    results if respond_to? :results
   rescue Interrupt
     puterror "Interrupted"
     exit 1
