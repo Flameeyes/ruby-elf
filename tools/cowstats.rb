@@ -33,7 +33,7 @@ Options = [
            ["--ignore-data-rel-ro", "-R", GetoptLong::NO_ARGUMENT ]
           ]
 
-def before_options
+def self.before_options
   @statistics = false
   @total = false
   @ignore_cxx = false
@@ -43,7 +43,7 @@ def before_options
   @files_info = {}
 end
 
-def after_options
+def self.after_options
   if @total
     @data_total = 0
     @bss_total = 0
@@ -52,7 +52,7 @@ def after_options
   end
 end
 
-def analysis(file)
+def self.analysis(file)
   data_vars = []
   data_size = 0
   bss_vars = []
@@ -195,7 +195,7 @@ def analysis(file)
   end
 end
 
-def results
+def self.results
   if @statistics
     file_lengths = ["File name".length]
     bss_lengths  = [".bss size".length]

@@ -31,7 +31,7 @@ Options = [
            ["--exclude-tags", "-X", GetoptLong::REQUIRED_ARGUMENT]
           ]
 
-def exclude_tags_cb(arg)
+def self.exclude_tags_cb(arg)
   @exclude_names += File.readlines(arg).delete_if do |line|
     line[0..0] == '!' # Internal exuberant-ctags symbol
   end.collect do |line|
@@ -39,11 +39,11 @@ def exclude_tags_cb(arg)
   end
 end
 
-def exclude_regexp_cb(arg)
+def self.exclude_regexp_cb(arg)
   @exclude_regexps << Regexp.new(arg)
 end
 
-def before_options
+def self.before_options
   # The main symbol is used by all the standalone executables,
   # reporting it is pointless as it will always be a false
   # positive. It cannot be marked static.
@@ -55,11 +55,11 @@ def before_options
   @show_type = false
 end
 
-def after_options
+def self.after_options
   @all_defined = []
 end
 
-def analysis(filename)
+def self.analysis(filename)
   begin
     Elf::File.open(filename) do |elf|
       if elf.type != Elf::File::Type::Rel
@@ -99,7 +99,7 @@ def analysis(filename)
   end
 end
 
-def results
+def self.results
   @exclude_names.uniq!
 
   @all_defined.each do |symbol|

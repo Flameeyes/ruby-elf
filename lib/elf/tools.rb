@@ -30,7 +30,7 @@ require 'elf'
 # Parse the arguments for the tool; it does not parse the @file
 # options, since they are only expected to contain file names,
 # rather than options.
-def parse_arguments
+def self.parse_arguments
   opts = Options + [["--help", "-?", GetoptLong::NO_ARGUMENT]]
 
   opts = GetoptLong.new(*opts)
@@ -54,7 +54,7 @@ def parse_arguments
     # If there is a function with the same name of the parameter
     # defined (with a _cb suffix), call that, otherwise set the
     # attribute with the same name to the given value.
-    if respond_to? attrname
+    if respond_to?(attrname + "_cb")
       method(attrname + "_cb").call(attrval)
     else
       instance_variable_set("@#{attrname}", attrval)
@@ -66,7 +66,7 @@ end
 # doing that, check if the first character is a @ character, in
 # which case load the rest of the parameter as filename and check
 # that.
-def execute(filename)
+def self.execute(filename)
   if filename[0..1] == "@"
     execute_on_file(filename[1..-1])
   else
@@ -75,14 +75,14 @@ def execute(filename)
 end
 
 # Execute the analysis function on all the elements of an array.
-def execute_on_array(array)
+def self.execute_on_array(array)
   array.each do |filename|
     execute(filename)
   end
 end
 
 # Execute the analysis function on all the lines of a file
-def execute_on_file(file)
+def self.execute_on_file(file)
   file = $stdin if file == "-"
   file = File.new(file) if file.class == String
 
@@ -91,7 +91,7 @@ def execute_on_file(file)
   end
 end
 
-def main
+def self.main
   before_options
   parse_arguments
   after_options
