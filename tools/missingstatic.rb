@@ -90,12 +90,9 @@ def self.analysis(filename)
     puterror "#{filename}: no such file"
   rescue Elf::File::NotAnELF
     puterror "#{filename}: not a valid ELF file."
-  rescue Interrupt
-    puterror "Interrupted"
-    exit 1
   rescue Exception => e
-    puterror "Processing #{filename}: #{e.message}"
-    $stderr.puts "\t#{e.backtrace.join("\n\t")}"
+    e.message = "#{file}: #{e.message}"
+    raise e
   end
 end
 

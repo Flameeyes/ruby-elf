@@ -102,17 +102,22 @@ def self.execute_on_file(file)
 end
 
 def self.main
-  before_options
-  parse_arguments
-  after_options
-
-  if ARGV.size == 0
-    execute_on_file($stdin)
-  else
-    execute_on_array(ARGV)
+  begin
+    before_options
+    parse_arguments
+    after_options
+    
+    if ARGV.size == 0
+      execute_on_file($stdin)
+    else
+      execute_on_array(ARGV)
+    end
+    
+    results
+  rescue Interrupt
+    puterror "Interrupted"
+    exit 1
   end
-
-  results
 end
 
 at_exit do

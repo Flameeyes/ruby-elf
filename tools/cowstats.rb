@@ -128,12 +128,9 @@ def self.analysis(file)
   rescue Elf::File::NotAnELF
     puterror "#{file}: not a valid ELF file."
     return
-  rescue Interrupt
-    puterror "Interrupted"
-    exit 1
   rescue Exception => e
-    puterror "#{file}: #{e.message}"
-    $stderr.puts "\t" + e.backtrace.join("\n\t")
+    e.message = "#{file}: #{e.message}"
+    raise e
   end
 
   return unless (data_size + bss_size + rel_size + relro_size ) > 0
