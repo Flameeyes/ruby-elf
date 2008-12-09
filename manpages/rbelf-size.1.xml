@@ -61,7 +61,102 @@
       </refsect1>
 
       <refsect1>
+	<title>Output</title>
+
+	<para>
+	  The output of <command>rbelf-size</command> differs from
+	  that of <command>size</command> for the number and type of
+	  columns it outputs. While the original BSD command outputs
+	  the size of the "text", "data" and "bss" sections, this tool
+	  splits them further.
+	</para>
+
+	<variablelist>
+	  <varlistentry>
+	    <term>exec</term>
+	    <listitem>
+	      <para>
+		Counts in all the sections containing executable code,
+		this includes the <varname>.text</varname> section,
+		and others.
+	      </para>
+	    </listitem>
+	  </varlistentry>
+
+	  <varlistentry>
+	    <term>data</term>
+	    <listitem>
+	      <para>
+		Counts in all the sections containing variable data,
+		this excludes read-only data sections, but includes
+		relocated data and other kind of allocated and
+		writeable data sections. If the compiler is GCC or
+		outputs GCC-compatible section names this won't count
+		in relocated constants.
+	      </para>
+	    </listitem>
+	  </varlistentry>
+	  
+	  <varlistentry>
+	    <term>relro</term>
+	    <listitem>
+	      <para>
+		Counts in the relocated constants (read-only relocated
+		data). This column will be non-null only for binaries
+		compiled by GCC or by compilers emitting
+		GCC-compatible section names. The sections counted in
+		this entry will are relocated at runtime, but are
+		never otherwise modified. The reason why this is
+		separated is that this section may be touched by
+		<citerefentry><refentrytitle>prelink</refentrytitle><manvolnum>8</manvolnum></citerefentry>
+		so that the runtime relocation is not needed, and thus
+		would count just as common constant data.
+	      </para>
+	    </listitem>
+	  </varlistentry>
+
+	  <varlistentry>
+	    <term>bss</term>
+	    <listitem>
+	      <para>
+		Just like <command>size</command> bss column, this
+		counts in the size of sections that are allocated at
+		runtime as mapped to the zero page. It supports TLS
+		<varname>.tbss</varname> section.
+	      </para>
+	    </listitem>
+	  </varlistentry>
+
+	  <varlistentry>
+	    <term>total</term>
+	    <listitem>
+	      <para>
+		Counts in the sum of all the previous sections.
+	      </para>
+	    </listitem>
+	  </varlistentry>
+	</variablelist>
+      </refsect1>
+
+      <refsect1>
 	<title>Bugs and Missing Features</title>
+
+	<para>
+	  The name <varname>total</varname> for the sum of the colums
+	  is misleading since it's actually not the total size of the
+	  file, nor the total size of the allocated entries.
+	</para>
+
+	<para>
+	  Right now, all the sections are counted in if their flags
+	  match, it might be better to limit to allocated sections all
+	  over the place.
+	</para>
+
+	<para>
+	  The size of the columns is fixed to 8 digits, it might not
+	  be enough to fill in enough space for some big ELF files.
+	</para>
 
 	<xi:include href="filelists.xmli" xpointer="xpointer(id('filelist.bugpara'))" />
       </refsect1>
@@ -85,6 +180,11 @@
 	    <refentrytitle>size</refentrytitle>
 	    <manvolnum>1</manvolnum>
 	  </citerefentry>.
+
+	  <citerefentry>
+	    <refentrytitle>prelink</refentrytitle>
+	    <manvolnum>8</manvolnum>
+	  </citerefentry>
 	</para>
       </refsect1>
     </refentry>
