@@ -1,13 +1,13 @@
 # -*- coding: utf-8 -*-
 # Simple ELF parser for Ruby
 #
-# Copyright 2008 Diego Pettenò <flameeyes@gmail.com>
+# Copyright © 2008 Diego Pettenò <flameeyes@gmail.com>
 # Portions inspired by elf.py
-#   Copyright 2002 Netgraft Corporation
+#   Copyright © 2002 Netgraft Corporation
 # Portions inspired by elf.h
-#   Copyright 1995-2006 Free Software Foundation, Inc.
+#   Copyright © 1995-2006 Free Software Foundation, Inc.
 # Constants derived from OpenSolaris elf.h and documentation
-#   Copyright 2007 Sun Microsystems, Inc.
+#   Copyright © 2007 Sun Microsystems, Inc.
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
