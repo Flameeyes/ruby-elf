@@ -1,2 +1,3 @@
-/manpages/*.1
 /coverage
+/manpages/*.1
+/profiling
