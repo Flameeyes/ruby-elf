@@ -35,12 +35,25 @@ def self.analysis(file)
       :bss => 0
     }
 
+    # Get the size of each section, and then, depending on its type,
+    # flags and eventually name, decide what to sum it to.
     elf.each_section do |section|
       case
+      # When the section is NoBits, it is not allocated in the file,
+      # and is only allocated in ram, this is the case of .bss and
+      # .tbss sections.
       when section.type == Elf::Section::Type::NoBits
-        results[:bss] += section.size
+        sectype = :bss
+      # If the section contains executable code, count it separately;
+      # size(1) will count it all as text, but we don't need to do
+      # that.
       when section.flags.include?(Elf::Section::Flags::ExecInstr)
-        results[:exec] += section.size
+        sectype = :exec
+      # If the section is going to be allocated and writeable at
+      # runtime, it is usually a data section, of some kind.
+      #
+      # We check further though since we might want to count it
+      # separately.
       when (section.flags.include?(Elf::Section::Flags::Write) and
             section.flags.include?(Elf::Section::Flags::Alloc))
         
@@ -51,18 +64,15 @@ def self.analysis(file)
         # By all means, .data.rel.ro is just the same as .data, with
         # the exception of prelinking, where this area can then
         # become mostly read-only and thus not creating dirty pages.
-        if section.name == ".data.rel.ro"
-          results[:relro] += section.size
-        else
-          results[:data] += section.size
-        end
+        sectype = ".data.rel.ro" ? :relro : :data
       end
+
+      results[sectype] += section.size
     end
 
     results[:dec] = results.values.inject { |sum, val| sum += val }
     results[:hex] = sprintf '%x', results[:dec]
 
-    output_header
     puts "#{results[:exec].to_s.rjust(9)} #{results[:data].to_s.rjust(9)} #{results[:relro].to_s.rjust(9)} #{results[:bss].to_s.rjust(9)} #{results[:dec].to_s.rjust(9)} #{results[:hex].rjust(9)} #{file}"
   end
 end
