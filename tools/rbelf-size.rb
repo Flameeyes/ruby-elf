@@ -73,7 +73,11 @@ def self.analysis(file)
     results[:dec] = results.values.inject { |sum, val| sum += val }
     results[:hex] = sprintf '%x', results[:dec]
 
-    puts "#{results[:exec].to_s.rjust(9)} #{results[:data].to_s.rjust(9)} #{results[:relro].to_s.rjust(9)} #{results[:bss].to_s.rjust(9)} #{results[:dec].to_s.rjust(9)} #{results[:hex].rjust(9)} #{file}"
+    results.each_pair do |key, val|
+      results[key] = val.to_s.rjust(9)
+    end
+
+    puts "#{results[:exec]} #{results[:data]} #{results[:relro]} #{results[:bss]} #{results[:dec]} #{results[:hex]} #{file}"
   end
 end
 
