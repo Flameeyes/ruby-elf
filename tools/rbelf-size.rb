@@ -32,7 +32,8 @@ def self.analysis(file)
       :exec => 0,
       :data => 0,
       :relro => 0,
-      :bss => 0
+      :bss => 0,
+      :total => 0
     }
 
     # Get the size of each section, and then, depending on its type,
@@ -64,26 +65,26 @@ def self.analysis(file)
         # By all means, .data.rel.ro is just the same as .data, with
         # the exception of prelinking, where this area can then
         # become mostly read-only and thus not creating dirty pages.
-        sectype = ".data.rel.ro" ? :relro : :data
+        sectype = (section.name =~ /^\.data\.rel\.ro(\..+)?/) ? :relro : :data
+      else
+        next
       end
 
       results[sectype] += section.size
     end
 
-    results[:dec] = results.values.inject { |sum, val| sum += val }
-    results[:hex] = sprintf '%x', results[:dec]
+    results[:total] = results.values.inject { |sum, val| sum += val }
 
     results.each_pair do |key, val|
       results[key] = val.to_s.rjust(9)
     end
 
-    puts "#{results[:exec]} #{results[:data]} #{results[:relro]} #{results[:bss]} #{results[:dec]} #{results[:hex]} #{file}"
+    output_header if @header
+    puts "#{results[:exec]} #{results[:data]} #{results[:relro]} #{results[:bss]} #{results[:total]} #{file}"
   end
 end
 
 def self.output_header
-  if @header
-    puts "     exec      data     relro       bss       dec       hex filename"
-    @header = false
-  end
+  puts "     exec      data     relro       bss     total filename"
+  @header = false
 end
