@@ -21,7 +21,6 @@ require 'rubygems'
 require 'postgres'
 
 opts = GetoptLong.new(
-  ["--input", "-i", GetoptLong::REQUIRED_ARGUMENT],
   ["--output", "-o", GetoptLong::REQUIRED_ARGUMENT],
   ["--postgres-username",  "-U", GetoptLong::REQUIRED_ARGUMENT ],
   ["--postgres-password",  "-P", GetoptLong::REQUIRED_ARGUMENT ],
@@ -38,8 +37,6 @@ opts.each do |opt, arg|
   case opt
   when '--output'
     outfile = File.new(arg, "w")
-  when '--input'
-    input_database = arg
   when '--postgres-username' then pg_params['user'] = arg
   when '--postgres-password' then pg_params['password'] = arg
   when '--postgres-hostname' then pg_params['host'] = arg
