@@ -239,16 +239,16 @@ so_files.each do |so|
 
   begin
     Elf::File.open(so) do |elf|
-      next unless elf['.dynsym'] and elf['.dynstr']
+      next unless elf.has_section?('.dynsym') and elf.has_section?('.dynstr')
 
       abi = "#{elf.elf_class} #{elf.abi} #{elf.machine}"
       soname = ""
 
       if elf['.dynamic']
         elf['.dynamic'].entries.each do |entry|
-          case entry[:type]
+          case entry.type
           when Elf::Dynamic::Type::SoName
-            soname = elf['.dynstr'][entry[:attribute]]
+            soname = entry.parsed
           end
         end
       end
