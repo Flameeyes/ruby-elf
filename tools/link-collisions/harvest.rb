@@ -79,6 +79,30 @@ opts.each do |opt, arg|
   end
 end
 
+db = PGconn.open(pg_params)
+
+db.exec("DROP VIEW duplicate_symbols") rescue PGError
+db.exec("DROP VIEW symbol_count") rescue PGError
+db.exec("DROP TABLE symbols") rescue PGError
+db.exec("DROP TABLE objects") rescue PGError
+
+db.exec("CREATE TABLE objects ( id INTEGER PRIMARY KEY, path VARCHAR(4096), abi VARCHAR(255), soname VARCHAR(255), UNIQUE(path) )")
+db.exec("CREATE TABLE symbols ( object INTEGER REFERENCES objects(id), symbol TEXT, PRIMARY KEY(object, symbol) )")
+
+db.exec("CREATE VIEW symbol_count AS
+         SELECT symbol, abi, COUNT(*) AS occurrences FROM symbols INNER JOIN objects ON symbols.object = objects.id GROUP BY symbol, abi")
+db.exec("CREATE VIEW duplicate_symbols AS
+         SELECT * FROM symbol_count WHERE occurrences > 1 ORDER BY occurrences DESC")
+
+db.exec("PREPARE newobject (int, text, text, text) AS
+         INSERT INTO objects(id, path, abi, soname) VALUES($1, $2, $3, $4)")
+db.exec("PREPARE newsymbol (int, text) AS
+         INSERT INTO symbols VALUES($1, $2)")
+db.exec("PREPARE checkimplementation(text) AS
+         SELECT id FROM objects WHERE path = $1")
+db.exec("PREPARE checkdupsymbol (int, text) AS
+         SELECT 1 FROM symbols WHERE object = $1 AND symbol = $2")
+
 # Total suppressions are for directories to skip entirely
 # Partial suppressions are the ones that apply only to a subset
 # of symbols.
@@ -206,30 +230,6 @@ scan_directories.each do |path|
     next
   end
 end
-
-db = PGconn.open(pg_params)
-
-db.exec("DROP VIEW duplicate_symbols") rescue PGError
-db.exec("DROP VIEW symbol_count") rescue PGError
-db.exec("DROP TABLE symbols") rescue PGError
-db.exec("DROP TABLE objects") rescue PGError
-
-db.exec("CREATE TABLE objects ( id INTEGER PRIMARY KEY, path VARCHAR(4096), abi VARCHAR(255), soname VARCHAR(255), UNIQUE(path) )")
-db.exec("CREATE TABLE symbols ( object INTEGER REFERENCES objects(id), symbol TEXT, PRIMARY KEY(object, symbol) )")
-
-db.exec("CREATE VIEW symbol_count AS
-         SELECT symbol, abi, COUNT(*) AS occurrences FROM symbols INNER JOIN objects ON symbols.object = objects.id GROUP BY symbol, abi")
-db.exec("CREATE VIEW duplicate_symbols AS
-         SELECT * FROM symbol_count WHERE occurrences > 1 ORDER BY occurrences DESC")
-
-db.exec("PREPARE newobject (int, text, text, text) AS
-         INSERT INTO objects(id, path, abi, soname) VALUES($1, $2, $3, $4)")
-db.exec("PREPARE newsymbol (int, text) AS
-         INSERT INTO symbols VALUES($1, $2)")
-db.exec("PREPARE checkimplementation(text) AS
-         SELECT id FROM objects WHERE path = $1")
-db.exec("PREPARE checkdupsymbol (int, text) AS
-         SELECT 1 FROM symbols WHERE object = $1 AND symbol = $2")
 
 db.exec("BEGIN TRANSACTION")
 val = 0
