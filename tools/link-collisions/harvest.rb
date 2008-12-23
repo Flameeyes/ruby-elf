@@ -128,11 +128,8 @@ so_files = Set.new
 class Pathname
   def so_files(recursive = true)
     res = Set.new
-    each_entry do |entry|
+    children.each do |entry|
       begin
-        next if entry.to_s =~ /\.\.?$/
-        entry = (self + entry).realpath
-
         skip = false
 
         $total_suppressions.each do |supp|
@@ -144,10 +141,10 @@ class Pathname
 
         next if skip
 
+        next if entry.symlink?
+
         if entry.directory?
           res.merge entry.so_files if recursive
-          next
-        elsif entry.symlink?
           next
         else
           begin
