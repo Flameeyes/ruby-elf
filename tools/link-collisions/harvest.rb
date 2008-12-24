@@ -174,7 +174,7 @@ class Pathname
             elf = Elf::File.open(entry)
             elf.close
             res.add entry.to_s
-          rescue Elf::File::NotAnELF
+          rescue Elf::File::NotAnELF, Elf::File::InvalidMachine
             next
           rescue Exception => e
             $stderr.puts "Scanning #{entry}"
@@ -300,7 +300,7 @@ so_files.each do |so|
         end
       end
     end
-  rescue Elf::File::NotAnELF
+  rescue Elf::File::NotAnELF, Elf::File::InvalidMachine
     next
   rescue Exception
     $stderr.puts "Checking #{so}"
