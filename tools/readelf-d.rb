@@ -41,27 +41,27 @@ files.each do |file|
 
       dynsection.entries.each do |entry|
 
-        case entry[:type]
+        case entry.type
         when Elf::Dynamic::Type::Needed
-          val = "Shared library: [#{entry[:parsed]}]"
+          val = "Shared library: [#{entry.parsed}]"
         when Elf::Dynamic::Type::SoName
-          val = "Library soname: [#{entry[:parsed]}]"
+          val = "Library soname: [#{entry.parsed}]"
         when Elf::Dynamic::Type::StrSz, Elf::Dynamic::Type::SymEnt,
           Elf::Dynamic::Type::PltRelSz, Elf::Dynamic::Type::RelASz,
           Elf::Dynamic::Type::RelAEnt
 
-          val = "#{entry[:attribute]} (bytes)"
+          val = "#{entry.value} (bytes)"
         when Elf::Dynamic::Type::VerDefNum, Elf::Dynamic::Type::VerNeedNum, Elf::Dynamic::Type::RelACount
-          val = entry[:attribute]
+          val = entry.value
         when Elf::Dynamic::Type::GNUPrelinked
-          val = entry[:parsed].getutc.strftime('%Y-%m-%dT%H:%M:%S')
+          val = entry.parsed.getutc.strftime('%Y-%m-%dT%H:%M:%S')
         else
-          val = sprintf "0x%0#{addrsize}x", entry[:attribute]
+          val = sprintf "0x%0#{addrsize}x", entry.value
         end
 
-        printf " 0x%08x %-28s %s\n", entry[:type].to_i, "(#{entry[:type].to_s})", val
+        printf " 0x%08x %-28s %s\n", entry.type.to_i, "(#{entry.type.to_s})", val
 
-        break if entry[:type] == Elf::Dynamic::Type::Null
+        break if entry.type == Elf::Dynamic::Type::Null
       end
     end
   rescue Errno::ENOENT
