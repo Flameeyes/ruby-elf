@@ -198,7 +198,8 @@ module Elf
 
       # Maybe we should warn, but it's still possible that a corrupted
       # ELF file needs to be read.
-      return unless self[shstrndx].is_a? StringTable
+      return if shstrndx == 0 or # no string table present
+        not self[shstrndx].is_a? StringTable
 
       @string_table = self[shstrndx]
 
