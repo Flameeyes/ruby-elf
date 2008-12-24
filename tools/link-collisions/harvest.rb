@@ -170,18 +170,15 @@ class Pathname
           res.merge entry.so_files if recursive
           next
         else
-          begin
-            elf = Elf::File.open(entry)
-            elf.close
-            res.add entry.to_s
-          rescue Elf::File::NotAnELF, Elf::File::InvalidMachine
-            next
-          rescue Exception => e
-            $stderr.puts "Scanning #{entry}"
-            raise e
-          end
+          elf = Elf::File.open(entry)
+          elf.close
+          res.add entry.to_s
         end
-      rescue Errno::EACCES, Errno::ENOENT
+      # Explicitly list this so that it won't pollute the output
+      rescue Elf::File::NotAnELF
+        next
+      rescue Exception => e
+        $stderr.puts "Ignoring #{entry} (#{e.message})"
         next
       end
     end
@@ -300,8 +297,6 @@ so_files.each do |so|
         end
       end
     end
-  rescue Elf::File::NotAnELF, Elf::File::InvalidMachine
-    next
   rescue Exception
     $stderr.puts "Checking #{so}"
     raise
