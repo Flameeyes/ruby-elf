@@ -85,7 +85,7 @@ db.exec("DROP VIEW symbol_count") rescue PGError
 db.exec("DROP TABLE symbols") rescue PGError
 db.exec("DROP TABLE objects") rescue PGError
 
-db.exec("CREATE TABLE objects ( id INTEGER PRIMARY KEY, path CHAR(4096), abi CHAR(255), soname CHAR(255), UNIQUE(path) )")
+db.exec("CREATE TABLE objects ( id INTEGER PRIMARY KEY, path VARCHAR(4096), abi VARCHAR(255), soname VARCHAR(255), UNIQUE(path) )")
 db.exec("CREATE TABLE symbols ( object INTEGER REFERENCES objects(id), symbol TEXT, PRIMARY KEY(object, symbol) )")
 
 db.exec("CREATE VIEW symbol_count AS
