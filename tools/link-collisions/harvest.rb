@@ -192,7 +192,7 @@ end
 
 if scan_ldpath
   ldso_paths = Set.new
-  ldso_paths.merge ENV['LD_LIBRARY_PATH'].split(":").set if ENV['LD_LIBRARY_PATH']
+  ldso_paths.merge ENV['LD_LIBRARY_PATH'].split(":").to_set if ENV['LD_LIBRARY_PATH']
   
   File.open("/etc/ld.so.conf") do |ldsoconf|
     ldso_paths.merge ldsoconf.readlines.
