@@ -29,7 +29,7 @@
 .*/kde3/libaudiocd_encoder_.*\.so	^create_audiocd_encoders$
 .*/kde3/plugins/.*\.so			^(qt_ucm_query_verification_data|ucm_instantiate)$
 .*/kde3/kwin3?_.*\.so			^(create_factory|allocate_config)$
-.*/kde3/libamarok_.*\.so		^create_plugin$
+.*/kde3/(libamarok|noatun)_.*\.so	^create_plugin$
 .*/kde[34]/kstyle_.*\.so		^allocate_kstyle_config$
 					# KApplication::KApp
 .*					^_ZN12KApplication4KAppE$
@@ -136,3 +136,12 @@ lib((pa|esd|arts)dsp|aoss)		^((__)?m(un)?map|f?open(64)?|close|ioctl|poll)$
 
 # Strigi
 strigi/strigi[lt]a_.*\.so		^(deleteS|s)trigiAnalyzerFactory$
+
+# Netscape-related symbols
+.*/components/.*\.so			^NSGetModule$
+
+# GCompris
+.*/gcompris/.*\.so			^get_bplugin_info$
+
+# psemu/ps2emu
+.*/ps2?emu/(plugins|cfg)/.*		^(build|version|revision)

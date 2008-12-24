@@ -15,3 +15,17 @@ libkpdfpart.so
 # same object files, their code is 1:1 the same. Ignore one of them
 # until it's sorted out upstream.
 libsnmp\.so
+
+# Multiple copies of Qt4 libraries from proprietary software like
+# Skype, GoogleEarth and so on.
+/opt/.*/libQt.*
+
+# Intel C and Fortran compilers keep the same code
+/opt/intel/[cf]c/.*/lib/.*
+
+# The binary versions of xulrunner, firefox and thunderbird have
+# duplicate symbols.
+/opt/(xulrunner|firefox|thunderbird|)/.*
+
+# Quake-engine based games duplicate numbers of symbols, bad.
+.*/gamei386\.so
