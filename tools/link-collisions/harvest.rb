@@ -171,8 +171,13 @@ class Pathname
           next
         else
           elf = Elf::File.open(entry)
+
+          # Only add the entry to the list if the file is a dynamic file,
+          # either a shared object or dynamic executable.
+          res.add entry.to_s if
+            elf.has_section?('.dynsym') and elf.has_section?('.dynstr')
+
           elf.close
-          res.add entry.to_s
         end
       # Explicitly list this so that it won't pollute the output
       rescue Elf::File::NotAnELF
@@ -235,8 +240,6 @@ so_files.each do |so|
 
   begin
     Elf::File.open(so) do |elf|
-      next unless elf.has_section?('.dynsym') and elf.has_section?('.dynstr')
-
       abi = "#{elf.elf_class} #{elf.abi} #{elf.machine}"
       soname = ""
 
