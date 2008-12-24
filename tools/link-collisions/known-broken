@@ -5,7 +5,7 @@
 /usr/bin/gs
 /usr/bin/gdbtui
 
-/usr/lib32/dri/.*
+/usr/lib(|32|64)/dri/.*
 
 # KPDF contains XPDF code, which is also contained in libpoppler.
 # Ignore KPDF symbols then.
@@ -29,3 +29,6 @@ libsnmp\.so
 
 # Quake-engine based games duplicate numbers of symbols, bad.
 .*/gamei386\.so
+
+# Aegis does not know about shared libraries it seems
+.*/bin/ae(cvsserver|patch|annotate|subunit|rect|dist|de-policy|find|import|lcf|tar|complete|-repo-ci|ls|svt|lock|get|lpf|sub|xml|diff|finish|gis|report|revml|makegen|promptcmd)
