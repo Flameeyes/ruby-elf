@@ -191,7 +191,7 @@ class Pathname
 end
 
 if scan_ldpath
-  ldso_paths = Set.new
+  ldso_paths = Set.new(["/lib", "/usr/lib"])
   ldso_paths.merge ENV['LD_LIBRARY_PATH'].split(":").to_set if ENV['LD_LIBRARY_PATH']
   
   File.open("/etc/ld.so.conf") do |ldsoconf|
