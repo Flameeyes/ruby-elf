@@ -22,7 +22,6 @@
 require 'getoptlong'
 require 'set'
 require 'pathname'
-require 'rubygems'
 require 'postgres'
 require 'elf'
 
