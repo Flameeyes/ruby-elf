@@ -44,6 +44,8 @@ files.each do |file|
         case entry.type
         when Elf::Dynamic::Type::Needed
           val = "Shared library: [#{entry.parsed}]"
+        when Elf::Dynamic::Type::Auxiliary
+          val = "Auxiliary library: [#{entry.parsed}]"
         when Elf::Dynamic::Type::SoName
           val = "Library soname: [#{entry.parsed}]"
         when Elf::Dynamic::Type::StrSz, Elf::Dynamic::Type::SymEnt,

@@ -114,7 +114,10 @@ module Elf
              0x6ffffffc => [ :VerDef, "VERDEF", :Address ],
              0x6ffffffd => [ :VerDefNum, "VERDEFNUM", :Value ],
              0x6ffffffe => [ :VerNeed, "VERNEED", :Address ],
-             0x6fffffff => [ :VerNeedNum, "VERNEEDNUM", :Value ]
+             0x6fffffff => [ :VerNeedNum, "VERNEEDNUM", :Value ],
+
+             # Unknown CPU-specific extensions
+             0x7ffffffd => [ :Auxiliary, "AUXILIARY", :Value ]
            })
 
       # OS-specific range
@@ -214,7 +217,8 @@ module Elf
       Type::RPath        => StringEntry,
       Type::RunPath      => StringEntry,
       Type::GNUPrelinked => TimestampEntry,
-      Type::GNUHash      => SectionLink
+      Type::GNUHash      => SectionLink,
+      Type::Auxiliary    => StringEntry
     }
 
     def load_internal
