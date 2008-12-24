@@ -234,7 +234,7 @@ module Elf
                    # Unknown OS-specific dynamic entry type, provide a dummy
                    Type::Unknown.new(type_id, sprintf("DT_LOOS+%07x", type_id-Type::LoOs))
                  end
-               elsif type_id >= Type::LoProc && type_id <= HiProc
+               elsif type_id >= Type::LoProc && type_id <= Type::HiProc
                  if Type.has_key? type_id
                    Type[type_id]
                  else
