@@ -235,6 +235,13 @@ end
 db.exec("BEGIN TRANSACTION")
 val = 0
 
+begin
+  require 'progressbar'
+
+  pbar = ProgressBar.new("harvest", so_files.size)
+rescue LoadError, NameError
+end
+
 so_files.each do |so|
   local_suppressions = $partial_suppressions.dup.delete_if { |s| not so.to_s =~ s[0] }
 
@@ -304,6 +311,8 @@ so_files.each do |so|
     $stderr.puts "Checking #{so}"
     raise
   end
+
+  pbar.inc if pbar
 end
 
 db.exec("COMMIT")
