@@ -86,7 +86,8 @@ db.exec("DROP TABLE symbols") rescue PGError
 db.exec("DROP TABLE objects") rescue PGError
 
 db.exec("CREATE TABLE objects ( id INTEGER PRIMARY KEY, path VARCHAR(4096), abi VARCHAR(255), soname VARCHAR(255), UNIQUE(path) )")
-db.exec("CREATE TABLE symbols ( object INTEGER REFERENCES objects(id), symbol TEXT, PRIMARY KEY(object, symbol) )")
+db.exec("CREATE TABLE symbols ( object INTEGER REFERENCES objects(id) ON DELETE CASCADE, symbol TEXT,
+         PRIMARY KEY(object, symbol) )")
 
 db.exec("CREATE VIEW symbol_count AS
          SELECT symbol, abi, COUNT(*) AS occurrences FROM symbols INNER JOIN objects ON symbols.object = objects.id GROUP BY symbol, abi")
