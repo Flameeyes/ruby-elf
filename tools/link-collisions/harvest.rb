@@ -262,9 +262,17 @@ so_files.each do |so|
       impid = nil
 
       multimplementations.each do |implementation, paths|
-        next unless so =~ paths
+        # Get the full matchdata because we might need to get the matches.
+        match = paths.match(so)
 
-        so = implementation
+        next unless match
+
+        while implementation =~ /\$([0-9]+)/ do
+          match_idx = $1.to_i
+          implementation = implementation.gsub("$#{match_idx}", match[match_idx])
+        end
+
+        soname = so = implementation
         db.exec("EXECUTE checkimplementation('#{implementation}')").each do |row|
           impid = row[0]
         end

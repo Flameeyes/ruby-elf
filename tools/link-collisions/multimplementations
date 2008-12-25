@@ -12,47 +12,31 @@ libgpgme		.*/libgpgme(-pth(read)?)?\.so.*
 java-libawt		jre/lib/(amd64|i386)/libawt\.so$
 java-libmawt		jre/lib/(amd64|i386)/(xawt|motif21|headless)/libmawt.so
 
-ncurses-libcurses	^/lib(|32|64)/libn?cursesw?\.so
-ncurses-libform		^/usr/lib(|32|64)/libformw?\.so
-ncurses-libmenu		^/usr/lib(|32|64)/libmenuw?\.so
-ncurses-libpanel	^/usr/lib(|32|64)/libpanelw?\.so
+ncurses-lib$2		/lib(|32|64)/lib(n?curses|form|menu|panel)w?\.so
 
-xorg-vservers		^/usr/bin/X(nest|vfb)$
+xorg-vservers		/bin/X(nest|vfb)$
 
 php5			php5/bin/php(-cgi)?$
 
-mysqlclient		^/usr/lib(|32|64)/mysql/libmysqlclient(_r)?\.so
-libldap			^/usr/lib(|32|64)/libldap(_r)?\.so
+mysqlclient		/lib(|32|64)/mysql/libmysqlclient(_r)?\.so
+libldap$3		/lib(|32|64)/libldap(_r)?((-[0-9\.]+)?)\.so
 
-libXaw			^/usr/lib(|32|64)/libXaw(6|7|3d)\.so
-libXmu			^/usr/lib(|32|64)/libXmuu?\.so
+libXaw			/lib(|32|64)/libXaw(6|7|3d)\.so
+libXmu			/lib(|32|64)/libXmuu?\.so
 
-osswrappers		^/usr/lib(|32|64)/lib(aoss|(esd|pa|)dsp)\.so$
+osswrappers		/lib(|32|64)/lib(aoss|(esd|pa|)dsp)\.so$
 
-libxerces		^/usr/lib(|32|64)/libxerces-(c|depdom)\.so
+libxerces		/lib(|32|64)/libxerces-(c|depdom)\.so
 
 # Boost
-libboost_date_time	^/usr/lib(|32|64)/libboost_date_time(-mt)?.so
-libboost_filesystem	^/usr/lib(|32|64)/libboost_filesystem(-mt)?.so
-libboost_graph		^/usr/lib(|32|64)/libboost_graph(-mt)?.so
-libboost_iostreams	^/usr/lib(|32|64)/libboost_iostreams(-mt)?.so
-libboost_prg_exec_monitor	^/usr/lib(|32|64)/libboost_prg_exec_monitor(-mt)?.so
-libboost_program_options	^/usr/lib(|32|64)/libboost_program_options(-mt)?.so
-libboost_python		^/usr/lib(|32|64)/libboost_python(-mt)?.so
-libboost_random		^/usr/lib(|32|64)/libboost_random(-mt)?.so
-libboost_regex		^/usr/lib(|32|64)/libboost_regex(-mt)?.so
-libboost_serialization	^/usr/lib(|32|64)/libboost_serialization(-mt)?.so
-libboost_signals	^/usr/lib(|32|64)/libboost_signals(-mt)?.so
-libboost_unit_test_framework	^/usr/lib(|32|64)/libboost_unit_test_framework(-mt)?.so
-libboost_wave		^/usr/lib(|32|64)/libboost_wave(-mt)?.so
-libboost_wserialization	^/usr/lib(|32|64)/libboost_wserialization(-mt)?.so
+libboost_$2		/lib(|32|64)/libboost_(date_time|filesystem|graph|iostreams|prg_exec_monitor|program_options|python|random|regex|serializaiton|signals|unit_test_framework|wave|wserialization)(-mt)?.so
 
 # KDE's libgpgme++
 libgpgme++		/lib(|32|64)/libgpgme\+\+(-pth(read)?)?\.so
 
 # libevent, _core and _extra replace the original, for now consider them a single
 # implementation, until libevent itself is deprecated.
-libevent-1.4		/lib(|32|64)/libevent(_(extra|core))?-1.4\.so
+libevent-$4		/lib(|32|64)/libevent(_(extra|core))?-([0-9\.]+)\.so
 
 # GNU libbfd
 libbfd			libbfd-2\..*\.so
@@ -62,5 +46,5 @@ gnu-libmudflap		libmudflap(th)?\.so
 
 libgvc			libgvc(_builtins)?\.so
 
-# OpenLDAP
-libldap-2.3		libldap(_r)?-2.3
+# Mercury
+mercury-$3		/mercury-.*/lib/asm_fast.gc(.(tr|memprof|prof))?/(.*)\.so
