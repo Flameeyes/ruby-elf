@@ -69,6 +69,9 @@ suppression_files.each do |suppression|
       next unless path
       
       if not symbols or symbols == ""
+        # the POSIX regular expressions and the Ruby ones differ from
+        # how + and \+ are used. PgSQL uses POSIX.
+        path = path.gsub('+', '\+').gsub('\\+', '+')
         db.exec("DELETE FROM objects WHERE path ~ '#{path}'")
       else
         symbols.sub!(/(\$)?$/, '@@\1')
