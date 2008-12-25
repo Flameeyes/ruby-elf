@@ -41,3 +41,31 @@ libsnmp\.so
 
 # idb comes with Qt (unknown version)
 intel/idb/.*/bin/iidb
+
+# abiword does not link to libabiword
+/bin/abiword.*
+
+# Qt Embedded has the same API of Qt 3
+/lib/libqte-mt.so..*
+
+# Samba should really use a libsambacore
+/bin/net
+/bin/ntlm_auth
+/bin/pdbedit
+/bin/rpcclient
+/bin/smbcacls
+/bin/smbcquotas
+/bin/smbget
+/bin/smbpasswd
+/lib(32|64)?/python[0-9\.]+/site-packages/samba/lsa.so
+/lib(32|64)?/python[0-9\.]+/site-packages/samba/samr.so
+/lib(32|64)?/python[0-9\.]+/site-packages/samba/smb.so
+/lib(32|64)?/python[0-9\.]+/site-packages/samba/spoolss.so
+/lib(32|64)?/python[0-9\.]+/site-packages/samba/srvsvc.so
+/lib(32|64)?/python[0-9\.]+/site-packages/samba/tdb.so
+/lib(32|64)?/python[0-9\.]+/site-packages/samba/winbind.so
+/lib(32|64)?/python[0-9\.]+/site-packages/samba/winreg.so
+/lib(32|64)?/samba/libmsrpc.so
+/lib(32|64)?/samba/libsmbclient.so
+/lib(32|64)?/security/pam_smbpass.so
+/sbin/smbd
