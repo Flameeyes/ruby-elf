@@ -11,6 +11,9 @@
 # main is instead present in every executable.
 .*					^((__libc_csu)?_(init|fini|start)|main|__data_start|_IO_stdin_used|_fp_hw)$
 
+# C++ symbols
+.*					^_Z(dlPv|nwj)$
+
 # xine plugins use xine_plugin_info structure as entrypoint
 .*/xine/plugins/.*/xineplug_.*\.so	^xine_plugin_info$
 
@@ -100,7 +103,7 @@
 .*/libstlportg\.so.*
 
 # OpenOffice.org
-.*/openoffice/program/.*\.so$		^(component_(getFactory|getImplementationEnvironment|writeInfo|canUnload)|GetVersionInfo)
+.*/openoffice/.*\.so$		^(component_(getFactory|getImplementationEnvironment|writeInfo|canUnload)|GetVersionInfo)
 
 # FFmpeg's vhook
 .*/vhook/.*\.so$			^(Configure|Process|Release)$
@@ -148,6 +151,7 @@ strigi/strigi[lt]a_.*\.so		^(deleteS|s)trigiAnalyzerFactory$
 
 # IRC servers
 .*/(ircd-hybrid-[0-9]|atheme)/(protocol|modules)/.*\.so	^_mod(de)?init$
+.*/ircd-hybrid-[0-9]/modules/(|autoload)/.*\.so		^_version$
 .*/atheme/(protocol|modules)/.*\.so			^_header$
 .*/unrealircd/modules/m_.*\.so				^(Mod_(Init|Load|Version|Unload|Header)|compiler_version)$
 
@@ -162,3 +166,17 @@ strigi/strigi[lt]a_.*\.so		^(deleteS|s)trigiAnalyzerFactory$
 
 # VDR
 .*/vdr/plugins/libvdr-.*\.so		^VDRPluginCreator$
+
+# Pidgin
+.*/(pidgin|purple-2)/.*\.so		^purple_init_plugin$
+
+.*/lpe/.*mode\.so			^mode_enter$
+
+# GEGL
+.*/gegl-.*/.*\.so			^gegl_(module_(register|query)|chant_get_type)$
+
+# SANE backends
+.*/sane/libsane-.*\.so			^sane_(cancel|close|control_option|exit|get_(devices|option_descriptor|parameters|select_fd)|init|open|read|set_io_mode|start|strstatus)
+
+# EVMS
+/lib(|32|64)/evms/.*/.*\.so		^evms_plugin_record$

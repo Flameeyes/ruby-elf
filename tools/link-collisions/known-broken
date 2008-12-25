@@ -32,3 +32,12 @@ libsnmp\.so
 
 # Aegis does not know about shared libraries it seems
 .*/bin/ae(cvsserver|patch|annotate|subunit|rect|dist|de-policy|find|import|lcf|tar|complete|-repo-ci|ls|svt|lock|get|lpf|sub|xml|diff|finish|gis|report|revml|makegen|promptcmd)
+
+# asis-gcc links libasis statically in the commands, no idea why.
+.*/gnat-gcc-bin/.*/(gnatelim|gnatpp|gnatmetric|adasubst|adadep|adabrowse|gnatstub)
+
+# Sane should use a core library
+.*/(libsane-.*\.so|xcam|saned)		^sanei_.*$
+
+# idb comes with Qt (unknown version)
+intel/idb/.*/bin/iidb
