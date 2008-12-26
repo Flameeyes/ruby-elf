@@ -3,6 +3,8 @@
 # ignoring eventual problems with multiple libraries implementing the same
 # interface
 
+libc			/lib(32|64)?/(loki_)?libc(-[0-9\.]+)?\.so
+
 perl			/usr/bin/perl5\..*
 perl			/usr/lib(|32|64)/libperl\.so\..*
 
@@ -17,6 +19,7 @@ ncurses-lib$2		/lib(|32|64)/lib(n?curses|form|menu|panel)w?\.so
 xorg-vservers		/bin/X(nest|vfb)$
 
 php5			php5/bin/php(-cgi)?$
+php5			apache2/modules/libphp5\.so
 
 mysqlclient		/lib(|32|64)/mysql/libmysqlclient(_r)?\.so
 libldap$3		/lib(|32|64)/libldap(_r)?((-[0-9\.]+)?)\.so
@@ -38,13 +41,18 @@ libgpgme++		/lib(|32|64)/libgpgme\+\+(-pth(read)?)?\.so
 # implementation, until libevent itself is deprecated.
 libevent-$4		/lib(|32|64)/libevent(_(extra|core))?-([0-9\.]+)\.so
 
-# GNU libbfd
-libbfd			libbfd-2\..*\.so
-
-# GNU libmudflap
+# GNU libs
+gnu-libbfd		libbfd-2\..*\.so
 gnu-libmudflap		libmudflap(th)?\.so
+gnu-libgcj		libgcj\.so
 
 libgvc			libgvc(_builtins)?\.so
 
-# Mercury
 mercury-$3		/mercury-.*/lib/asm_fast.gc(.(tr|memprof|prof))?/(.*)\.so
+
+glide3			/lib(32|64)?/libglide3-v[1235]\.so
+
+cblas			/lib(32|64)?/blas/((threaded-)?atlas|reference)/libcblas\.so
+cblas			/lib(32|64)?/gclcblas\.so
+
+libcorex		/lib(32|64)?/libcorex\+\+_level[123]\.so

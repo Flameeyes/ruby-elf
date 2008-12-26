@@ -43,29 +43,79 @@ libsnmp\.so
 intel/idb/.*/bin/iidb
 
 # abiword does not link to libabiword
-/bin/abiword.*
+/bin/[Aa]bi[wW]ord
 
 # Qt Embedded has the same API of Qt 3
-/lib/libqte-mt.so..*
+/lib/libqte-mt\.so\..*
 
 # Samba should really use a libsambacore
+/bin/eventlogadm
 /bin/net
+/bin/nmblookup
 /bin/ntlm_auth
 /bin/pdbedit
+/bin/profiles
 /bin/rpcclient
-/bin/smbcacls
-/bin/smbcquotas
-/bin/smbget
-/bin/smbpasswd
-/lib(32|64)?/python[0-9\.]+/site-packages/samba/lsa.so
-/lib(32|64)?/python[0-9\.]+/site-packages/samba/samr.so
-/lib(32|64)?/python[0-9\.]+/site-packages/samba/smb.so
-/lib(32|64)?/python[0-9\.]+/site-packages/samba/spoolss.so
-/lib(32|64)?/python[0-9\.]+/site-packages/samba/srvsvc.so
-/lib(32|64)?/python[0-9\.]+/site-packages/samba/tdb.so
-/lib(32|64)?/python[0-9\.]+/site-packages/samba/winbind.so
-/lib(32|64)?/python[0-9\.]+/site-packages/samba/winreg.so
-/lib(32|64)?/samba/libmsrpc.so
-/lib(32|64)?/samba/libsmbclient.so
-/lib(32|64)?/security/pam_smbpass.so
-/sbin/smbd
+/bin/smb(cacls|client|control|cquotas|get|mount|passwd|spool|status|tree)
+/bin/testparm
+/lib(32|64)?/python[0-9\.]+/site-packages/samba/(lsa|samr|smb|spoolss|srvsvc|tdb|winbind|winreg)\.so
+/lib(32|64)?/samba/lib(msrpc|smbclient)\.so
+/lib(32|64)?/security/pam_smbpass\.so
+/sbin/[sn]mbd
+
+# wvstream links dbus statically, and so does dbus-daemon (d'oh!)
+/lib(32|64)?/libwvdbus\.so.*	  ^dbus_
+/bin/dbus-daemon		  ^dbus_
+
+# The static version links all statically obviously
+/bin/paw(\+\+|X11)\.static
+
+# Inkscape comes with copies of GDL and libcroco
+/bin/ink(scape|view)  	     	  ^(gdl|cr)_
+
+# gettext comes with a copy of libcroco
+/lib(32|64)?/libgettextlib-[0-9\.]+\.so	^cr_
+
+# screem with a copy of gdl
+/bin/screem			  ^gdl_
+
+# MySQL could also use a libmysqlcore
+/bin/comp_err
+/bin/my(_print_defaults|isam(_ftdump|chk|log|pack)|sql_(tzinfo_to_sql|waitpid))
+/bin/perror
+/bin/replace
+/bin/resolve(_stack_dump|ip)
+/sbin/mysql(d|manager)
+
+# MyDNS is linking statically to mysql
+/bin/mydns(-conf|export|ptrconvert|check|import)
+/sbin/mydns
+
+# bash links to libreadline statically in Gentoo as it's mission-critical
+^/bin/bash$  		    	       ^rl_
+
+# byld stuff is always duplicated
+^/usr/lib/byld/
+
+# Some packages like to bundle sqlite3
+/lib(32|64)?/libgda-([0-9\.]+)/providers/libgda-sqlite\.so		^sqlite3
+/lib(32|64)?/perl5/vendor_perl/[0-9\.]+/.*/auto/DBD/SQLite/SQLite.so	^sqlite3
+/lib(32|64)?/lib(showimg)?kexisql3\.so					^sqlite3
+/lib(32|64)/hk_classes/drivers/libhk_sqlite3driver\.so			^sqlite3
+
+# Some packages like to bundle boehm-gc
+/lib(32|64)?/mercury-[0-9\.]/lib/libgc(_prof)?\.so			^GC_
+lib(gcj|gauche|Synopsis)\.so						^GC_
+/bin/pedump								^GC_
+
+# alliance links libX11 statically
+/alliance/bin/.*							^_?X
+
+# This is just boring
+/lib(32|64)?/gnucap/models-.*
+
+# Inkscape needs a core library
+/bin/inkview
+
+# Smoke does static linking
+/lib(32|64)/libsmokekde\.so

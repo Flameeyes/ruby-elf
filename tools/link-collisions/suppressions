@@ -12,7 +12,7 @@
 .*					^((__libc_csu)?_(init|fini|start)|main|__data_start|_IO_stdin_used|_fp_hw)$
 
 # C++ symbols
-.*					^_Z(dlPv|nwj)$
+.*					^_Z(d[al]Pv|[nd][aw]j)$
 
 # xine plugins use xine_plugin_info structure as entrypoint
 .*/xine/plugins/.*/xineplug_.*\.so	^xine_plugin_info$
@@ -25,15 +25,16 @@
 .*/libpthread(-[\.0-9]+)?\.so		^(pthread_.*|_IO_f(|un|try)lockfile)$
 
 # KDE-related suppressions
-.*/libkdeinit4?_.*\.so			^kdemain$
-.*/kde[34]/.*\.so			^kde(init)?main$
-.*/kde3/.*thumbnail\.so			^new_creator$
-.*/kde3/.*panel(applet|extension)\.so	^init$
-.*/kde3/libaudiocd_encoder_.*\.so	^create_audiocd_encoders$
-.*/kde3/plugins/.*\.so			^(qt_ucm_query_verification_data|ucm_instantiate)$
-.*/kde3/kwin3?_.*\.so			^(create_factory|allocate_config)$
-.*/kde3/(libamarok|noatun)_.*\.so	^create_plugin$
-.*/kde[34]/kstyle_.*\.so		^allocate_kstyle_config$
+/libkdeinit4?_.*\.so			^kdemain$
+/kde[34]/.*\.so				^kde(init)?main$
+/kde3/.*thumbnail\.so			^new_creator$
+/kde3/.*panel(applet|extension)\.so	^init$
+/kde3/libaudiocd_encoder_.*\.so		^create_audiocd_encoders$
+/kde3/plugins/.*\.so			^(qt_ucm_query_verification_data|ucm_instantiate)$
+/kde3/kwin3?_.*\.so			^(create_factory|allocate_config)$
+/kde3/(libamarok|noatun)_.*\.so		^create_plugin$
+/kde[34]/kstyle_.*\.so			^allocate_kstyle_config$
+/kde3/ksim_.*\.so			^init_plugin$
 					# KApplication::KApp
 .*					^_ZN12KApplication4KAppE$
 # KDE 4
@@ -56,13 +57,16 @@
 .*\.exe\.so				^WinMain$
 
 # GTK and GNOME plugins
-.*/gtk-2\.0/.*/immodules/im-.*\.so	^im_module_(create|init|exit|list)$
-.*/gtk-2\.0/.*/engines/.*\.so		^(g_module_check_init|theme_(create_rc_style|init|exit))$
-.*/gtk-2\.0/.*/loaders/libpixbuf.*\.so	^(load|fill_(info|vtable)|get_info)$
-.*/gtk-2\.0/.*/printbackends/.*\.so	^pb_module_(init|create|exit)$
-.*/pango/.*/modules/pango-.*\.so	^script_engine_(list|create|init|exit)$
-.*/gnome-vfs-2\.0/modules/lib.*\.so	^vfs_module_(init|shutdown)$
-.*/libglade/.*/lib.*\.so		^glade_module_register_widgets$
+.*						^g_module_check_init$
+/gtk-2\.0/.*/immodules/im-.*\.so		^im_module_(create|init|exit|list)$
+/gtk-2\.0/.*/engines/.*\.so			^(theme_(create_rc_style|init|exit))$
+/gtk-2\.0/.*/loaders/libpixbuf.*\.so		^(load|fill_(info|vtable)|get_info)$
+/gtk-2\.0/.*/printbackends/.*\.so		^pb_module_(init|create|exit)$
+/pango/.*/modules/pango-.*\.so			^script_engine_(list|create|init|exit)$
+/gnome-vfs-2\.0/modules/lib.*\.so		^vfs_module_(init|shutdown)$
+/libglade/.*/lib.*\.so				^glade_module_register_widgets$
+/(goffice|gnumeric)/[0-9\.]+/plugins/.*\.so	^go_plugin_(depends|header)$
+/evolution/[0-9\.]+/plugins/.*\.so		^e_plugin_lib_enable$
 
 # ALSA plugins
 .*/alsa-lib/smixer/smixer-.*\.so	^(alsa_mixer_simple_(init|event)|selectors)$
@@ -116,7 +120,7 @@
 .*/dssi/.*\.so$				^dssi_(descriptor|configure_message)$
 
 # LADSPA
-.*/(ladspa|dssi)/.*\.so$		^ladspa_descriptor$
+.*/(ladspa|dssi)/.*\.so$		^(ladspa|delete)_descriptor$
 
 # OpenSync
 .*/opensync(-1.0)?/(formats|plugins)/.*\.so$	^(get(_(format|conversion))?_info|vformat_.*|(quoted|base64)_(encode|decode)_simple)$
@@ -180,3 +184,34 @@ strigi/strigi[lt]a_.*\.so		^(deleteS|s)trigiAnalyzerFactory$
 
 # EVMS
 /lib(|32|64)/evms/.*/.*\.so		^evms_plugin_record$
+
+# updatedd
+/lib(32|64)?/lib.*\.so.*		^(log_(err|warn|notice)|dyndns|get_retmsg)$
+
+# HUGS
+/lib(32|64)?/hugs/packages/.*/.*\.so	^(HugsAPIVersion|initModule)$
+
+/lib(32|64)?/dia/lib.*\.so		^dia_plugin_init$
+
+/lib(32|64)?/anjuta/.*\.so		^anjuta_glue_register_component$
+
+/lib(32|64)?/postgresql/.*\.so		^Pg_magic_func$
+
+/lib(32|64)?/stardict/plugins/.*\.so	^stardict_(parsedata_)?plugin_(exit|init)$
+
+/lib(32|64)?/lv2/.*\.lv2/.*\.so		^lv2_descriptor$
+
+/lib(32|64)?/emelfm2/plugins/.*\.so	^init_plugin$
+
+/lib(32|64)?/mozart/cache/x-oz/		^oz_module_name$
+
+# Netscape/Mozilla plugins
+.*					^NP_(Get(MIMEDescription|Value)|Initialize|Shutdown|N_(DestroyStream|Get(URL|Value)|Mem(Alloc|Flush|Free)|NewStream|PostURL|ReloadPlugins|RequestRead|Status|UserAgent|Version|Write))$
+
+/lib(32|64)?/rep/.*\.so$		^rep_dl_init$
+
+/lib(32|64)?/oops/.*\.so		^mod(ule_(name|info|type)|_(run|(un)?load|config(_(beg|end))?))$
+
+/lib(32|64)?/blib-[0-9\.]+/modules/.*\.so	^b_module_register$
+
+/lib(32|64)?/lineakd/plugins/.*\.so		^(cleanup|initialize|exec)$
