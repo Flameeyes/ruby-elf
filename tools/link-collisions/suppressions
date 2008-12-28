@@ -169,7 +169,7 @@ strigi/strigi[lt]a_.*\.so		^(deleteS|s)trigiAnalyzerFactory$
 .*/gwyddion/modules/.*/.*\.so		^_gwy_module_query$
 
 # VDR
-.*/vdr/plugins/libvdr-.*\.so		^VDRPluginCreator$
+.*/vdr/plugins/libvdr-.*\.so		^(VDRPluginCreator|Phrases)$
 
 # Pidgin
 .*/(pidgin|purple-2)/.*\.so		^purple_init_plugin$
@@ -193,7 +193,7 @@ strigi/strigi[lt]a_.*\.so		^(deleteS|s)trigiAnalyzerFactory$
 
 /lib(32|64)?/dia/lib.*\.so		^dia_plugin_init$
 
-/lib(32|64)?/anjuta/.*\.so		^anjuta_glue_register_component$
+/lib(32|64)?/anjuta/.*\.so		^anjuta_glue_register_components$
 
 /lib(32|64)?/postgresql/.*\.so		^Pg_magic_func$
 
@@ -215,3 +215,11 @@ strigi/strigi[lt]a_.*\.so		^(deleteS|s)trigiAnalyzerFactory$
 /lib(32|64)?/blib-[0-9\.]+/modules/.*\.so	^b_module_register$
 
 /lib(32|64)?/lineakd/plugins/.*\.so		^(cleanup|initialize|exec)$
+/lib(32|64)?/audacious/.*/.*\.so		^get_plugin_info$
+/lib(32|64)?/libvisual-[0-9\.]+/.*\.so		^get_plugin_info$
+/lib(32|64)?/pike/modules/.*\.so		^pike_module_(init|exit)$
+/lib(32|64)?/ettercap/ec_.*\.so			^plugin_load$
+/lib(32|64)?/transcode/filter.*\.so		^tc_filter$
+/lib(32|64)?/gkrellm2/plugins/.*\.so		^gkrellm_init_plugin$
+/lib(32|64)?/abiword-[0-9\.]+/plugins/lib.*\.so	^abi_plugin_((un)?register|supports_version)$
+/lib(32|64)?/cinelerra/.*\.so			^new_plugin$
