@@ -42,9 +42,7 @@ libgpgme++		/lib(|32|64)/libgpgme\+\+(-pth(read)?)?\.so
 libevent-$4		/lib(|32|64)/libevent(_(extra|core))?-([0-9\.]+)\.so
 
 # GNU libs
-gnu-libbfd		libbfd-2\..*\.so
 gnu-libmudflap		libmudflap(th)?\.so
-gnu-libgcj		libgcj\.so
 
 libgvc			libgvc(_builtins)?\.so
 
@@ -56,3 +54,11 @@ cblas			/lib(32|64)?/blas/((threaded-)?atlas|reference)/libcblas\.so
 cblas			/lib(32|64)?/gclcblas\.so
 
 libcorex		/lib(32|64)?/libcorex\+\+_level[123]\.so
+
+
+# Library consolidation, keep at the end!
+# This following line is used to consolidate all libraries that have
+# the same base name, ignoring versioning of either API or ABI. This
+# allows to ignore multiple slots for the same library which would
+# almost certainly result in false positives.
+lib$1			/lib(.*)(-[0-9\.]+)\.so(\.[0-9])*$
