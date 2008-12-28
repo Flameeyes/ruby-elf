@@ -85,7 +85,7 @@ db.exec("DROP VIEW symbol_count") rescue PGError
 db.exec("DROP TABLE symbols") rescue PGError
 db.exec("DROP TABLE objects") rescue PGError
 
-db.exec("CREATE TABLE objects ( id INTEGER PRIMARY KEY, path VARCHAR(4096), abi VARCHAR(255), soname VARCHAR(255), UNIQUE(path) )")
+db.exec("CREATE TABLE objects ( id INTEGER PRIMARY KEY, path VARCHAR(4096), abi VARCHAR(255), UNIQUE(path) )")
 db.exec("CREATE TABLE symbols ( object INTEGER REFERENCES objects(id) ON DELETE CASCADE, symbol TEXT,
          PRIMARY KEY(object, symbol) )")
 
@@ -95,7 +95,7 @@ db.exec("CREATE VIEW duplicate_symbols AS
          SELECT * FROM symbol_count WHERE occurrences > 1 ORDER BY occurrences DESC, symbol ASC")
 
 db.exec("PREPARE newobject (int, text, text, text) AS
-         INSERT INTO objects(id, path, abi, soname) VALUES($1, $2, $3, $4)")
+         INSERT INTO objects(id, path, abi) VALUES($1, $2, $3)")
 db.exec("PREPARE newsymbol (int, text) AS
          INSERT INTO symbols VALUES($1, $2)")
 db.exec("PREPARE checkimplementation(text) AS
@@ -249,16 +249,6 @@ so_files.each do |so|
   begin
     Elf::File.open(so) do |elf|
       abi = "#{elf.elf_class} #{elf.abi} #{elf.machine}"
-      soname = ""
-
-      if elf['.dynamic']
-        elf['.dynamic'].entries.each do |entry|
-          case entry.type
-          when Elf::Dynamic::Type::SoName
-            soname = entry.parsed
-          end
-        end
-      end
 
       impid = nil
 
@@ -273,7 +263,7 @@ so_files.each do |so|
           implementation = implementation.gsub("$#{match_idx}", match[match_idx])
         end
 
-        soname = so = implementation
+        so = implementation
         db.exec("EXECUTE checkimplementation('#{implementation}')").each do |row|
           impid = row[0]
         end
@@ -284,7 +274,7 @@ so_files.each do |so|
         val += 1
         impid = val
         
-        db.exec("EXECUTE newobject(#{impid}, '#{so}', '#{elf.elf_class} #{elf.abi} #{elf.machine.to_s.gsub("'", "\\'" )}', '#{soname}')")
+        db.exec("EXECUTE newobject(#{impid}, '#{so}', '#{elf.elf_class} #{elf.abi} #{elf.machine.to_s.gsub("'", "\\'" )}')")
       end
         
       elf['.dynsym'].each_symbol do |sym|
