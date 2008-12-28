@@ -49,7 +49,7 @@ db = PGconn.open(pg_params)
 db.exec("PREPARE getinstances (text, text) AS
          SELECT path FROM symbols INNER JOIN objects ON symbols.object = objects.id WHERE symbol = $1 AND abi = $2")
 
-db.exec("SELECT * FROM duplicate_symbols;").each do |row|
+db.exec("SELECT * FROM duplicate_symbols").each do |row|
   outfile.puts "Symbol #{row[0]} (#{row[1]}) present #{row[2]} times"
   db.exec( "EXECUTE getinstances ('#{row[0]}', '#{row[1]}')" ).each do |path|
     outfile.puts "  #{path[0]}"
