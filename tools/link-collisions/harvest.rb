@@ -80,12 +80,10 @@ end
 
 db = PGconn.open(pg_params)
 
-db.exec("DROP VIEW duplicate_symbols") rescue PGError
-db.exec("DROP VIEW symbol_count") rescue PGError
-db.exec("DROP TABLE symbols") rescue PGError
-db.exec("DROP TABLE objects") rescue PGError
+db.exec("DROP TABLE IF EXISTS symbols, multimplementations, objects CASCADE")
 
-db.exec("CREATE TABLE objects ( id INTEGER PRIMARY KEY, path VARCHAR(4096), abi VARCHAR(255), UNIQUE(path) )")
+db.exec("CREATE TABLE objects ( id INTEGER PRIMARY KEY, name VARCHAR(4096), abi VARCHAR(255), UNIQUE(name, abi) )")
+db.exec("CREATE TABLE multimplementations ( id INTEGER REFERENCES objects(id) ON DELETE CASCADE, path VARCHAR(4096), UNIQUE(path) )")
 db.exec("CREATE TABLE symbols ( object INTEGER REFERENCES objects(id) ON DELETE CASCADE, symbol TEXT,
          PRIMARY KEY(object, symbol) )")
 
@@ -94,12 +92,15 @@ db.exec("CREATE VIEW symbol_count AS
 db.exec("CREATE VIEW duplicate_symbols AS
          SELECT * FROM symbol_count WHERE occurrences > 1 ORDER BY occurrences DESC, symbol ASC")
 
-db.exec("PREPARE newobject (int, text, text, text) AS
-         INSERT INTO objects(id, path, abi) VALUES($1, $2, $3)")
+db.exec("PREPARE newmulti (int, text) AS
+         INSERT INTO multimplementations (id, path) VALUES($1, $2)")
+db.exec("PREPARE newobject (int, text, text) AS
+         INSERT INTO objects(id, name, abi) VALUES($1, $2, $3)")
 db.exec("PREPARE newsymbol (int, text) AS
          INSERT INTO symbols VALUES($1, $2)")
-db.exec("PREPARE checkimplementation(text) AS
-         SELECT id FROM objects WHERE path = $1")
+
+db.exec("PREPARE checkimplementation(text, text) AS
+         SELECT id FROM objects WHERE name = $1 AND abi = $2")
 db.exec("PREPARE checkdupsymbol (int, text) AS
          SELECT 1 FROM symbols WHERE object = $1 AND symbol = $2")
 
@@ -248,7 +249,8 @@ so_files.each do |so|
 
   begin
     Elf::File.open(so) do |elf|
-      abi = "#{elf.elf_class} #{elf.abi} #{elf.machine}"
+      name = so
+      abi = "#{elf.elf_class} #{elf.abi} #{elf.machine.to_s.gsub("'", "\\'" )}"
 
       impid = nil
 
@@ -263,8 +265,8 @@ so_files.each do |so|
           implementation = implementation.gsub("$#{match_idx}", match[match_idx])
         end
 
-        so = implementation
-        db.exec("EXECUTE checkimplementation('#{implementation}')").each do |row|
+        name = implementation
+        db.exec("EXECUTE checkimplementation('#{implementation}', '#{abi}')").each do |row|
           impid = row[0]
         end
         break
@@ -274,8 +276,10 @@ so_files.each do |so|
         val += 1
         impid = val
         
-        db.exec("EXECUTE newobject(#{impid}, '#{so}', '#{elf.elf_class} #{elf.abi} #{elf.machine.to_s.gsub("'", "\\'" )}')")
+        db.exec("EXECUTE newobject(#{impid}, '#{name}', '#{abi}')")
       end
+
+      db.exec("EXECUTE newmulti(#{impid}, '#{so}')") if so != name
         
       elf['.dynsym'].each_symbol do |sym|
         begin

@@ -72,10 +72,10 @@ suppression_files.each do |suppression|
         # the POSIX regular expressions and the Ruby ones differ from
         # how + and \+ are used. PgSQL uses POSIX.
         path = path.gsub('+', '\+').gsub('\\+', '+')
-        db.exec("DELETE FROM objects WHERE path ~ '#{path}'")
+        db.exec("DELETE FROM objects WHERE name ~ '#{path}'")
       else
         symbols.sub!(/(\$)?$/, '@@\1')
-        db.exec("DELETE FROM symbols WHERE symbol ~ '#{symbols}' AND object IN (SELECT id FROM objects WHERE path ~ '#{path}')")
+        db.exec("DELETE FROM symbols WHERE symbol ~ '#{symbols}' AND object IN (SELECT id FROM objects WHERE name ~ '#{path}')")
       end
     end
   end
