@@ -92,7 +92,7 @@ db.exec("CREATE TABLE symbols ( object INTEGER REFERENCES objects(id) ON DELETE 
 db.exec("CREATE VIEW symbol_count AS
          SELECT symbol, abi, COUNT(*) AS occurrences FROM symbols INNER JOIN objects ON symbols.object = objects.id GROUP BY symbol, abi")
 db.exec("CREATE VIEW duplicate_symbols AS
-         SELECT * FROM symbol_count WHERE occurrences > 1 ORDER BY occurrences DESC")
+         SELECT * FROM symbol_count WHERE occurrences > 1 ORDER BY occurrences DESC, symbol ASC")
 
 db.exec("PREPARE newobject (int, text, text, text) AS
          INSERT INTO objects(id, path, abi, soname) VALUES($1, $2, $3, $4)")
