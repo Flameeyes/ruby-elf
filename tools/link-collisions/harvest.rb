@@ -134,10 +134,15 @@ multimplementations = []
 multimplementation_files.each do |multimplementation|
   File.open(multimplementation) do |file|
     file.each_line do |line|
-      implementation, paths = line.
-        gsub(/#\s.*/, '').
-        strip!.
-        split(/\s+/, 2)
+      begin
+        implementation, paths = line.
+          gsub(/#\s.*/, '').
+          strip!.
+          split(/\s+/, 2)
+      rescue NoMethodError
+        # This happens for empty lines.
+        next
+      end
       
       next unless implementation
       next unless paths
