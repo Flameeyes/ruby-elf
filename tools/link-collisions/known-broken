@@ -92,7 +92,7 @@ intel/idb/.*/bin/iidb
 /sbin/mydns
 
 # bash links to libreadline statically in Gentoo as it's mission-critical
-^/bin/bash$  		    	       ^rl_
+^/bin/bash$  		    	       ^_?rl_
 
 # byld stuff is always duplicated
 ^/usr/lib/byld/
@@ -119,3 +119,15 @@ lib(gcj|gauche|Synopsis)\.so						^GC_
 
 # Smoke does static linking
 /lib(32|64)/libsmokekde\.so
+
+# Broken proprietaryware
+/lib/fmodex
+
+# Link statically to libpcap, may bundle libopts
+/bin/tcp{rewrite,bridge,prep,replay}	  ^(options[A-Z]|pcap_)
+
+# Link statically to libdspam
+/bin/(css(clean|stat|convert)|dispamc)	^_ds_
+
+# Static link to readline (unwarranted)
+/bin(gdb-armulator|insight)		^_?rl_

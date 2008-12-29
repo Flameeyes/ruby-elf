@@ -43,6 +43,10 @@ libevent-$4		/lib(|32|64)/libevent(_(extra|core))?-([0-9\.]+)\.so
 
 # GNU libs
 gnu-libmudflap		libmudflap(th)?\.so
+libbfd     		libbfd-[0-9\.]+\.so
+libgcj     		libgcj-[0-9\.]+\.so
+libgnat     		libgnat-[0-9\.]+\.so
+libffi			libffi-[0-9\.]+(-beta)?\.so
 
 libgvc			libgvc(_builtins)?\.so
 
@@ -55,6 +59,11 @@ cblas			/lib(32|64)?/gclcblas\.so
 
 libcorex		/lib(32|64)?/libcorex\+\+_level[123]\.so
 
+lib$4			/lib(32|64)?/(nvu|mozilla-(sunbird|thunderbird)|xulrunner(-[0-9\.]+)?|seamonkey)/lib([a-zA-Z_]+)(_core)?\.so$
+
+libstlport		/lib(32|64)?/libstlport((stl)?g?)\.so
+
+libfann			/lib(32|64)?/lib(double|float|fixed)?fann.so
 
 # Library consolidation, keep at the end!
 #
@@ -66,4 +75,4 @@ libcorex		/lib(32|64)?/libcorex\+\+_level[123]\.so
 # Note that the presence of _at least_ one object after the soname is
 # needed to ensure this does not hit most of the plugins that use the
 # format libfoo.so for the names.
-lib$1			/lib([^/]+)(-[0-9\.]+)?\.so(\.[0-9])+$
+lib$1			/lib([a-zA-Z0-9\-_\+]+)(-[0-9\.]+)*\.so(\.[0-9\.]+)+$

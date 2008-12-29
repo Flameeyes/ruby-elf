@@ -67,6 +67,8 @@
 /libglade/.*/lib.*\.so				^glade_module_register_widgets$
 /(goffice|gnumeric)/[0-9\.]+/plugins/.*\.so	^go_plugin_(depends|header)$
 /evolution/[0-9\.]+/plugins/.*\.so		^e_plugin_lib_enable$
+/abiword-[0-9\.]+/plugins/lib.*\.so		^abi_plugin_((un)?register|supports_version)$
+/libgda(-[0-9\.]+)/providers/lib.*\.so		^plugin_(init|get_(name|description)|create_provider)$
 
 # ALSA plugins
 .*/alsa-lib/smixer/smixer-.*\.so	^(alsa_mixer_simple_(init|event)|selectors)$
@@ -103,9 +105,6 @@
 # Cherokee
 .*/cherokee/libplugin_.*cgi\.so		^cherokee_handler_cgi_base_(add_headers|add_parameter|build_basic_env|build_envp|extract_path|free|init|split_pathinfo|step)
 
-# STLport debug library (TODO: should be moved to something different)
-.*/libstlportg\.so.*
-
 # OpenOffice.org
 .*/openoffice/.*\.so$		^(component_(getFactory|getImplementationEnvironment|writeInfo|canUnload)|GetVersionInfo)
 
@@ -139,7 +138,7 @@
 .*/lib(|32|64)/zsh/.*/zsh/.*\.so$	^(enables|features)_$
 
 # OSS wrappers and other LD_PRELOAD libraries
-lib((pa|esd|arts)dsp|aoss)		^((__)?m(un)?map|f?open(64)?|close|ioctl|poll)$
+lib((pa|esd|arts)dsp|aoss|jackasyn|(soap|sand)box|fake(ch)?root|zzuf|v4l(1compat|2convert)|trash|syncdir)		^((__)?m(un)?map|f?(open(64)?|close)|ioctl|poll|chown|unlink|rename)$
 
 # Strigi
 strigi/strigi[lt]a_.*\.so		^(deleteS|s)trigiAnalyzerFactory$
@@ -221,5 +220,6 @@ strigi/strigi[lt]a_.*\.so		^(deleteS|s)trigiAnalyzerFactory$
 /lib(32|64)?/ettercap/ec_.*\.so			^plugin_load$
 /lib(32|64)?/transcode/filter.*\.so		^tc_filter$
 /lib(32|64)?/gkrellm2/plugins/.*\.so		^gkrellm_init_plugin$
-/lib(32|64)?/abiword-[0-9\.]+/plugins/lib.*\.so	^abi_plugin_((un)?register|supports_version)$
 /lib(32|64)?/cinelerra/.*\.so			^new_plugin$
+/lib(32|64)?/thunarx-[0-9\.]+/.*\.so		^thunar_extension_(initialize|list_types|shutdown)$
+/lib(32|64)?
