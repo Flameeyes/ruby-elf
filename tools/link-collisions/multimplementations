@@ -59,7 +59,7 @@ cblas			/lib(32|64)?/gclcblas\.so
 
 libcorex		/lib(32|64)?/libcorex\+\+_level[123]\.so
 
-lib$4			/lib(32|64)?/(nvu|mozilla-(sunbird|thunderbird)|xulrunner(-[0-9\.]+)?|seamonkey)/lib([a-zA-Z_]+)(_core)?\.so$
+lib$5			/lib(32|64)?/(nvu|mozilla-(sunbird|thunderbird)|xulrunner(-[0-9\.]+)?|seamonkey)/lib([a-zA-Z_]+)(_core)?\.so$
 
 libstlport		/lib(32|64)?/libstlport((stl)?g?)\.so
 

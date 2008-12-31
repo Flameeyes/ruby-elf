@@ -118,13 +118,13 @@ lib(gcj|gauche|Synopsis)\.so						^GC_
 /bin/inkview
 
 # Smoke does static linking
-/lib(32|64)/libsmokekde\.so
+/lib(32|64)?/libsmokekde\.so
 
 # Broken proprietaryware
 /lib/fmodex
 
 # Link statically to libpcap, may bundle libopts
-/bin/tcp{rewrite,bridge,prep,replay}	  ^(options[A-Z]|pcap_)
+/bin/tcp(rewrite|bridge|prep|replay)	  ^(options[A-Z]|pcap_)
 
 # Link statically to libdspam
 /bin/(css(clean|stat|convert)|dispamc)	^_ds_

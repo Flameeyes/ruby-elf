@@ -222,4 +222,3 @@ strigi/strigi[lt]a_.*\.so		^(deleteS|s)trigiAnalyzerFactory$
 /lib(32|64)?/gkrellm2/plugins/.*\.so		^gkrellm_init_plugin$
 /lib(32|64)?/cinelerra/.*\.so			^new_plugin$
 /lib(32|64)?/thunarx-[0-9\.]+/.*\.so		^thunar_extension_(initialize|list_types|shutdown)$
-/lib(32|64)?
