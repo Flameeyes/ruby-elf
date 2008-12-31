@@ -63,7 +63,7 @@ suppression_files.each do |suppression|
     file.each_line do |line|
       path, symbols = line.
         gsub(/#\s.*/, '').
-        strip!.
+        strip.
         split(/\s+/, 2)
       
       next unless path

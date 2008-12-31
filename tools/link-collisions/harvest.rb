@@ -115,7 +115,7 @@ suppression_files.each do |suppression|
     file.each_line do |line|
       path, symbols = line.
         gsub(/#\s.*/, '').
-        strip!.
+        strip.
         split(/\s+/, 2)
       
       next unless path
@@ -134,16 +134,11 @@ multimplementations = []
 multimplementation_files.each do |multimplementation|
   File.open(multimplementation) do |file|
     file.each_line do |line|
-      begin
-        implementation, paths = line.
-          gsub(/#\s.*/, '').
-          strip!.
-          split(/\s+/, 2)
-      rescue NoMethodError
-        # This happens for empty lines.
-        next
-      end
-      
+      implementation, paths = line.
+        gsub(/#\s.*/, '').
+        strip.
+        split(/\s+/, 2)
+
       next unless implementation
       next unless paths
       
