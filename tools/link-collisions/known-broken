@@ -130,4 +130,10 @@ lib(gcj|gauche|Synopsis)\.so						^GC_
 /bin/(css(clean|stat|convert)|dispamc)	^_ds_
 
 # Static link to readline (unwarranted)
-/bin(gdb-armulator|insight)		^_?rl_
+/bin/(gdb-armulator|insight)		^_?rl_
+
+# Static internal link
+/bin/fun(calc|cen|cnts|cone|disp|head|hist|image|join|merge|sky|table)
+
+# They use liboscar
+/bin/(bitlbee|pork)			^aim_

@@ -68,7 +68,8 @@
 /(goffice|gnumeric)/[0-9\.]+/plugins/.*\.so	^go_plugin_(depends|header)$
 /evolution/[0-9\.]+/plugins/.*\.so		^e_plugin_lib_enable$
 /abiword-[0-9\.]+/plugins/lib.*\.so		^abi_plugin_((un)?register|supports_version)$
-/libgda(-[0-9\.]+)/providers/lib.*\.so		^plugin_(init|get_(name|description)|create_provider)$
+/libgda(-[0-9\.]+)?/providers/lib.*\.so		^plugin_(init|get_(name|description)|create_provider)$
+/gedit-[0-9]+/plugins/lib.*\.so			^register_gedit_plugin$
 
 # ALSA plugins
 .*/alsa-lib/smixer/smixer-.*\.so	^(alsa_mixer_simple_(init|event)|selectors)$
@@ -173,7 +174,7 @@ strigi/strigi[lt]a_.*\.so		^(deleteS|s)trigiAnalyzerFactory$
 # Pidgin
 .*/(pidgin|purple-2)/.*\.so		^purple_init_plugin$
 
-.*/lpe/.*mode\.so			^mode_enter$
+.*/lpe/.*mode\.so			^mode_(enter|accept|highlight|init)$
 
 # GEGL
 .*/gegl-.*/.*\.so			^gegl_(module_(register|query)|chant_get_type)$
@@ -222,3 +223,22 @@ strigi/strigi[lt]a_.*\.so		^(deleteS|s)trigiAnalyzerFactory$
 /lib(32|64)?/gkrellm2/plugins/.*\.so		^gkrellm_init_plugin$
 /lib(32|64)?/cinelerra/.*\.so			^new_plugin$
 /lib(32|64)?/thunarx-[0-9\.]+/.*\.so		^thunar_extension_(initialize|list_types|shutdown)$
+/lib(32|64)?/jabberd/mod_.*\.so			^module_init$
+/lib(32|64)?/lftp/[0-9\.]+/.*\.so		^module_init$
+/lib(32|64)?/svxlink/.*\.so			^module_init$
+/lib(32|64)?/tablix2/.*\.so			^module_init$
+/lib(32|64)?/streamtuner/plugins/.*\.so		^plugin_init$
+/lib(32|64)?/pptp/.*\.so			^plugin_init$
+/lib(32|64)?/pppd/[0-9\.]+/.*\.so		^plugin_init$
+/lib(32|64)?/planner/plugins/.*\.so		^plugin_init$
+/lib(32|64)?/openvas/plugins/.*\.so		^plugin_init$
+/lib(32|64)?/libgnomedb/plugins/.*\.so		^plugin_init$
+/lib(32|64)?/geany/.*\.so			^plugin_init$
+/lib(32|64)?/blender/.*/.*\.so			^plugin_init$
+/lib(32|64)?/multisync/.*\.so			^plugin_init$
+/lib(32|64)?/sensors-applet/plugins/.*\.so	^plugin_name$
+/lib(32|64)?/mythtv/plugins/.*\.so		^mythplugin_(init|config|run)$
+/lib(32|64)?/kradio/plugins/.*\.so		^KRadioPlugin_(LoadLibrary|GetAvailablePlugins|CreatePlugin|UnloadLibrary)$
+/lib(32|64)?/libmirage/.*\.so			^mirage_plugin_(un)?load_plugin$
+/lib(32|64)?/awn/applets/.*/.*\.so		^awl_applet_factory_initp$
+/lib(32|64)?/rxtx-2/.*\.so			^translate_((data|stop)_bits|parity|speed)$

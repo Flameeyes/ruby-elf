@@ -32,7 +32,7 @@ osswrappers		/lib(|32|64)/lib(aoss|(esd|pa|)dsp)\.so$
 libxerces		/lib(|32|64)/libxerces-(c|depdom)\.so
 
 # Boost
-libboost_$2		/lib(|32|64)/libboost_(date_time|filesystem|graph|iostreams|prg_exec_monitor|program_options|python|random|regex|serializaiton|signals|unit_test_framework|wave|wserialization)(-mt)?.so
+libboost_$2		/lib(|32|64)/libboost_([a-z_]+)(-mt)?.so
 
 # KDE's libgpgme++
 libgpgme++		/lib(|32|64)/libgpgme\+\+(-pth(read)?)?\.so
@@ -64,6 +64,20 @@ lib$5			/lib(32|64)?/(nvu|mozilla-(sunbird|thunderbird)|xulrunner(-[0-9\.]+)?|se
 libstlport		/lib(32|64)?/libstlport((stl)?g?)\.so
 
 libfann			/lib(32|64)?/lib(double|float|fixed)?fann.so
+
+libcilk			/lib(32|64)?/libcilk(\.g)?(\.p)?\.so
+
+libcanna		/lib(32|64)?/libcanna(16)?\.so
+libRKC			/lib(32|64)?/libKRC(16)?\.so
+
+odbc			/lib(32|64)?/lib(i|my)?odbc5?\.so
+odbc			/lib(32|64)?/wine/odbc32\.dll\.so
+
+libspread		/lib(32|64)?/libt?spread(-core)?\.so
+
+libgraph		/lib(32|64)?/lib[ac]?graph\.so
+
+libPoco$2		/lib(32|64)?/libPoco([A-Za-z]+)d?\.so
 
 # Library consolidation, keep at the end!
 #
