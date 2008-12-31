@@ -83,9 +83,11 @@ db = PGconn.open(pg_params)
 db.exec("DROP TABLE IF EXISTS symbols, multimplementations, objects CASCADE")
 
 db.exec("CREATE TABLE objects ( id INTEGER PRIMARY KEY, name VARCHAR(4096), abi VARCHAR(255), UNIQUE(name, abi) )")
+db.exec("CREATE INDEX objects_name ON objects(name)")
 db.exec("CREATE TABLE multimplementations ( id INTEGER REFERENCES objects(id) ON DELETE CASCADE, path VARCHAR(4096), UNIQUE(path) )")
 db.exec("CREATE TABLE symbols ( object INTEGER REFERENCES objects(id) ON DELETE CASCADE, symbol TEXT,
          PRIMARY KEY(object, symbol) )")
+db.exec("CREATE INDEX symbols_symbol ON symbols(symbol)")
 
 db.exec("CREATE VIEW symbol_count AS
          SELECT symbol, abi, COUNT(*) AS occurrences FROM symbols INNER JOIN objects ON symbols.object = objects.id GROUP BY symbol, abi")
