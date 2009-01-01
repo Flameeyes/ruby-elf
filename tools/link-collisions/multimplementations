@@ -50,7 +50,7 @@ libffi			libffi-[0-9\.]+(-beta)?\.so
 
 libgvc			libgvc(_builtins)?\.so
 
-mercury-$3		/mercury-.*/lib/(asm_fast|hlc).gc(.(tr|memprof|prof))?/(.*)\.so
+mercury-$4		/mercury-.*/lib/(asm_fast|hlc).gc(.(tr|memprof|prof))?/(.*)\.so
 
 glide3			/lib(32|64)?/libglide3-v[1235]\.so
 
