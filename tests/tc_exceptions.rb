@@ -172,14 +172,12 @@ class TC_Exceptions < Test::Unit::TestCase
   # Test behaviour when a file lacks a string table and a section is
   # tested by name.
   #
-  # Expected behaviour: Elf::File::MissingStringTable exception is
-  # raised
+  # Expected behaviour: the method return false, as the section (by
+  # name) is certainly not present.
   def test_missing_string_table_test
-    assert_raise Elf::File::MissingStringTable do
-      elf = Elf::File.new(Elf::TestUnit::TestDir + "invalid_unknown_section_type")
-      elf.has_section?(".symtab")
-      elf.close
-    end
+    elf = Elf::File.new(Elf::TestUnit::TestDir + "invalid_unknown_section_type")
+    assert_equal false, elf.has_section?(".symtab")
+    elf.close
   end
 
   # Test behaviour when a section is requested in a file that does not

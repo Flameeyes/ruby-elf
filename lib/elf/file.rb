@@ -196,16 +196,24 @@ module Elf
         @sections_data << sectdata
       end
 
-      # Maybe we should warn, but it's still possible that a corrupted
-      # ELF file needs to be read.
-      return if shstrndx == 0 or # no string table present
-        not self[shstrndx].is_a? StringTable
+      # When the section header string table index is set to zero,
+      # there is not going to be a string table in the file, this
+      # happens usually when the file is a static ELF file built
+      # directly with an assembler.
+      #
+      # To handle this specific case, set the @string_table attribute
+      # to false, that is distinct from nil, and raise
+      # MissingStringTable on request. If the string table is not yet
+      # loaded raise instead StringTableNotLoaded.
+      if shstrndx == 0 or not self[shstrndx].is_a? StringTable
+        @string_table = false
+      else
+        @string_table = self[shstrndx]
 
-      @string_table = self[shstrndx]
-
-      @sections_names = {}
-      @sections_data.each do |sectdata|
-        @sections_names[@string_table[sectdata[:name_idx]]] = sectdata[:idx]
+        @sections_names = {}
+        @sections_data.each do |sectdata|
+          @sections_names[@string_table[sectdata[:name_idx]]] = sectdata[:idx]
+        end
       end
     end
 
@@ -231,15 +239,23 @@ module Elf
       end
     end
 
+    class StringTableNotLoaded < Exception
+      def initialize(sect_name)
+        super("Requested section '#{sect_name}' but there is no string table yet.")
+      end
+    end
+
     class MissingStringTable < Exception
       def initialize(sect_name)
-        super("Requested section '#{sect_name}' but there is no string table (yet).")
+        super("Requested section '#{sect_name}' but the file has no string table.")
       end
     end
 
     def [](sect_idx_or_name)
-      raise MissingStringTable.new(sect_idx_or_name) if 
-        sect_idx_or_name.is_a? String and @string_table.nil?
+      if sect_idx_or_name.is_a? String and not @string_table.is_a? Elf::Section
+        raise MissingStringTable.new(sect_idx_or_name) if @string_table == false
+        raise StringTableNotLoaded.new(sect_idx_or_name) if @string_table.nil?
+      end
 
       load_section(sect_idx_or_name) unless
         @sections.has_key? sect_idx_or_name
@@ -263,8 +279,11 @@ module Elf
     end
 
     def has_section?(sect_idx_or_name)
-      raise MissingStringTable.new(sect_idx_or_name) if 
-        sect_idx_or_name.is_a? String and @string_table.nil?
+
+      if sect_idx_or_name.is_a? String and not @string_table.is_a? Elf::Section
+        return false if @string_table == false
+        raise StringTableNotLoaded.new(sect_idx_or_name) if @string_table.nil?
+      end
 
       if sect_idx_or_name.is_a? Integer
         return @sections_data[sect_idx_or_name] != nil
