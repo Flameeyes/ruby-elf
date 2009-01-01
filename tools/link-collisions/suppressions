@@ -139,7 +139,10 @@
 .*/lib(|32|64)/zsh/.*/zsh/.*\.so$	^(enables|features)_$
 
 # OSS wrappers and other LD_PRELOAD libraries
-lib((pa|esd|arts)dsp|aoss|jackasyn|(soap|sand)box|fake(ch)?root|zzuf|v4l(1compat|2convert)|trash|syncdir)		^((__)?m(un)?map|f?(open(64)?|close)|ioctl|poll|chown|unlink|rename)$
+lib((pa|esd|arts)dsp|aoss|jackasyn|(soap|sand)box|fake(ch)?root|zzuf|v4l(1compat|2convert)|trash|syncdir)		^((__)?m(un)?map(64)?|f?(open(64)?|close)|ioctl|poll|chown|unlink|rename)$
+
+# Memory debug libraries
+lib(mudflap(th)?|dmalloc(cxx)?|duma|efence|jemalloc|mem(usage|intercept)|zzuf)\.so	^(([mc]|re)alloc|free|m(un)?map(64)?)$
 
 # Strigi
 strigi/strigi[lt]a_.*\.so		^(deleteS|s)trigiAnalyzerFactory$
@@ -206,7 +209,7 @@ strigi/strigi[lt]a_.*\.so		^(deleteS|s)trigiAnalyzerFactory$
 /lib(32|64)?/mozart/cache/x-oz/		^oz_module_name$
 
 # Netscape/Mozilla plugins
-.*					^NP_(Get(MIMEDescription|Value)|Initialize|Shutdown|N_(DestroyStream|Get(URL|Value)|Mem(Alloc|Flush|Free)|NewStream|PostURL|ReloadPlugins|RequestRead|Status|UserAgent|Version|Write))$
+.*					^NP[NP]?_(Get(MIMEDescription|Value|JavaClass|URL)|Initialize|Shutdown|(Destroy|New)(Stream)?|Mem(Alloc|Flush|Free)|PostURL|ReloadPlugins|RequestRead|Status|UserAgent|Version|Write|SetWindow|Print|StreamAsFile|Write(Ready)?)
 
 /lib(32|64)?/rep/.*\.so$		^rep_dl_init$
 

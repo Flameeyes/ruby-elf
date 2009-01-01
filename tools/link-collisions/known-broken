@@ -137,3 +137,6 @@ lib(gcj|gauche|Synopsis)\.so						^GC_
 
 # They use liboscar
 /bin/(bitlbee|pork)			^aim_
+
+# KDE3 and ARTS come with a modified libltdl.
+/lib(32|64)?/lib(kdecore|arts(c|dsp_st)|mcop)\.so	^_?lt_dl

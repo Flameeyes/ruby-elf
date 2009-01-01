@@ -50,7 +50,7 @@ libffi			libffi-[0-9\.]+(-beta)?\.so
 
 libgvc			libgvc(_builtins)?\.so
 
-mercury-$3		/mercury-.*/lib/asm_fast.gc(.(tr|memprof|prof))?/(.*)\.so
+mercury-$3		/mercury-.*/lib/(asm_fast|hlc).gc(.(tr|memprof|prof))?/(.*)\.so
 
 glide3			/lib(32|64)?/libglide3-v[1235]\.so
 
@@ -70,14 +70,17 @@ libcilk			/lib(32|64)?/libcilk(\.g)?(\.p)?\.so
 libcanna		/lib(32|64)?/libcanna(16)?\.so
 libRKC			/lib(32|64)?/libKRC(16)?\.so
 
-odbc			/lib(32|64)?/lib(i|my)?odbc5?\.so
+odbc			/lib(32|64)?/lib(i|my)?odbc(5|inst|txt|psql)?(-[0-9\.]+)?\.so
 odbc			/lib(32|64)?/wine/odbc32\.dll\.so
+odbc			/lib(32|64)?/libtemplate\.so
 
 libspread		/lib(32|64)?/libt?spread(-core)?\.so
 
 libgraph		/lib(32|64)?/lib[ac]?graph\.so
 
-libPoco$2		/lib(32|64)?/libPoco([A-Za-z]+)d?\.so
+libPoco$2		/lib(32|64)?/libPoco([A-Za-z]+[a-ce-zA-Z])d?\.so
+
+xvmc			/lib(32|64)?/lib(chrome|I(810|ntel))?XvMC(Pro|NVIDIA|W)?\.so
 
 # Library consolidation, keep at the end!
 #
