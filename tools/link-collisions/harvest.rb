@@ -186,6 +186,9 @@ class Pathname
       # Explicitly list this so that it won't pollute the output
       rescue Elf::File::NotAnELF
         next
+      # When using C-c to stop, well, stop.
+      rescue Interrupt
+        raise
       rescue Exception => e
         $stderr.puts "Ignoring #{entry} (#{e.message})"
         next
