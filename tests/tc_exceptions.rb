@@ -26,18 +26,20 @@ require 'elf'
 # ELF files, so that reading a non-ELF file won't cause unexpected
 # problems.
 class TC_Exceptions < Test::Unit::TestCase
+  TestDir = Elf::TestUnit::TestDir + "invalid/"
+
   # Test behaviour when a file is requested that is not present.
   #
   # Expected behaviour: Errno::ENOENT exception is raised
   def test_nofile
     # Check that the file does not exist or we're going to throw an
     # exception to signal an error in the test.
-    if File.exists? Elf::TestUnit::TestDir + "invalid_notfound"
+    if File.exists? TestDir + "notfound"
       raise Exception.new("A file named 'invalid_notfound' is present in the test directory")
     end
 
     assert_raise Errno::ENOENT do
-      elf = Elf::File.new(Elf::TestUnit::TestDir + "invalid_notfound")
+      elf = Elf::File.new(TestDir + "notfound")
     end
   end
 
@@ -46,7 +48,7 @@ class TC_Exceptions < Test::Unit::TestCase
   # Expected behaviour: Elf::File::NotAnElf exception is raised.
   def test_notanelf
     assert_raise Elf::File::NotAnELF do
-      elf = Elf::File.new(Elf::TestUnit::TestDir + "invalid_nonelf")
+      elf = Elf::File.new(TestDir + "nonelf")
       elf.close
     end
   end
@@ -58,7 +60,7 @@ class TC_Exceptions < Test::Unit::TestCase
   # Expected behaviour: Elf::File::NotAnElf exception is raised.
   def test_shortfile
     assert_raise Elf::File::NotAnELF do
-      elf = Elf::File.new(Elf::TestUnit::TestDir + "invalid_shortfile")
+      elf = Elf::File.new(TestDir + "shortfile")
       elf.close
     end
   end
@@ -70,7 +72,7 @@ class TC_Exceptions < Test::Unit::TestCase
   # raised.
   def test_invalid_elfclass
     assert_raise Elf::File::InvalidElfClass do
-      elf = Elf::File.new(Elf::TestUnit::TestDir + "invalid_invalidclass")
+      elf = Elf::File.new(TestDir + "invalidclass")
       elf.close
     end
   end
@@ -82,7 +84,7 @@ class TC_Exceptions < Test::Unit::TestCase
   # raised.
   def test_invalid_encoding
     assert_raise Elf::File::InvalidDataEncoding do
-      elf = Elf::File.new(Elf::TestUnit::TestDir + "invalid_invalidencoding")
+      elf = Elf::File.new(TestDir + "invalidencoding")
       elf.close
     end
   end
@@ -94,7 +96,7 @@ class TC_Exceptions < Test::Unit::TestCase
   # raised.
   def test_unsupported_version
     assert_raise Elf::File::UnsupportedElfVersion do
-      elf = Elf::File.new(Elf::TestUnit::TestDir + "invalid_unsupportedversion")
+      elf = Elf::File.new(TestDir + "unsupportedversion")
       elf.close
     end
   end
@@ -104,7 +106,7 @@ class TC_Exceptions < Test::Unit::TestCase
   # Expected behaviour: Elf::File::InvalidOsAbi exception is raised.
   def test_invalid_abi
     assert_raise Elf::File::InvalidOsAbi do
-      elf = Elf::File.new(Elf::TestUnit::TestDir + "invalid_invalidabi")
+      elf = Elf::File.new(TestDir + "invalidabi")
       elf.close
     end
   end
@@ -115,7 +117,7 @@ class TC_Exceptions < Test::Unit::TestCase
   # Expected behaviour: Elf::File::InvalidElfType exception is raised.
   def test_invalid_type
     assert_raise Elf::File::InvalidElfType do
-      elf = Elf::File.new(Elf::TestUnit::TestDir + "invalid_invalidtype")
+      elf = Elf::File.new(TestDir + "invalidtype")
       elf.close
     end
   end
@@ -126,7 +128,7 @@ class TC_Exceptions < Test::Unit::TestCase
   # Expected behaviour: Elf::File::InvalidMachine exception is raised.
   def test_invalid_machine
     assert_raise Elf::File::InvalidMachine do
-      elf = Elf::File.new(Elf::TestUnit::TestDir + "invalid_invalidmachine")
+      elf = Elf::File.new(TestDir + "invalidmachine")
       elf.close
     end
   end
@@ -137,7 +139,7 @@ class TC_Exceptions < Test::Unit::TestCase
   # Expected behaviour: Elf::Section::UnknownType exception is raised
   def test_unknown_section_type
     begin
-      elf = Elf::File.new(Elf::TestUnit::TestDir + "invalid_unknown_section_type")
+      elf = Elf::File.new(TestDir + "unknown_section_type")
       elf[11] # We need an explicit request for the corrupted section
       elf.close
     rescue Elf::Section::UnknownType => e
@@ -163,7 +165,7 @@ class TC_Exceptions < Test::Unit::TestCase
   # raised
   def test_missing_string_table_request
     assert_raise Elf::File::MissingStringTable do
-      elf = Elf::File.new(Elf::TestUnit::TestDir + "invalid_unknown_section_type")
+      elf = Elf::File.new(TestDir + "unknown_section_type")
       elf[".symtab"]
       elf.close
     end
@@ -175,7 +177,7 @@ class TC_Exceptions < Test::Unit::TestCase
   # Expected behaviour: the method return false, as the section (by
   # name) is certainly not present.
   def test_missing_string_table_test
-    elf = Elf::File.new(Elf::TestUnit::TestDir + "invalid_unknown_section_type")
+    elf = Elf::File.new(TestDir + "unknown_section_type")
     assert_equal false, elf.has_section?(".symtab")
     elf.close
   end
