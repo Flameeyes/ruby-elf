@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 # Copyright © 2007, Diego E. "Flameeyes" Pettenò <flameeyes@gmail.com>
 #
 # This program is free software; you can redistribute it and/or modify
@@ -17,7 +18,7 @@
 require 'elf'
 
 class Elf::TestUnit < Test::Unit::TestCase
-  TestDir = Pathname.new(__FILE__).dirname + "binaries"
+  TestDir = Pathname.new(__FILE__).dirname + "data"
 
   def filename
     self.class::Filename
