@@ -24,8 +24,6 @@ require 'elf'
 # This test will load the file built from the symboltypes.c source
 # file and will ensure that the symbols in there reports the correct
 # nm(1)-style code.
-#
-# Right now only Linux/AMD64 version of the file is tested
 class TC_NM_Codes < Elf::TestUnit
   BaseFilename = "symboltypes.o"
 
