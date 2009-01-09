@@ -32,32 +32,27 @@ class TC_Static_Executable < Elf::TestExecutable
   end
 
   class LinuxX86 < self
-    Filename = "linux_x86_" + BaseFilename
     include Elf::TestExecutable::LinuxX86
   end
 
   class LinuxAMD64 < self
-    Filename = "linux_amd64_" + BaseFilename
     include Elf::TestExecutable::LinuxAMD64
   end
 
   class LinuxAMD64_ICC < self
-    Filename = "linux_amd64_icc_" + BaseFilename
+    Compiler = "icc"
     include Elf::TestExecutable::LinuxAMD64
   end
 
   class LinuxSparc < self
-    Filename = "linux_sparc_" + BaseFilename
     include Elf::TestExecutable::LinuxSparc
   end
 
   class LinuxArm < self
-    Filename = "linux_arm_" + BaseFilename
     include Elf::TestExecutable::LinuxArm
   end
 
   class BareH8300 < self
-    Filename = "bare_h8300_" + BaseFilename
     include Elf::TestExecutable::BareH8300
   end
 

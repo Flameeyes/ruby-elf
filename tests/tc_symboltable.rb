@@ -21,7 +21,10 @@ require 'elf'
 
 # Test handling of symbols tables in ELF files with Ruby-elf
 class TC_SymbolTable < Elf::TestUnit
-  Filename = "linux_amd64_symboltypes.o"
+  Os = "linux"
+  Arch = "amd64"
+  Compiler="gcc"
+  BaseFilename = "symboltypes.o"
   ExpectedSections = [".symtab", ".strtab"]
 
   ExpectedSectionTypes = {

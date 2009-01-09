@@ -25,7 +25,10 @@ require 'elf'
 # Sun-specific extensions, this test checks for their presence and for
 # their type and value, to ensure ruby-elf detects them correctly.
 class TC_SunW_Sections < Elf::TestUnit
-  Filename = "solaris_x86_suncc_executable"
+  Os = "solaris"
+  Arch = "x86"
+  Compiler = "suncc"
+  BaseFilename = "dynamic_executable"
 
   def test_file
     assert_equal(Elf::OsAbi::SysV, @elf.abi,

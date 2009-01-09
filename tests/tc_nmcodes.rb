@@ -27,6 +27,8 @@ require 'elf'
 #
 # Right now only Linux/AMD64 version of the file is tested
 class TC_NM_Codes < Elf::TestUnit
+  BaseFilename = "symboltypes.o"
+
   ExpectedSections = [".symtab"]
 
   def dotest_symbols(table)
@@ -78,6 +80,8 @@ class TC_NM_Codes < Elf::TestUnit
   end
 
   module ICC
+    Compiler = "icc"
+    ExpectedABI = Elf::OsAbi::Linux
     # For some reason ICC adds a .0 to unit-static symbols
     def test_static
       dotest_symbols({ "static_variable.0"                   => 'd',
@@ -93,6 +97,7 @@ class TC_NM_Codes < Elf::TestUnit
   end
 
   module GCC
+    Compiler = "gcc"
     def test_hot_cold_functions
       dotest_symbols({ "external_cold_function" => 'T',
                        "static_cold_function"   => 't',
@@ -122,17 +127,18 @@ class TC_NM_Codes < Elf::TestUnit
   # end
 
   class LinuxAMD64 < TC_NM_Codes
-    Filename = "linux_amd64_symboltypes.o"
     include GCC
+    include Elf::TestExecutable::LinuxAMD64
   end
 
   class LinuxAMD64_ICC < TC_NM_Codes
-    Filename = "linux_amd64_icc_symboltypes.o"
+    include Elf::TestExecutable::LinuxAMD64
     include ICC
   end
 
   class LinuxAMD64_SunStudio < TC_NM_Codes
-    Filename = "linux_amd64_suncc_symboltypes.o"
+    include Elf::TestExecutable::LinuxAMD64
+    Compiler = "suncc"
 
     # Sun Studio generates different code!
     def test_tls
@@ -146,7 +152,7 @@ class TC_NM_Codes < Elf::TestUnit
   end
 
   class SolarisX86_SunStudio < TC_NM_Codes
-    Filename = "solaris_x86_suncc_symboltypes.o"
+    include Elf::TestExecutable::SolarisX86_SunStudio
 
     # Sun Studio generates different code!
     def test_tls

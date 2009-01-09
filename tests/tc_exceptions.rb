@@ -187,12 +187,12 @@ class TC_Exceptions < Test::Unit::TestCase
   #
   # Expected behaviour: Elf::Section::MissingSection exception is raised
   def test_missing_section
-    elf = Elf::File.new(Elf::TestUnit::TestDir + "linux_arm_dynamic_executable.o")
+    elf = Elf::File.new(Elf::TestUnit::TestDir + "linux/arm/gcc/dynamic_executable.o")
 
     # Make sure that the has_section? function behaves correctly and
     # _don't_ throw an exception.
     assert(!elf.has_section?(".data.rel"),
-           ".data.rel section present in linux_arm_dynamic_executable.o")
+           ".data.rel section present in linux/arm/gcc/dynamic_executable.o")
 
     assert_raise Elf::File::MissingSection do
       elf[".data.rel"]
@@ -207,7 +207,7 @@ class TC_Exceptions < Test::Unit::TestCase
   # Expected behaviour: Elf::Section:MissingSection exception is
   # raised
   def test_missing_section_index
-    elf = Elf::File.new(Elf::TestUnit::TestDir + "linux_arm_dynamic_executable.o")
+    elf = Elf::File.new(Elf::TestUnit::TestDir + "linux/arm/gcc/dynamic_executable.o")
 
     assert_raise Elf::File::MissingSection do
       elf[12300]
@@ -221,7 +221,7 @@ class TC_Exceptions < Test::Unit::TestCase
   #
   # Expected behaviour: TypeError exception is raised
   def test_has_section_invalid_argument
-    elf = Elf::File.new(Elf::TestUnit::TestDir + "linux_arm_dynamic_executable.o")
+    elf = Elf::File.new(Elf::TestUnit::TestDir + "linux/arm/gcc/dynamic_executable.o")
 
     assert_raise TypeError do
       elf.has_section?({:a => :b})
@@ -235,7 +235,7 @@ class TC_Exceptions < Test::Unit::TestCase
   #
   # Expected behaviour: TypeError exception is raised
   def test_invalid_section_comparison
-    elf = Elf::File.new(Elf::TestUnit::TestDir + "linux_arm_dynamic_executable.o")
+    elf = Elf::File.new(Elf::TestUnit::TestDir + "linux/arm/gcc/dynamic_executable.o")
 
     assert_raise TypeError do
       elf[".ARM.attributes"] == "Foobar"

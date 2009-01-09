@@ -96,57 +96,47 @@ class TC_Dynamic_Executable < Elf::TestExecutable
       merge({
               Elf::Dynamic::Type::GNUHash => ".gnu.hash"
             })
+
+    ExpectedLibC = "libc.so.6"
   end
 
   class LinuxX86 < self
-    Filename = "linux_x86_" + BaseFilename
-    ExpectedLibC = "libc.so.6"
     include Elf::TestExecutable::LinuxX86
     include GLIBC
   end
 
   class LinuxAMD64 < self
-    Filename = "linux_amd64_" + BaseFilename
-    ExpectedLibC = "libc.so.6"
     include Elf::TestExecutable::LinuxAMD64
     include GLIBC
   end
 
   class LinuxAMD64_ICC < self
-    Filename = "linux_amd64_icc_" + BaseFilename
-    ExpectedLibC = "libc.so.6"
+    Compiler = "icc"
     include Elf::TestExecutable::LinuxAMD64
     include GLIBC
   end
 
   class LinuxAMD64_SunStudio < self
-    Filename = "linux_amd64_suncc_" + BaseFilename
     ExpectedLibC = "libc.so.6"
     include Elf::TestExecutable::LinuxAMD64
   end
 
   class LinuxSparc < self
-    Filename = "linux_sparc_" + BaseFilename
-    ExpectedLibC = "libc.so.6"
     include Elf::TestExecutable::LinuxSparc
     include GLIBC
   end
 
   class LinuxArm < self
-    Filename = "linux_arm_" + BaseFilename
-    ExpectedLibC = "libc.so.6"
     include Elf::TestExecutable::LinuxArm
     include GLIBC
   end
 
   class SolarisX86_GCC < self
-    Filename = "solaris_x86_gcc_executable"
     ExpectedLibC = "libc.so.1"
     include Elf::TestExecutable::SolarisX86_GCC
   end
 
   class SolarisX86_SunStudio < self
-    Filename = "solaris_x86_suncc_executable"
     ExpectedLibC = "libc.so.1"
     include Elf::TestExecutable::SolarisX86_SunStudio
   end

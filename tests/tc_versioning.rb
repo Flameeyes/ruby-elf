@@ -25,7 +25,10 @@ require 'elf'
 # create symbols with multiple versions; this test ensures that
 # ruby-elf can read the versioning information correctly.
 class TC_Versioning < Elf::TestUnit
-  Filename = "linux_amd64_versioning.so"
+  Os = "linux"
+  Arch = "amd64"
+  Compiler = "gcc"
+  BaseFilename = "versioning.so"
   ExpectedSections = [".gnu.version", ".gnu.version_d", ".gnu.version_r"]
 
   ExpectedSectionTypes = {

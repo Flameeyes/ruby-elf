@@ -24,7 +24,10 @@ require 'elf'
 # test is intended to properly check for presence and parsing of this
 # section, and to avoid possible misreading of it.
 class TC_ARM < Elf::TestUnit
-  Filename = "linux_arm_dynamic_executable.o"
+  Os = "linux"
+  Arch = "arm"
+  Compiler = "gcc"
+  BaseFilename = "dynamic_executable.o"
 
   ExpectedSections = [ ".ARM.attributes" ]
   ExpectedSectionTypes = {

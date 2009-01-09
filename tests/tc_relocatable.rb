@@ -31,50 +31,44 @@ class TC_Relocatable < Elf::TestExecutable
   end
 
   class LinuxX86 < self
-    Filename = "linux_x86_" + BaseFilename
     include Elf::TestExecutable::LinuxX86
   end
 
   class LinuxAMD64 < self
-    Filename = "linux_amd64_" + BaseFilename
     include Elf::TestExecutable::LinuxAMD64
   end
  
   class LinuxAMD64_ICC < self
-    Filename = "linux_amd64_icc_" + BaseFilename
+    Compiler = "icc"
     include Elf::TestExecutable::LinuxAMD64
 
     ExpectedABI = Elf::OsAbi::Linux
   end
 
   class LinuxAMD64_SunStudio < self
-    Filename = "linux_amd64_suncc_" + BaseFilename
+    Compiler = "suncc"
     include Elf::TestExecutable::LinuxAMD64
   end
  
   class LinuxSparc < self
-    Filename = "linux_sparc_" + BaseFilename
     include Elf::TestExecutable::LinuxSparc
     ExpectedMachine = Elf::Machine::Sparc
   end
 
   class LinuxArm < self
-    Filename = "linux_arm_" + BaseFilename
     include Elf::TestExecutable::LinuxArm
   end
 
   class BareH8300 < self
-    Filename = "bare_h8300_static_executable.o"
+    BaseFilename = "static_executable.o"
     include Elf::TestExecutable::BareH8300
   end
 
   class SolarisX86_GCC < self
-    Filename = "solaris_x86_gcc_executable.o"
     include Elf::TestExecutable::SolarisX86_GCC
   end
 
   class SolarisX86_SunStudio < self
-    Filename = "solaris_x86_suncc_executable.o"
     include Elf::TestExecutable::SolarisX86_SunStudio
   end
 

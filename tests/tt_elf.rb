@@ -21,7 +21,7 @@ class Elf::TestUnit < Test::Unit::TestCase
   TestDir = Pathname.new(__FILE__).dirname + "data"
 
   def filename
-    self.class::Filename
+    "#{self.class::Os}/#{self.class::Arch}/#{self.class::Compiler}/#{self.class::BaseFilename}"
   end
 
   def setup
@@ -202,6 +202,10 @@ class Elf::TestExecutable < Elf::TestUnit
   end
 
   module LinuxX86
+    Os = "linux"
+    Arch = "x86"
+    Compiler = "gcc"
+
     ExpectedElfClass = Elf::Class::Elf32
     ExpectedDataEncoding = Elf::DataEncoding::Lsb
     ExpectedABI = Elf::OsAbi::SysV
@@ -210,6 +214,10 @@ class Elf::TestExecutable < Elf::TestUnit
   end
 
   module LinuxAMD64
+    Os = "linux"
+    Arch = "amd64"
+    Compiler = "gcc"
+
     ExpectedElfClass = Elf::Class::Elf64
     ExpectedDataEncoding = Elf::DataEncoding::Lsb
     ExpectedABI = Elf::OsAbi::SysV
@@ -218,6 +226,10 @@ class Elf::TestExecutable < Elf::TestUnit
   end
 
   module LinuxSparc
+    Os = "linux"
+    Arch = "sparc"
+    Compiler = "gcc"
+
     ExpectedElfClass = Elf::Class::Elf32
     ExpectedDataEncoding = Elf::DataEncoding::Msb
     ExpectedABI = Elf::OsAbi::SysV
@@ -226,6 +238,10 @@ class Elf::TestExecutable < Elf::TestUnit
   end
 
   module LinuxArm
+    Os = "linux"
+    Arch = "arm"
+    Compiler = "gcc"
+
     ExpectedElfClass = Elf::Class::Elf32
     ExpectedDataEncoding = Elf::DataEncoding::Lsb
     ExpectedABI = Elf::OsAbi::ARM
@@ -234,6 +250,10 @@ class Elf::TestExecutable < Elf::TestUnit
   end
 
   module SolarisX86_GCC
+    Os = "solaris"
+    Arch = "x86"
+    Compiler = "gcc"
+
     ExpectedElfClass = Elf::Class::Elf32
     ExpectedDataEncoding = Elf::DataEncoding::Lsb
     ExpectedABI = Elf::OsAbi::SysV
@@ -242,6 +262,10 @@ class Elf::TestExecutable < Elf::TestUnit
   end
 
   module SolarisX86_SunStudio
+    Os = "solaris"
+    Arch = "x86"
+    Compiler = "suncc"
+
     ExpectedElfClass = Elf::Class::Elf32
     ExpectedDataEncoding = Elf::DataEncoding::Lsb
     ExpectedABI = Elf::OsAbi::SysV
@@ -250,6 +274,10 @@ class Elf::TestExecutable < Elf::TestUnit
   end
 
   module BareH8300
+    Os = "bare"
+    Arch = "h8300"
+    Compiler = "gcc"
+
     ExpectedElfClass = Elf::Class::Elf32
     ExpectedDataEncoding = Elf::DataEncoding::Msb
     ExpectedABI = Elf::OsAbi::SysV
