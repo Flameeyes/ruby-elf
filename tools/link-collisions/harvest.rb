@@ -267,7 +267,9 @@ so_files.each do |so|
 
         while implementation =~ /\$([0-9]+)/ do
           match_idx = $1.to_i
-          implementation = implementation.gsub("$#{match_idx}", match[match_idx])
+          replacement = match[match_idx]
+          replacement = "" if replacement.nil?
+          implementation = implementation.gsub("$#{match_idx}", replacement)
         end
 
         name = implementation
