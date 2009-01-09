@@ -65,7 +65,7 @@
 /pango/.*/modules/pango-.*\.so			^script_engine_(list|create|init|exit)$
 /gnome-vfs-2\.0/modules/lib.*\.so		^vfs_module_(init|shutdown)$
 /libglade/.*/lib.*\.so				^glade_module_register_widgets$
-/(goffice|gnumeric)/[0-9\.]+/plugins/.*\.so	^go_plugin_(depends|header)$
+/(goffice|gnumeric)/[0-9\.]+/plugins/.*\.so	^go_plugin_(depends|header|init|shutdown)$
 /evolution/[0-9\.]+/plugins/.*\.so		^e_plugin_lib_enable$
 /abiword-[0-9\.]+/plugins/lib.*\.so		^abi_plugin_((un)?register|supports_version)$
 /libgda(-[0-9\.]+)?/providers/lib.*\.so		^plugin_(init|get_(name|description)|create_provider)$
@@ -139,7 +139,9 @@
 .*/lib(|32|64)/zsh/.*/zsh/.*\.so$	^(enables|features)_$
 
 # OSS wrappers and other LD_PRELOAD libraries
-lib((pa|esd|arts)dsp|aoss|jackasyn|(soap|sand)box|fake(ch)?root|zzuf|v4l(1compat|2convert)|trash|syncdir)		^((__)?m(un)?map(64)?|f?(open(64)?|close)|ioctl|poll|chown|unlink|rename)$
+lib((pa|esd|arts)dsp|aoss|jackasyn|(soap|sand)box|fake(ch)?root|zzuf|v4l(1compat|2convert)|trash|syncdir)		^((__)?m(un)?map(64)?|f?(open(64)?|close)|ioctl|poll)$
+
+lib(fake(ch)?root|(soap|sand)box|trash)(-[0-9\.]+)?\.so									^f?(l?ch(own|mod)|(un)?link|rename|(mk|rm)dir|remove|creat|mkfifo|l?utimen?s?|(__x)?mknode|symlink|access|truncate)(64)?(at)?$
 
 # Memory debug libraries
 lib(mudflap(th)?|dmalloc(cxx)?|duma|efence|jemalloc|mem(usage|intercept)|zzuf)\.so	^(([mc]|re)alloc|free|m(un)?map(64)?)$
@@ -209,7 +211,7 @@ strigi/strigi[lt]a_.*\.so		^(deleteS|s)trigiAnalyzerFactory$
 /lib(32|64)?/mozart/cache/x-oz/		^oz_module_name$
 
 # Netscape/Mozilla plugins
-.*					^NP[NP]?_(Get(MIMEDescription|Value|JavaClass|URL)|Initialize|Shutdown|(Destroy|New)(Stream)?|Mem(Alloc|Flush|Free)|PostURL|ReloadPlugins|RequestRead|Status|UserAgent|Version|Write|SetWindow|Print|StreamAsFile|Write(Ready)?)
+.*					^NP[NP]?_(Get(MIMEDescription|Value|Java(Class|Env|Peer)|URL|Property|StringIdentifier)|Set(Window|Value)|Initialize|Shutdown|(Destroy|New)(Stream)?|Mem(Alloc|Flush|Free)|PostURL|ReloadPlugins|RequestRead|Status|UserAgent|Version|Write|Print|StreamAsFile|Write(Ready)?|URLNotify|ForceRedraw|Invalidate(Rect|Region)|HandleEvent|(Push|Pop)PopupEnabledState|ReleaseObject)
 
 /lib(32|64)?/rep/.*\.so$		^rep_dl_init$
 
@@ -245,3 +247,5 @@ strigi/strigi[lt]a_.*\.so		^(deleteS|s)trigiAnalyzerFactory$
 /lib(32|64)?/libmirage/.*\.so			^mirage_plugin_(un)?load_plugin$
 /lib(32|64)?/awn/applets/.*/.*\.so		^awl_applet_factory_initp$
 /lib(32|64)?/rxtx-2/.*\.so			^translate_((data|stop)_bits|parity|speed)$
+/php5/lib/php/extensions/.*/.*\.so		^get_module$
+/lib(32|64)/licq/licq_.*\.so			^LP_(Build(Date|Time)|ConfigFile|Description|Exit|Init|Main(_tep)?|Name|Status|Usage|Version)$

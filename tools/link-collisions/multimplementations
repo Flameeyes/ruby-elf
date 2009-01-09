@@ -16,7 +16,7 @@ java-libmawt		jre/lib/(amd64|i386)/(xawt|motif21|headless)/libmawt.so
 
 ncurses-lib$2		/lib(|32|64)/lib(n?curses|form|menu|panel)w?\.so
 
-xorg-vservers		/bin/X(nest|vfb)$
+xorg-vservers		/bin/X(nest|vfb|org)$
 
 php5			php5/bin/php(-cgi)?$
 php5			apache2/modules/libphp5\.so
@@ -25,6 +25,7 @@ mysqlclient		/lib(|32|64)/mysql/libmysqlclient(_r)?\.so
 libldap$3		/lib(|32|64)/libldap(_r)?((-[0-9\.]+)?)\.so
 
 libXaw			/lib(|32|64)/libXaw(6|7|3d)\.so
+libXaw			/lib/(32|64)/libneXtaw\.so
 libXmu			/lib(|32|64)/libXmuu?\.so
 
 osswrappers		/lib(|32|64)/lib(aoss|(esd|pa|)dsp)\.so$
@@ -50,7 +51,7 @@ libffi			libffi-[0-9\.]+(-beta)?\.so
 
 libgvc			libgvc(_builtins)?\.so
 
-mercury-$4		/mercury-.*/lib/(asm_fast|hlc).gc(.(tr|memprof|prof))?/(.*)\.so
+mercury-$4		/mercury-.*/lib/(asm_fast|hlc|none).gc(.(tr|memprof|prof))?/(.*)\.so
 
 glide3			/lib(32|64)?/libglide3-v[1235]\.so
 
@@ -68,7 +69,7 @@ libfann			/lib(32|64)?/lib(double|float|fixed)?fann.so
 libcilk			/lib(32|64)?/libcilk(\.g)?(\.p)?\.so
 
 libcanna		/lib(32|64)?/libcanna(16)?\.so
-libRKC			/lib(32|64)?/libKRC(16)?\.so
+libRKC			/lib(32|64)?/libRKC(16)?\.so
 
 odbc			/lib(32|64)?/lib(i|my)?odbc(5|inst|txt|psql)?(-[0-9\.]+)?\.so
 odbc			/lib(32|64)?/wine/odbc32\.dll\.so
@@ -81,6 +82,26 @@ libgraph		/lib(32|64)?/lib[ac]?graph\.so
 libPoco$2		/lib(32|64)?/libPoco([A-Za-z]+[a-ce-zA-Z])d?\.so
 
 xvmc			/lib(32|64)?/lib(chrome|I(810|ntel))?XvMC(Pro|NVIDIA|W)?\.so
+
+libqwt$2		/lib(32|64)?/libqwt(plot3d)?(-qt3)?\.so
+
+efte			/bin/[cnv]efte$
+
+libodbc++		/lib(32|64)?/libodbc\+\+(-mt)?\.so
+
+libctemplate		/lib(32|64)?/libctemplate(_nothreads)?\.so
+
+lib$2			/lib(32|64)?/lib([a-zA-Z])([23]D|2D3)(-[0-9\.])?\.so
+
+opal/openh323		/lib(32|64)?/lib(opal|h323)_.*_n\.so
+
+libfmodex		/lib(32|64)?/libfmodexp?-[0-9\.]+\.so
+
+libossp-uuid		/libossp-uuid(_dce)?\.so
+
+libunwind		/libunwind(-x86)?\.so
+
+cmake			/bin/c(c?make|pack|test)$
 
 # Library consolidation, keep at the end!
 #
