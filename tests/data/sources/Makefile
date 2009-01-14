@@ -1,7 +1,7 @@
 all:
 	@echo "Please specify OS and architecture (linux-amd64, solaris-x86, ...)"
 
-linux-amd64: linux-amd64-gcc linux-amd64-suncc linux-amd64-icc
+linux-amd64: linux-amd64-gcc linux-amd64-suncc linux-amd64-icc linux-x86
 linux-amd64-gcc: \
 	../linux/amd64/gcc/dynamic_executable.o \
 	../linux/amd64/gcc/dynamic_executable \
@@ -17,6 +17,21 @@ linux-amd64-icc: \
 	../linux/amd64/icc/dynamic_executable \
 	../linux/amd64/icc/static_executable \
 	../linux/amd64/icc/symboltypes.o
+
+linux-x86: \
+	../linux/x86/gcc/dynamic_executable.o \
+	../linux/x86/gcc/dynamic_executable \
+	../linux/x86/gcc/static_executable \
+
+linux-arm: \
+	../linux/arm/gcc/dynamic_executable.o \
+	../linux/arm/gcc/dynamic_executable \
+	../linux/arm/gcc/static_executable \
+
+linux-sparc: \
+	../linux/sparc/gcc/dynamic_executable.o \
+	../linux/sparc/gcc/dynamic_executable \
+	../linux/sparc/gcc/static_executable \
 
 solaris-x86: solaris-x86-gcc solaris-x86-suncc
 solaris-x86-suncc: \
@@ -63,6 +78,33 @@ solaris-x86-gcc: \
 
 ../linux/amd64/gcc/versioning.so: versioning.c versioning.ld
 	x86_64-pc-linux-gnu-gcc -shared -fPIC versioning.c -Wl,--version-script=versioning.ld -o $@
+
+../linux/x86/gcc/dynamic_executable.o: executable.c
+	x86_64-pc-linux-gnu-gcc -m32 -c executable.c -o $@
+
+../linux/x86/gcc/dynamic_executable: executable.c
+	x86_64-pc-linux-gnu-gcc -m32 executable.c -o $@
+
+../linux/x86/gcc/static_executable: executable.c
+	x86_64-pc-linux-gnu-gcc -static -m32 executable.c -o $@
+
+../linux/arm/gcc/dynamic_executable.o: executable.c
+	arm-linux-gnu-gcc -c executable.c -o $@
+
+../linux/arm/gcc/dynamic_executable: executable.c
+	arm-linux-gnu-gcc executable.c -o $@
+
+../linux/arm/gcc/static_executable: executable.c
+	arm-linux-gnu-gcc -static executable.c -o $@
+
+../linux/sparc/gcc/dynamic_executable.o: executable.c
+	sparc64-linux-gnu-gcc -c executable.c -o $@
+
+../linux/sparc/gcc/dynamic_executable: executable.c
+	sparc64-linux-gnu-gcc executable.c -o $@
+
+../linux/sparc/gcc/static_executable: executable.c
+	sparc64-linux-gnu-gcc -static executable.c -o $@
 
 ../solaris/x86/gcc/dynamic_executable.o: executable.c
 	i386-pc-solaris2.11-gcc -c executable.c -o $@
