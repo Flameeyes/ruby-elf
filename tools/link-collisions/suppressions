@@ -71,6 +71,10 @@
 /libgda(-[0-9\.]+)?/providers/lib.*\.so		^plugin_(init|get_(name|description)|create_provider)$
 /gedit-[0-9]+/plugins/lib.*\.so			^register_gedit_plugin$
 
+# XFCE
+/lib(32|64)?/thunarx-[0-9\.]+/.*\.so		^thunar_extension_(initialize|list_types|shutdown)$
+/lib(32|64)?/xfce4/panel-plugins/.*\.so		^xfce_panel_plugin_get_construct$
+
 # ALSA plugins
 .*/alsa-lib/smixer/smixer-.*\.so	^(alsa_mixer_simple_(init|event)|selectors)$
 
@@ -144,7 +148,7 @@ lib((pa|esd|arts)dsp|aoss|jackasyn|(soap|sand)box|fake(ch)?root|zzuf|v4l(1compat
 lib(fake(ch)?root|(soap|sand)box|trash)(-[0-9\.]+)?\.so									^f?(l?ch(own|mod)|(un)?link|rename|(mk|rm)dir|remove|creat|mkfifo|l?utimen?s?|(__x)?mknode|symlink|access|truncate)(64)?(at)?$
 
 # Memory debug libraries
-lib(mudflap(th)?|dmalloc(cxx)?|duma|efence|jemalloc|mem(usage|intercept)|zzuf)\.so	^(([mc]|re)alloc|free|m(un)?map(64)?)$
+lib(mudflap(th)?|dmalloc(cxx)?|duma|efence|jemalloc|mem(usage|intercept)|zzuf)\.so	^(([mcv]|re)alloc|c?free|m(un)?map(64)?|memalign|strndup)$
 
 # Strigi
 strigi/strigi[lt]a_.*\.so		^(deleteS|s)trigiAnalyzerFactory$
@@ -160,7 +164,7 @@ strigi/strigi[lt]a_.*\.so		^(deleteS|s)trigiAnalyzerFactory$
 
 # IRC servers
 .*/(ircd-hybrid-[0-9]|atheme)/(protocol|modules)/.*\.so	^_mod(de)?init$
-.*/ircd-hybrid-[0-9]/modules/(|autoload)/.*\.so		^_version$
+.*/ircd-hybrid-[0-9]/modules(/autoload)?/.*\.so		^_version$
 .*/atheme/(protocol|modules)/.*\.so			^_header$
 .*/unrealircd/modules/m_.*\.so				^(Mod_(Init|Load|Version|Unload|Header)|compiler_version)$
 
@@ -227,7 +231,6 @@ strigi/strigi[lt]a_.*\.so		^(deleteS|s)trigiAnalyzerFactory$
 /lib(32|64)?/transcode/filter.*\.so		^tc_filter$
 /lib(32|64)?/gkrellm2/plugins/.*\.so		^gkrellm_init_plugin$
 /lib(32|64)?/cinelerra/.*\.so			^new_plugin$
-/lib(32|64)?/thunarx-[0-9\.]+/.*\.so		^thunar_extension_(initialize|list_types|shutdown)$
 /lib(32|64)?/jabberd/mod_.*\.so			^module_init$
 /lib(32|64)?/lftp/[0-9\.]+/.*\.so		^module_init$
 /lib(32|64)?/svxlink/.*\.so			^module_init$
@@ -248,4 +251,9 @@ strigi/strigi[lt]a_.*\.so		^(deleteS|s)trigiAnalyzerFactory$
 /lib(32|64)?/awn/applets/.*/.*\.so		^awl_applet_factory_initp$
 /lib(32|64)?/rxtx-2/.*\.so			^translate_((data|stop)_bits|parity|speed)$
 /php5/lib/php/extensions/.*/.*\.so		^get_module$
-/lib(32|64)/licq/licq_.*\.so			^LP_(Build(Date|Time)|ConfigFile|Description|Exit|Init|Main(_tep)?|Name|Status|Usage|Version)$
+/lib(32|64)?/licq/licq_.*\.so			^LP_(Build(Date|Time)|ConfigFile|Description|Exit|Init|Main(_tep)?|Name|Status|Usage|Version)$
+/lib(32|64)?/gambas/gb\..*\.so			^GB_(INIT|EXIT)$
+/lib(32|64)?/SpiralPlugins/.*\.so		^SpiralPlugin_(CreateInstance|Get(GroupName|Icon|ID))$
+/lib(32|64)?/initng/.*\.so			^module_(init|unload)$
+/lib(32|64)?/ser/modules/.*\.so			^(exports|module_(version|flags))$
+/lib(32|64)?/gimageview/.*/.*\.so		^gimv_plugin_info$

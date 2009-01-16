@@ -91,7 +91,7 @@ libodbc++		/lib(32|64)?/libodbc\+\+(-mt)?\.so
 
 libctemplate		/lib(32|64)?/libctemplate(_nothreads)?\.so
 
-lib$2			/lib(32|64)?/lib([a-zA-Z])([23]D|2D3)(-[0-9\.])?\.so
+lib$2			/lib(32|64)?/lib([a-zA-Z]+)([23]D|2D3)(-[0-9\.])?\.so
 
 opal/openh323		/lib(32|64)?/lib(opal|h323)_.*_n\.so
 
@@ -102,6 +102,8 @@ libossp-uuid		/libossp-uuid(_dce)?\.so
 libunwind		/libunwind(-x86)?\.so
 
 cmake			/bin/c(c?make|pack|test)$
+
+libdmalloc		/libdmalloc(cxx)?\.so
 
 # Library consolidation, keep at the end!
 #
