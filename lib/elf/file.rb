@@ -93,15 +93,15 @@ module Elf
 
     def read_addr
       case @elf_class
-      when Class::Elf32: read_u32
-      when Class::Elf64: read_u64
+      when Class::Elf32 then read_u32
+      when Class::Elf64 then read_u64
       end
     end
 
     def read_off
       case @elf_class
-      when Class::Elf32: read_u32
-      when Class::Elf64: read_u64
+      when Class::Elf32 then read_u32
+      when Class::Elf64 then read_u64
       end
     end
 
