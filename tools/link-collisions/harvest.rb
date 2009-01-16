@@ -307,9 +307,9 @@ so_files.each do |so|
             end
           end
 
-          next if skip or (db.exec("EXECUTE checkdupsymbol('#{impid}', '#{sym.name}@@#{sym.version}')").num_tuples > 0)
+          next if skip or (db.exec("EXECUTE checkdupsymbol('#{impid}', '#{sym.name}@#{sym.version}')").num_tuples > 0)
 
-          db.exec("EXECUTE newsymbol('#{impid}', '#{sym.name}@@#{sym.version}')")
+          db.exec("EXECUTE newsymbol('#{impid}', '#{sym.name}@#{sym.version}')")
           
         rescue Exception
           $stderr.puts "Mangling symbol #{sym.name}"

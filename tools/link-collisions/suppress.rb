@@ -74,7 +74,7 @@ suppression_files.each do |suppression|
         path = path.gsub('+', '\+').gsub('\\+', '+')
         db.exec("DELETE FROM objects WHERE name ~ '#{path}'")
       else
-        symbols.sub!(/(\$)?$/, '@@\1')
+        symbols.sub!(/(\$)?$/, '@\1')
         db.exec("DELETE FROM symbols WHERE symbol ~ '#{symbols}' AND object IN (SELECT id FROM objects WHERE name ~ '#{path}')")
       end
     end
