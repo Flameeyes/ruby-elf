@@ -27,14 +27,6 @@ module Elf
   class StringTable < Section
     def load_internal
       @rawtable = @file.readpartial(@size)
-      
-      @table = {}
-      idx = 0
-      @rawtable.split("\000").each do |string|
-        @table[idx] = string ? string : ''
-
-        idx = idx + string.length + 1
-      end
     end
 
     class InvalidIndex < Exception
@@ -44,25 +36,14 @@ module Elf
     end
 
     def [](idx)
-      load unless @table
+      load unless @rawtable
 
-      # Sometimes the linker can reduce the table by overloading
-      # two names that are substrings
-      if not @table[idx]
-        raise InvalidIndex.new(idx, @rawtable.size-1) if
-          idx >= @rawtable.size
+      raise InvalidIndex.new(idx, @rawtable.size) if
+        idx >= @rawtable.size
 
-        @table[idx] = ''
+      endidx = @rawtable.index("\x00", idx)
 
-        ptr = idx
-        loop do
-          break if @rawtable[ptr] == 0
-          @table[idx] += @rawtable[ptr, 1]
-          ptr += 1
-        end
-      end
-
-      return @table[idx]
+      return @rawtable[idx..endidx].chomp("\x00")
     end
   end
 end
