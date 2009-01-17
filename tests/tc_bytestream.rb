@@ -30,12 +30,14 @@ require 'tempfile'
 require 'bytestream-reader'
 
 class TC_Bytestream < Test::Unit::TestCase
-  TestFile = \
-  "\x01\x23\x45\x56" \
-  "\x89\x67\x45\x23" \
-  "\xFF\xFF\xAB\xCD" \
-  "\x87\x98\x23\x34" \
-    .force_encoding("BINARY")
+  TestData = [
+              0x01, 0x23, 0x45, 0x56,
+              0x89, 0x67, 0x45, 0x23,
+              0xFF, 0xFF, 0xAB, 0xCD,
+              0x87, 0x98, 0x23, 0x34
+             ]
+
+  TestFile = TestData.pack("C*")
 
   TestValues_u16le = [ 0x2301, 0x5645, 0x6789, 0x2345, 0xFFFF, 0xCDAB ]
   TestValues_u16be = [ 0x0123, 0x4556, 0x8967, 0x4523, 0xFFFF, 0xABCD ]
@@ -72,14 +74,14 @@ class TC_Bytestream < Test::Unit::TestCase
   end
 
   def test_read_array_u8
-    assert_equal(TestFile.unpack("C*"), @bs.read_array_u8(TestFile.size),
+    assert_equal(TestData, @bs.read_array_u8(TestFile.size),
                  "The content of the 8-bit array does not coincide.")
   end
 
   def test_read_u8
     i = 0
     12.times do
-      assert_equal(TestFile.getbyte(i), @bs.read_u8,
+      assert_equal(TestData[i], @bs.read_u8,
                    "Byte of index #{i} does not coincide." )
       i += 1
     end
