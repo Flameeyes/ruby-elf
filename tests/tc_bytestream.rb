@@ -34,7 +34,8 @@ class TC_Bytestream < Test::Unit::TestCase
   "\x01\x23\x45\x56" \
   "\x89\x67\x45\x23" \
   "\xFF\xFF\xAB\xCD" \
-  "\x87\x98\x23\x34"
+  "\x87\x98\x23\x34" \
+    .force_encoding("BINARY")
 
   TestValues_u16le = [ 0x2301, 0x5645, 0x6789, 0x2345, 0xFFFF, 0xCDAB ]
   TestValues_u16be = [ 0x0123, 0x4556, 0x8967, 0x4523, 0xFFFF, 0xABCD ]
