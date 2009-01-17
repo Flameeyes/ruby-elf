@@ -79,7 +79,7 @@ class TC_Bytestream < Test::Unit::TestCase
   def test_read_u8
     i = 0
     12.times do
-      assert_equal(TestFile[i], @bs.read_u8,
+      assert_equal(TestFile.getbyte(i), @bs.read_u8,
                    "Byte of index #{i} does not coincide." )
       i += 1
     end
