@@ -34,7 +34,9 @@ end
 
 # Output an error message, prefixed with the tool name.
 def self.puterror(string)
-  $stderr.puts "#{to_s}: #{string}"
+  @output_mutex.synchronize {
+    $stderr.puts "#{to_s}: #{string}"
+  }
 end
 
 # Parse the arguments for the tool; it does not parse the @file
@@ -95,7 +97,9 @@ def self.try_execute(filename)
   if filename[0..1] == "@"
     execute_on_file(filename[1..-1])
   else
-    execute(filename)
+    @execution_threads.add(Thread.new {
+                             execute(filename)
+                           })
   end
 end
 
@@ -118,6 +122,9 @@ end
 
 def self.main
   begin
+    @output_mutex = Mutex.new
+    @execution_threads = ThreadGroup.new
+
     before_options if respond_to? :before_options
     parse_arguments
     after_options if respond_to? :after_options
@@ -127,7 +134,11 @@ def self.main
     else
       execute_on_array(ARGV)
     end
-    
+
+    @execution_threads.list.each do |thread|
+      thread.join
+    end
+
     results if respond_to? :results
   rescue Interrupt
     puterror "Interrupted"

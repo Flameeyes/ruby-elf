@@ -141,42 +141,44 @@ def self.analysis(file)
     return
   end
 
-  puts "Processing file #{file}"
+  @output_mutex.synchronize do
+    puts "Processing file #{file}"
     
-  if bss_vars.length > 0
-    puts "  The following variables aren't initialised (Copy-On-Write):"
-    bss_vars.each do |sym|
-      puts "    #{sym} (size: #{sym.size})"
+    if bss_vars.length > 0
+      puts "  The following variables aren't initialised (Copy-On-Write):"
+      bss_vars.each do |sym|
+        puts "    #{sym} (size: #{sym.size})"
+      end
     end
-  end
-  
-  if data_vars.length > 0
-    puts "  The following variables are writable (Copy-On-Write):"
-    data_vars.each do |sym|
-      puts "    #{sym} (size: #{sym.size})"
+    
+    if data_vars.length > 0
+      puts "  The following variables are writable (Copy-On-Write):"
+      data_vars.each do |sym|
+        puts "    #{sym} (size: #{sym.size})"
+      end
     end
-  end
-  
-  if rel_vars.length > 0
-    puts "  The following variables need runtime relocation (Copy-On-Write):"
-    rel_vars.each do |sym|
-      puts "    #{sym} (size: #{sym.size})"
+    
+    if rel_vars.length > 0
+      puts "  The following variables need runtime relocation (Copy-On-Write):"
+      rel_vars.each do |sym|
+        puts "    #{sym} (size: #{sym.size})"
+      end
     end
-  end
-  
-  if relro_vars.length > 0
-    puts "  The following constants need runtime relocation (Prelinkable Copy-On-Write):"
-    relro_vars.each do |sym|
-      puts "    #{sym} (size: #{sym.size})"
+    
+    if relro_vars.length > 0
+      puts "  The following constants need runtime relocation (Prelinkable Copy-On-Write):"
+      relro_vars.each do |sym|
+        puts "    #{sym} (size: #{sym.size})"
+      end
     end
-  end
-  
-  if @total
-    puts "  Total non-initialised variables size: #{bss_size}" unless bss_size == 0
-    puts "  Total writable variables size: #{data_size}" unless data_size == 0
-    puts "  Total variables needing runtime relocation size: #{rel_size}" unless rel_size == 0
-    unless @ignore_data_rel_ro
-      puts "  Total constants needing runtime relocation size: #{relro_size}" unless relro_size == 0
+    
+    if @total
+      puts "  Total non-initialised variables size: #{bss_size}" unless bss_size == 0
+      puts "  Total writable variables size: #{data_size}" unless data_size == 0
+      puts "  Total variables needing runtime relocation size: #{rel_size}" unless rel_size == 0
+      unless @ignore_data_rel_ro
+        puts "  Total constants needing runtime relocation size: #{relro_size}" unless relro_size == 0
+      end
     end
   end
 end
