@@ -148,7 +148,7 @@ lib((pa|esd|arts)dsp|aoss|jackasyn|(soap|sand)box|fake(ch)?root|zzuf|v4l(1compat
 lib(fake(ch)?root|(soap|sand)box|trash)(-[0-9\.]+)?\.so									^f?(l?ch(own|mod)|(un)?link|rename|(mk|rm)dir|remove|creat|mkfifo|l?utimen?s?|(__x)?mknode|symlink|access|truncate)(64)?(at)?$
 
 # Memory debug libraries
-lib(mudflap(th)?|dmalloc(cxx)?|duma|efence|jemalloc|mem(usage|intercept)|zzuf)\.so	^(([mcv]|re)alloc|c?free|m(un)?map(64)?|memalign|strndup)$
+lib(mudflap(th)?|dmalloc(cxx)?|duma|efence|jemalloc|mem(usage|intercept)|zzuf)\.so	^(([mcv]|re)alloc|c?free|m(un)?map(64)?|memalign|strndup|__invoke_dynamic_linker__)$
 
 # Strigi
 strigi/strigi[lt]a_.*\.so		^(deleteS|s)trigiAnalyzerFactory$
