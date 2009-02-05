@@ -45,7 +45,7 @@ libevent-$4		/lib(|32|64)/libevent(_(extra|core))?-([0-9\.]+)\.so
 # GNU libs
 gnu-libmudflap		libmudflap(th)?\.so
 libbfd     		libbfd-[0-9\.]+\.so
-libgcj     		libgcj-[0-9\.]+\.so
+libgcj     		libgcj(-[0-9\.]+|_bc)\.so
 libgnat     		libgnat-[0-9\.]+\.so
 libffi			libffi-[0-9\.]+(-beta)?\.so
 
@@ -91,7 +91,7 @@ libodbc++		/lib(32|64)?/libodbc\+\+(-mt)?\.so
 
 libctemplate		/lib(32|64)?/libctemplate(_nothreads)?\.so
 
-lib$2			/lib(32|64)?/lib([a-zA-Z]+)([23]D|2D3)(-[0-9\.])?\.so
+lib$2			/lib([a-zA-Z]+)([23]D|2D3)(-[0-9\.]+)?\.so
 
 opal/openh323		/lib(32|64)?/lib(opal|h323)_.*_n\.so
 
@@ -104,6 +104,15 @@ libunwind		/libunwind(-x86)?\.so
 cmake			/bin/c(c?make|pack|test)$
 
 libdmalloc		/libdmalloc(cxx)?\.so
+libmpatrol		/libmpa(lloc|trol(mt)?)\.so
+
+urxvt			/bin/urxvtd?
+
+libk3d			/libk3d(ngui|python|sdk)\.so
+
+GDB			/bin/gdb(-armulator)?
+
+fftw			/lib(32|64)?/lib[ds]?fftw(3[lf]?(_threads)?)?\.so
 
 # Library consolidation, keep at the end!
 #
