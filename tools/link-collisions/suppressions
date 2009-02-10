@@ -75,6 +75,9 @@
 /gnome-settings-daemon-[0-9\.]+/lib.*\.so	^register_gnome_settings_plugin$
 /gimp/[0-9\.]+/modules/.*\.so			^gimp_module_(query|register)$
 /epiphany/[0-9\.]+/extensions/.*\.so		^register_module$
+/libgnomedb/plugins/.*\.so			^plugin_init$
+/totem/plugins/.*\.so				^register_totem_plugin$
+/rhythmbox/plugins/.*\.so			^register_rb_plugin$
 
 # XFCE
 /lib(32|64)?/thunarx-[0-9\.]+/.*\.so		^thunar_extension_(initialize|list_types|shutdown)$
@@ -154,7 +157,7 @@ lib((pa|esd|arts)dsp|aoss|jackasyn|(soap|sand)box|fake(ch)?root|zzuf|v4l(1compat
 lib(fake(ch)?root|(soap|sand)box|trash)(-[0-9\.]+)?\.so									^f?(l?ch(own|mod)|(un)?link|rename|(mk|rm)dir|remove|creat|mkfifo|l?utimen?s?|(__x)?mknode|symlink|access|truncate)(64)?(at)?$
 
 # Memory debug libraries
-lib(mudflap(th)?|dmalloc(cxx)?|duma|efence|jemalloc|mem(usage|intercept)|zzuf)\.so	^(([mcv]|re)alloc|c?free|m(un)?map(64)?|(posix_)?memalign|mem(cpy)|strn?(dup|cat|cpy)|__invoke_dynamic_linker__|_Z(n[aw]j|d[al]Pv|RKSt9nothrow_t|Page_AllowAccess)$
+lib(mudflap(th)?|dmalloc(cxx)?|duma|efence|jemalloc|mem(usage|intercept)|zzuf)\.so	^(([mcv]|re)alloc|c?free|m(un)?map(64)?|(posix_)?memalign|mem(cpy)|strn?(dup|cat|cpy)|__invoke_dynamic_linker__|_Z(n[aw]j|d[al]Pv)|RKSt9nothrow_t|Page_AllowAccess)$
 
 # Strigi
 strigi/strigi[lt]a_.*\.so		^(deleteS|s)trigiAnalyzerFactory$
@@ -246,7 +249,6 @@ strigi/strigi[lt]a_.*\.so		^(deleteS|s)trigiAnalyzerFactory$
 /lib(32|64)?/pppd/[0-9\.]+/.*\.so		^plugin_init$
 /lib(32|64)?/planner/plugins/.*\.so		^plugin_init$
 /lib(32|64)?/openvas/plugins/.*\.so		^plugin_init$
-/lib(32|64)?/libgnomedb/plugins/.*\.so		^plugin_init$
 /lib(32|64)?/geany/.*\.so			^plugin_init$
 /lib(32|64)?/blender/.*/.*\.so			^plugin_init$
 /lib(32|64)?/multisync/.*\.so			^plugin_init$
@@ -263,3 +265,5 @@ strigi/strigi[lt]a_.*\.so		^(deleteS|s)trigiAnalyzerFactory$
 /lib(32|64)?/initng/.*\.so			^module_(init|unload)$
 /lib(32|64)?/ser/modules/.*\.so			^(exports|module_(version|flags))$
 /lib(32|64)?/gimageview/.*/.*\.so		^gimv_plugin_info$
+/lib(32|64)?/asterisk/modules/.*\.so		^(description|key|(un)?load_module|usecount)$
+/lib(32|64)?/emerald/engines/.*\.so		^(init_engine|layout_engine_(settings|colors))$

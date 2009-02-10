@@ -116,9 +116,11 @@ fftw			/lib(32|64)?/lib[ds]?fftw(3[lf]?(_threads)?)?\.so
 
 vile			/bin/x?vile$
 
-CLHEP			/lib(32|64)?/libCLHEP(-(Vector|GenericFunctions|Matrix|Random))?-[0-9\.]+\.so
+CLHEP			/lib(32|64)?/libCLHEP(-(Vector|GenericFunctions|Matrix|Random|Geometry))?-[0-9\.]+\.so
 
 mozilla-libs		/lib(xpcom(_core|glue)?|xul)(-[0-9\.]+)?\.so
+
+libstdc++		/lib/libstdc\+\+-libc[0-9\.\-]+\.so
 
 # Library consolidation, keep at the end!
 #
