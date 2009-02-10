@@ -91,7 +91,7 @@ libodbc++		/lib(32|64)?/libodbc\+\+(-mt)?\.so
 
 libctemplate		/lib(32|64)?/libctemplate(_nothreads)?\.so
 
-lib$2			/lib([a-zA-Z]+)([23]D|2D3)(-[0-9\.]+)?\.so
+lib$1			/lib([a-zA-Z]+)([23]D|2D3)(-[0-9\.]+)?\.so
 
 opal/openh323		/lib(32|64)?/lib(opal|h323)_.*_n\.so
 
@@ -113,6 +113,12 @@ libk3d			/libk3d(ngui|python|sdk)\.so
 GDB			/bin/gdb(-armulator)?
 
 fftw			/lib(32|64)?/lib[ds]?fftw(3[lf]?(_threads)?)?\.so
+
+vile			/bin/x?vile$
+
+CLHEP			/lib(32|64)?/libCLHEP(-(Vector|GenericFunctions|Matrix|Random))?-[0-9\.]+\.so
+
+mozilla-libs		/lib(xpcom(_core|glue)?|xul)(-[0-9\.]+)?\.so
 
 # Library consolidation, keep at the end!
 #

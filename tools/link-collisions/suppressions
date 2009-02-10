@@ -58,6 +58,7 @@
 
 # GTK and GNOME plugins
 .*						^g_module_check_init$
+/gtk-2\.0/.*/modules/.*\.so			^gtk_module_init$
 /gtk-2\.0/.*/immodules/im-.*\.so		^im_module_(create|init|exit|list)$
 /gtk-2\.0/.*/engines/.*\.so			^(theme_(create_rc_style|init|exit))$
 /gtk-2\.0/.*/loaders/libpixbuf.*\.so		^(load|fill_(info|vtable)|get_info)$
@@ -70,10 +71,15 @@
 /abiword-[0-9\.]+/plugins/lib.*\.so		^abi_plugin_((un)?register|supports_version)$
 /libgda(-[0-9\.]+)?/providers/lib.*\.so		^plugin_(init|get_(name|description)|create_provider)$
 /gedit-[0-9]+/plugins/lib.*\.so			^register_gedit_plugin$
+/brasero/plugins/lib.*\.so			^brasero_plugin_register$
+/gnome-settings-daemon-[0-9\.]+/lib.*\.so	^register_gnome_settings_plugin$
+/gimp/[0-9\.]+/modules/.*\.so			^gimp_module_(query|register)$
+/epiphany/[0-9\.]+/extensions/.*\.so		^register_module$
 
 # XFCE
 /lib(32|64)?/thunarx-[0-9\.]+/.*\.so		^thunar_extension_(initialize|list_types|shutdown)$
 /lib(32|64)?/xfce4/panel-plugins/.*\.so		^xfce_panel_plugin_get_construct$
+/lib(32|64)?/xfce4/mcs-plugins/.*\.so		^mcs_plugin_init$
 
 # ALSA plugins
 .*/alsa-lib/smixer/smixer-.*\.so	^(alsa_mixer_simple_(init|event)|selectors)$
@@ -143,12 +149,12 @@
 .*/lib(|32|64)/zsh/.*/zsh/.*\.so$	^(enables|features)_$
 
 # OSS wrappers and other LD_PRELOAD libraries
-lib((pa|esd|arts)dsp|aoss|jackasyn|(soap|sand)box|fake(ch)?root|zzuf|v4l(1compat|2convert)|trash|syncdir)		^((__)?m(un)?map(64)?|f?(open(64)?|close)|ioctl|poll)$
+lib((pa|esd|arts)dsp|aoss|jackasyn|(soap|sand)box|fake(ch)?root|zzuf|v4l(1compat|2convert)|trash|syncdir|honeyd)	^((__)?(m(un)?map(64)?|f?(open(64)?|close))|ioctl|poll|connect|glob|bind)$
 
 lib(fake(ch)?root|(soap|sand)box|trash)(-[0-9\.]+)?\.so									^f?(l?ch(own|mod)|(un)?link|rename|(mk|rm)dir|remove|creat|mkfifo|l?utimen?s?|(__x)?mknode|symlink|access|truncate)(64)?(at)?$
 
 # Memory debug libraries
-lib(mudflap(th)?|dmalloc(cxx)?|duma|efence|jemalloc|mem(usage|intercept)|zzuf)\.so	^(([mcv]|re)alloc|c?free|m(un)?map(64)?|memalign|strndup|__invoke_dynamic_linker__)$
+lib(mudflap(th)?|dmalloc(cxx)?|duma|efence|jemalloc|mem(usage|intercept)|zzuf)\.so	^(([mcv]|re)alloc|c?free|m(un)?map(64)?|(posix_)?memalign|mem(cpy)|strn?(dup|cat|cpy)|__invoke_dynamic_linker__|_Z(n[aw]j|d[al]Pv|RKSt9nothrow_t|Page_AllowAccess)$
 
 # Strigi
 strigi/strigi[lt]a_.*\.so		^(deleteS|s)trigiAnalyzerFactory$
@@ -252,7 +258,7 @@ strigi/strigi[lt]a_.*\.so		^(deleteS|s)trigiAnalyzerFactory$
 /lib(32|64)?/rxtx-2/.*\.so			^translate_((data|stop)_bits|parity|speed)$
 /php5/lib/php/extensions/.*/.*\.so		^get_module$
 /lib(32|64)?/licq/licq_.*\.so			^LP_(Build(Date|Time)|ConfigFile|Description|Exit|Init|Main(_tep)?|Name|Status|Usage|Version)$
-/lib(32|64)?/gambas/gb\..*\.so			^GB_(INIT|EXIT)$
+/lib(32|64)?/gambas2?/gb\..*\.so		^GB_(INIT|EXIT|CLASSES)$
 /lib(32|64)?/SpiralPlugins/.*\.so		^SpiralPlugin_(CreateInstance|Get(GroupName|Icon|ID))$
 /lib(32|64)?/initng/.*\.so			^module_(init|unload)$
 /lib(32|64)?/ser/modules/.*\.so			^(exports|module_(version|flags))$

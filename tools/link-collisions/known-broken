@@ -153,3 +153,6 @@ lib(gcj|gauche|Synopsis)\.so						^GC_
 
 # paraview bundles vtk
 /lib/paraview-[0-9\.]+/libvtk.*\.so
+
+# ardour incluess all the libraries it uses
+/lib/ardour2/lib(rubberband|soundtouch|vampsdk)\.so
