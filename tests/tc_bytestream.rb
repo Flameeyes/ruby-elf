@@ -68,8 +68,8 @@ class TC_Bytestream < Test::Unit::TestCase
     @tf.unlink
   end
 
-  def test_readpartial
-    assert_equal(TestFile, @bs.readpartial(16),
+  def test_readbytes
+    assert_equal(TestFile, @bs.readbytes(16),
                  "The content of the file does not coincide.")
   end
 

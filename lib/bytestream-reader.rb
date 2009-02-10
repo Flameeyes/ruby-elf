@@ -26,6 +26,8 @@
 # SOFTWARE.
 # 
 
+require 'readbytes'
+
 module BytestreamReader
   # This exists in the documentation but not in implementation (?!)
 
@@ -36,27 +38,27 @@ module BytestreamReader
   end
 
   def read_array_u8(size)
-    readpartial(1*size).unpack("C*")
+    readbytes(1*size).unpack("C*")
   end
 
   def read_array_u16_be(size)
-    readpartial(2*size).unpack("n*")
+    readbytes(2*size).unpack("n*")
   end
 
   def read_array_u16_le(size)
-    readpartial(2*size).unpack("v*")
+    readbytes(2*size).unpack("v*")
   end
 
   def read_array_u32_be(size)
-    readpartial(4*size).unpack("N*")
+    readbytes(4*size).unpack("N*")
   end
 
   def read_array_u32_le(size)
-    readpartial(4*size).unpack("V*")
+    readbytes(4*size).unpack("V*")
   end
 
   def read_array_u64_be(size)
-    buf = readpartial(8*size).unpack("N*")
+    buf = readbytes(8*size).unpack("N*")
     val = []
     size.times do |i|
       val[i] = buf[i*2] << 32 | buf[i*2+1];
@@ -65,7 +67,7 @@ module BytestreamReader
   end
 
   def read_array_u64_le(size)
-    buf = readpartial(8*size).unpack("V*")
+    buf = readbytes(8*size).unpack("V*")
     val = []
     size.times do |i|
       val[i] = buf[i*2+1] << 32 | buf[i*2];
@@ -96,19 +98,19 @@ module BytestreamReader
   def read_u64_be
     # As there is no direct unpack method for 64-bit words, the one-value
     # function is considered a special case.
-    buf = readpartial(8).unpack("N*")
+    buf = readbytes(8).unpack("N*")
     return buf[0] << 32 | buf[1]
   end
 
   def read_u64_le
     # As there is no direct unpack method for 64-bit words, the one-value
     # function is considered a special case.
-    buf = readpartial(8).unpack("V*")
+    buf = readbytes(8).unpack("V*")
     return buf[1] << 32 | buf[0]
   end
 
   def read_array_s8(size)
-    readpartial(1*size).unpack("c*")
+    readbytes(1*size).unpack("c*")
   end
 
   def read_array_s16_be(size)

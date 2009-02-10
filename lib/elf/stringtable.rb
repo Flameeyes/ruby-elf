@@ -26,7 +26,7 @@ require 'elf/section'
 module Elf
   class StringTable < Section
     def load_internal
-      @rawtable = @file.readpartial(@size)
+      @rawtable = @file.readbytes(@size)
     end
 
     class InvalidIndex < Exception
