@@ -142,7 +142,7 @@ lib(gcj|gauche|Synopsis)\.so						^GC_
 /lib(32|64)?/lib(kdecore|arts(c|dsp_st)|mcop)\.so	^_?lt_dl
 
 # MythTV has its own copy of FFmpeg, and of liveMedia
-/lib(32|64)?/libmyth(avcodec|livemedia)-[0-9\.]+\.so
+/lib(32|64)?/libmyth(av(codec|format|util)|livemedia)-[0-9\.]+\.so
 
 # Stuff bundling or deriving Expat
 /lib/einit/bootstrap/bootstrap-configuration-xml-expat.so	^XML_
