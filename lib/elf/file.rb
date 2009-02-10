@@ -120,8 +120,8 @@ module Elf
       super(path, "rb")
 
       begin
-        raise NotAnELF unless readbytes(4) == MagicString
-      rescue EOFError, TruncatedDataError
+        raise NotAnELF unless readexactly(4) == MagicString
+      rescue EOFError
         raise NotAnELF
       end
 

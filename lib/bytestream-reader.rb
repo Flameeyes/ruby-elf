@@ -26,7 +26,10 @@
 # SOFTWARE.
 # 
 
-require 'readbytes'
+begin
+  require 'readbytes'
+rescue LoadError
+end
 
 module BytestreamReader
   # This exists in the documentation but not in implementation (?!)
@@ -37,28 +40,48 @@ module BytestreamReader
     end
   end
 
+  unless IO.instance_methods.include? "readbytes"
+    def readexactly(length)
+      ret = readpartial(length)
+
+      # Not strictly correct on Ruby 1.8 but we don't care since we
+      # only use this piece of compatibility code on 1.9.
+      raise EOFError if ret.size != length
+
+      return ret
+    end
+  else
+    def readexactly(length)
+      begin
+        return readbytes(length)
+      rescue TruncatedDataError
+        raise EOFError
+      end
+    end
+  end
+
   def read_array_u8(size)
-    readbytes(1*size).unpack("C*")
+    readexactly(1*size).unpack("C*")
   end
 
   def read_array_u16_be(size)
-    readbytes(2*size).unpack("n*")
+    readexactly(2*size).unpack("n*")
   end
 
   def read_array_u16_le(size)
-    readbytes(2*size).unpack("v*")
+    readexactly(2*size).unpack("v*")
   end
 
   def read_array_u32_be(size)
-    readbytes(4*size).unpack("N*")
+    readexactly(4*size).unpack("N*")
   end
 
   def read_array_u32_le(size)
-    readbytes(4*size).unpack("V*")
+    readexactly(4*size).unpack("V*")
   end
 
   def read_array_u64_be(size)
-    buf = readbytes(8*size).unpack("N*")
+    buf = readexactly(8*size).unpack("N*")
     val = []
     size.times do |i|
       val[i] = buf[i*2] << 32 | buf[i*2+1];
@@ -67,7 +90,7 @@ module BytestreamReader
   end
 
   def read_array_u64_le(size)
-    buf = readbytes(8*size).unpack("V*")
+    buf = readexactly(8*size).unpack("V*")
     val = []
     size.times do |i|
       val[i] = buf[i*2+1] << 32 | buf[i*2];
@@ -98,19 +121,19 @@ module BytestreamReader
   def read_u64_be
     # As there is no direct unpack method for 64-bit words, the one-value
     # function is considered a special case.
-    buf = readbytes(8).unpack("N*")
+    buf = readexactly(8).unpack("N*")
     return buf[0] << 32 | buf[1]
   end
 
   def read_u64_le
     # As there is no direct unpack method for 64-bit words, the one-value
     # function is considered a special case.
-    buf = readbytes(8).unpack("V*")
+    buf = readexactly(8).unpack("V*")
     return buf[1] << 32 | buf[0]
   end
 
   def read_array_s8(size)
-    readbytes(1*size).unpack("c*")
+    readexactly(1*size).unpack("c*")
   end
 
   def read_array_s16_be(size)
