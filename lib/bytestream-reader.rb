@@ -3,7 +3,7 @@
 # This class is a simple File derivative from which you can read
 # integers of different sizes, in any endianness.
 #
-# Copyright © 2007 Diego Pettenò <flameeyes@gmail.com>
+# Copyright © 2007 Diego E. "Flameeyes" Pettenò <flameeyes@gmail.com>
 #
 # Permission is hereby granted, free of charge, to any person
 # obtaining a copy of this software and associated documentation files
