@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008 by Diego E. "Flameeyes" Pettenò <flameeyes@gmail.com>
+ * Copyright (c) 2008-2009 Diego E. "Flameeyes" Pettenò <flameeyes@gmail.com>
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
