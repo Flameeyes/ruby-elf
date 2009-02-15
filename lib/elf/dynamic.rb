@@ -259,10 +259,18 @@ module Elf
       end
     end
 
-    def entries
+    # Iterate over all the entries in the .dynamic section.
+    def each_entry(&block)
       load unless @entries
 
-      @entries
+      @entries.each(&block)
+    end
+
+    # Return the amount of entries in the .dynamic section.
+    def size
+      load unless @entries
+
+      @entries.size
     end
   end
 end

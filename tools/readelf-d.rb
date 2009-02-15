@@ -36,10 +36,10 @@ files.each do |file|
       
       addrsize = (elf.elf_class == Elf::Class::Elf32 ? 8 : 16)
 
-      puts "Dynamic section at offset 0x#{dynsection.offset.hex} contains #{dynsection.entries.size} entries"
+      puts "Dynamic section at offset 0x#{dynsection.offset.hex} contains #{dynsection.size} entries"
       puts "  Tag        Type                         Name/Value"
 
-      dynsection.entries.each do |entry|
+      dynsection.each_entry do |entry|
 
         case entry.type
         when Elf::Dynamic::Type::Needed

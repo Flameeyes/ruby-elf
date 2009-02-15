@@ -72,7 +72,7 @@ def assess_save(file)
         end
       end
 
-      elf['.dynamic'].entries.each do |entry|
+      elf['.dynamic'].each_entry do |entry|
         case entry[:type]
         when Elf::Dynamic::Type::Needed, Elf::Dynamic::Type::SoName,
           Elf::Dynamic::Type::RPath, Elf::Dynamic::Type::RunPath

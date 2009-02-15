@@ -63,7 +63,7 @@ class TC_Dynamic_Executable < Elf::TestExecutable
   }
   
   def test_section_values
-    @elf[".dynamic"].entries.each do |entry|
+    @elf[".dynamic"].each_entry do |entry|
       if self.class::ExpectedDynamicValues.has_key? entry.type
         assert_equal(eval(self.class::ExpectedDynamicValues[entry.type]),
                      entry.parsed, "Testing #{entry.type}")
@@ -72,7 +72,7 @@ class TC_Dynamic_Executable < Elf::TestExecutable
   end
 
   def test_section_links
-    @elf[".dynamic"].entries.each do |entry|
+    @elf[".dynamic"].each_entry do |entry|
       if self.class::ExpectedDynamicLinks.has_key? entry.type
         assert_equal(@elf[self.class::ExpectedDynamicLinks[entry.type]],
                      entry.parsed, "Testing #{entry.type}")
@@ -81,7 +81,7 @@ class TC_Dynamic_Executable < Elf::TestExecutable
   end
 
   def dotest_entry_type(type, fail_notfound = true)
-    @elf[".dynamic"].entries.each do |entry|
+    @elf[".dynamic"].each_entry do |entry|
       if entry[:type] == type
         yield entry
         return
