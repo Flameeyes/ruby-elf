@@ -21,6 +21,8 @@
 # along with this generator; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
+require 'elf/utils/loader'
+
 module Elf
   class Dynamic < Section
     class Type < Value
@@ -271,6 +273,68 @@ module Elf
       load unless @entries
 
       @entries.size
+    end
+
+    # Return the ELF library corresponding to the given soname.
+    #
+    # This function gets the system library paths and eventually adds
+    # the rpaths as expressed by the file itself, then look them up to
+    # find the proper library, just like the loader would.
+    def find_library(soname)
+      # We need for this to be an array since it's ordered and sets
+      # aren't.
+      library_path = []
+
+      # We need to find DT_RPATH and DT_RUNPATH entries. It is allowed
+      # to have more than one so iterate over all of them.
+      each_entry do |entry|
+        case entry.type
+        when Elf::Dynamic::Type::RPath, Elf::Dynamic::Type::RunPath
+          library_path.concat entry.parsed.split(":")
+        end
+      end
+
+      # Now add to that the system library path
+      library_path += Elf::Utilities.system_library_path
+
+      library_path.each do |path|
+        if FileTest.exist? "#{path}/#{soname}"
+          begin
+            possible_library = Elf::Utilities::FilePool["#{path}/#{soname}"]
+
+            return possible_library if @file.is_compatible(possible_library)
+          rescue Errno::ENOENT, Errno::EACCES, Errno::EISDIR, Elf::File::NotAnELF
+            # we don't care if the file does not exist and similar.
+          end
+        end
+      end
+
+      return nil
+    end
+
+    # Returns an hash representing the dependencies of the ELF file.
+    #
+    # This function reads the .dynamic section of the file for
+    # DT_NEEDED entries, then looks for them and add them to an hash.
+    #
+    # Note that nil values int he hash means that the library couldn't
+    # be found on either the runpath of the file or the system library
+    # path.
+    def needed_libraries
+      # Make sure to cache the thing, we don't want to have to parse
+      # this multiple times since we might access it over and over to
+      # check the dependencies.
+      if @needed_libraries.nil?
+        @needed_libraries = Hash.new
+
+        each_entry do |entry|
+          next unless entry.type == Elf::Dynamic::Type::Needed
+
+          @needed_libraries[entry.parsed] = find_library(entry.parsed)
+        end
+      end
+
+      return @needed_libraries
     end
   end
 end

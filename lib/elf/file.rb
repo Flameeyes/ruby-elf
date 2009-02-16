@@ -306,5 +306,26 @@ module Elf
 
       return nil
     end
+
+    # Checks whether two ELF files are compatible one with the other for linking
+    #
+    # This function has to check whether two ELF files can be linked
+    # together (either at build time or at load time), and thus checks
+    # for class, encoding, versioning, ABI and machine type.
+    #
+    # Note that it explicitly does not check for ELF file type since
+    # you can link different type of files together, like an
+    # Executable with a Dynamic library.
+    def is_compatible(other)
+      raise TypeError.new("wrong argument type #{other.class} (expected Elf::File)") unless
+        other.is_a? Elf::File
+
+      @elf_class == other.elf_class and
+        @data_encoding == other.data_encoding and
+        @version == other.version and
+        @abi == other.abi and
+        @abi_version == other.abi_version and
+        @machine == other.machine
+    end
   end
 end
