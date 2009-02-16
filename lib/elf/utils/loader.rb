@@ -26,11 +26,24 @@ module Elf
   module Utilities
     @@library_path = nil
 
+    # Return the system library path to look for libraries, just like
+    # the loader would.
     def self.system_library_path
+
+      # Try to cache the request since we most likely have multiple
+      # request per process and we don't care if the settings change
+      # between them.
       if @@library_path.nil?
         @@library_path = []
+        # This implements for now the glibc-style loader
+        # configuration; in the future it might be reimplemented to
+        # take into consideration different operating systems.
         ::File.open("/etc/ld.so.conf") do |ld_so_conf|
           ld_so_conf.each_line do |line|
+            # Comment lines in the configuration file are prefixed
+            # with the hash character, and the remaining content is
+            # just a single huge list of paths, separated by colon,
+            # comma, space, tabs or newlines.
             @@library_path.concat line.gsub(/#.*/, '').split(/[:, \t\n]/)
           end
         end
@@ -87,6 +100,14 @@ module Elf
     end
 
     # Checks whether two ELF files are compatible one with the other for linking
+    #
+    # This function has to check whether two ELF files can be linked
+    # together (either at build time or at load time), and thus checks
+    # for class, encoding, versioning, ABI and machine type.
+    #
+    # Note that it explicitly does not check for ELF file type since
+    # you can link different type of files together, like an
+    # Executable with a Dynamic library.
     def is_compatible(other)
       raise TypeError.new("wrong argument type #{other.class} (expected Elf::File)") unless
         other.is_a? Elf::File
