@@ -18,6 +18,7 @@
 require 'test/unit'
 require 'pathname'
 require 'elf'
+require 'elf/utils/loader'
 
 # Test proper handling of Executable ELF files.
 class TC_Dynamic_Executable < Elf::TestExecutable
@@ -32,6 +33,14 @@ class TC_Dynamic_Executable < Elf::TestExecutable
     ".dynsym"  => Elf::Section::Type::DynSym,
     ".dynstr"  => Elf::Section::Type::StrTab
   }
+
+  # Test the File#ensure_dynamic function working properly and not
+  # raising any exception for dynamic executables:
+  def test_ensure_dynamic
+    assert_nothing_raised do
+      @elf.ensure_dynamic
+    end
+  end
 
   # Test for presence of an undefined printf symbol.
   def test_printf_symbol

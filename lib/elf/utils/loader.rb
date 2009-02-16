@@ -54,20 +54,39 @@ module Elf
   end
 
   class File
+
+    # Exception thrown when trying to access dynamic file information
+    # for a file that is not a dynamic ELF file.
+    #
+    # Thie exception is thrown when trying to access data like needed
+    # libraries, or compatible libraries, for files that are neither
+    # executable or dynamic libraries by themselves, or for static
+    # executables (lacking a .dynamic section).
+    class NotDynamic < Exception
+      def initialize(elf)
+        super("File #{elf.path} is not a dynamic file")
+      end
+    end
+
+    # Ensures an ELF file is a dynamic ELF file.
+    #
+    # This is just a convenience function that raises
+    # Elf::File::NotDynamic when trying to access a static file.
+    def ensure_dynamic
+      if not [ Elf::File::Type::Exec, Elf::File::Type::Dyn ].include? @type or
+          not has_section? ".dynamic"
+        raise NotDynamic.new(self)
+      end
+    end
+
     # Return the ELF library corresponding to the given soname.
     #
     # This function gets the system library paths and eventually adds
     # the rpaths as expressed by the file itself, then look them up to
     # find the proper library, just like the loader would.
     def find_library(soname)
-      # We can only find a library starting from the soname for
-      # dynamic and executable files, so ignore all the rest.
-      return nil unless [ Elf::File::Type::Exec, Elf::File::Type::Dyn ].include? @type
+      ensure_dynamic
       
-      # We cannot find a soname if the file is a static file, so let's
-      # stop here if we don't have a .dynamic section.
-      return nil unless has_section? ".dynamic"
-
       # We need for this to be an array since it's ordered and sets
       # aren't.
       library_path = []
@@ -97,6 +116,29 @@ module Elf
       end
 
       return nil
+    end
+
+    # Returns an hash representing the dependencies of the ELF file.
+    #
+    # This function reads the .dynamic section of the file for
+    # DT_NEEDED entries, then looks for them and add them to an hash.
+    def needed_libraries
+      # Make sure to cache the thing, we don't want to have to parse
+      # this multiple times since we might access it over and over to
+      # check the dependencies.
+      if @needed_libraries.nil?
+        ensure_dynamic
+
+        @needed_libraries = Hash.new
+
+        self[".dynamic"].each_entry do |entry|
+          next unless entry.type == Elf::Dynamic::Type::Needed
+
+          @needed_libraries[entry.parsed] = find_library(entry.parsed)
+        end
+      end
+
+      return @needed_libraries
     end
 
     # Checks whether two ELF files are compatible one with the other for linking

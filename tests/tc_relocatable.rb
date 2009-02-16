@@ -18,6 +18,7 @@
 require 'test/unit'
 require 'pathname'
 require 'elf'
+require 'elf/utils/loader'
 
 class TC_Relocatable < Elf::TestExecutable
   BaseFilename = "dynamic_executable.o"
@@ -28,6 +29,14 @@ class TC_Relocatable < Elf::TestExecutable
   def test_static
     assert(!@elf.has_section?('.dynamic'),
            ".dynamic section present on ELF file #{@elf.path}")
+  end
+
+  # Test the File#ensure_dynamic function working properly and raising
+  # File#NotDynamic for object files.
+  def test_ensure_dynamic
+    assert_raise Elf::File::NotDynamic do
+      @elf.ensure_dynamic
+    end
   end
 
   class LinuxX86 < self

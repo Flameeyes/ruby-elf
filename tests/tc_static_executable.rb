@@ -18,6 +18,7 @@
 require 'test/unit'
 require 'pathname'
 require 'elf'
+require 'elf/utils/loader'
 
 # Test proper handling of Static Executable ELF files.
 class TC_Static_Executable < Elf::TestExecutable
@@ -29,6 +30,14 @@ class TC_Static_Executable < Elf::TestExecutable
   def test_static
     assert(!@elf.has_section?('.dynamic'),
            ".dynamic section present on ELF file #{@elf.path}")
+  end
+
+  # Test the File#ensure_dynamic function working properly and raising
+  # File#NotDynamic for static executables.
+  def test_ensure_dynamic
+    assert_raise Elf::File::NotDynamic do
+      @elf.ensure_dynamic
+    end
   end
 
   class LinuxX86 < self
