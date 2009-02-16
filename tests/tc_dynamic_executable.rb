@@ -60,7 +60,6 @@ class TC_Dynamic_Executable < Elf::TestExecutable
   # per-file
 
   ExpectedDynamicValues = {
-    Elf::Dynamic::Type::Needed => "self.class::ExpectedLibC"
   }
 
   ExpectedDynamicLinks = {
@@ -87,6 +86,15 @@ class TC_Dynamic_Executable < Elf::TestExecutable
                      entry.parsed, "Testing #{entry.type}")
       end
     end
+  end
+
+  # Tests the Elf::File#needed_libraries function.
+  #
+  # Since we cannot be sure of either the correct path of the library
+  # in the system, nor even of its presence, we just check the keys.
+  def test_needed_libraries
+    assert_equal([self.class::ExpectedLibC],
+                 @elf.needed_libraries.keys)
   end
 
   def dotest_entry_type(type, fail_notfound = true)
