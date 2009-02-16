@@ -275,29 +275,42 @@ module Elf
       @entries.size
     end
 
+    # Return a list of paths use as runpath
+    #
+    # This function reads, splits and collapse the DT_RPATH and
+    # DT_RUNPATH entries in the ELF file to provide a list of
+    # auxiliary directories where to look for library objects.
+    def auxiliary_library_path
+      if @auxiliary_library_path.nil?
+        @auxiliary_library_path = Array.new
+
+        each_entry do |entry|
+          case entry.type
+          when Elf::Dynamic::Type::RPath, Elf::Dynamic::Type::RunPath
+            @auxiliary_library_path.concat entry.parsed.split(":")
+          end
+        end
+
+        @auxiliary_library_path.uniq!
+      end
+
+      return @auxiliary_library_path
+    end
+
     # Return the ELF library corresponding to the given soname.
     #
     # This function gets the system library paths and eventually adds
     # the rpaths as expressed by the file itself, then look them up to
     # find the proper library, just like the loader would.
     def find_library(soname)
-      # We need for this to be an array since it's ordered and sets
-      # aren't.
-      library_path = []
+      @complete_library_path ||= (auxiliary_library_path + Elf::Utilities.system_library_path).uniq
 
-      # We need to find DT_RPATH and DT_RUNPATH entries. It is allowed
-      # to have more than one so iterate over all of them.
-      each_entry do |entry|
-        case entry.type
-        when Elf::Dynamic::Type::RPath, Elf::Dynamic::Type::RunPath
-          library_path.concat entry.parsed.split(":")
-        end
-      end
+      @complete_library_path.each do |path|
+        # For the ELF linker an empty entry in the library path is the
+        # same as "." and means the current working directory, so
+        # replace it.
+        path = "." if path == ""
 
-      # Now add to that the system library path
-      library_path += Elf::Utilities.system_library_path
-
-      library_path.each do |path|
         if FileTest.exist? "#{path}/#{soname}"
           begin
             possible_library = Elf::Utilities::FilePool["#{path}/#{soname}"]

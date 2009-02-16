@@ -143,6 +143,14 @@ class TC_Dynamic_Executable < Elf::TestExecutable
   class SolarisX86_GCC < self
     ExpectedLibC = "libc.so.1"
     include Elf::TestExecutable::SolarisX86_GCC
+
+    # We can write this test for the only reason that the file is
+    # currently built with Gentoo Prefix on OpenSolaris, so pay
+    # attention to this!
+    def test_runpaths
+      assert_equal(["/opt/gentoo/usr/i386-pc-solaris2.11/lib/gcc", "/opt/gentoo/usr/i386-pc-solaris2.11/lib", "/opt/gentoo/usr/lib", "/opt/gentoo/lib"],
+                   @elf[".dynamic"].auxiliary_library_path)
+    end
   end
 
   class SolarisX86_SunStudio < self
