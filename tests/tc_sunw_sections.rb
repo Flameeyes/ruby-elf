@@ -68,7 +68,7 @@ class TC_SunW_Sections < Elf::TestUnit
   }
 
   def test_sunw_cap
-    assert_equal(1, @elf[".SUNW_cap"].count,
+    assert_equal(1, @elf[".SUNW_cap"].size,
                  "Section .SUNW_cap has wrong entry count")
     assert_equal(Elf::SunW::Capabilities::Tag::HW1, @elf[".SUNW_cap"][0][:tag],
                  "First entry in .SUNW_cap has wrong tag")

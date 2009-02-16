@@ -142,7 +142,7 @@ module Elf
         end
       end
       
-      def count
+      def size
         load unless @entries
         
         @entries.size

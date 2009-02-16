@@ -43,7 +43,7 @@ class TC_Solaris_Versioning < Elf::TestUnit
   }
 
   def test__gnu_version
-    assert_equal(@elf[".dynsym"].count, @elf[".gnu.version"].count,
+    assert_equal(@elf[".dynsym"].size, @elf[".gnu.version"].size,
                  "Wrong version information count")
   end
 
@@ -53,7 +53,7 @@ class TC_Solaris_Versioning < Elf::TestUnit
     # We always have a "latent" version with the soname of the
     # library, which is the one used by --default-symver option of GNU
     # ld.
-    assert_equal(2, section.count,
+    assert_equal(2, section.size,
                  "Wrong amount of versions defined")
 
     assert_equal(1, section[1][:names].size,
@@ -72,7 +72,7 @@ class TC_Solaris_Versioning < Elf::TestUnit
   def test__gnu_version_r
     section = @elf[".gnu.version_r"]
     
-    assert_equal(1, section.count,
+    assert_equal(1, section.size,
                  "Wrong amount of needed versions")
 
     # The indexes are incremental between defined and needed

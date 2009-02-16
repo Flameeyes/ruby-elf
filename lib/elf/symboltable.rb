@@ -66,7 +66,7 @@ module Elf
     end
 
     # Return the number of symbols in the section
-    def count
+    def size
       load unless @symbols
 
       @symbols.size

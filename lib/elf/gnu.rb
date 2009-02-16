@@ -39,7 +39,7 @@ module Elf
         end
       end
 
-      def count
+      def size
         load unless @versions
 
         @versions.size
@@ -91,7 +91,7 @@ module Elf
         end
       end
 
-      def count
+      def size
         load unless @defined_versions
 
         @defined_versions.size
@@ -150,7 +150,7 @@ module Elf
         end
       end
  
-      def count
+      def size
         load unless @needed_versions
 
         @needed_versions.size
