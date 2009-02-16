@@ -31,14 +31,6 @@ class TC_Relocatable < Elf::TestExecutable
            ".dynamic section present on ELF file #{@elf.path}")
   end
 
-  # Test the File#ensure_dynamic function working properly and raising
-  # File#NotDynamic for object files.
-  def test_ensure_dynamic
-    assert_raise Elf::File::NotDynamic do
-      @elf.ensure_dynamic
-    end
-  end
-
   class LinuxX86 < self
     include Elf::TestExecutable::LinuxX86
   end

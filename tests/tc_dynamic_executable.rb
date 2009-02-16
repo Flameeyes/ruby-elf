@@ -34,14 +34,6 @@ class TC_Dynamic_Executable < Elf::TestExecutable
     ".dynstr"  => Elf::Section::Type::StrTab
   }
 
-  # Test the File#ensure_dynamic function working properly and not
-  # raising any exception for dynamic executables:
-  def test_ensure_dynamic
-    assert_nothing_raised do
-      @elf.ensure_dynamic
-    end
-  end
-
   # Test for presence of an undefined printf symbol.
   def test_printf_symbol
     printf_found = false
@@ -94,7 +86,7 @@ class TC_Dynamic_Executable < Elf::TestExecutable
   # in the system, nor even of its presence, we just check the keys.
   def test_needed_libraries
     assert_equal([self.class::ExpectedLibC],
-                 @elf.needed_libraries.keys)
+                 @elf[".dynamic"].needed_libraries.keys)
   end
 
   def dotest_entry_type(type, fail_notfound = true)

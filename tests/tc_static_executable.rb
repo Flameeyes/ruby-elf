@@ -32,14 +32,6 @@ class TC_Static_Executable < Elf::TestExecutable
            ".dynamic section present on ELF file #{@elf.path}")
   end
 
-  # Test the File#ensure_dynamic function working properly and raising
-  # File#NotDynamic for static executables.
-  def test_ensure_dynamic
-    assert_raise Elf::File::NotDynamic do
-      @elf.ensure_dynamic
-    end
-  end
-
   class LinuxX86 < self
     include Elf::TestExecutable::LinuxX86
   end

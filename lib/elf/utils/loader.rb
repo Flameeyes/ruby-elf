@@ -53,47 +53,24 @@ module Elf
     end
   end
 
-  class File
-
-    # Exception thrown when trying to access dynamic file information
-    # for a file that is not a dynamic ELF file.
-    #
-    # Thie exception is thrown when trying to access data like needed
-    # libraries, or compatible libraries, for files that are neither
-    # executable or dynamic libraries by themselves, or for static
-    # executables (lacking a .dynamic section).
-    class NotDynamic < Exception
-      def initialize(elf)
-        super("File #{elf.path} is not a dynamic file")
-      end
-    end
-
-    # Ensures an ELF file is a dynamic ELF file.
-    #
-    # This is just a convenience function that raises
-    # Elf::File::NotDynamic when trying to access a static file.
-    def ensure_dynamic
-      if not [ Elf::File::Type::Exec, Elf::File::Type::Dyn ].include? @type or
-          not has_section? ".dynamic"
-        raise NotDynamic.new(self)
-      end
-    end
-
+  # Extend the Dynamic section class. Instead of adding the following
+  # functions to all ELF files and then checking that they indeed are
+  # valid dynamic ELF files add them to @elf[".dynamic"] so that they
+  # are safely used.
+  class Dynamic < Section
     # Return the ELF library corresponding to the given soname.
     #
     # This function gets the system library paths and eventually adds
     # the rpaths as expressed by the file itself, then look them up to
     # find the proper library, just like the loader would.
     def find_library(soname)
-      ensure_dynamic
-      
       # We need for this to be an array since it's ordered and sets
       # aren't.
       library_path = []
 
       # We need to find DT_RPATH and DT_RUNPATH entries. It is allowed
       # to have more than one so iterate over all of them.
-      self[".dynamic"].each_entry do |entry|
+      each_entry do |entry|
         case entry.type
         when Elf::Dynamic::Type::RPath, Elf::Dynamic::Type::RunPath
           library_path.concat entry.parsed.split(":")
@@ -108,7 +85,7 @@ module Elf
           begin
             possible_library = Elf::Utilities::FilePool["#{path}/#{soname}"]
             
-            return possible_library if is_compatible(possible_library)
+            return possible_library if @file.is_compatible(possible_library)
           rescue Errno::ENOENT, Errno::EACCES, Errno::EISDIR, Elf::File::NotAnELF
             # we don't care if the file does not exist and similar.
           end
@@ -131,11 +108,9 @@ module Elf
       # this multiple times since we might access it over and over to
       # check the dependencies.
       if @needed_libraries.nil?
-        ensure_dynamic
-
         @needed_libraries = Hash.new
 
-        self[".dynamic"].each_entry do |entry|
+        each_entry do |entry|
           next unless entry.type == Elf::Dynamic::Type::Needed
 
           @needed_libraries[entry.parsed] = find_library(entry.parsed)
@@ -144,7 +119,9 @@ module Elf
 
       return @needed_libraries
     end
+  end
 
+  class File
     # Checks whether two ELF files are compatible one with the other for linking
     #
     # This function has to check whether two ELF files can be linked
