@@ -122,6 +122,10 @@ module Elf
     #
     # This function reads the .dynamic section of the file for
     # DT_NEEDED entries, then looks for them and add them to an hash.
+    #
+    # Note that nil values int he hash means that the library couldn't
+    # be found on either the runpath of the file or the system library
+    # path.
     def needed_libraries
       # Make sure to cache the thing, we don't want to have to parse
       # this multiple times since we might access it over and over to
