@@ -44,9 +44,22 @@ module Elf
             # with the hash character, and the remaining content is
             # just a single huge list of paths, separated by colon,
             # comma, space, tabs or newlines.
-            @@library_path.concat line.gsub(/#.*/, '').split(/[:, \t\n]/)
+            line.gsub(/#.*/, '').split(/[:, \t\n]/).each do |path|
+              begin
+                # Since we can have symlinks and similar issues, try to
+                # canonicalise the paths so that we can expect them to be
+                # truly unique (and thus never pass through the same directory
+                # twice).
+                @@library_path << Pathname.new(path).realpath.to_s
+              rescue Errno::ENOENT, Errno::EACCES
+              end
+            end
           end
         end
+
+        # Make sure the resulting list is uniq to avoid scanning the
+        # same directory multiple times.
+        @@library_path.uniq!
       end
       
       return @@library_path
