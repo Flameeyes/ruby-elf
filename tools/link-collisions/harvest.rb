@@ -23,7 +23,9 @@ require 'getoptlong'
 require 'set'
 require 'pathname'
 require 'postgres'
+
 require 'elf'
+require 'elf/utils/loader'
 
 opts = GetoptLong.new(
   ["--no-scan-ldpath",     "-L", GetoptLong::NO_ARGUMENT ],
@@ -200,20 +202,11 @@ class Pathname
 end
 
 if scan_ldpath
-  ldso_paths = Set.new(["/lib", "/usr/lib"])
-  ldso_paths.merge ENV['LD_LIBRARY_PATH'].split(":").to_set if ENV['LD_LIBRARY_PATH']
-  
-  File.open("/etc/ld.so.conf") do |ldsoconf|
-    ldso_paths.merge ldsoconf.readlines.
-      delete_if { |l| l =~ /\s*#.*/ }.
-      collect { |l| l.strip }.
-      uniq
-  end
-
-  ldso_paths.each do |path|
+  Elf::Utilities.system_library_path.each do |path|
     begin
-      so_files.merge Pathname.new(path.strip).so_files
+      so_files.merge Pathname.new(path).so_files
     rescue Errno::ENOENT
+      $stderr.puts "harvest.rb: No such file or directory - #{path}"
       next
     end
   end
