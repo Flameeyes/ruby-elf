@@ -26,6 +26,25 @@ module Elf
   module Utilities
     @@library_path = nil
 
+    # Convenience function to append an array to the list of system
+    # library paths.
+    #
+    # This is just used to avoid repeating the same block of code for
+    # both the data read from /etc/ld.so.conf and from LD_LIBRARY_PATH
+    # environment variable if requested.
+    def self.append_to_library_path(morepaths)
+      morepaths.each do |path|
+        begin
+          # Since we can have symlinks and similar issues, try to
+          # canonicalise the paths so that we can expect them to be
+          # truly unique (and thus never pass through the same directory
+          # twice).
+          @@library_path << Pathname.new(path).realpath.to_s
+        rescue Errno::ENOENT, Errno::EACCES
+        end
+      end
+    end
+
     # Return the system library path to look for libraries, just like
     # the loader would.
     def self.system_library_path
@@ -34,7 +53,14 @@ module Elf
       # request per process and we don't care if the settings change
       # between them.
       if @@library_path.nil?
-        @@library_path = []
+        @@library_path = Array.new
+
+        # Read the LD_LIBRARY_PATH environment variable and use that
+        # before the configuration file if present. This follows the
+        # same rules as the linker.
+        append_to_library_path(ENV['LD_LIBRARY_PATH'].split(":")) unless
+          ENV['LD_LIBRARY_PATH'].nil?
+
         # This implements for now the glibc-style loader
         # configuration; in the future it might be reimplemented to
         # take into consideration different operating systems.
@@ -44,16 +70,7 @@ module Elf
             # with the hash character, and the remaining content is
             # just a single huge list of paths, separated by colon,
             # comma, space, tabs or newlines.
-            line.gsub(/#.*/, '').split(/[:, \t\n]/).each do |path|
-              begin
-                # Since we can have symlinks and similar issues, try to
-                # canonicalise the paths so that we can expect them to be
-                # truly unique (and thus never pass through the same directory
-                # twice).
-                @@library_path << Pathname.new(path).realpath.to_s
-              rescue Errno::ENOENT, Errno::EACCES
-              end
-            end
+            append_to_library_path(line.gsub(/#.*/, '').split(/[:, \t\n]/))
           end
         end
 
