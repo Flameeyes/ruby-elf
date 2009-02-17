@@ -61,6 +61,15 @@ module Elf
         append_to_library_path(ENV['LD_LIBRARY_PATH'].split(":")) unless
           ENV['LD_LIBRARY_PATH'].nil?
 
+        # We have to put by default /lib and /usr/lib since they are
+        # implicit in all systems. In particular for Gentoo/Linux
+        # these two are not in the list on x86 systems (but are on
+        # amd64).
+        #
+        # Since LD_LIBRARY_PATH would win over this, but we expect
+        # /etc/ld.so.conf not to, add them here.
+        append_to_library_path(["/lib", "/usr/lib"])
+
         # This implements for now the glibc-style loader
         # configuration; in the future it might be reimplemented to
         # take into consideration different operating systems.
