@@ -221,13 +221,12 @@ module Elf
         else
           raise UnknownNMCode.new(self)
         end
-      elsif section.name == '.init' || section.name == ".fini"
+      elsif section.flags.include? Elf::Section::Flags::ExecInstr
         @nmflag = "T"
       else
         @nmflag = case section.name
                   when /\.t?bss.*/ then "B"
                   when /\.rodata.*/ then "R"
-                  when /\.text.*/ then 'T'
                   when /\.(t|pic)?data.*/ then "D"
                   else
                     raise UnknownNMCode.new(self)
