@@ -49,9 +49,10 @@ class TS_RubyElf
 end
 
 [TS_RubyElf,
- TC_Dynamic_Executable.subsuite,
- TC_Static_Executable.subsuite,
- TC_Relocatable.subsuite,
- TC_NM_Codes.subsuite].each do |suite|
+ Elf::TestDynamicExecutable.subsuite,
+ Elf::TestStaticExecutable.subsuite,
+ Elf::TestRelocatable.subsuite,
+ Elf::TestNMCodes.subsuite
+].each do |suite|
   Test::Unit::UI::Console::TestRunner.run(suite)
 end

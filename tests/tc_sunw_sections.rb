@@ -24,7 +24,8 @@ require 'elf'
 # Sun ELF files for Solaris contain a few extra sections that are
 # Sun-specific extensions, this test checks for their presence and for
 # their type and value, to ensure ruby-elf detects them correctly.
-class TC_SunW_Sections < Elf::TestUnit
+class TC_SunW_Sections < Test::Unit::TestCase
+  include Elf::BaseTest
   Os = "solaris"
   Arch = "x86"
   Compiler = "suncc"

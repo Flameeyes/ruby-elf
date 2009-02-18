@@ -21,7 +21,9 @@ require 'elf'
 require 'elf/utils/loader'
 
 # Test proper handling of Static Executable ELF files.
-class TC_Static_Executable < Elf::TestExecutable
+module Elf::TestStaticExecutable
+  include Elf::TestExecutable
+
   BaseFilename = "static_executable"
   ExpectedFileType = Elf::File::Type::Exec
 
@@ -32,28 +34,34 @@ class TC_Static_Executable < Elf::TestExecutable
            ".dynamic section present on ELF file #{@elf.path}")
   end
 
-  class LinuxX86 < self
+  class LinuxX86 < Test::Unit::TestCase
+    include Elf::TestStaticExecutable
     include Elf::TestExecutable::LinuxX86
   end
 
-  class LinuxAMD64 < self
+  class LinuxAMD64 < Test::Unit::TestCase
+    include Elf::TestStaticExecutable
     include Elf::TestExecutable::LinuxAMD64
   end
 
-  class LinuxAMD64_ICC < self
+  class LinuxAMD64_ICC < Test::Unit::TestCase
     Compiler = "icc"
+    include Elf::TestStaticExecutable
     include Elf::TestExecutable::LinuxAMD64
   end
 
-  class LinuxSparc < self
+  class LinuxSparc < Test::Unit::TestCase
+    include Elf::TestStaticExecutable
     include Elf::TestExecutable::LinuxSparc
   end
 
-  class LinuxArm < self
+  class LinuxArm < Test::Unit::TestCase
+    include Elf::TestStaticExecutable
     include Elf::TestExecutable::LinuxArm
   end
 
-  class BareH8300 < self
+  class BareH8300 < Test::Unit::TestCase
+    include Elf::TestStaticExecutable
     include Elf::TestExecutable::BareH8300
   end
 

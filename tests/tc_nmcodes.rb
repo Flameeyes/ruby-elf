@@ -24,7 +24,8 @@ require 'elf'
 # This test will load the file built from the symboltypes.c source
 # file and will ensure that the symbols in there reports the correct
 # nm(1)-style code.
-class TC_NM_Codes < Elf::TestUnit
+module Elf::TestNMCodes
+  include Elf::BaseTest
   BaseFilename = "symboltypes.o"
 
   ExpectedSections = [".symtab"]
@@ -124,17 +125,20 @@ class TC_NM_Codes < Elf::TestUnit
   #                    ".text"              => 't' })
   # end
 
-  class LinuxAMD64 < TC_NM_Codes
+  class LinuxAMD64 < Test::Unit::TestCase
     include GCC
+    include Elf::TestNMCodes
     include Elf::TestExecutable::LinuxAMD64
   end
 
-  class LinuxAMD64_ICC < TC_NM_Codes
+  class LinuxAMD64_ICC < Test::Unit::TestCase
+    include Elf::TestNMCodes
     include Elf::TestExecutable::LinuxAMD64
     include ICC
   end
 
-  class LinuxAMD64_SunStudio < TC_NM_Codes
+  class LinuxAMD64_SunStudio < Test::Unit::TestCase
+    include Elf::TestNMCodes
     include Elf::TestExecutable::LinuxAMD64
     Compiler = "suncc"
 
@@ -149,7 +153,8 @@ class TC_NM_Codes < Elf::TestUnit
     end
   end
 
-  class SolarisX86_SunStudio < TC_NM_Codes
+  class SolarisX86_SunStudio < Test::Unit::TestCase
+    include Elf::TestNMCodes
     include Elf::TestExecutable::SolarisX86_SunStudio
 
     # Sun Studio generates different code!

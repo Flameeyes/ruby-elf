@@ -20,7 +20,8 @@ require 'pathname'
 require 'elf'
 
 # Test handling of symbols tables in ELF files with Ruby-elf
-class TC_StringTable < Elf::TestUnit
+class TC_StringTable < Test::Unit::TestCase
+  include Elf::BaseTest
   Os = "linux"
   Arch = "amd64"
   Compiler="gcc"

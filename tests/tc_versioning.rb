@@ -24,7 +24,8 @@ require 'elf'
 # GNU binutils and glibc support a versioning feature that allows to
 # create symbols with multiple versions; this test ensures that
 # ruby-elf can read the versioning information correctly.
-class TC_Versioning < Elf::TestUnit
+class TC_Versioning < Test::Unit::TestCase
+  include Elf::BaseTest
   Os = "linux"
   Arch = "amd64"
   Compiler = "gcc"

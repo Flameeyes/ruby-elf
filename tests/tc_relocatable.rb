@@ -20,7 +20,9 @@ require 'pathname'
 require 'elf'
 require 'elf/utils/loader'
 
-class TC_Relocatable < Elf::TestExecutable
+module Elf::TestRelocatable
+  include Elf::TestExecutable
+
   BaseFilename = "dynamic_executable.o"
   ExpectedFileType = Elf::File::Type::Rel
 
@@ -31,45 +33,54 @@ class TC_Relocatable < Elf::TestExecutable
            ".dynamic section present on ELF file #{@elf.path}")
   end
 
-  class LinuxX86 < self
+  class LinuxX86 < Test::Unit::TestCase
+    include Elf::TestRelocatable
     include Elf::TestExecutable::LinuxX86
   end
 
-  class LinuxAMD64 < self
+  class LinuxAMD64 < Test::Unit::TestCase
+    include Elf::TestRelocatable
     include Elf::TestExecutable::LinuxAMD64
   end
  
-  class LinuxAMD64_ICC < self
+  class LinuxAMD64_ICC < Test::Unit::TestCase
     Compiler = "icc"
+    include Elf::TestRelocatable
     include Elf::TestExecutable::LinuxAMD64
 
     ExpectedABI = Elf::OsAbi::Linux
   end
 
-  class LinuxAMD64_SunStudio < self
+  class LinuxAMD64_SunStudio < Test::Unit::TestCase
     Compiler = "suncc"
+    include Elf::TestRelocatable
     include Elf::TestExecutable::LinuxAMD64
   end
  
-  class LinuxSparc < self
+  class LinuxSparc < Test::Unit::TestCase
+    include Elf::TestRelocatable
     include Elf::TestExecutable::LinuxSparc
     ExpectedMachine = Elf::Machine::Sparc
   end
 
-  class LinuxArm < self
+  class LinuxArm < Test::Unit::TestCase
+    include Elf::TestRelocatable
     include Elf::TestExecutable::LinuxArm
   end
 
-  class BareH8300 < self
+  class BareH8300 < Test::Unit::TestCase
     BaseFilename = "static_executable.o"
+    include Elf::TestRelocatable
     include Elf::TestExecutable::BareH8300
   end
 
-  class SolarisX86_GCC < self
+  class SolarisX86_GCC < Test::Unit::TestCase
+    include Elf::TestRelocatable
     include Elf::TestExecutable::SolarisX86_GCC
   end
 
-  class SolarisX86_SunStudio < self
+  class SolarisX86_SunStudio < Test::Unit::TestCase
+    include Elf::TestRelocatable
     include Elf::TestExecutable::SolarisX86_SunStudio
   end
 

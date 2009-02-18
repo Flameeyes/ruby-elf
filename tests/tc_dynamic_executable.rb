@@ -21,7 +21,9 @@ require 'elf'
 require 'elf/utils/loader'
 
 # Test proper handling of Executable ELF files.
-class TC_Dynamic_Executable < Elf::TestExecutable
+module Elf::TestDynamicExecutable
+  include Elf::TestExecutable
+
   BaseFilename = "dynamic_executable"
   ExpectedElfFileType = Elf::File::Type::Exec
 
@@ -101,7 +103,7 @@ class TC_Dynamic_Executable < Elf::TestExecutable
   end
 
   module GLIBC
-    ExpectedDynamicLinks = TC_Dynamic_Executable::ExpectedDynamicLinks.
+    ExpectedDynamicLinks = Elf::TestDynamicExecutable::ExpectedDynamicLinks.
       merge({
               Elf::Dynamic::Type::GNUHash => ".gnu.hash"
             })
@@ -109,39 +111,46 @@ class TC_Dynamic_Executable < Elf::TestExecutable
     ExpectedLibC = "libc.so.6"
   end
 
-  class LinuxX86 < self
+  class LinuxX86 < Test::Unit::TestCase
+    include Elf::TestDynamicExecutable
     include Elf::TestExecutable::LinuxX86
     include GLIBC
   end
 
-  class LinuxAMD64 < self
+  class LinuxAMD64 < Test::Unit::TestCase
+    include Elf::TestDynamicExecutable
     include Elf::TestExecutable::LinuxAMD64
     include GLIBC
   end
 
-  class LinuxAMD64_ICC < self
+  class LinuxAMD64_ICC < Test::Unit::TestCase
     Compiler = "icc"
+    include Elf::TestDynamicExecutable
     include Elf::TestExecutable::LinuxAMD64
     include GLIBC
   end
 
-  class LinuxAMD64_SunStudio < self
+  class LinuxAMD64_SunStudio < Test::Unit::TestCase
     ExpectedLibC = "libc.so.6"
+    include Elf::TestDynamicExecutable
     include Elf::TestExecutable::LinuxAMD64
   end
 
-  class LinuxSparc < self
+  class LinuxSparc < Test::Unit::TestCase
+    include Elf::TestDynamicExecutable
     include Elf::TestExecutable::LinuxSparc
     include GLIBC
   end
 
-  class LinuxArm < self
+  class LinuxArm < Test::Unit::TestCase
+    include Elf::TestDynamicExecutable
     include Elf::TestExecutable::LinuxArm
     include GLIBC
   end
 
-  class SolarisX86_GCC < self
+  class SolarisX86_GCC < Test::Unit::TestCase
     ExpectedLibC = "libc.so.1"
+    include Elf::TestDynamicExecutable
     include Elf::TestExecutable::SolarisX86_GCC
 
     # We can write this test for the only reason that the file is
@@ -153,8 +162,9 @@ class TC_Dynamic_Executable < Elf::TestExecutable
     end
   end
 
-  class SolarisX86_SunStudio < self
+  class SolarisX86_SunStudio < Test::Unit::TestCase
     ExpectedLibC = "libc.so.1"
+    include Elf::TestDynamicExecutable
     include Elf::TestExecutable::SolarisX86_SunStudio
   end
 

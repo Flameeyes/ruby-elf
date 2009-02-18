@@ -23,7 +23,8 @@ require 'elf'
 # ARM ELF files contain an extra section called .ARM.attributes, this
 # test is intended to properly check for presence and parsing of this
 # section, and to avoid possible misreading of it.
-class TC_ARM < Elf::TestUnit
+class TC_ARM < Test::Unit::TestCase
+  include Elf::BaseTest
   Os = "linux"
   Arch = "arm"
   Compiler = "gcc"
