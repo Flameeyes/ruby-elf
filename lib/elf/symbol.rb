@@ -197,43 +197,36 @@ module Elf
     # The resturned value is a one-letter string. The function may
     # raise an UnknownNMCode exception.
     def nm_code
-      return @nmflag unless @nmflag.nil?
-      
-      if idx == 0
-        @nmflag = " "
+      if @nmflag.nil?
+        if idx == 0
+          @nmflag = " "
 
-      # When the section is nil, it means it goes into the Undef
-      # section, and the symbol is not defined.
-      elsif section.nil?
-        @nmflag = "U"
-      elsif bind == Elf::Symbol::Binding::Weak
-        @nmflag = type == Elf::Symbol::Type::Object ? "V" : "W"
-        
-        @nmflag.downcase! if value == 0
-        
-      elsif section.is_a? Integer
-        if section == Elf::Section::Abs
-          # Absolute symbols
-          @nmflag = "A"
-        elsif section == Elf::Section::Common
-          # Common symbols
-          @nmflag = "C"
+          # When the section is nil, it means it goes into the Undef
+          # section, and the symbol is not defined.
+        elsif section.nil?
+          @nmflag = "U"
+        elsif bind == Elf::Symbol::Binding::Weak
+          @nmflag = type == Elf::Symbol::Type::Object ? "V" : "W"
+          @nmflag.downcase! if value == 0
+
+        elsif section.is_a? Integer
+          if section == Elf::Section::Abs
+            # Absolute symbols
+            @nmflag = "A"
+          elsif section == Elf::Section::Common
+            # Common symbols
+            @nmflag = "C"
+          end
         else
-          raise UnknownNMCode.new(self)
+          @nmflag = section.nm_code
         end
-      elsif section.flags.include? Elf::Section::Flags::ExecInstr
-        @nmflag = "T"
-      else
-        @nmflag = case section.name
-                  when /\.t?bss.*/ then "B"
-                  when /\.rodata.*/ then "R"
-                  when /\.(t|pic)?data.*/ then "D"
-                  else
-                    raise UnknownNMCode.new(self)
-                  end
-      end
 
-      @nmflag.downcase! if bind == Elf::Symbol::Binding::Local
+        # If we haven't found the flag with the above code, we don't
+        # know what to use, so raise exception.
+        raise UnknownNMCode.new(self) if @nmflag.nil?
+
+        @nmflag.downcase! if bind == Elf::Symbol::Binding::Local
+      end
 
       return @nmflag
     end
