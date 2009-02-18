@@ -175,13 +175,15 @@ module Elf
     # Exception raised when the NM code for a given symbol is unknown.
     class UnknownNMCode < Exception
       def initialize(symbol)
-        section = if @sym.section.is_a?(Integer)
-                    @sym.section.hex
+        section = if symbol.section.nil?
+                    nil
+                  elsif symbol.section.is_a?(Integer)
+                    symbol.section.hex
                   else
-                    @sym.section.name
+                    symbol.section.name
                   end
 
-        super("Unknown NM code for symbol #{sym.name} in section #{section}")
+        super("Unknown NM code for symbol #{symbol.name} in section #{section}")
       end
     end
 
