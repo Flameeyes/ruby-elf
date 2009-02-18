@@ -197,38 +197,49 @@ module Elf
     # The resturned value is a one-letter string. The function may
     # raise an UnknownNMCode exception.
     def nm_code
-      if @nmflag.nil?
-        if idx == 0
-          @nmflag = " "
+      @nmflag ||= nm_code_internal
+    end
 
-          # When the section is nil, it means it goes into the Undef
-          # section, and the symbol is not defined.
-        elsif section.nil?
-          @nmflag = "U"
-        elsif bind == Elf::Symbol::Binding::Weak
-          @nmflag = type == Elf::Symbol::Type::Object ? "V" : "W"
-          @nmflag.downcase! if value == 0
+    # Convenience function for the first tile the nm code is requested.
+    def nm_code_internal
+      nmflag = nil
 
-        elsif section.is_a? Integer
-          if section == Elf::Section::Abs
-            # Absolute symbols
-            @nmflag = "A"
-          elsif section == Elf::Section::Common
-            # Common symbols
-            @nmflag = "C"
-          end
-        else
-          @nmflag = section.nm_code
-        end
+      case
+      when idx == 0
+        return " "
 
-        # If we haven't found the flag with the above code, we don't
-        # know what to use, so raise exception.
-        raise UnknownNMCode.new(self) if @nmflag.nil?
+        # When the section is nil, it means it goes into the Undef
+        # section, and the symbol is not defined.
+      when section.nil?
+        nmflag = "U"
 
-        @nmflag.downcase! if bind == Elf::Symbol::Binding::Local
+      when bind == Binding::Weak
+        nmflag = case type
+                 when Type::Object then "V"
+                 else "W"
+                 end
+
+        nmflag.downcase! if value == 0
+
+      when section.is_a?(Integer)
+        nmflag = case section
+                 when Elf::Section::Abs then "A"
+                 when Elf::Section::Common then "C"
+                 else nil
+                 end
+
+      else
+        # Find the nm(1) code for the section.
+        nmflag = section.nm_code
       end
 
-      return @nmflag
+      # If we haven't found the flag with the above code, we don't
+      # know what to use, so raise exception.
+      raise UnknownNMCode.new(self) if nmflag.nil?
+
+      nmflag.downcase! if bind == Binding::Local
+
+      return nmflag
     end
   end
 end
