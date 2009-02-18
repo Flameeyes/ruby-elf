@@ -228,7 +228,7 @@ module Elf
       @nmflag ||= case
                   when flags.include?(Flags::ExecInstr)
                     "T"
-                  when name =~ /\.t?bss.*/ then "B"
+                  when type == Type::NoBits then "B"
                   when name =~ /\.rodata.*/ then "R"
                   when name =~ /\.(t|pic)?data.*/ then "D"
                   else
