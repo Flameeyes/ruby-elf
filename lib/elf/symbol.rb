@@ -230,7 +230,7 @@ module Elf
 
       else
         # Find the nm(1) code for the section.
-        nmflag = section.nm_code
+        nmflag = section.nm_code.dup
       end
 
       # If we haven't found the flag with the above code, we don't
