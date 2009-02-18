@@ -201,16 +201,18 @@ module Elf
       
       if idx == 0
         @nmflag = " "
+
+      # When the section is nil, it means it goes into the Undef
+      # section, and the symbol is not defined.
+      elsif section.nil?
+        @nmflag = "U"
       elsif bind == Elf::Symbol::Binding::Weak
         @nmflag = type == Elf::Symbol::Type::Object ? "V" : "W"
         
         @nmflag.downcase! if value == 0
         
       elsif section.is_a? Integer
-        # The following are three 'reserved sections'
-        if section == Elf::Section::Undef
-          @nmflag = "U"
-        elsif section == Elf::Section::Abs
+        if section == Elf::Section::Abs
           # Absolute symbols
           @nmflag = "A"
         elsif section == Elf::Section::Common
