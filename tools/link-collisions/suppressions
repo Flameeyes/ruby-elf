@@ -78,6 +78,7 @@
 /libgnomedb/plugins/.*\.so			^plugin_init$
 /totem/plugins/.*\.so				^register_totem_plugin$
 /rhythmbox/plugins/.*\.so			^register_rb_plugin$
+/nautilus/extensions-[0-9\.]+/.*\.so		^nautilus_module_(initialize|list_types|shutdown)$
 
 # XFCE
 /lib(32|64)?/thunarx-[0-9\.]+/.*\.so		^thunar_extension_(initialize|list_types|shutdown)$
@@ -136,7 +137,7 @@
 .*/(ladspa|dssi)/.*\.so$		^(ladspa|delete)_descriptor$
 
 # OpenSync
-.*/opensync(-1.0)?/(formats|plugins)/.*\.so$	^(get(_(format|conversion))?_info|vformat_.*|(quoted|base64)_(encode|decode)_simple)$
+.*/opensync(-1.0)?/(formats|plugins)/.*\.so$	^(get_(((format|conversion)_)?info|version)|vformat_.*|(quoted|base64)_(encode|decode)_simple)$
 
 # libao
 .*/ao/plugins-2/lib.*\.so$		^ao_plugin_(test|set_option|open|play|driver_info|device_(init|clear)|close)$
@@ -201,7 +202,7 @@ strigi/strigi[lt]a_.*\.so		^(deleteS|s)trigiAnalyzerFactory$
 .*/sane/libsane-.*\.so			^sane_(cancel|close|control_option|exit|get_(devices|option_descriptor|parameters|select_fd)|init|open|read|set_io_mode|start|strstatus)
 
 # EVMS
-/lib(|32|64)/evms/.*/.*\.so		^evms_plugin_record$
+/lib(|32|64)/evms/.*/.*\.so		^evms_plugin_records$
 
 # updatedd
 /lib(32|64)?/lib.*\.so.*		^(log_(err|warn|notice)|dyndns|get_retmsg)$
@@ -213,13 +214,13 @@ strigi/strigi[lt]a_.*\.so		^(deleteS|s)trigiAnalyzerFactory$
 
 /lib(32|64)?/anjuta/.*\.so		^anjuta_glue_register_components$
 
-/lib(32|64)?/postgresql/.*\.so		^Pg_magic_func$
+/lib(32|64)?/postgresql(-[0-9\.]+)?/.*\.so	^Pg_magic_func$
 
 /lib(32|64)?/stardict/plugins/.*\.so	^stardict_(parsedata_)?plugin_(exit|init)$
 
 /lib(32|64)?/lv2/.*\.lv2/.*\.so		^lv2_descriptor$
 
-/lib(32|64)?/emelfm2/plugins/.*\.so	^init_plugin$
+/lib(32|64)?/emelfm2/plugins/.*\.so	^(init|clean)_plugin$
 
 /lib(32|64)?/mozart/cache/x-oz/		^oz_module_name$
 
@@ -242,17 +243,10 @@ strigi/strigi[lt]a_.*\.so		^(deleteS|s)trigiAnalyzerFactory$
 /lib(32|64)?/cinelerra/.*\.so			^new_plugin$
 /lib(32|64)?/jabberd/mod_.*\.so			^module_init$
 /lib(32|64)?/lftp/[0-9\.]+/.*\.so		^module_init$
-/lib(32|64)?/svxlink/.*\.so			^module_init$
-/lib(32|64)?/tablix2/.*\.so			^module_init$
-/lib(32|64)?/streamtuner/plugins/.*\.so		^plugin_init$
-/lib(32|64)?/pptp/.*\.so			^plugin_init$
-/lib(32|64)?/pppd/[0-9\.]+/.*\.so		^plugin_init$
-/lib(32|64)?/planner/plugins/.*\.so		^plugin_init$
-/lib(32|64)?/openvas/plugins/.*\.so		^plugin_init$
-/lib(32|64)?/geany/.*\.so			^plugin_init$
-/lib(32|64)?/blender/.*/.*\.so			^plugin_init$
-/lib(32|64)?/multisync/.*\.so			^plugin_init$
-/lib(32|64)?/sensors-applet/plugins/.*\.so	^plugin_name$
+/lib(32|64)?/(svxlink|tablix2|nepenthes)/.*\.so	^module_init$
+/lib(32|64)?/(pptp|pppd/[0-9\.]+)/.*\.so	^plugin_init$
+/lib(32|64)?/(planner|openvas|sensors-applet|streamtuner)/plugins/.*\.so	^plugin_init$
+/lib(32|64)?/(geany|blender|multisync)/.*\.so	^plugin_init$
 /lib(32|64)?/mythtv/plugins/.*\.so		^mythplugin_(init|config|run)$
 /lib(32|64)?/kradio/plugins/.*\.so		^KRadioPlugin_(LoadLibrary|GetAvailablePlugins|CreatePlugin|UnloadLibrary)$
 /lib(32|64)?/libmirage/.*\.so			^mirage_plugin_(un)?load_plugin$
@@ -262,8 +256,13 @@ strigi/strigi[lt]a_.*\.so		^(deleteS|s)trigiAnalyzerFactory$
 /lib(32|64)?/licq/licq_.*\.so			^LP_(Build(Date|Time)|ConfigFile|Description|Exit|Init|Main(_tep)?|Name|Status|Usage|Version)$
 /lib(32|64)?/gambas2?/gb\..*\.so		^GB_(INIT|EXIT|CLASSES)$
 /lib(32|64)?/SpiralPlugins/.*\.so		^SpiralPlugin_(CreateInstance|Get(GroupName|Icon|ID))$
-/lib(32|64)?/initng/.*\.so			^module_(init|unload)$
+/lib(32|64)?/initng/.*\.so			^(module_(init|unload|needs)|plugin_api_version)$
 /lib(32|64)?/ser/modules/.*\.so			^(exports|module_(version|flags))$
 /lib(32|64)?/gimageview/.*/.*\.so		^gimv_plugin_info$
-/lib(32|64)?/asterisk/modules/.*\.so		^(description|key|(un)?load_module|usecount)$
+/lib(32|64)?/asterisk/modules/.*\.so		^(description|key|(un)?load_module|usecount|reload)$
 /lib(32|64)?/emerald/engines/.*\.so		^(init_engine|layout_engine_(settings|colors))$
+/lib(32|64)?/compiz/.*\.so			^getCompPluginInfo(20070830)?$
+/lib(32|64)?/gmpc/plugins/.*\.so		^plugin(|_api_version)$
+/lib(32|64)?/znc/.*\.so				^((Unl|L)oad|Get(Version|Description)|IsGlobal)$
+/lib(32|64)?/sweep/.*\.so			^plugin$
+/lib(32|64)?/gpac/gm_.*\.so			^(Query|Shutdown)Interface$
