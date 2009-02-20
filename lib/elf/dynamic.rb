@@ -275,26 +275,60 @@ module Elf
       @entries.size
     end
 
-    # Return a list of paths use as runpath
+    # Returns the value of DT_RPATH entries in the file
+    def rpath
+      @rpath ||= auxiliary_library_path(Type::RPath)
+    end
+
+    # Returns the value of DT_RUNPATH entries in the file
+    def runpath
+      @runpath ||= auxiliary_library_path(Type::RunPath)
+    end
+
+    # Returns the auxiliary path specified by the given type
     #
-    # This function reads, splits and collapse the DT_RPATH and
-    # DT_RUNPATH entries in the ELF file to provide a list of
-    # auxiliary directories where to look for library objects.
-    def auxiliary_library_path
-      if @auxiliary_library_path.nil?
-        @auxiliary_library_path = Array.new
+    # Please never use this function because it does not caches its
+    # values, use Dynamic#rpath or Dynamic#runpath instead.
+    def auxiliary_library_path(type)
+      retval = Array.new
 
-        each_entry do |entry|
-          case entry.type
-          when Elf::Dynamic::Type::RPath, Elf::Dynamic::Type::RunPath
-            @auxiliary_library_path.concat entry.parsed.split(":")
-          end
-        end
-
-        @auxiliary_library_path.uniq!
+      each_entry do |entry|
+        next unless entry.type == type
+        retval.concat entry.parsed.split(":")
       end
 
-      return @auxiliary_library_path
+      return retval.uniq.collect do |path|
+        if path == "$ORIGIN" or path == "${ORIGIN}"
+          Pathname.new(@file.path).dirname
+        else
+          Pathname.new(path).realpath
+        end.to_s
+      end
+    end
+
+    # Returns the complete library path for the current ELF file.
+    #
+    # Since the ELF loaders have somewhat complex rules to identify
+    # the path to load dependencies from, we evalute it on a per-file
+    # basis.
+    def complete_library_path
+      if @complete_library_path.nil?
+        @complete_library_path = Array.new
+
+        # If there is no DT_RUNPATH. RPATH wins over the LD_LIBRARY_PATH
+        @complete_library_path.concat rpath unless runpath.empty?
+
+        @complete_library_path.concat Elf::Utilities.environment_library_path
+
+        # If there is a DT_RUNPATH it wins over the system library path
+        @complete_library_path.concat runpath
+
+        @complete_library_path.concat Elf::Utilities.system_library_path
+
+        @complete_library_path.uniq!
+      end
+
+      return @complete_library_path
     end
 
     # Return the ELF library corresponding to the given soname.
@@ -303,9 +337,7 @@ module Elf
     # the rpaths as expressed by the file itself, then look them up to
     # find the proper library, just like the loader would.
     def find_library(soname)
-      @complete_library_path ||= (auxiliary_library_path + Elf::Utilities.system_library_path).uniq
-
-      @complete_library_path.each do |path|
+      complete_library_path.each do |path|
         # For the ELF linker an empty entry in the library path is the
         # same as "." and means the current working directory, so
         # replace it.

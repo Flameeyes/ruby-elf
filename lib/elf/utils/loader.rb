@@ -24,7 +24,7 @@ require 'elf/utils/pool'
 
 module Elf
   module Utilities
-    @@library_path = nil
+    @@system_library_path = nil
 
     # Convenience function to append an array to the list of system
     # library paths.
@@ -39,7 +39,7 @@ module Elf
           # canonicalise the paths so that we can expect them to be
           # truly unique (and thus never pass through the same directory
           # twice).
-          @@library_path << Pathname.new(path).realpath.to_s
+          @@system_library_path << Pathname.new(path).realpath.to_s
         rescue Errno::ENOENT, Errno::EACCES
         end
       end
@@ -52,14 +52,8 @@ module Elf
       # Try to cache the request since we most likely have multiple
       # request per process and we don't care if the settings change
       # between them.
-      if @@library_path.nil?
-        @@library_path = Array.new
-
-        # Read the LD_LIBRARY_PATH environment variable and use that
-        # before the configuration file if present. This follows the
-        # same rules as the linker.
-        append_to_library_path(ENV['LD_LIBRARY_PATH'].split(":")) unless
-          ENV['LD_LIBRARY_PATH'].nil?
+      if @@system_library_path.nil?
+        @@system_library_path = Array.new
 
         # We have to put by default /lib and /usr/lib since they are
         # implicit in all systems. In particular for Gentoo/Linux
@@ -85,10 +79,29 @@ module Elf
 
         # Make sure the resulting list is uniq to avoid scanning the
         # same directory multiple times.
-        @@library_path.uniq!
+        @@system_library_path.uniq!
       end
       
-      return @@library_path
+      return @@system_library_path
+    end
+
+    # Return the environment library path
+    #
+    # We assume the LD_LIBRARY_PATH variable is not going to change
+    # between calls.
+    #
+    # TODO: systems like Solaris implement further variables like
+    # LD_LIBRARY_PATH_32 and LD_LIBRARY_PATH_64, we should pay
+    # attention to those too.
+    def self.environment_library_path
+      return [] if ENV['LD_LIBRARY_PATH'].nil?
+
+      ENV['LD_LIBRARY_PATH'].split(":").collect do |path|
+        begin
+          Pathname.new(path).realpath.to_s
+        rescue Errno::ENOENT, Errno::EACCES
+        end
+      end.uniq
     end
   end
 end
