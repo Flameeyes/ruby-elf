@@ -301,7 +301,11 @@ module Elf
         if path == "$ORIGIN" or path == "${ORIGIN}"
           Pathname.new(@file.path).dirname
         else
-          Pathname.new(path).realpath
+          begin
+            Pathname.new(path).realpath
+          rescue Errno::ENOENT
+            path
+          end
         end.to_s
       end
     end
