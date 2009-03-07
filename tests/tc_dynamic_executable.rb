@@ -156,9 +156,14 @@ module Elf::TestDynamicExecutable
     # We can write this test for the only reason that the file is
     # currently built with Gentoo Prefix on OpenSolaris, so pay
     # attention to this!
-    def test_runpaths
+    def test_rpath
       assert_equal(["/opt/gentoo/usr/i386-pc-solaris2.11/lib/gcc", "/opt/gentoo/usr/i386-pc-solaris2.11/lib", "/opt/gentoo/usr/lib", "/opt/gentoo/lib"],
-                   @elf[".dynamic"].auxiliary_library_path)
+                   @elf[".dynamic"].rpath)
+    end
+
+    def test_runpath
+      assert_equal(["/opt/gentoo/usr/i386-pc-solaris2.11/lib/gcc", "/opt/gentoo/usr/i386-pc-solaris2.11/lib", "/opt/gentoo/usr/lib", "/opt/gentoo/lib"],
+                   @elf[".dynamic"].runpath)
     end
   end
 
