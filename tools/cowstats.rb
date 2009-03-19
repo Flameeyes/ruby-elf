@@ -103,16 +103,20 @@ def self.analysis(file)
       # non-relocated sections, still use the name to choose between
       # them. If the name is not in this list, at least warn now
       # about it.
+      #
+      # The “l” prefix is used by Sun's compiler for x64-specific
+      # sections that can hold over 2GiB of data. They don't change
+      # for what we're concerned.
       case symbol.section.name
-      when /^\.data\.rel\.ro(\..*)?/
+      when /^\.l?data\.rel\.ro(\..*)?/
         unless @inore_data_rel_ro
           relro_vars << symbol unless @statistics
           relro_size += symbol.size
         end
-      when /^\.data\.rel(\..*)?/, /^\.picdata/
+      when /^\.l?data\.rel(\..*)?/, /^\.picdata/
         rel_vars << symbol unless @statistics
         rel_size += symbol.size
-      when /^\.t?data(\.local)?(\..*)?/
+      when /^\.l?t?data(\.local)?(\..*)?/
         data_vars << symbol unless @statistics
         data_size += symbol.size
       else
