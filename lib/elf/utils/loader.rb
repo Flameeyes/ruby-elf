@@ -64,17 +64,22 @@ module Elf
         # /etc/ld.so.conf not to, add them here.
         append_to_library_path(["/lib", "/usr/lib"])
 
-        # This implements for now the glibc-style loader
-        # configuration; in the future it might be reimplemented to
-        # take into consideration different operating systems.
-        ::File.open("/etc/ld.so.conf") do |ld_so_conf|
-          ld_so_conf.each_line do |line|
-            # Comment lines in the configuration file are prefixed
-            # with the hash character, and the remaining content is
-            # just a single huge list of paths, separated by colon,
-            # comma, space, tabs or newlines.
-            append_to_library_path(line.gsub(/#.*/, '').split(/[:, \t\n]/))
+        # We might not have the ld.so.conf file, if that's the case
+        # just ignore it.
+        begin
+          # This implements for now the glibc-style loader
+          # configuration; in the future it might be reimplemented to
+          # take into consideration different operating systems.
+          ::File.open("/etc/ld.so.conf") do |ld_so_conf|
+            ld_so_conf.each_line do |line|
+              # Comment lines in the configuration file are prefixed
+              # with the hash character, and the remaining content is
+              # just a single huge list of paths, separated by colon,
+              # comma, space, tabs or newlines.
+              append_to_library_path(line.gsub(/#.*/, '').split(/[:, \t\n]/))
+            end
           end
+        rescue Errno::ENOENT
         end
 
         # Make sure the resulting list is uniq to avoid scanning the
