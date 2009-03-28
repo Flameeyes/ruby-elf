@@ -82,13 +82,10 @@ module Elf::TestDynamicExecutable
     end
   end
 
-  # Tests the Elf::File#needed_libraries function.
-  #
-  # Since we cannot be sure of either the correct path of the library
-  # in the system, nor even of its presence, we just check the keys.
-  def test_needed_libraries
+  # Tests the Elf::File#needed_sonames function.
+  def test_needed_sonames
     assert_equal([self.class::ExpectedLibC],
-                 @elf[".dynamic"].needed_libraries.keys)
+                 @elf[".dynamic"].needed_sonames)
   end
 
   def dotest_entry_type(type, fail_notfound = true)

@@ -110,7 +110,7 @@ module Elf
 
              0x6ffffff9 => [ :RelACount, "RELACOUNT", :Value ],
              0x6ffffffa => [ :RelCount, "RELCOUNT", :Value ],
-             
+
              # Sun extensions, should be named :Sun*?
              0x6ffffffb => [ :Flags1, "FLAGS_1", :Value ],
              0x6ffffffc => [ :VerDef, "VERDEF", :Address ],
@@ -361,12 +361,30 @@ module Elf
       return nil
     end
 
+    # Returns an array of needed sonames from .dynamic section
+    #
+    # This function reads the .dynamic section of the file for
+    # DT_NEEDED entries, and fills an array with them.
+    def needed_sonames
+      if @needed_sonames.nil?
+        @needed_sonames = Array.new
+
+        each_entry do |entry|
+          next unless entry.type == Elf::Dynamic::Type::Needed
+
+          @needed_sonames << entry.parsed
+        end
+      end
+
+      return @needed_sonames
+    end
+
     # Returns an hash representing the dependencies of the ELF file.
     #
     # This function reads the .dynamic section of the file for
     # DT_NEEDED entries, then looks for them and add them to an hash.
     #
-    # Note that nil values int he hash means that the library couldn't
+    # Note that nil values in the hash means that the library couldn't
     # be found on either the runpath of the file or the system library
     # path.
     def needed_libraries
@@ -376,10 +394,8 @@ module Elf
       if @needed_libraries.nil?
         @needed_libraries = Hash.new
 
-        each_entry do |entry|
-          next unless entry.type == Elf::Dynamic::Type::Needed
-
-          @needed_libraries[entry.parsed] = find_library(entry.parsed)
+        needed_sonames.each do |soname|
+          @needed_libraries[soname] = find_library(soname)
         end
       end
 
