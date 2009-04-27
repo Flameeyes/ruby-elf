@@ -172,6 +172,13 @@ module Elf
       return @file['.gnu.version_d'][version_idx][:names][name_idx]
     end
 
+    def defined?
+      return false if section.nil?
+      return false if section.is_a?(Integer)
+      return false if bind == Binding::Weak and value == 0
+      return true
+    end
+
     # Exception raised when the NM code for a given symbol is unknown.
     class UnknownNMCode < Exception
       def initialize(symbol)
