@@ -21,6 +21,8 @@
 # along with this generator; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
+require 'set'
+
 module Elf
   class SymbolTable < Section
     def load_internal
@@ -77,6 +79,13 @@ module Elf
       load unless @symbols
 
       @symbols.size
+    end
+
+    # Returns a Set object containing all the symbosl in the table
+    def to_set
+      load unless @symbols
+
+      @symbols.to_set
     end
   end
 end
