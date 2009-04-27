@@ -45,6 +45,11 @@ class TC_Symbols_Comparison < Test::Unit::TestCase
     assert(@versioned_asymbol_versioned == @versioned_asymbol_versioned)
   end
 
+  def test_equality2_same_object
+    assert((@versioned_asymbol_base.eql? @versioned_asymbol_base))
+    assert(@versioned_asymbol_versioned.eql? @versioned_asymbol_versioned)
+  end
+
   def test_inequality_same_object
     assert(!(@versioned_asymbol_base != @versioned_asymbol_base))
     assert(!(@versioned_asymbol_versioned != @versioned_asymbol_versioned))
@@ -53,6 +58,11 @@ class TC_Symbols_Comparison < Test::Unit::TestCase
   def test_not_equality_same_object
     assert(!(@versioned_asymbol_base == @versioned_asymbol_versioned))
     assert(!(@versioned_asymbol_versioned == @versioned_asymbol_base))
+  end
+
+  def test_not_equality2_same_object
+    assert(!(@versioned_asymbol_base.eql? @versioned_asymbol_versioned))
+    assert(!(@versioned_asymbol_versioned.eql? @versioned_asymbol_base))
   end
 
   def test_not_inequality_same_object
@@ -65,6 +75,11 @@ class TC_Symbols_Comparison < Test::Unit::TestCase
     assert((@unversioned_asymbol == @versioned_asymbol_base))
   end
 
+  def test_equality2_different_objects
+    assert((@versioned_asymbol_base.eql? @unversioned_asymbol))
+    assert((@unversioned_asymbol.eql? @versioned_asymbol_base))
+  end
+
   def test_inequality_different_objects
     assert(!(@versioned_asymbol_base != @unversioned_asymbol))
     assert(!(@unversioned_asymbol != @versioned_asymbol_base))
@@ -73,6 +88,11 @@ class TC_Symbols_Comparison < Test::Unit::TestCase
   def test_not_equality_different_objects
     assert(!(@versioned_asymbol_versioned == @unversioned_asymbol))
     assert(!(@unversioned_asymbol == @versioned_asymbol_versioned))
+  end
+
+  def test_not_equality2_different_objects
+    assert(!(@versioned_asymbol_versioned.eql? @unversioned_asymbol))
+    assert(!(@unversioned_asymbol.eql? @versioned_asymbol_versioned))
   end
 
   def test_not_inequality_different_objects

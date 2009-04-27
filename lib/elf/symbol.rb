@@ -265,6 +265,10 @@ module Elf
       return true
     end
 
+    def eql?(other)
+      return self == other
+    end
+
     # Check whether one symbol is compatible with the other
     #
     # This function compares the name and version of two symbols, and
