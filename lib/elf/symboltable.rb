@@ -85,6 +85,14 @@ module Elf
       symbols.to_set
     end
 
+    # Get a set with all the symbols in the table that are defined,
+    # ignoring common, absolute and undefined symbols.
+    def defined_symbols
+      symbols.find_all do |sym|
+        sym.defined?
+      end.to_set
+    end
+
     private
     def symbols
       load unless @symbols
