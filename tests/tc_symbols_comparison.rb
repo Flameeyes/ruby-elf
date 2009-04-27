@@ -41,100 +41,72 @@ class TC_Symbols_Comparison < Test::Unit::TestCase
   end
 
   def test_equality_same_object
-    assert_equal(true,
-                 @versioned_asymbol_base == @versioned_asymbol_base)
-    assert_equal(true,
-                 @versioned_asymbol_versioned == @versioned_asymbol_versioned)
+    assert((@versioned_asymbol_base == @versioned_asymbol_base))
+    assert(@versioned_asymbol_versioned == @versioned_asymbol_versioned)
   end
 
   def test_inequality_same_object
-    assert_equal(false,
-                 @versioned_asymbol_base != @versioned_asymbol_base)
-    assert_equal(false,
-                 @versioned_asymbol_versioned != @versioned_asymbol_versioned)
+    assert(!(@versioned_asymbol_base != @versioned_asymbol_base))
+    assert(!(@versioned_asymbol_versioned != @versioned_asymbol_versioned))
   end
 
   def test_not_equality_same_object
-    assert_equal(false,
-                 @versioned_asymbol_base == @versioned_asymbol_versioned)
-    assert_equal(false,
-                 @versioned_asymbol_versioned == @versioned_asymbol_base)
+    assert(!(@versioned_asymbol_base == @versioned_asymbol_versioned))
+    assert(!(@versioned_asymbol_versioned == @versioned_asymbol_base))
   end
 
   def test_not_inequality_same_object
-    assert_equal(true,
-                 @versioned_asymbol_base != @versioned_asymbol_versioned)
-    assert_equal(true,
-                 @versioned_asymbol_versioned != @versioned_asymbol_base)
+    assert((@versioned_asymbol_base != @versioned_asymbol_versioned))
+    assert((@versioned_asymbol_versioned != @versioned_asymbol_base))
   end
 
   def test_equality_different_objects
-    assert_equal(true,
-                 @versioned_asymbol_base == @unversioned_asymbol)
-    assert_equal(true,
-                 @unversioned_asymbol == @versioned_asymbol_base)
+    assert((@versioned_asymbol_base == @unversioned_asymbol))
+    assert((@unversioned_asymbol == @versioned_asymbol_base))
   end
 
   def test_inequality_different_objects
-    assert_equal(false,
-                 @versioned_asymbol_base != @unversioned_asymbol)
-    assert_equal(false,
-                 @unversioned_asymbol != @versioned_asymbol_base)
+    assert(!(@versioned_asymbol_base != @unversioned_asymbol))
+    assert(!(@unversioned_asymbol != @versioned_asymbol_base))
   end
 
   def test_not_equality_different_objects
-    assert_equal(false,
-                 @versioned_asymbol_versioned == @unversioned_asymbol)
-    assert_equal(false,
-                 @unversioned_asymbol == @versioned_asymbol_versioned)
+    assert(!(@versioned_asymbol_versioned == @unversioned_asymbol))
+    assert(!(@unversioned_asymbol == @versioned_asymbol_versioned))
   end
 
   def test_not_inequality_different_objects
-    assert_equal(true,
-                 @versioned_asymbol_versioned != @unversioned_asymbol)
-    assert_equal(true,
-                 @unversioned_asymbol != @versioned_asymbol_versioned)
+    assert((@versioned_asymbol_versioned != @unversioned_asymbol))
+    assert((@unversioned_asymbol != @versioned_asymbol_versioned))
   end
 
   def test_not_compatibility_same_object
-    assert_equal(false,
-                 @versioned_asymbol_base =~ @versioned_asymbol_versioned)
-    assert_equal(false,
-                 @versioned_asymbol_versioned =~ @versioned_asymbol_base)
+    assert(!(@versioned_asymbol_base =~ @versioned_asymbol_versioned))
+    assert(!(@versioned_asymbol_versioned =~ @versioned_asymbol_base))
   end
 
   def test_not_incompatibility_same_object
-    assert_equal(true,
-                 @versioned_asymbol_base !~ @versioned_asymbol_versioned)
-    assert_equal(true,
-                 @versioned_asymbol_versioned !~ @versioned_asymbol_base)
+    assert((@versioned_asymbol_base !~ @versioned_asymbol_versioned))
+    assert((@versioned_asymbol_versioned !~ @versioned_asymbol_base))
   end
 
   def test_compatibility_different_objects
-    assert_equal(true,
-                 @user_asymbol_versioned =~ @versioned_asymbol_versioned)
-    assert_equal(true,
-                 @versioned_asymbol_versioned =~ @user_asymbol_versioned)
+    assert((@user_asymbol_versioned =~ @versioned_asymbol_versioned))
+    assert((@versioned_asymbol_versioned =~ @user_asymbol_versioned))
   end
 
   def test_incompatibility_different_objects
-    assert_equal(false,
-                 @user_asymbol_versioned !~ @versioned_asymbol_versioned)
-    assert_equal(false,
-                 @versioned_asymbol_versioned !~ @user_asymbol_versioned)
+    assert(!(@user_asymbol_versioned !~ @versioned_asymbol_versioned))
+    assert(!(@versioned_asymbol_versioned !~ @user_asymbol_versioned))
   end
 
   def test_not_compatibility_different_objects
-    assert_equal(false,
-                 @user_asymbol_versioned =~ @versioned_asymbol_base)
-    assert_equal(false,
-                 @versioned_asymbol_base =~ @user_asymbol_versioned)
+    assert(!(@user_asymbol_versioned =~ @versioned_asymbol_base))
+    assert(!(@versioned_asymbol_base =~ @user_asymbol_versioned))
   end
 
   def test_not_incompatibility_different_objects
-    assert_equal(true,
-                 @user_asymbol_versioned !~ @versioned_asymbol_base)
-    assert_equal(true,
-                 @versioned_asymbol_base !~ @user_asymbol_versioned)
+    assert((@user_asymbol_versioned !~ @versioned_asymbol_base))
+    assert((@versioned_asymbol_base !~ @user_asymbol_versioned))
   end
 end
