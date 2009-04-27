@@ -62,30 +62,28 @@ module Elf
 
     # Iterate over each symbols, replaces section.symbol.each
     def each_symbol(&block)
-      load unless @symbols
-
-      @symbols.each(&block)
+      symbols.each(&block)
     end
 
     # Find a symbol starting from a particular predicate
     def find(&block)
-      load unless @symbols
-
-      @symbols.find(&block)
+      symbols.find(&block)
     end
 
     # Return the number of symbols in the section
     def size
-      load unless @symbols
-
-      @symbols.size
+      symbols.size
     end
 
     # Returns a Set object containing all the symbosl in the table
     def to_set
-      load unless @symbols
+      symbols.to_set
+    end
 
-      @symbols.to_set
+    private
+    def symbols
+      load unless @symbols
+      @symbols
     end
   end
 end
