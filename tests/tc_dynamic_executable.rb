@@ -48,6 +48,35 @@ module Elf::TestDynamicExecutable
     end
   end
 
+  def test_find_symbol
+    sym = @elf['.dynsym'].find do |sym|
+      sym.name == "printf"
+    end
+
+    assert_equal("printf", sym.name)
+    assert(!sym.defined?)
+  end
+
+  def test_find_all_symbols
+    syms = @elf['.dynsym'].find_all do |sym|
+      sym.name == "printf"
+    end
+
+    assert_equal(1, syms.size)
+
+    sym = syms[0]
+    assert_equal("printf", sym.name)
+    assert(!sym.defined?)
+  end
+
+  def test_symbols_to_set
+    symbols_set = @elf['.dynsym'].to_set
+
+    assert_kind_of(Set, symbols_set)
+    assert_equal(@elf['.dynsym'].size,
+                 symbols_set.size)
+  end
+
   # Test some values in the .dynamic section.
   #
   # Please note that the value is evaluated since it usually is
