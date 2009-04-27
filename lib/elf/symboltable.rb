@@ -65,6 +65,13 @@ module Elf
       @symbols.each(&block)
     end
 
+    # Find a symbol starting from a particular predicate
+    def find(&block)
+      load unless @symbols
+
+      @symbols.find(&block)
+    end
+
     # Return the number of symbols in the section
     def size
       load unless @symbols
