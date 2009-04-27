@@ -241,5 +241,38 @@ module Elf
 
       return nmflag
     end
+
+    # Check whether two symbols are the same
+    #
+    # This function compares the name, version and section of two
+    # symbols to tell if they are the same symbol.
+    def ==(other)
+      return false unless other.is_a? Symbol
+
+      return false unless name == other.name
+      return false unless version == other.version
+
+      return false if section == nil and other.section != nil
+      return false if section != nil and other.section == nil
+
+      return true
+    end
+
+    # Check whether one symbol is compatible with the other
+    #
+    # This function compares the name and version of two symbols, and
+    # ensures that only one of them is undefined; this allows to
+    # establish whether one symbol might be satisfied by another.
+    def =~(other)
+      return false unless other.is_a? Symbol
+
+      return false unless name == other.name
+      return false unless version == other.version
+
+      return false if section == nil and other.section == nil
+      return false if section != nil and other.section != nil
+
+      return true
+    end
   end
 end
