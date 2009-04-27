@@ -39,7 +39,7 @@ module Elf::TestDynamicExecutable
   # Test for presence of an undefined printf symbol.
   def test_printf_symbol
     printf_found = false
-    @elf['.dynsym'].each_symbol do |sym|
+    @elf['.dynsym'].each do |sym|
       next unless sym.name == "printf"
       printf_found = true
       

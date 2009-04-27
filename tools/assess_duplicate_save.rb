@@ -43,7 +43,7 @@ def assess_save(file)
       # letting it point to sectionsize-1
       fullsize = 0
 
-      symsec.each_symbol do |sym|
+      symsec.each do |sym|
         next if seenstr.include? sym.name
         seenstr.add sym.name
         fullsize += sym.name.length+1

@@ -281,7 +281,7 @@ so_files.each do |so|
 
       db.exec("EXECUTE newmulti(#{impid}, '#{so}')") if so != name
         
-      elf['.dynsym'].each_symbol do |sym|
+      elf['.dynsym'].each do |sym|
         begin
           next if sym.idx == 0 or
             sym.bind != Elf::Symbol::Binding::Global or

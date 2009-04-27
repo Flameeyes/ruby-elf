@@ -71,7 +71,7 @@ def self.analysis(filename)
     end
 
     # Gather all the symbols, defined and missing in the translation unit
-    elf['.symtab'].each_symbol do |sym|
+    elf['.symtab'].each do |sym|
       if sym.section == Elf::Section::Undef
         @exclude_names << sym.name
       elsif sym.bind == Elf::Symbol::Binding::Local

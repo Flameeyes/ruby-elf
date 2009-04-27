@@ -61,28 +61,15 @@ module Elf
     end
 
     # Iterate over each symbols, replaces section.symbol.each
-    def each_symbol(&block)
+    def each(&block)
       symbols.each(&block)
     end
 
-    # Find a symbol starting from a particular predicate
-    def find(&block)
-      symbols.find(&block)
-    end
-
-    # Find all symbol starting from a particular predicate
-    def find_all(&block)
-      symbols.find_all(&block)
-    end
+    include ::Enumerable
 
     # Return the number of symbols in the section
     def size
       symbols.size
-    end
-
-    # Returns a Set object containing all the symbosl in the table
-    def to_set
-      symbols.to_set
     end
 
     # Get a set with all the symbols in the table that are defined,

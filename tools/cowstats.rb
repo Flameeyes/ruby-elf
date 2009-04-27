@@ -72,7 +72,7 @@ def self.analysis(file)
       next
     end
 
-    elf['.symtab'].each_symbol do |symbol|
+    elf['.symtab'].each do |symbol|
       # Ignore undefined, absolute and common symbols.
       next unless symbol.section.is_a? Elf::Section
       # When the symbol name is empty, it refers to the

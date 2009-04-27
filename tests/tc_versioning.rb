@@ -88,7 +88,7 @@ class TC_Versioning < Test::Unit::TestCase
 
   def test_symbols
     first_asymbol_seen = false
-    @elf[".dynsym"].each_symbol do |sym|
+    @elf[".dynsym"].each do |sym|
       case sym.name
       when "tolower"
         assert_equal("GLIBC_2.2.5", sym.version,

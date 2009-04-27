@@ -49,7 +49,7 @@ files.each do |file|
         next
       end
 
-      elf[scan_section].each_symbol do |sym|
+      elf[scan_section].each do |sym|
         next if sym.name == ''
 
         addr = sprintf("%0#{addrsize}x", sym.value)
