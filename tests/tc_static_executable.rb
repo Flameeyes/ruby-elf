@@ -27,11 +27,53 @@ module Elf::TestStaticExecutable
   BaseFilename = "static_executable"
   ExpectedFileType = Elf::File::Type::Exec
 
+  PrintfSymname = "printf"
+
   # Test for _not_ of .dynamic section on the file.
   # This is a prerequisite for static executable files.
   def test_static
     assert(!@elf.has_section?('.dynamic'),
            ".dynamic section present on ELF file #{@elf.path}")
+  end
+
+  def test_find_symbol
+    sym = @elf['.symtab'].find do |sym|
+      sym.name == self.class::PrintfSymname
+    end
+
+    assert_equal(self.class::PrintfSymname, sym.name)
+    assert(sym.defined?)
+  end
+
+  def test_find_all_symbols
+    syms = @elf['.symtab'].find_all do |sym|
+      sym.name == self.class::PrintfSymname
+    end
+
+    assert_equal(1, syms.size)
+
+    sym = syms[0]
+    assert_equal(self.class::PrintfSymname, sym.name)
+    assert(sym.defined?)
+  end
+
+  def test_symbols_to_set
+    symbols_set = @elf['.symtab'].to_set
+
+    assert_kind_of(Set, symbols_set)
+    assert_equal(@elf['.symtab'].size,
+                 symbols_set.size)
+  end
+
+  def test_defined_symbols
+    sym = @elf['.symtab'].find do |sym|
+      sym.name == self.class::PrintfSymname
+    end
+
+    defined_syms = @elf[".symtab"].defined_symbols
+
+    assert_kind_of(Set, defined_syms)
+    assert(defined_syms.include?(sym))
   end
 
   class LinuxX86 < Test::Unit::TestCase
@@ -63,6 +105,7 @@ module Elf::TestStaticExecutable
   class BareH8300 < Test::Unit::TestCase
     include Elf::TestStaticExecutable
     include Elf::TestExecutable::BareH8300
+    PrintfSymname = "_printf"
   end
 
   def self.subsuite
