@@ -70,6 +70,11 @@ module Elf
       symbols.find(&block)
     end
 
+    # Find all symbol starting from a particular predicate
+    def find_all(&block)
+      symbols.find_all(&block)
+    end
+
     # Return the number of symbols in the section
     def size
       symbols.size
