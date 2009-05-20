@@ -52,6 +52,12 @@ module Elf
               6 => [ :TLS, 'Thread-local data object' ]
            })
 
+      class GNU < Value
+        fill({
+               10 => [ :IFunc, 'Indirect function' ]
+             })
+      end
+
       # OS-specific range
       LoOs = 10
       HiOs = 12
@@ -101,6 +107,17 @@ module Elf
       end
 
       begin
+        typecode = info & 0xF
+
+        if typecode >= Type::LoOs && typecode <= Type::HiOs
+          # Assume always GNU for now, but it's wrong
+          @type = Type::GNU[info & 0xF]
+        elsif typecode >= Type::LoProc && typecode <= Type::HiProc
+          type = Elf::Value::Unknown.new(typecode, sprintf("STT_LOPROC+%x", typecode-Type::HiProc))
+        else
+          @type = Type[info & 0xF]
+        end
+
         @bind = Binding[info >> 4]
         @type = Type[info & 0xF]
       rescue Elf::Value::OutOfBound => e
