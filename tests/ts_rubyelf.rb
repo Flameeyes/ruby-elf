@@ -15,6 +15,14 @@
 # along with this generator; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
+# If the new test-unit 2.x is present, use that; it's used when
+# testing on Ruby 1.9 (because 1.9 does not have what we need by
+# itself), and it provides a nicer coloured interface on 1.8 too.
+#
+# On the other hand, if it's not found don't bother and use the
+# standard test-unit interface.
+gem 'test-unit' rescue LoadError
+
 require 'test/unit/ui/console/testrunner'
 require 'test/unit/testsuite'
 require 'pathname'
