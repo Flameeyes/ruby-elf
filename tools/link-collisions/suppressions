@@ -38,7 +38,7 @@
 					# KApplication::KApp
 .*					^_ZN12KApplication4KAppE$
 # KDE 4
-.*/kde4/.*\.so$				^kde_plugin_verification_data$
+.*/kde4/.*\.so$				^kde_plugin_(verification_data|version)$
 .*/kde4/.*thumbnail\.so$		^new_creator$
 
 # Amarok
@@ -266,3 +266,6 @@ strigi/strigi[lt]a_.*\.so		^(deleteS|s)trigiAnalyzerFactory$
 /lib(32|64)?/znc/.*\.so				^((Unl|L)oad|Get(Version|Description)|IsGlobal)$
 /lib(32|64)?/sweep/.*\.so			^plugin$
 /lib(32|64)?/gpac/gm_.*\.so			^(Query|Shutdown)Interface$
+/lib(32|64)?/k3d/plugins/k3d-.*\.module		^register_k3d_plugin$
+/lib(32|64)?/frei0r-1/.*\.so			^f0r_((con|de)struct|(de)?init||get_(param_(info|value)|plugin_info)|set_param_value|update2?)$
+/lib(32|64)?/kvirc/[0-9\.]+/modules/.*\.so	^KVIrc_module_info$

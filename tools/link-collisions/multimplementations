@@ -95,7 +95,7 @@ lib$1			/lib([a-zA-Z]+)([23]D|2D3)(-[0-9\.]+)?\.so
 
 opal/openh323		/lib(32|64)?/lib(opal|h323)_.*_n\.so
 
-libfmodex		/lib(32|64)?/libfmodexp?-[0-9\.]+\.so
+libfmodex		/lib(32|64)?/libfmodex[Lp]?-[0-9\.]+\.so
 
 libossp-uuid		/libossp-uuid(_dce)?\.so
 
