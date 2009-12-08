@@ -1,8 +1,8 @@
 MANPAGES = $(patsubst %.xml,%,$(wildcard manpages/*.xml))
 
-all: manpages
+all: manpages-build
 
-manpages: $(MANPAGES)
+manpages-build: $(MANPAGES)
 
 XSL_NS_ROOT=http://docbook.sourceforge.net/release/xsl-ns/current
 
