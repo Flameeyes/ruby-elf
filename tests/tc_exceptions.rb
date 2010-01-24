@@ -55,7 +55,7 @@ class TC_Exceptions < Test::Unit::TestCase
     # Check that the file does not exist or we're going to throw an
     # exception to signal an error in the test.
     if File.exists? TestDir + "notfound"
-      raise Exception.new("A file named 'invalid_notfound' is present in the test directory")
+      raise Exception.new("A file named 'notfound' is present in the #{TestDir.realpath} directory")
     end
 
     helper_open_exception Errno::ENOENT, "notfound"
