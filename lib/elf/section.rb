@@ -229,6 +229,7 @@ module Elf
                   when flags.include?(Flags::ExecInstr)
                     "T"
                   when type == Type::NoBits then "B"
+                  when type == Type::Note then "N"
                   when name =~ /\.rodata.*/ then "R"
                   when name =~ /\.(t|pic)?data.*/ then "D"
                   else
