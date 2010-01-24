@@ -116,8 +116,8 @@ module Elf
 
     alias :read_section :read_u16
     alias :read_versym :read_half
-    
-    def initialize(path)
+
+    def _checkvalidpath(path)
       # We're going to check the path we're given for a few reasons,
       # the first of which is that we do not want to open a pipe or
       # something like that. If we were just to leave it to File.open,
@@ -130,12 +130,25 @@ module Elf
       # If we were just to use File.ftype we would have to handle
       # manually the links... since Pathname will properly report
       # ENOENT for broken links, we're going to keep it this way.
-      case Pathname.new(path).realpath.ftype
+      case Pathname.new(path).ftype
       when "directory" then raise Errno::EISDIR
       when "file" then # do nothing
+      when "link"
+        # we use path.realpath here; the reason is that if
+        # we're to use readlink we're going to have a lot of
+        # trouble to find the correct path. We cannot just
+        # always use realpath as that will run too many stat
+        # calls and have a huge hit on performance.
+        _checkvalidpath(path.realpath)
       else
         raise Errno::EINVAL
       end
+    end
+
+    private :_checkvalidpath
+
+    def initialize(path)
+      _checkvalidpath(path)
 
       super(path, "rb")
 
