@@ -28,23 +28,28 @@ require 'elf'
 class TC_Exceptions < Test::Unit::TestCase
   TestDir = Pathname.new(Elf::BaseTest::TestDir + "invalid/")
 
-  # Define setup and teardown functions to make sure that no
-  # descriptors are leaked during the tests. We don't want descriptors
-  # to leak when exception happens, otherwise we likely have a bug in
-  # the code.
-  def setup
-    file = File.new(TestDir + "nonelf")
-    @fileno_before = file.fileno
-    file.close
-  end
+  # We cannot use the fileno count trick on JRuby :(
+  if PLATFORM != "java"
+    # Define setup and teardown functions to make sure that no
+    # descriptors are leaked during the tests. We don't want descriptors
+    # to leak when exception happens, otherwise we likely have a bug in
+    # the code.
+    def setup
+      file = File.new(TestDir + "nonelf")
+      @fileno_before = file.fileno
+      file.close
+    end
 
-  def teardown
-    file = File.new(TestDir + "nonelf")
-    @fileno_after = file.fileno
-    file.close
+    def teardown
+      file = File.new(TestDir + "nonelf")
+      @fileno_after = file.fileno
+      file.close
 
-    assert_equal(@fileno_before, @fileno_after,
-                 "Descriptor leaked!")
+      assert_equal(@fileno_before, @fileno_after,
+                   "Descriptor leaked!")
+    end
+  else
+    $stderr.puts "Unable to test for file descriptor leaks on JRuby"
   end
 
   # Helper to check for exceptions on opening a file.
