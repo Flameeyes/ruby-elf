@@ -254,12 +254,14 @@ module Elf
 
       else
         # Find the nm(1) code for the section.
-        nmflag = section.nm_code.dup
+        nmflag = section.nm_code
       end
 
       # If we haven't found the flag with the above code, we don't
       # know what to use, so raise exception.
       raise UnknownNMCode.new(self) if nmflag.nil?
+
+      nmflag = nmflag.dup
 
       nmflag.downcase! if bind == Binding::Local
 
