@@ -28,24 +28,30 @@ require 'elf'
 class TC_Exceptions < Test::Unit::TestCase
   TestDir = Pathname.new(Elf::BaseTest::TestDir + "invalid/")
 
-  # Helper to check for exceptions on opening a file. It not only
-  # ensures that the correct exception class is given, but also that
-  # the opening action didn't leak any file descriptor!
-  def helper_open_exception(exception_class, subpath)
+  # Define setup and teardown functions to make sure that no
+  # descriptors are leaked during the tests. We don't want descriptors
+  # to leak when exception happens, otherwise we likely have a bug in
+  # the code.
+  def setup
     file = File.new(TestDir + "nonelf")
-    fileno_before = file.fileno
+    @fileno_before = file.fileno
+    file.close
+  end
+
+  def teardown
+    file = File.new(TestDir + "nonelf")
+    @fileno_after = file.fileno
     file.close
 
+    assert_equal(@fileno_before, @fileno_after,
+                 "Descriptor leaked!")
+  end
+
+  # Helper to check for exceptions on opening a file.
+  def helper_open_exception(exception_class, subpath)
     assert_raise exception_class do
       Elf::File.new(TestDir + subpath)
     end
-
-    file = File.new(TestDir + "nonelf")
-    fileno_after = file.fileno
-    file.close
-
-    assert_equal(fileno_before, fileno_after,
-                 "Descriptor leaked by the Elf::File.new call")
   end
 
   # Test behaviour when a file is requested that is not present.
@@ -170,7 +176,6 @@ class TC_Exceptions < Test::Unit::TestCase
     begin
       elf = Elf::File.new(TestDir + "unknown_section_type")
       elf[11] # We need an explicit request for the corrupted section
-      elf.close
     rescue Elf::Section::UnknownType => e
       assert_equal(0x0000ff02, e.type_id,
                    "Wrong type_id reported for unknown section type")
@@ -182,6 +187,8 @@ class TC_Exceptions < Test::Unit::TestCase
       assert_equal(1, e.section_name,
                    "Wrong section_name reported for unknown section type")
       return
+    ensure
+      elf.close
     end
     
     flunk("Elf::Section::UnknownType exception not received.")
@@ -193,11 +200,13 @@ class TC_Exceptions < Test::Unit::TestCase
   # Expected behaviour: Elf::File::MissingStringTable exception is
   # raised
   def test_missing_string_table_request
+    elf = Elf::File.new(TestDir + "unknown_section_type")
+
     assert_raise Elf::File::MissingStringTable do
-      elf = Elf::File.new(TestDir + "unknown_section_type")
       elf[".symtab"]
-      elf.close
     end
+
+    elf.close
   end
 
   # Test behaviour when a file lacks a string table and a section is
