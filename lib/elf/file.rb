@@ -130,8 +130,12 @@ module Elf
       # If we were just to use File.ftype we would have to handle
       # manually the links... since Pathname will properly report
       # ENOENT for broken links, we're going to keep it this way.
-      raise NotAnELF unless
-        pn = Pathname.new(path).realpath.ftype == "file"
+      case Pathname.new(path).realpath.ftype
+      when "directory" then raise Errno::EISDIR
+      when "file" then # do nothing
+      else
+        raise Errno::EINVAL
+      end
 
       super(path, "rb")
 

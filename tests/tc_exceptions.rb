@@ -26,7 +26,7 @@ require 'elf'
 # ELF files, so that reading a non-ELF file won't cause unexpected
 # problems.
 class TC_Exceptions < Test::Unit::TestCase
-  TestDir = Elf::BaseTest::TestDir + "invalid/"
+  TestDir = Pathname.new(Elf::BaseTest::TestDir + "invalid/")
 
   # Helper to check for exceptions on opening a file. It not only
   # ensures that the correct exception class is given, but also that
@@ -125,6 +125,41 @@ class TC_Exceptions < Test::Unit::TestCase
   # Expected behaviour: Elf::File::InvalidMachine exception is raised.
   def test_invalid_machine
     helper_open_exception Elf::File::InvalidMachine, "invalidmachine"
+  end
+
+  # Test behaviour when opening a named pipe (fifo) path
+  #
+  # Expected behaviour: Errno::EINVAL exception is raised
+  def test_named_pipe
+    # Since we cannot add the pipe to the git repository, we've got to
+    # create one ourselves :(
+    pipepath = Pathname.new(Dir.tmpdir) + "ruby-elf-tests-#{Process.pid}-#{Time.new.strftime("%s")}"
+    begin
+      pipepath.mkdir
+      system("mkfifo #{pipepath}/fifo")
+
+      helper_open_exception Errno::EINVAL, pipepath + "fifo"
+    ensure
+      pipepath.rmtree
+    end
+  end
+
+  # Test behaviour when opening a directory path
+  #
+  # Expected behaviour: Errno::EISDIR exception is raised
+  def test_directory
+    helper_open_exception Errno::EISDIR, ""
+  end
+
+  # Test behaviour when opening a broken link
+  #
+  # Expected behaviour: Errno::ENOENT exception is raised
+  def test_broken_link
+    if File.exists? TestDir + "invaliddestination"
+      raise Exception.new("A file named 'invaliddestination' is present in the #{TestDir.realpath} directory")
+    end
+
+    helper_open_exception Errno::ENOENT, "invalidlink"
   end
 
   # Test behaviour when a file contains an invalid section type
