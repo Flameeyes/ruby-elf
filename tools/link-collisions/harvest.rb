@@ -87,7 +87,7 @@ opts.each do |opt, arg|
     machine_val = Elf::Machine.from_string(machine_str)
 
     if machine_val.nil?
-      $stderr.puts "harvest.rb: unknwon machine string - #{arg}"
+      $stderr.puts "harvest.rb: unknown machine string - #{arg}"
     else
       $machines << machine_val unless machine_val.nil?
     end
