@@ -87,6 +87,8 @@ module Elf
       @enums.each_value(&block)
     end
 
+    private_class_method :fill
+
     # Class for unknown values
     #
     # This class is used to provide a way to access at least basic
