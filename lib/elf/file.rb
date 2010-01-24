@@ -120,100 +120,105 @@ module Elf
       super(path, "rb")
 
       begin
-        raise NotAnELF unless readexactly(4) == MagicString
-      rescue EOFError
-        raise NotAnELF
-      end
-
-      begin
-        @elf_class = Class[read_u8]
-      rescue Value::OutOfBound => e
-        raise InvalidElfClass.new(e.val)
-      end
-
-      begin
-        @data_encoding = DataEncoding[read_u8]
-      rescue Value::OutOfBound => e
-        raise InvalidDataEncoding.new(e.val)
-      end
-
-      @version = read_u8
-      raise UnsupportedElfVersion.new(@version) if @version > 1
-
-      begin
-        @abi = OsAbi[read_u8]
-      rescue Value::OutOfBound => e
-        raise InvalidOsAbi.new(e.val)
-      end
-      @abi_version = read_u8
-
-      seek(16, IO::SEEK_SET)
-      set_endian(DataEncoding::BytestreamMapping[@data_encoding])
-
-      begin
-        @type = Type[read_half]
-      rescue Value::OutOfBound => e
-        raise InvalidElfType.new(e.val)
-      end
-      
-      begin
-        @machine = Machine[read_half]
-      rescue Value::OutOfBound => e
-        raise InvalidMachine.new(e.val)
-      end
-
-      @version = read_word
-      @entry = read_addr
-      @phoff = read_off
-      shoff = read_off
-      @flags = read_word
-      @ehsize = read_half
-      @phentsize = read_half
-      @phnum = read_half
-      @shentsize = read_half
-      shnum = read_half
-      shstrndx = read_half
-
-      elf32 = elf_class == Class::Elf32
-      @sections = {}
-
-      @sections_data = []
-      seek(shoff)
-      for i in 1..shnum
-        sectdata = {}
-        sectdata[:idx]       = i-1
-        sectdata[:name_idx]  = read_word
-        sectdata[:type_id]   = read_word
-        sectdata[:flags_val] = elf32 ? read_word : read_xword
-        sectdata[:addr]      = read_addr
-        sectdata[:offset]    = read_off
-        sectdata[:size]      = elf32 ? read_word : read_xword
-        sectdata[:link]      = read_word
-        sectdata[:info]      = read_word
-        sectdata[:addralign] = elf32 ? read_word : read_xword
-        sectdata[:entsize]   = elf32 ? read_word : read_xword
-        
-        @sections_data << sectdata
-      end
-
-      # When the section header string table index is set to zero,
-      # there is not going to be a string table in the file, this
-      # happens usually when the file is a static ELF file built
-      # directly with an assembler.
-      #
-      # To handle this specific case, set the @string_table attribute
-      # to false, that is distinct from nil, and raise
-      # MissingStringTable on request. If the string table is not yet
-      # loaded raise instead StringTableNotLoaded.
-      if shstrndx == 0 or not self[shstrndx].is_a? StringTable
-        @string_table = false
-      else
-        @string_table = self[shstrndx]
-
-        @sections_names = {}
-        @sections_data.each do |sectdata|
-          @sections_names[@string_table[sectdata[:name_idx]]] = sectdata[:idx]
+        begin
+          raise NotAnELF unless readexactly(4) == MagicString
+        rescue EOFError
+          raise NotAnELF
         end
+
+        begin
+          @elf_class = Class[read_u8]
+        rescue Value::OutOfBound => e
+          raise InvalidElfClass.new(e.val)
+        end
+
+        begin
+          @data_encoding = DataEncoding[read_u8]
+        rescue Value::OutOfBound => e
+          raise InvalidDataEncoding.new(e.val)
+        end
+
+        @version = read_u8
+        raise UnsupportedElfVersion.new(@version) if @version > 1
+
+        begin
+          @abi = OsAbi[read_u8]
+        rescue Value::OutOfBound => e
+          raise InvalidOsAbi.new(e.val)
+        end
+        @abi_version = read_u8
+
+        seek(16, IO::SEEK_SET)
+        set_endian(DataEncoding::BytestreamMapping[@data_encoding])
+
+        begin
+          @type = Type[read_half]
+        rescue Value::OutOfBound => e
+          raise InvalidElfType.new(e.val)
+        end
+        
+        begin
+          @machine = Machine[read_half]
+        rescue Value::OutOfBound => e
+          raise InvalidMachine.new(e.val)
+        end
+
+        @version = read_word
+        @entry = read_addr
+        @phoff = read_off
+        shoff = read_off
+        @flags = read_word
+        @ehsize = read_half
+        @phentsize = read_half
+        @phnum = read_half
+        @shentsize = read_half
+        shnum = read_half
+        shstrndx = read_half
+
+        elf32 = elf_class == Class::Elf32
+        @sections = {}
+
+        @sections_data = []
+        seek(shoff)
+        for i in 1..shnum
+          sectdata = {}
+          sectdata[:idx]       = i-1
+          sectdata[:name_idx]  = read_word
+          sectdata[:type_id]   = read_word
+          sectdata[:flags_val] = elf32 ? read_word : read_xword
+          sectdata[:addr]      = read_addr
+          sectdata[:offset]    = read_off
+          sectdata[:size]      = elf32 ? read_word : read_xword
+          sectdata[:link]      = read_word
+          sectdata[:info]      = read_word
+          sectdata[:addralign] = elf32 ? read_word : read_xword
+          sectdata[:entsize]   = elf32 ? read_word : read_xword
+
+          @sections_data << sectdata
+        end
+
+        # When the section header string table index is set to zero,
+        # there is not going to be a string table in the file, this
+        # happens usually when the file is a static ELF file built
+        # directly with an assembler.
+        #
+        # To handle this specific case, set the @string_table attribute
+        # to false, that is distinct from nil, and raise
+        # MissingStringTable on request. If the string table is not yet
+        # loaded raise instead StringTableNotLoaded.
+        if shstrndx == 0 or not self[shstrndx].is_a? StringTable
+          @string_table = false
+        else
+          @string_table = self[shstrndx]
+
+          @sections_names = {}
+          @sections_data.each do |sectdata|
+            @sections_names[@string_table[sectdata[:name_idx]]] = sectdata[:idx]
+          end
+        end
+      rescue ::Exception => e
+        close
+        raise e
       end
     end
 
