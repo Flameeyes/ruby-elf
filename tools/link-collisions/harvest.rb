@@ -34,6 +34,7 @@ opts = GetoptLong.new(
   ["--multiplementations", "-m", GetoptLong::REQUIRED_ARGUMENT ],
   ["--scan-directory",     "-d", GetoptLong::REQUIRED_ARGUMENT ],
   ["--recursive-scan",     "-r", GetoptLong::NO_ARGUMENT ],
+  ["--elf-machine",        "-M", GetoptLong::REQUIRED_ARGUMENT ],
   ["--postgres-username",  "-U", GetoptLong::REQUIRED_ARGUMENT ],
   ["--postgres-password",  "-P", GetoptLong::REQUIRED_ARGUMENT ],
   ["--postgres-hostname",  "-H", GetoptLong::REQUIRED_ARGUMENT ],
@@ -47,6 +48,7 @@ scan_path = false
 scan_ldpath = true
 recursive_scan = false
 scan_directories = []
+$machines = []
 
 pg_params = {}
 
@@ -72,6 +74,23 @@ opts.each do |opt, arg|
     scan_directories << arg
   when '--recursive-scan'
     recursive_scan = true
+  when "--elf-machine"
+    machine_str = arg.dup
+
+    # Remove the EM_ prefix if present
+    machine_str = machine_str[3..-1] if arg[0..2].upcase == "EM_"
+
+    # Remove underscores if present (we don't keep them in our
+    # constants)
+    machine_str.delete!("_")
+
+    machine_val = Elf::Machine.from_string(machine_str)
+
+    if machine_val.nil?
+      $stderr.puts "harvest.rb: unknwon machine string - #{arg}"
+    else
+      $machines << machine_val unless machine_val.nil?
+    end
   when '--postgres-username' then pg_params['user'] = arg
   when '--postgres-password' then pg_params['password'] = arg
   when '--postgres-hostname' then pg_params['host'] = arg
@@ -79,6 +98,8 @@ opts.each do |opt, arg|
   when '--postgres-database' then pg_params['dbname'] = arg
   end
 end
+
+$machines = nil if $machines.empty?
 
 db = PGconn.open(pg_params)
 
@@ -158,6 +179,7 @@ class Pathname
   def so_files(recursive = true)
     res = Set.new
     children.each do |entry|
+      elf = nil
       begin
         skip = false
 
@@ -178,12 +200,15 @@ class Pathname
         else
           elf = Elf::File.open(entry)
 
+          # If we got machines, we only add files that are of the right type
+          unless $machines.nil?
+            next unless $machines.include? elf.machine
+          end
+
           # Only add the entry to the list if the file is a dynamic file,
           # either a shared object or dynamic executable.
           res.add entry.to_s if
             elf.has_section?('.dynsym') and elf.has_section?('.dynstr')
-
-          elf.close
         end
       # Explicitly list this so that it won't pollute the output
       rescue Elf::File::NotAnELF
@@ -194,6 +219,8 @@ class Pathname
       rescue Exception => e
         $stderr.puts "Ignoring #{entry} (#{e.message})"
         next
+      ensure
+        elf.close unless elf.nil?
       end
     end
 
