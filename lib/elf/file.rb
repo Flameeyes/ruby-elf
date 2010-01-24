@@ -22,6 +22,7 @@
 # Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 require 'bytestream-reader'
+require 'pathname'
 
 module Elf
   class File < ::File
@@ -117,13 +118,24 @@ module Elf
     alias :read_versym :read_half
     
     def initialize(path)
+      # We're going to check the path we're given for a few reasons,
+      # the first of which is that we do not want to open a pipe or
+      # something like that. If we were just to leave it to File.open,
+      # we would end up stuck waiting for data on a named pipe, for
+      # instance.
+      #
+      # We cannot just use File.file? either because it'll be ignoring
+      # ENOENT by default (which would be bad for us).
+      #
+      # If we were just to use File.ftype we would have to handle
+      # manually the links... since Pathname will properly report
+      # ENOENT for broken links, we're going to keep it this way.
+      raise NotAnELF unless
+        pn = Pathname.new(path).realpath.ftype == "file"
+
       super(path, "rb")
 
       begin
-        # Make sure that the path given points to a real file;
-        # directories, devices, pipes and sockets cannot be ELF files.
-        raise NotAnELF unless File.file?(path)
-
         begin
           raise NotAnELF unless readexactly(4) == MagicString
         rescue EOFError
