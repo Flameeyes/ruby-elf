@@ -59,6 +59,16 @@ module Elf
       @enums[idx]
     end
 
+    def Value.from_string(str)
+      str = str.downcase
+
+      @enums.each_pair do |index, value|
+        return value if index.to_s.downcase == str
+      end
+
+      return nil
+    end
+
     def Value.has_key?(idx)
       @enums.has_key?(idx)
     end
