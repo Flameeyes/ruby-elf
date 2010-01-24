@@ -28,6 +28,26 @@ require 'elf'
 class TC_Exceptions < Test::Unit::TestCase
   TestDir = Elf::BaseTest::TestDir + "invalid/"
 
+  # Helper to check for exceptions on opening a file. It not only
+  # ensures that the correct exception class is given, but also that
+  # the opening action didn't leak any file descriptor!
+  def helper_open_exception(exception_class, subpath)
+    file = File.new(TestDir + "nonelf")
+    fileno_before = file.fileno
+    file.close
+
+    assert_raise exception_class do
+      Elf::File.new(TestDir + subpath)
+    end
+
+    file = File.new(TestDir + "nonelf")
+    fileno_after = file.fileno
+    file.close
+
+    assert_equal(fileno_before, fileno_after,
+                 "Descriptor leaked by the Elf::File.new call")
+  end
+
   # Test behaviour when a file is requested that is not present.
   #
   # Expected behaviour: Errno::ENOENT exception is raised
@@ -38,19 +58,14 @@ class TC_Exceptions < Test::Unit::TestCase
       raise Exception.new("A file named 'invalid_notfound' is present in the test directory")
     end
 
-    assert_raise Errno::ENOENT do
-      elf = Elf::File.new(TestDir + "notfound")
-    end
+    helper_open_exception Errno::ENOENT, "notfound"
   end
 
   # Test behaviour when a file that is not an ELF file is opened.
   #
   # Expected behaviour: Elf::File::NotAnElf exception is raised.
   def test_notanelf
-    assert_raise Elf::File::NotAnELF do
-      elf = Elf::File.new(TestDir + "nonelf")
-      elf.close
-    end
+    helper_open_exception Elf::File::NotAnELF, "nonelf"
   end
 
   # Test behaviour when a file too short to be an ELF file is opened
@@ -59,10 +74,7 @@ class TC_Exceptions < Test::Unit::TestCase
   #
   # Expected behaviour: Elf::File::NotAnElf exception is raised.
   def test_shortfile
-    assert_raise Elf::File::NotAnELF do
-      elf = Elf::File.new(TestDir + "shortfile")
-      elf.close
-    end
+    helper_open_exception Elf::File::NotAnELF, "shortfile"
   end
 
   # Test behaviour when a file with an invalid ELF class value is
@@ -71,10 +83,7 @@ class TC_Exceptions < Test::Unit::TestCase
   # Expected behaviour: Elf::File::InvalidElfClass exception is
   # raised.
   def test_invalid_elfclass
-    assert_raise Elf::File::InvalidElfClass do
-      elf = Elf::File.new(TestDir + "invalidclass")
-      elf.close
-    end
+    helper_open_exception Elf::File::InvalidElfClass, "invalidclass"
   end
 
   # Test behaviour when a file with an invalid ELF data encoding value
@@ -83,10 +92,7 @@ class TC_Exceptions < Test::Unit::TestCase
   # Expected behaviour: Elf::File::InvalidDataEncoding exception is
   # raised.
   def test_invalid_encoding
-    assert_raise Elf::File::InvalidDataEncoding do
-      elf = Elf::File.new(TestDir + "invalidencoding")
-      elf.close
-    end
+    helper_open_exception Elf::File::InvalidDataEncoding, "invalidencoding"
   end
 
   # Test behaviour when a file with an unsupported ELF version value
@@ -95,20 +101,14 @@ class TC_Exceptions < Test::Unit::TestCase
   # Expected behaviour: Elf::File::UnsupportedElfVersion exception is
   # raised.
   def test_unsupported_version
-    assert_raise Elf::File::UnsupportedElfVersion do
-      elf = Elf::File.new(TestDir + "unsupportedversion")
-      elf.close
-    end
+    helper_open_exception Elf::File::UnsupportedElfVersion, "unsupportedversion"
   end
 
   # Test behaviour when a file with an invalid ELF ABI value is opened
   #
   # Expected behaviour: Elf::File::InvalidOsAbi exception is raised.
   def test_invalid_abi
-    assert_raise Elf::File::InvalidOsAbi do
-      elf = Elf::File.new(TestDir + "invalidabi")
-      elf.close
-    end
+    helper_open_exception Elf::File::InvalidOsAbi, "invalidabi"
   end
 
   # Test behaviour when a file with an invalid ELF Type value is
@@ -116,10 +116,7 @@ class TC_Exceptions < Test::Unit::TestCase
   #
   # Expected behaviour: Elf::File::InvalidElfType exception is raised.
   def test_invalid_type
-    assert_raise Elf::File::InvalidElfType do
-      elf = Elf::File.new(TestDir + "invalidtype")
-      elf.close
-    end
+    helper_open_exception Elf::File::InvalidElfType, "invalidtype"
   end
 
   # Test behaviour when a file with an invalid ELF machine value is
@@ -127,10 +124,7 @@ class TC_Exceptions < Test::Unit::TestCase
   #
   # Expected behaviour: Elf::File::InvalidMachine exception is raised.
   def test_invalid_machine
-    assert_raise Elf::File::InvalidMachine do
-      elf = Elf::File.new(TestDir + "invalidmachine")
-      elf.close
-    end
+    helper_open_exception Elf::File::InvalidMachine, "invalidmachine"
   end
 
   # Test behaviour when a file contains an invalid section type
