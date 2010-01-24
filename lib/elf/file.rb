@@ -120,6 +120,10 @@ module Elf
       super(path, "rb")
 
       begin
+        # Make sure that the path given points to a real file;
+        # directories, devices, pipes and sockets cannot be ELF files.
+        raise NotAnELF unless File.file?(path)
+
         begin
           raise NotAnELF unless readexactly(4) == MagicString
         rescue EOFError
