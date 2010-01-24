@@ -33,7 +33,7 @@ opts = GetoptLong.new(
   ["--suppressions",       "-s", GetoptLong::REQUIRED_ARGUMENT ],
   ["--multiplementations", "-m", GetoptLong::REQUIRED_ARGUMENT ],
   ["--scan-directory",     "-d", GetoptLong::REQUIRED_ARGUMENT ],
-  ["--rescursive-scan",    "-r", GetoptLong::NO_ARGUMENT ],
+  ["--recursive-scan",     "-r", GetoptLong::NO_ARGUMENT ],
   ["--postgres-username",  "-U", GetoptLong::REQUIRED_ARGUMENT ],
   ["--postgres-password",  "-P", GetoptLong::REQUIRED_ARGUMENT ],
   ["--postgres-hostname",  "-H", GetoptLong::REQUIRED_ARGUMENT ],
