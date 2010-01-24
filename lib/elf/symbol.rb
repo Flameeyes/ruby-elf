@@ -181,12 +181,14 @@ module Elf
       
       return nil unless version_idx && version_idx >= 2
 
-      return @file['.gnu.version_r'][version_idx][:name] if section.nil?
-
       name_idx = (version_idx & (1 << 15) == 0) ? 0 : 1
-      version_idx = version_idx & ~(1 << 15)
-      
-      return @file['.gnu.version_d'][version_idx][:names][name_idx]
+      version_idx2 = version_idx & ~(1 << 15)
+
+      if section.nil? or @file['.gnu.version_d'][version_idx2].nil?
+        return @file['.gnu.version_r'][version_idx][:name]
+      else
+        return @file['.gnu.version_d'][version_idx2][:names][name_idx]
+      end
     end
 
     def defined?
