@@ -42,10 +42,11 @@ module Elf
 
     def initialize(val, params)
       @val = val
+      @mnemonic = params[0].to_s
       @desc = params[1]
     end
 
-    attr_reader :desc, :val
+    attr_reader :desc, :val, :mnemonic
     alias :to_i :val
     alias :to_s :desc
 
@@ -62,8 +63,8 @@ module Elf
     def Value.from_string(str)
       str = str.downcase
 
-      @enums.each_pair do |index, value|
-        return value if index.to_s.downcase == str
+      each do |value|
+        return value if value.mnemonic.downcase == str
       end
 
       return nil
