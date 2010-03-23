@@ -93,15 +93,17 @@ end
 
 def self.relocation_stats(results, file)
   if @header
-    puts "      shared      private    relocated   filename"
+    puts "      shared      private    relocated        ratio   filename"
     @header = false
   end
 
-  size_shared = (results[:exec] + results[:rodata]).to_s.rjust(12)
-  size_private = (results[:data] + results[:bss]).to_s.rjust(12)
-  size_relocated = (results[:relro]).to_s.rjust(12)
+  size_shared = results[:exec] + results[:rodata]
+  size_private = results[:data] + results[:bss]
+  size_relocated = results[:relro]
 
-  puts "#{size_shared} #{size_private} #{size_relocated}   #{file}"
+  ratio = size_shared.to_f/size_relocated
+
+  printf "% 12s % 12s % 12s % 12.2f   %s\n", size_shared, size_private, size_relocated, ratio, file
 end
 
 def self.standard_size(results, file)
