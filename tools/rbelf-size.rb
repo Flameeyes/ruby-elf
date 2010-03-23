@@ -31,6 +31,7 @@ def self.analysis(file)
     results = {
       :exec => 0,
       :data => 0,
+      :rodata => 0,
       :relro => 0,
       :bss => 0,
       :total => 0
@@ -66,11 +67,11 @@ def self.analysis(file)
         # the exception of prelinking, where this area can then
         # become mostly read-only and thus not creating dirty pages.
         sectype = (section.name =~ /^\.data\.rel\.ro(\..+)?/) ? :relro : :data
-      else
-        next
+      when section.flags.include?(Elf::Section::Flags::Alloc)
+        sectype = :rodata
       end
 
-      results[sectype] += section.size
+      results[sectype] += section.size unless sectype.nil?
     end
 
     results[:total] = results.values.inject { |sum, val| sum += val }
@@ -80,11 +81,11 @@ def self.analysis(file)
     end
 
     output_header if @header
-    puts "#{results[:exec]} #{results[:data]} #{results[:relro]} #{results[:bss]} #{results[:total]} #{file}"
+    puts "#{results[:exec]} #{results[:data]} #{results[:rodata]} #{results[:relro]} #{results[:bss]} #{results[:total]} #{file}"
   end
 end
 
 def self.output_header
-  puts "     exec      data     relro       bss     total filename"
+  puts "     exec      data    rodata     relro       bss     total filename"
   @header = false
 end
