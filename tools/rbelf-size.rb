@@ -22,7 +22,9 @@ require 'elf/tools'
 
 Options = [
            # Give relocation data for shared object assesment
-           ["--relocation-stats", "-r", GetoptLong::NO_ARGUMENT]
+           ["--relocation-stats", "-r", GetoptLong::NO_ARGUMENT],
+           # Use deciBel scale for the shared-to-relocated ratio
+           ["--decibel", "-d", GetoptLong::NO_ARGUMENT]
           ]
 
 def self.before_options
@@ -102,6 +104,7 @@ def self.relocation_stats(results, file)
   size_relocated = results[:relro]
 
   ratio = size_shared.to_f/size_relocated
+  ratio = 10 * Math::log10(ratio) if @decibel
 
   printf "% 12s % 12s % 12s % 12.2f   %s\n", size_shared, size_private, size_relocated, ratio, file
 end
