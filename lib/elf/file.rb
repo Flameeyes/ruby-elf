@@ -130,7 +130,9 @@ module Elf
       # If we were just to use File.ftype we would have to handle
       # manually the links... since Pathname will properly report
       # ENOENT for broken links, we're going to keep it this way.
-      case Pathname.new(path).ftype
+      path = Pathname.new(path) unless path.is_a? Pathname
+
+      case path.ftype
       when "directory" then raise Errno::EISDIR
       when "file" then # do nothing
       when "link"
