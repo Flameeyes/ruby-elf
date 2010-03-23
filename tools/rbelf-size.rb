@@ -20,7 +20,14 @@
 
 require 'elf/tools'
 
-Options = []
+Options = [
+           # Give relocation data for shared object assesment
+           ["--relocation-stats", "-r", GetoptLong::NO_ARGUMENT]
+          ]
+
+def self.before_options
+  @relocation_stats = false
+end
 
 def self.after_options
   @header = true
@@ -76,16 +83,36 @@ def self.analysis(file)
 
     results[:total] = results.values.inject { |sum, val| sum += val }
 
-    results.each_pair do |key, val|
-      results[key] = val.to_s.rjust(9)
+    if @relocation_stats
+      relocation_stats(results, file)
+    else
+      standard_size(results, file)
     end
-
-    output_header if @header
-    puts "#{results[:exec]} #{results[:data]} #{results[:rodata]} #{results[:relro]} #{results[:bss]} #{results[:total]} #{file}"
   end
 end
 
-def self.output_header
-  puts "     exec      data    rodata     relro       bss     total filename"
-  @header = false
+def self.relocation_stats(results, file)
+  if @header
+    puts "      shared      private    relocated   filename"
+    @header = false
+  end
+
+  size_shared = (results[:exec] + results[:rodata]).to_s.rjust(12)
+  size_private = (results[:data] + results[:bss]).to_s.rjust(12)
+  size_relocated = (results[:relro]).to_s.rjust(12)
+
+  puts "#{size_shared} #{size_private} #{size_relocated}   #{file}"
+end
+
+def self.standard_size(results, file)
+  if @header
+    puts "     exec      data    rodata     relro       bss     total filename"
+    @header = false
+  end
+
+  results.each_pair do |key, val|
+    results[key] = val.to_s.rjust(9)
+  end
+
+  puts "#{results[:exec]} #{results[:data]} #{results[:rodata]} #{results[:relro]} #{results[:bss]} #{results[:total]} #{file}"
 end
