@@ -46,6 +46,11 @@
         <cmdsynopsis>
           <command>rbelf-size</command>
 
+          <arg choice="opt">
+	    <option>--relocation-stats</option>
+	    <arg choice="opt"><option>--decibel</option></arg>
+	  </arg>
+
 	  <xi:include href="filelists.xmli"  xpointer="xpointer(id('filelist.synopsis'))" />
 
           <arg choice="opt">
@@ -73,12 +78,47 @@
         <title>Options</title>
 
 	<variablelist>
+	  <varlistentry>
+	    <term><option>--relocation-stats</option></term>
+	    <term><option>-r</option></term>
+	    <listitem>
+	      <para>
+		Instead of reporting size data compatible with
+		<citerefentry><refentrytitle>size</refentrytitle><manvolnum>1</manvolnum></citerefentry>
+		report size for shared, private and relocated
+		areas. This is helpful to assess the validity of
+		shared object approaches.
+	      </para>
+	    </listitem>
+	  </varlistentry>
+
+	  <varlistentry>
+	    <term><option>--decibel</option></term>
+	    <term><option>-d</option></term>
+	    <listitem>
+	      <para>
+		When using the <option>--relocation-stats</option>
+		option, a ratio is displayed between the size of
+		relocated and shared code areas, to better assess the
+		advantages and disadvantages for shared object
+		approaches.
+	      </para>
+
+	      <para>
+		Since that ratio can easily skyrocket into thousands
+		if there is very little relocated data, and a lot of
+		shared data, it might be easier to appreciate the
+		results by using a logaritmic scale.
+	      </para>
+	    </listitem>
+	  </varlistentry>
+
 	  <xi:include href="filelists.xmli" xpointer="xpointer(id('filelist.option'))" />
 	</variablelist>
       </refsect1>
 
       <refsect1>
-	<title>Output</title>
+	<title>Compatible Output</title>
 
 	<para>
 	  The output of <command>rbelf-size</command> differs from
@@ -149,6 +189,101 @@
 	    <listitem>
 	      <para>
 		Counts in the sum of all the previous sections.
+	      </para>
+	    </listitem>
+	  </varlistentry>
+	</variablelist>
+      </refsect1>
+
+      <refsect1>
+	<title>Relocation Statistics</title>
+
+	<para>
+	  When using shared objects rather than static linking, there
+	  are many trade-offs to be made. One of these relates to the
+	  amount of code that will get relocated (and thus becomes
+	  private, per-process resident memory).
+	</para>
+
+	<para>
+	  The <option>--relocation-stats</option> option was devised
+	  as a mean to assess the cost/benefit of using shared
+	  objects, rather than using static link (e.g. with multicall
+	  binaries).
+	</para>
+
+	<variablelist>
+	  <varlistentry>
+	    <term>shared</term>
+	    <listitem>
+	      <para>
+		Areas of memory that are always shared among
+		processes; these include executable areas with
+		Position Indipendent Code, and read-only data areas.
+	      </para>
+
+	      <para>
+		Generally, this is what we would want to have as big
+		as possible, compared to the rest.
+	      </para>
+	    </listitem>
+	  </varlistentry>
+
+	  <varlistentry>
+	    <term>private</term>
+	    <listitem>
+	      <para>
+		Areas of memory that will always be private to the
+		process; these includes writeable data areas and areas
+		remapped to the zero page (what above is called bss).
+	      </para>
+
+	      <para>
+		This is a worst-case value, as even though the
+		writeable sections _may_ become private, if they are
+		left untouched they will be shared among multiple (if
+		not all) processes. It is, though, useful to consider
+		the worst-case scenario for assesment.
+	      </para>
+	    </listitem>
+	  </varlistentry>
+
+	  <varlistentry>
+	    <term>relocated</term>
+	    <listitem>
+	      <para>
+		This value sums up the size of the memory areas that
+		will be relocated when using shared objects (or
+		Position Indipendent Executables). Relocated areas
+		include .data.rel.ro sections, which contain data
+		read-only for the code, but written to by the dynamic
+		linker.
+	      </para>
+
+	      <para>
+		Again this value is an approximation nearing the
+		worst-case scenario.
+	      </para>
+	    </listitem>
+	  </varlistentry>
+
+	  <varlistentry>
+	    <term>ratio</term>
+	    <listitem>
+	      <para>
+		The ratio between shared and relocated code in the
+		current executable or shared object. Using this value
+		you can have a quick idea of the cost/benefit of using
+		shared objects for a particular task.
+	      </para>
+
+	      <para>
+		When using <option>--decibel</option> the value will
+		be represented in deciBels, which should make it even
+		easier to understand: a negative value shows a overly
+		high cost, while a value between 1 and 10 will
+		indicate some work might be needed to improve the
+		benefits.
 	      </para>
 	    </listitem>
 	  </varlistentry>
