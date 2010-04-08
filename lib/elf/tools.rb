@@ -16,6 +16,7 @@
 # Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 require 'getoptlong'
+require 'thread'
 require 'elf'
 
 # This file allows to wrap aroudn the most common features of
