@@ -31,6 +31,12 @@ module Elf
              # This one is inferred out of libpam.so
               3 => [ :Number, 'Number of defined type' ]
            })
+
+      class GNU < Value
+        fill({
+               10 => [ :Unique, 'Unique symbol' ]
+             })
+      end
       
       # OS-specific range
       LoOs = 10
@@ -118,7 +124,16 @@ module Elf
           @type = Type[info & 0xF]
         end
 
-        @bind = Binding[info >> 4]
+        binding_value = info >> 4
+        @bind = case
+                when (binding_value >= Binding::LoOs and binding_value <= Binding::HiOs)
+                  # Assume always GNU for now, but it's wrong
+                  Binding::GNU[binding_value]
+                when (binding_value >= Binding::LoProc and binding_value <= Binding::HiProc)
+                  Elf::Value::Unknown.new(binding_value, sprintf("STB_LOPROC+%x", binding_value-Binding::HiProc))
+                else
+                  Binding[binding_value]
+                end
       rescue Elf::Value::OutOfBound => e
         e.append_message("While processing symbol #{@idx}. Symbol info: 0x#{info.hex}")
         raise e
