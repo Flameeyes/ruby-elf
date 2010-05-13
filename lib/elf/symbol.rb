@@ -113,16 +113,16 @@ module Elf
       end
 
       begin
-        typecode = info & 0xF
-
-        if typecode >= Type::LoOs && typecode <= Type::HiOs
-          # Assume always GNU for now, but it's wrong
-          @type = Type::GNU[info & 0xF]
-        elsif typecode >= Type::LoProc && typecode <= Type::HiProc
-          type = Elf::Value::Unknown.new(typecode, sprintf("STT_LOPROC+%x", typecode-Type::HiProc))
-        else
-          @type = Type[info & 0xF]
-        end
+        type_value = info & 0xF
+        @type = case
+                when (type_value >= Type::LoOs and type_value <= Type::HiOs)
+                  # Assume always GNU for now, but it's wrong
+                  Type::GNU[type_value]
+                when (type_value >= Type::LoProc and type_value <= Type::HiProc)
+                  Elf::Value::Unknown.new(type_value, sprintf("STT_LOPROC+%x", type_value-Type::HiProc))
+                else
+                  Type[type_value]
+                end
 
         binding_value = info >> 4
         @bind = case
