@@ -122,13 +122,9 @@ module Elf
              0x7ffffffd => [ :Auxiliary, "AUXILIARY", :Value ]
            )
 
-      # OS-specific range
-      LoOs = 0x6000000d
-      HiOs = 0x6ffff000
-
-      # Processor-specific range
-      LoProc = 0x70000000
-      HiProc = 0x7fffffff
+      Prefix = "DT"
+      OsSpecific = 0x6000000d..0x6ffff000
+      ProcSpecific = 0x70000000..0x7fffffff
     end
 
     module Flags
@@ -231,25 +227,7 @@ module Elf
       for i in 1..@numentries
         entry = {}
 
-        type_id = elf32 ? @file.read_sword : @file.read_sxword
-
-        type = if type_id >= Type::LoOs && type_id <= Type::HiOs
-                 if Type.has_key? type_id
-                   Type[type_id]
-                 else
-                   # Unknown OS-specific dynamic entry type, provide a dummy
-                   Type::Unknown.new(type_id, sprintf("DT_LOOS+%07x", type_id-Type::LoOs))
-                 end
-               elsif type_id >= Type::LoProc && type_id <= Type::HiProc
-                 if Type.has_key? type_id
-                   Type[type_id]
-                 else
-                   # Unknown Processor-specific dynamic entry type, provide a dummy
-                   Type::Unknown.new(type_id, sprintf("DT_LOPROC+%07x", type_id-Type::LoProc))
-                 end
-               else
-                 Type[type_id]
-               end
+        type = Type[elf32 ? @file.read_sword : @file.read_sxword]
 
         @entries << if ClassMap.has_key? type
                       ClassMap[type].new(type, @file)

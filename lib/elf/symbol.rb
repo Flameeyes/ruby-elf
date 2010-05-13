@@ -37,14 +37,10 @@ module Elf
              10 => [ :Unique, 'Unique symbol' ]
              )
       end
-      
-      # OS-specific range
-      LoOs = 10
-      HiOs = 12
-      
-      # Processor-specific range
-      LoProc = 13
-      HiProc = 15
+
+      Prefix = "STB"
+      OsSpecific = 10..12
+      ProcSpecific = 13..15
     end
 
     class Type < Value
@@ -64,13 +60,9 @@ module Elf
              )
       end
 
-      # OS-specific range
-      LoOs = 10
-      HiOs = 12
-
-      # Processor-specific range
-      LoProc = 13
-      HiProc = 15
+      Prefix = "STT"
+      OsSpecific = 10..12
+      ProcSpecific = 13..15
     end
 
     class Visibility < Value
@@ -115,25 +107,22 @@ module Elf
       begin
         type_value = info & 0xF
         @type = case
-                when (type_value >= Type::LoOs and type_value <= Type::HiOs)
+                when Type::OsSpecific.include?(type_value)
                   # Assume always GNU for now, but it's wrong
                   Type::GNU[type_value]
-                when (type_value >= Type::LoProc and type_value <= Type::HiProc)
-                  Elf::Value::Unknown.new(type_value, sprintf("STT_LOPROC+%x", type_value-Type::HiProc))
                 else
                   Type[type_value]
                 end
 
         binding_value = info >> 4
         @bind = case
-                when (binding_value >= Binding::LoOs and binding_value <= Binding::HiOs)
+                when Binding::OsSpecific.include?(binding_value)
                   # Assume always GNU for now, but it's wrong
                   Binding::GNU[binding_value]
-                when (binding_value >= Binding::LoProc and binding_value <= Binding::HiProc)
-                  Elf::Value::Unknown.new(binding_value, sprintf("STB_LOPROC+%x", binding_value-Binding::HiProc))
                 else
                   Binding[binding_value]
                 end
+
       rescue Elf::Value::OutOfBound => e
         e.append_message("While processing symbol #{@idx}. Symbol info: 0x#{info.hex}")
         raise e
@@ -177,7 +166,7 @@ module Elf
       @section = nil if @section.is_a? Integer and @section == 0
       
       if @section.is_a? Integer and
-          not (@section >= Section::LoReserve and @section <= Section::HiReserve ) and
+          not Section::Reserved.include?(@section) and
           @file.has_section?(@section)
 
         @section = @file[@section]

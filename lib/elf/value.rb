@@ -55,9 +55,19 @@ module Elf
     end
 
     def Value.[](idx)
-      raise OutOfBound.new(idx) unless @enums[idx]
+      return @enums[idx] if @enums[idx]
 
-      @enums[idx]
+      # If the Prefix constant is defined for this class, make sure we
+      # check for OS- and Proc-specific ranges
+      if self.const_defined?("Prefix")
+        if self::OsSpecific.include? idx
+          return self::Unknown.new(idx, sprintf("%s_LOOS+%x", self::Prefix, idx-self::OsSpecific.min))
+        elsif self::ProcSpecific.include? idx
+          return self::Unknown.new(idx, sprintf("%s_LOPROC+%x", self::Prefix, idx-self::ProcSpecific.min))
+        end
+      end
+
+      raise OutOfBound.new(idx)
     end
 
     def Value.from_string(str)

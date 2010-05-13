@@ -79,13 +79,8 @@ module Elf
              4 => [ :Core, 'Core file' ]
            )
 
-      # OS-specific range
-      LoOs = 0xfe00
-      HiOs = 0xfeff
-      
-      # Processor-specific range
-      LoProc = 0xff00
-      HiProc = 0xffff
+      OsSpecific = 0xfe00..0xfeff
+      ProcSpecific = 0xff00..0xffff
     end
 
     attr_reader :elf_class, :data_encoding, :type, :version, :abi,

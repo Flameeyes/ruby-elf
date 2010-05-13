@@ -34,6 +34,7 @@ require Pathname.new(__FILE__).dirname + 'tc_nmcodes'
 require Pathname.new(__FILE__).dirname + 'tc_symboltable'
 require Pathname.new(__FILE__).dirname + 'tc_stringtable'
 require Pathname.new(__FILE__).dirname + 'tc_symbols_comparison'
+require Pathname.new(__FILE__).dirname + 'tc_values'
 
 class TS_RubyElf
   def self.suite
@@ -47,6 +48,7 @@ class TS_RubyElf
     suite << TC_SymbolTable.suite
     suite << TC_StringTable.suite
     suite << TC_Symbols_Comparison.suite
+    suite << TC_Values.suite
   end
 end
 

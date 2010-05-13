@@ -28,22 +28,12 @@ module Elf
     # Reserved sections' indexes
     Undef  = nil    # Would be '0', but this fits enough
 
-    # Reserved sections range
-    LoReserve = 0xff00
-    HiReserve = 0xffff
+    Reserved = 0xff00..0xffff
+    ProcSpecific = 0xff00..0xff1f
+    OsSpecific = 0xff20..0xff3f
 
-    # Processor-specific reserved sections range
-    LoProc = 0xff00
-    HiProc = 0xff1f
-
-    # OS-specific reserved sections range
-    LoOs = 0xff20
-    HiOs = 0xff3f
-
-    # Sun-specific reserved sections range
-    # Subset of OS-specific reserved sections range
-    LoSunW = 0xff3f
-    HiSunW = 0xff3f
+    # Sun-specific range, subset of OS-specific range
+    SunW = 0xff3f..0xff3f
 
     SunWIgnore = 0xff3f
     Abs        = 0xfff1 # Absolute symbols
@@ -66,20 +56,14 @@ module Elf
     # start of a section header, and returns the file moved at the
     # start of the next header.
     def Section.read(elf, sectdata)
-      if sectdata[:type_id] >= Type::LoProc && sectdata[:type_id] <= Type::HiProc
+      if Type::ProcSpecific.include?(sectdata[:type_id])
         case elf.machine
         when Elf::Machine::ARM
           type = Type::ProcARM[sectdata[:type_id]]
         else
-          begin
-            # Accept general processor-specific section type_ids
-            type = Type[sectdata[:type_id]]
-          rescue Elf::Value::OutOfBound
-            # Uknown processor-specific section type_id, provide a dummy
-            type = Elf::Value::Unknown.new(sectdata[:type_id], sprintf("SHT_LOPROC+%07x", sectdata[:type_id]-Type::LoProc))
-          end
+          type = Type[sectdata[:type_id]]
         end
-      elsif sectdata[:type_id] >= Type::LoOs && sectdata[:type_id] <= Type::HiOs
+      elsif Type::OsSpecific.include?(sectdata[:type_id])
         # Unfortunately, even though OS ABIs are well-defined for both
         # GNU/Linux and Solaris, they don't seem to get used at all.
         #
@@ -96,15 +80,14 @@ module Elf
             name =~ /^\.gnu\./
           type = Type::GNU[sectdata[:type_id]]
         else
-          # Unknown OS-specific section type_id, provide a dummy
-          type = Elf::Value::Unknown.new(sectdata[:type_id], sprintf("SHT_LOOS+%07x", sectdata[:type_id]-Type::LoOs))
+          type = Type[sectdata[:type_id]]
         end
-      elsif sectdata[:type_id] >= Type::LoUser && sectdata[:type_id] <= Type::HiUser
+      elsif Type::UserSpecific.include?(sectdata[:type_id])
         if Type.has_key? sectdata[:type_id]
           type = Type[sectdata[:type_id]]
         else
           # Unknown application-specific section type_id, provide a dummy
-          type = Elf::Value::Unknown.new(sectdata[:type_id], sprintf("SHT_LOUSER+%07x", sectdata[:type_id]-Type::LoUser))
+          type = Elf::Value::Unknown.new(sectdata[:type_id], sprintf("SHT_LOUSER+%07x", sectdata[:type_id]-Type::UserSpecific.min))
         end
       else
         if Type.has_key? sectdata[:type_id]
@@ -272,26 +255,25 @@ module Elf
            )
 
       # Sun-specific range
-      LoSunW = 0x6ffffff1
-      HiSunW = 0x6fffffff
+      SunWSpecific = 0x6ffffff1..0x6fffffff
 
       class SunW < Value
         fill(
-               LoSunW+0x0 => [ :SymSort, nil ],
-               LoSunW+0x1 => [ :TLSSort, nil ],
-               LoSunW+0x2 => [ :LDynSym, nil ],
-               LoSunW+0x3 => [ :DOF, nil ],
-               LoSunW+0x4 => [ :Cap, "Software/Hardware Capabilities" ],
-               LoSunW+0x5 => [ :Signature, nil ],
-               LoSunW+0x6 => [ :Annotate, nil ],
-               LoSunW+0x7 => [ :DebugStr, nil ],
-               LoSunW+0x8 => [ :Debug, nil ],
-               LoSunW+0x9 => [ :Move, nil ],
-               LoSunW+0xa => [ :ComDat, nil ],
-               LoSunW+0xb => [ :SymInfo, nil ],
-               LoSunW+0xc => [ :VerDef, nil ],
-               LoSunW+0xd => [ :VerNeed, nil ],
-               LoSunW+0xe => [ :VerSym, nil ]
+               SunWSpecific.min+0x0 => [ :SymSort, nil ],
+               SunWSpecific.min+0x1 => [ :TLSSort, nil ],
+               SunWSpecific.min+0x2 => [ :LDynSym, nil ],
+               SunWSpecific.min+0x3 => [ :DOF, nil ],
+               SunWSpecific.min+0x4 => [ :Cap, "Software/Hardware Capabilities" ],
+               SunWSpecific.min+0x5 => [ :Signature, nil ],
+               SunWSpecific.min+0x6 => [ :Annotate, nil ],
+               SunWSpecific.min+0x7 => [ :DebugStr, nil ],
+               SunWSpecific.min+0x8 => [ :Debug, nil ],
+               SunWSpecific.min+0x9 => [ :Move, nil ],
+               SunWSpecific.min+0xa => [ :ComDat, nil ],
+               SunWSpecific.min+0xb => [ :SymInfo, nil ],
+               SunWSpecific.min+0xc => [ :VerDef, nil ],
+               SunWSpecific.min+0xd => [ :VerNeed, nil ],
+               SunWSpecific.min+0xe => [ :VerSym, nil ]
              )
       end
 
@@ -314,17 +296,11 @@ module Elf
              )
       end
 
-      # OS-specific range
-      LoOs = 0x60000000
-      HiOs = 0x6fffffff
-      
-      # Processor-specific range
-      LoProc = 0x70000000
-      HiProc = 0x7fffffff
-
+      Prefix = "SHT"
+      OsSpecific = 0x60000000..0x6fffffff
+      ProcSpecific = 0x70000000..0x7fffffff
       # Application-specific range
-      LoUser = 0x80000000
-      HiUser = 0x8fffffff
+      UserSpecific = 0x80000000..0x8fffffff
 
       Class = {
         StrTab => Elf::StringTable,
