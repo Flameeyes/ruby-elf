@@ -228,8 +228,6 @@ module Elf
       @entries = []
 
       for i in 1..@numentries
-        entry = {}
-
         type = Type[elf32 ? @file.read_sword : @file.read_sxword]
 
         @entries << if ClassMap.has_key? type
