@@ -56,45 +56,38 @@ module Elf
     # start of a section header, and returns the file moved at the
     # start of the next header.
     def Section.read(elf, sectdata)
-      if Type::ProcSpecific.include?(sectdata[:type_id])
-        case elf.machine
-        when Elf::Machine::ARM
-          type = Type::ProcARM[sectdata[:type_id]]
-        else
-          type = Type[sectdata[:type_id]]
-        end
-      elsif Type::OsSpecific.include?(sectdata[:type_id])
-        # Unfortunately, even though OS ABIs are well-defined for both
-        # GNU/Linux and Solaris, they don't seem to get used at all.
-        #
-        # For this reason, instead of basing ourselves on (just) the
-        # OS ABI, the name of the section is used to identify the type
-        # of section to use
+      begin
+        if Type::ProcSpecific.include?(sectdata[:type_id])
+          case elf.machine
+          when Elf::Machine::ARM
+            type = Type::ProcARM[sectdata[:type_id]]
+          else
+            type = Type[sectdata[:type_id]]
+          end
+        elsif Type::OsSpecific.include?(sectdata[:type_id])
+          # Unfortunately, even though OS ABIs are well-defined for both
+          # GNU/Linux and Solaris, they don't seem to get used at all.
+          #
+          # For this reason, instead of basing ourselves on (just) the
+          # OS ABI, the name of the section is used to identify the type
+          # of section to use
 
-        # Don't set the name if there is no string table loaded
-        name = elf.string_table ? elf.string_table[sectdata[:name_idx]] : ""
-        if elf.abi == Elf::OsAbi::Solaris or
-            name =~ /^\.SUNW_/
-          type = Type::SunW[sectdata[:type_id]]
-        elsif elf.abi == Elf::OsAbi::Linux or
-            name =~ /^\.gnu\./
-          type = Type::GNU[sectdata[:type_id]]
+          # Don't set the name if there is no string table loaded
+          name = elf.string_table ? elf.string_table[sectdata[:name_idx]] : ""
+          if elf.abi == Elf::OsAbi::Solaris or
+              name =~ /^\.SUNW_/
+            type = Type::SunW[sectdata[:type_id]]
+          elsif elf.abi == Elf::OsAbi::Linux or
+              name =~ /^\.gnu\./
+            type = Type::GNU[sectdata[:type_id]]
+          else
+            type = Type[sectdata[:type_id]]
+          end
         else
           type = Type[sectdata[:type_id]]
         end
-      elsif Type::UserSpecific.include?(sectdata[:type_id])
-        if Type.has_key? sectdata[:type_id]
-          type = Type[sectdata[:type_id]]
-        else
-          # Unknown application-specific section type_id, provide a dummy
-          type = Elf::Value::Unknown.new(sectdata[:type_id], sprintf("SHT_LOUSER+%07x", sectdata[:type_id]-Type::UserSpecific.min))
-        end
-      else
-        if Type.has_key? sectdata[:type_id]
-          type = Type[sectdata[:type_id]]
-        else
-          raise UnknownType.new(sectdata[:type_id], elf.string_table ? elf.string_table[sectdata[:name_idx]] : sectdata[:name_idx])
-        end
+      rescue Value::OutOfBound
+        raise UnknownType.new(sectdata[:type_id], elf.string_table ? elf.string_table[sectdata[:name_idx]] : sectdata[:name_idx])
       end
 
       if Type::Class[type]
@@ -296,11 +289,16 @@ module Elf
              )
       end
 
-      Prefix = "SHT"
       OsSpecific = 0x60000000..0x6fffffff
       ProcSpecific = 0x70000000..0x7fffffff
       # Application-specific range
       UserSpecific = 0x80000000..0x8fffffff
+
+      SpecialRanges = {
+        "SHT_LOOS" => OsSpecific,
+        "SHT_LOPROC" => ProcSpecific,
+        "SHT_LOUSER" => UserSpecific
+      }
 
       Class = {
         StrTab => Elf::StringTable,

@@ -38,9 +38,13 @@ module Elf
              )
       end
 
-      Prefix = "STB"
       OsSpecific = 10..12
       ProcSpecific = 13..15
+
+      SpecialRanges = {
+        "STB_LOOS" => OsSpecific,
+        "STB_LOPROC" => ProcSpecific
+      }
     end
 
     class Type < Value
@@ -60,9 +64,12 @@ module Elf
              )
       end
 
-      Prefix = "STT"
       OsSpecific = 10..12
       ProcSpecific = 13..15
+      SpecialRanges = {
+        "STT_LOOS" => OsSpecific,
+        "STT_LOPROC" => ProcSpecific
+      }
     end
 
     class Visibility < Value

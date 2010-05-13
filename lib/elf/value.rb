@@ -57,13 +57,16 @@ module Elf
     def Value.[](idx)
       return @enums[idx] if @enums[idx]
 
-      # If the Prefix constant is defined for this class, make sure we
-      # check for OS- and Proc-specific ranges
-      if self.const_defined?("Prefix")
-        if self::OsSpecific.include? idx
-          return self::Unknown.new(idx, sprintf("%s_LOOS+%x", self::Prefix, idx-self::OsSpecific.min))
-        elsif self::ProcSpecific.include? idx
-          return self::Unknown.new(idx, sprintf("%s_LOPROC+%x", self::Prefix, idx-self::ProcSpecific.min))
+      # If the class has defined special ranges, handle them; a
+      # special range is a range of values for which unknown values
+      # are allowed (because they are bound to specific usage we don't
+      # know about — where on the other hand unknown values outside of
+      # these ranges are frown upon); different type of values have
+      # different special ranges, each with its own base name, so
+      # leave that to be decided by the class itself.
+      if self.const_defined?("SpecialRanges")
+        self::SpecialRanges.each_pair do |base, range|
+          return self::Unknown.new(idx, sprintf("%s+%07x", base, idx-range.min)) if range.include? idx
         end
       end
 
