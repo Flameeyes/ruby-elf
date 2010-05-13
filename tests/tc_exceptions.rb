@@ -29,7 +29,7 @@ class TC_Exceptions < Test::Unit::TestCase
   TestDir = Pathname.new(Elf::BaseTest::TestDir + "invalid/")
 
   # We cannot use the fileno count trick on JRuby :(
-  if PLATFORM != "java"
+  if RUBY_PLATFORM != "java"
     # Define setup and teardown functions to make sure that no
     # descriptors are leaked during the tests. We don't want descriptors
     # to leak when exception happens, otherwise we likely have a bug in
