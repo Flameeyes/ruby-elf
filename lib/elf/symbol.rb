@@ -24,18 +24,18 @@
 module Elf
   class Symbol
     class Binding < Value
-      fill({
-              0 => [ :Local, 'Local symbol' ],
-              1 => [ :Global, 'Global symbol' ],
-              2 => [ :Weak, 'Weak symbol' ],
-             # This one is inferred out of libpam.so
-              3 => [ :Number, 'Number of defined type' ]
-           })
+      fill(
+           0 => [ :Local, 'Local symbol' ],
+           1 => [ :Global, 'Global symbol' ],
+           2 => [ :Weak, 'Weak symbol' ],
+           # This one is inferred out of libpam.so
+           3 => [ :Number, 'Number of defined type' ]
+           )
 
       class GNU < Value
-        fill({
-               10 => [ :Unique, 'Unique symbol' ]
-             })
+        fill(
+             10 => [ :Unique, 'Unique symbol' ]
+             )
       end
       
       # OS-specific range
@@ -48,20 +48,20 @@ module Elf
     end
 
     class Type < Value
-      fill({
-              0 => [ :None, 'Unspecified' ],
-              1 => [ :Object, 'Data object' ],
-              2 => [ :Func, 'Code object' ],
-              3 => [ :Section, 'Associated with a section' ],
-              4 => [ :File, 'File name' ],
-              5 => [ :Common, 'Common data object' ],
-              6 => [ :TLS, 'Thread-local data object' ]
-           })
+      fill(
+           0 => [ :None, 'Unspecified' ],
+           1 => [ :Object, 'Data object' ],
+           2 => [ :Func, 'Code object' ],
+           3 => [ :Section, 'Associated with a section' ],
+           4 => [ :File, 'File name' ],
+           5 => [ :Common, 'Common data object' ],
+           6 => [ :TLS, 'Thread-local data object' ]
+           )
 
       class GNU < Value
-        fill({
-               10 => [ :IFunc, 'Indirect function' ]
-             })
+        fill(
+             10 => [ :IFunc, 'Indirect function' ]
+             )
       end
 
       # OS-specific range
@@ -74,15 +74,15 @@ module Elf
     end
 
     class Visibility < Value
-      fill({
-             0 => [ :Default, 'Default visibility' ],
-             1 => [ :Internal, 'Processor-specific hidden visibility' ],
-             2 => [ :Hidden, 'Hidden visibility' ],
-             3 => [ :Protected, 'Protected visibility' ],
-             4 => [ :Exported, 'Exported symbol' ],
-             5 => [ :Singleton, 'Singleton symbol' ],
-             6 => [ :Eliminate, 'Symbol to be eliminated' ],
-           })
+      fill(
+           0 => [ :Default, 'Default visibility' ],
+           1 => [ :Internal, 'Processor-specific hidden visibility' ],
+           2 => [ :Hidden, 'Hidden visibility' ],
+           3 => [ :Protected, 'Protected visibility' ],
+           4 => [ :Exported, 'Exported symbol' ],
+           5 => [ :Singleton, 'Singleton symbol' ],
+           6 => [ :Eliminate, 'Symbol to be eliminated' ],
+           )
     end
 
     attr_reader :value, :size, :other, :bind, :type, :idx, :visibility, :file

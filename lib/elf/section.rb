@@ -198,7 +198,7 @@ module Elf
     end
 
     class Flags < Value
-      fill({
+      fill(
              0x00000001 => [ :Write, 'Writable' ],
              0x00000002 => [ :Alloc, 'Allocated' ],
              0x00000004 => [ :ExecInstr, 'Executable' ],
@@ -211,7 +211,7 @@ module Elf
              0x00000400 => [ :TLS, 'Section hold thread-local data' ],
              0x40000000 => [ :Ordered, 'Special ordering requirement' ],
              0x80000000 => [ :Exclude, 'Section is excluded unless referenced or allocated' ]
-           })
+           )
       
       # OS-specific flags mask
       MaskOS   = 0x0ff00000
@@ -248,7 +248,7 @@ require 'elf/gnu'
 module Elf
   class Section
     class Type < Value
-      fill({
+      fill(
               0 => [ :Null, 'Unused' ],
               1 => [ :ProgBits, 'Program data' ],
               2 => [ :SymTab, 'Symbol table' ],
@@ -269,14 +269,14 @@ module Elf
              # OS-specific range start
              0x6ffffff8 => [ :Checksum, 'Checksum for DSO content' ],
              # OS-specific range end
-           })
+           )
 
       # Sun-specific range
       LoSunW = 0x6ffffff1
       HiSunW = 0x6fffffff
 
       class SunW < Value
-        fill({
+        fill(
                LoSunW+0x0 => [ :SymSort, nil ],
                LoSunW+0x1 => [ :TLSSort, nil ],
                LoSunW+0x2 => [ :LDynSym, nil ],
@@ -292,26 +292,26 @@ module Elf
                LoSunW+0xc => [ :VerDef, nil ],
                LoSunW+0xd => [ :VerNeed, nil ],
                LoSunW+0xe => [ :VerSym, nil ]
-             })
+             )
       end
 
       # Type values for GNU-specific sections. These sections are
       # generally available just for glibc-based systems using GNU
       # binutils, but might be used by other Operating Systems too.
       class GNU < Value
-        fill({
+        fill(
                0x6ffffff6 => [ :Hash, 'GNU-style hash table' ],
                0x6ffffff7 => [ :Liblist, 'Prelink library list' ],
                0x6ffffffd => [ :VerDef, 'Version definition section' ],
                0x6ffffffe => [ :VerNeed, 'Version needs section' ],
                0x6fffffff => [ :VerSym, 'Version symbol table' ]
-             })
+             )
       end
 
       class ProcARM < Value
-        fill({
+        fill(
              0x70000003 => [ :ARMAttributes, 'ARM Attributes' ],
-             })
+             )
       end
 
       # OS-specific range

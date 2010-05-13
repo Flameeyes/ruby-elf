@@ -71,13 +71,13 @@ module Elf
     end
 
     class Type < Value
-      fill({
+      fill(
              0 => [ :None, 'No file type' ],
              1 => [ :Rel, 'Relocatable file' ],
              2 => [ :Exec, 'Executable file' ],
              3 => [ :Dyn, 'Shared object file' ],
              4 => [ :Core, 'Core file' ]
-           })
+           )
 
       # OS-specific range
       LoOs = 0xfe00

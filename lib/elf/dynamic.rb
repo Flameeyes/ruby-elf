@@ -45,7 +45,7 @@ module Elf
         @attribute = params[2]
       end
 
-      fill({
+      fill(
               0 => [ :Null, "NULL", :Ignore ],
               1 => [ :Needed, "NEEDED", :Value ],
               2 => [ :PltRelSz, "PLTRELSZ", :Value ],
@@ -120,7 +120,7 @@ module Elf
 
              # Unknown CPU-specific extensions
              0x7ffffffd => [ :Auxiliary, "AUXILIARY", :Value ]
-           })
+           )
 
       # OS-specific range
       LoOs = 0x6000000d

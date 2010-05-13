@@ -40,27 +40,27 @@ module Elf
   MagicString = "\177ELF"
 
   class Indexes < Value
-    fill({
+    fill(
            4 => [ :Class, 'File class' ],
            5 => [ :DataEncoding, 'Data encoding' ],
            6 => [ :Version, 'File version' ],
            7 => [ :OsAbi, 'OS ABI identification' ],
            8 => [ :AbiVersion, 'ABI version' ]
-         })
+         )
   end
 
   class Class < Value
-    fill({
+    fill(
            1 => [ :Elf32, '32-bit' ],
            2 => [ :Elf64, '64-bit' ]
-         })
+         )
   end
 
   class DataEncoding < Value
-    fill({
+    fill(
            1 => [ :Lsb, 'Little-endian' ],
            2 => [ :Msb, 'Big-endian' ]
-         })
+         )
 
     BytestreamMapping = {
       Lsb => BytestreamReader::LittleEndian,
@@ -69,7 +69,7 @@ module Elf
   end
   
   class OsAbi < Value
-    fill({
+    fill(
              0 => [ :SysV, 'UNIX System V ABI' ],
              1 => [ :HPUX, 'HP-UX' ],
              2 => [ :NetBSD, 'NetBSD' ],
@@ -88,11 +88,11 @@ module Elf
             16 => [ :FenixOS, 'FenixOS' ],
             97 => [ :ARM, 'ARM' ],
            255 => [ :Standalone, 'Standalone (embedded) application' ]
-         })
+         )
   end
 
   class Machine < Value
-    fill({
+    fill(
              0 => [ :None, 'No machine' ],
              1 => [ :M32, 'AT&T WE 32100' ],
              2 => [ :Sparc, 'SUN SPARC' ],
@@ -241,7 +241,7 @@ module Elf
            190 => [ :CUDA, 'NVIDIA CUDA architecture' ],
 
            0x9026 => [ :Alpha, 'DEC Alpha' ]
-         })
+         )
   end
 
 end

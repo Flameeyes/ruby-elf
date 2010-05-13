@@ -74,7 +74,11 @@ module Elf
       @enums.has_key?(idx)
     end
 
-    def Value.fill(hash)
+    def Value.fill(*hash)
+      if hash.size == 1 && hash[0].is_a?(Hash)
+        hash = hash[0]
+      end
+
       @enums = { }
 
       hash.each_pair do |index, value|
