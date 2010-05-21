@@ -80,7 +80,7 @@ module Elf
            3 => [ :Protected, 'Protected visibility' ],
            4 => [ :Exported, 'Exported symbol' ],
            5 => [ :Singleton, 'Singleton symbol' ],
-           6 => [ :Eliminate, 'Symbol to be eliminated' ],
+           6 => [ :Eliminate, 'Symbol to be eliminated' ]
            )
     end
 

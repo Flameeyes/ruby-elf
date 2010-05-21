@@ -248,7 +248,7 @@ module Elf
              17 => [ :Group, 'Section group' ],
              18 => [ :SymTabShndx, 'Extended section indeces' ],
              # OS-specific range start
-             0x6ffffff8 => [ :Checksum, 'Checksum for DSO content' ],
+             0x6ffffff8 => [ :Checksum, 'Checksum for DSO content' ]
              # OS-specific range end
            )
 
@@ -290,7 +290,7 @@ module Elf
 
       class ProcARM < Value
         fill(
-             0x70000003 => [ :ARMAttributes, 'ARM Attributes' ],
+             0x70000003 => [ :ARMAttributes, 'ARM Attributes' ]
              )
       end
 
