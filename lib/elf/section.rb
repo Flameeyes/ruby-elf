@@ -86,9 +86,14 @@ module Elf
         else
           type = Type[sectdata[:type_id]]
         end
+        type = nil if Type.is_a? Value::Unknown
       rescue Value::OutOfBound
-        raise UnknownType.new(sectdata[:type_id], elf.string_table ? elf.string_table[sectdata[:name_idx]] : sectdata[:name_idx])
+        type = nil
       end
+
+      raise UnknownType.new(sectdata[:type_id],
+                            elf.string_table ? elf.string_table[sectdata[:name_idx]] : sectdata[:name_idx]
+                            ) if type.nil?
 
       if Type::Class[type]
         return Type::Class[type].new(elf, sectdata, type)
