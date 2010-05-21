@@ -52,11 +52,22 @@ class TS_RubyElf
   end
 end
 
+# The verbose parameter is different between the Test::Unit shipped
+# with Ruby 1.8 and the one provided by test-unit 2.x gem.
+begin
+  verbose = (ENV['TEST_VERBOSE'] == '1') ? Test::Unit::UI::VERBOSE : Test::Unit::UI::NORMAL
+rescue NameError
+  verbose = { :output_level =>
+    (ENV['TEST_VERBOSE'] == '1') ? Test::Unit::UI::Console::OutputLevel::VERBOSE : Test::Unit::UI::Console::OutputLevel::NORMAL
+  }
+end
+
 [TS_RubyElf,
  Elf::TestDynamicExecutable.subsuite,
  Elf::TestStaticExecutable.subsuite,
  Elf::TestRelocatable.subsuite,
  Elf::TestNMCodes.subsuite
 ].each do |suite|
-  Test::Unit::UI::Console::TestRunner.run(suite)
+  
+  Test::Unit::UI::Console::TestRunner.run(suite, verbose)
 end
