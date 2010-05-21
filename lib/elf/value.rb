@@ -66,7 +66,7 @@ module Elf
       # leave that to be decided by the class itself.
       if self.const_defined?("SpecialRanges")
         self::SpecialRanges.each_pair do |base, range|
-          return self::Unknown.new(idx, sprintf("%s+%07x", base, idx-range.min)) if range.include? idx
+          return self::Unknown.new(idx, sprintf("%s+%07x", base, idx-range.first)) if range.include? idx
         end
       end
 
