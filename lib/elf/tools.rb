@@ -95,7 +95,7 @@ end
 # doing that, check if the first character is a @ character, in which
 # case load the rest of the parameter as filename and check that.
 def self.try_execute(filename)
-  if filename[0..1] == "@"
+  if filename[0..0] == "@"
     execute_on_file(filename[1..-1])
   else
     @execution_threads.add(Thread.new {
