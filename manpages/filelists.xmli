@@ -23,7 +23,7 @@
   
   <varlistentry xmlns="http://docbook.org/ns/docbook" xml:id="filelist.option">
     <term>
-      <option>@</option><replaceable>file</replaceable>
+      <option>@</option><replaceable>path</replaceable>
     </term>
     <listitem>
       <para>
