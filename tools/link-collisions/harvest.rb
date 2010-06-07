@@ -22,7 +22,7 @@
 require 'getoptlong'
 require 'set'
 require 'pathname'
-require 'postgres'
+require 'pg'
 
 require 'elf'
 require 'elf/utils/loader'
@@ -91,11 +91,11 @@ opts.each do |opt, arg|
     else
       $machines << machine_val unless machine_val.nil?
     end
-  when '--postgres-username' then pg_params['user'] = arg
-  when '--postgres-password' then pg_params['password'] = arg
-  when '--postgres-hostname' then pg_params['host'] = arg
-  when '--postgres-port'     then pg_params['port'] = arg
-  when '--postgres-database' then pg_params['dbname'] = arg
+  when '--postgres-username' then pg_params[:user] = arg
+  when '--postgres-password' then pg_params[:password] = arg
+  when '--postgres-hostname' then pg_params[:host] = arg
+  when '--postgres-port'     then pg_params[:port] = arg
+  when '--postgres-database' then pg_params[:dbname] = arg
   end
 end
 
