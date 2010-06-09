@@ -174,51 +174,48 @@ so_files = Set.new
 
 # Extend Pathname with a so_files method
 class Pathname
+  def maybe_queue
+    return nil if symlink?
+
+    $total_suppressions.each do |supp|
+      return nil if to_s =~ supp
+    end
+
+    elf = nil
+
+    begin
+      elf = Elf::File.open(self)
+
+      if ($machines.nil? or $machines.include?(elf.machine)) and
+          (elf.has_section?('.dynsym') and elf.has_section?('.dynstr'))
+
+        return to_s
+      else
+        return nil
+      end
+    # Explicitly list this so that it won't pollute the output
+    rescue Elf::File::NotAnELF
+      return nil
+    ensure
+      elf.close unless elf.nil?
+    end
+  end
+
   def so_files(recursive = true)
     res = Set.new
     children.each do |entry|
-      elf = nil
       begin
-        skip = false
-
-        $total_suppressions.each do |supp|
-          if entry.to_s =~ supp
-            skip = true
-            break
-          end
-        end
-
-        next if skip
-
-        next if entry.symlink?
-
         if entry.directory?
           res.merge entry.so_files if recursive
-          next
         else
-          elf = Elf::File.open(entry)
-
-          # If we got machines, we only add files that are of the right type
-          unless $machines.nil?
-            next unless $machines.include? elf.machine
-          end
-
-          # Only add the entry to the list if the file is a dynamic file,
-          # either a shared object or dynamic executable.
-          res.add entry.to_s if
-            elf.has_section?('.dynsym') and elf.has_section?('.dynstr')
+          res << entry.maybe_queue
         end
-      # Explicitly list this so that it won't pollute the output
-      rescue Elf::File::NotAnELF
-        next
-      # When using C-c to stop, well, stop.
+        # When using C-c to stop, well, stop.
       rescue Interrupt
         raise
       rescue Exception => e
         $stderr.puts "Ignoring #{entry} (#{e.message})"
         next
-      ensure
-        elf.close unless elf.nil?
       end
     end
 
@@ -256,6 +253,22 @@ scan_directories.each do |path|
     next
   end
 end
+
+# if there are explicit files listed in the standard input, scan those
+# right away.
+ARGV.each do |path|
+  so_files << Pathname.new(path).maybe_queue
+end
+
+# finally if none of the above matched, try checking for data on the
+# standard input
+if ARGV.size == 0 and not scan_path and scan_directories.size == 0
+  $stdin.each_line do |path|
+    so_files << Pathname.new(path.chomp("\n")).maybe_queue
+  end
+end
+
+so_files.delete(nil)
 
 db.exec("BEGIN TRANSACTION")
 val = 0
