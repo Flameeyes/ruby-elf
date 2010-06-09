@@ -305,7 +305,7 @@ so_files.each do |so|
 
         name = implementation
         db.exec("EXECUTE checkimplementation('#{implementation}', '#{abi}')").each do |row|
-          impid = row[0]
+          impid = row['id']
         end
         break
       end
