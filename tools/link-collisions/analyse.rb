@@ -17,7 +17,7 @@
 # Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 require 'getoptlong'
-require 'postgres'
+require 'pg'
 
 opts = GetoptLong.new(
   ["--output", "-o", GetoptLong::REQUIRED_ARGUMENT],
@@ -36,11 +36,11 @@ opts.each do |opt, arg|
   case opt
   when '--output'
     outfile = File.new(arg, "w")
-  when '--postgres-username' then pg_params['user'] = arg
-  when '--postgres-password' then pg_params['password'] = arg
-  when '--postgres-hostname' then pg_params['host'] = arg
-  when '--postgres-port'     then pg_params['port'] = arg
-  when '--postgres-database' then pg_params['dbname'] = arg
+  when '--postgres-username' then pg_params[:user] = arg
+  when '--postgres-password' then pg_params[:password] = arg
+  when '--postgres-hostname' then pg_params[:host] = arg
+  when '--postgres-port'     then pg_params[:port] = arg
+  when '--postgres-database' then pg_params[:dbname] = arg
   end
 end
 
@@ -50,8 +50,8 @@ db.exec("PREPARE getinstances (text, text) AS
          SELECT name FROM symbols INNER JOIN objects ON symbols.object = objects.id WHERE symbol = $1 AND abi = $2 ORDER BY name")
 
 db.exec("SELECT * FROM duplicate_symbols").each do |row|
-  outfile.puts "Symbol #{row[0]} (#{row[1]}) present #{row[2]} times"
-  db.exec( "EXECUTE getinstances ('#{row[0]}', '#{row[1]}')" ).each do |path|
-    outfile.puts "  #{path[0]}"
+  outfile.puts "Symbol #{row['symbol']} (#{row['abi']}) present #{row['occurrences']} times"
+  db.exec( "EXECUTE getinstances ('#{row['symbol']}', '#{row['abi']}')" ).each do |path|
+    outfile.puts "  #{path['name']}"
   end
 end
