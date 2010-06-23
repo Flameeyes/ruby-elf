@@ -30,7 +30,9 @@ Options = [
            # Ignore Profiling false positives
            ["--ignore-profiling", "-p", GetoptLong::NO_ARGUMENT ],
            # Ignore .data.rel.ro relocated constants
-           ["--ignore-data-rel-ro", "-R", GetoptLong::NO_ARGUMENT ]
+           ["--ignore-data-rel-ro", "-R", GetoptLong::NO_ARGUMENT ],
+           # Decide sorting column
+           ["--sort-by", "-S", GetoptLong::REQUIRED_ARGUMENT ]
           ]
 
 def self.before_options
@@ -39,8 +41,37 @@ def self.before_options
   @ignore_cxx = false
   @ignore_profiling = false
   @ignore_data_rel_ro = false
+
+  @results_sorter = Proc.new do |x, y|
+    # 0 is the filename
+    x[0] <=> y[0]
+  end
   
   @files_info = {}
+end
+
+def self.sort_by_cb(column)
+  case column
+  when '.bss'
+    @results_sorter = Proc.new do |x, y|
+      x[1][:bss_size] <=> y[1][:bss_size]
+    end
+  when '.data'
+    @results_sorter = Proc.new do |x, y|
+      x[1][:data_size] <=> y[1][:data_size]
+    end
+  when '.data.rel'
+    @results_sorter = Proc.new do |x, y|
+      x[1][:rel_size] <=> y[1][:rel_size]
+    end
+  when '.datal.rel.ro'
+    @results_sorter = Proc.new do |x, y|
+      x[1][:relro_size] <=> y[1][:relro_size]
+    end
+  else
+    puterror "invalid sort column: #{column}"
+    exit -1
+  end
 end
 
 def self.after_options
@@ -210,7 +241,8 @@ def self.results
 
     datarelro_header = @ignore_data_rel_ro ? "" : " | #{'.data.rel.ro size'.ljust max_relro_len}"
     puts "#{'File name'.ljust maxlen} | #{'.bss size'.ljust max_data_len} | #{'.data size'.ljust max_data_len} | #{'.data.rel size'.ljust max_rel_len}#{datarelro_header}"
-    @files_info.each do |file, info|
+
+    (@files_info.sort &@results_sorter).each do |file, info|
       datarelro_line = @ignore_data_rel_ro ? "" : "   #{info[:relro_size].to_s.rjust max_relro_len}"
       puts "#{file.ljust maxlen}   #{info[:bss_size].to_s.rjust max_bss_len}   #{info[:data_size].to_s.rjust max_data_len}   #{info[:rel_size].to_s.rjust max_rel_len}#{datarelro_line}"
     end
