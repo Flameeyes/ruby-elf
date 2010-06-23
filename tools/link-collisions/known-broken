@@ -157,9 +157,6 @@ lib(gcj|gauche|Synopsis)\.so						^GC_
 # ardour incluess all the libraries it uses
 /lib/ardour2/lib(rubberband|soundtouch|vampsdk)\.so
 
-# RubyGems install two copies of extensions, ignore one
-/ruby/gems/1\.8/gems/.*/ext/.*
-
 # These binaries contain a copy of their library rather than using it.
 /bin/alsaplayer
 /bin/aften

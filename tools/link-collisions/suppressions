@@ -4,15 +4,15 @@
 # Ignore the debug directory
 ^/usr/lib(|32|64)/debug/.*
 
-# libgcc_s is usually duplicated in a system, skip it
-^/lib(|32|64)/libgcc_s\.so.*
-
 # Common symbols, usually present in every shared object
 # main is instead present in every executable.
 .*					^((__libc_csu)?_(init|fini|start)|main|__data_start|_IO_stdin_used|_fp_hw)$
 
 # C++ symbols
 .*					^_Z(d[al]Pv|[nd][aw]j)$
+
+# Scratchbox is totally messed up
+/opt/scratchbox/
 
 # xine plugins use xine_plugin_info structure as entrypoint
 .*/xine/plugins/.*/xineplug_.*\.so	^xine_plugin_info$
@@ -179,7 +179,7 @@ strigi/strigi[lt]a_.*\.so		^(deleteS|s)trigiAnalyzerFactory$
 .*/unrealircd/modules/m_.*\.so				^(Mod_(Init|Load|Version|Unload|Header)|compiler_version)$
 
 # VLC
-.*/vlc/.*/lib.*_plugin\.so		^vlc_entry(_(license|copyright))?__[0-9_]+m$
+.*/vlc/.*/lib.*_plugin\.so		^vlc_entry(_(license|copyright))?__[0-9_]+[me]$
 
 # GStreamer
 .*/gstreamer-.*/lib.*\.so		^gst_plugin_desc$
@@ -266,6 +266,6 @@ strigi/strigi[lt]a_.*\.so		^(deleteS|s)trigiAnalyzerFactory$
 /lib(32|64)?/znc/.*\.so				^((Unl|L)oad|Get(Version|Description)|IsGlobal)$
 /lib(32|64)?/sweep/.*\.so			^plugin$
 /lib(32|64)?/gpac/gm_.*\.so			^(Query|Shutdown)Interface$
-/lib(32|64)?/k3d/plugins/k3d-.*\.module		^register_k3d_plugin$
+/lib(32|64)?/k3d/plugins/k3d-.*\.module		^register_k3d_plugins$
 /lib(32|64)?/frei0r-1/.*\.so			^f0r_((con|de)struct|(de)?init||get_(param_(info|value)|plugin_info)|set_param_value|update2?)$
 /lib(32|64)?/kvirc/[0-9\.]+/modules/.*\.so	^KVIrc_module_info$
