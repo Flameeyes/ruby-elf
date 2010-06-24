@@ -39,7 +39,8 @@ module Elf::TestDemangler
     Compiler="gcc"
 
     MangledSymbols = {
-      "_ZN11mynamespace12list_of_intsE" => "mynamespace::list_of_ints"
+      "_ZN11mynamespace12list_of_intsE" => "mynamespace::list_of_ints",
+      "_ZN11mynamespace8functionEv" => "void mynamespace::function()"
     }
   end
 

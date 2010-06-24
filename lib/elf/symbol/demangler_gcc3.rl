@@ -35,8 +35,21 @@ simple_name = (
     <: [a-zA-Z_]
 );
 
-qualified_name = ("N" . ( std_prefix | simple_name ) :> simple_name+ :> "E") |
-	(std_prefix :> simple_name);
+simple_typename = ( 'v' % { typename = 'void' } |
+                    'i' % { typename = 'int' } |
+                    'b' % { typename = 'bool' } );
+
+typename = ( simple_typename |
+              ('P' . simple_typename) % { typename << "*" }
+            );
+
+parameters_list = ((typename % { params << typename })*)
+> { params = [] };
+
+returnval = typename % { res = "#{typename} #{res}(#{params.join(', ')})" };
+
+qualified_name = ("N" . ( std_prefix | simple_name ) :> simple_name+ :> parameters_list :> "E" :> returnval?) |
+  (std_prefix :> simple_name);
 
 mangled_name := "_Z" . qualified_name;
 
@@ -51,11 +64,13 @@ module Elf
           res = ""
 
           %% write init;
+          eof = pe;
+
           %% write exec;
 
           return nil if cs < demangle_gcc3_first_final
 
-          return res[2..-1] unless res.empty?
+          return res unless res.empty?
           nil
         end
       end
