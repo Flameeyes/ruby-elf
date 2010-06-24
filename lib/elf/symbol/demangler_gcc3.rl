@@ -23,6 +23,55 @@ machine demangle_gcc3;
 
 action mark { mark = p }
 
+operators =
+  "ix" % { res << "operator []" } |
+  "cl" % { res << "operator ()" } |
+  "pt" % { res << "operator ->" } |
+  "pp" % { res << "operator ++" } |
+  "mm" % { res << "operator --" } |
+  "nw" % { res << "operator new" } |
+  "na" % { res << "operator new[]" } |
+  "dl" % { res << "operator delete" } |
+  "da" % { res << "operator delete[]" } |
+  "de" % { res << "operator *"} |
+  "ad" % { res << "operator &"} |
+  "ps" % { res << "operator +"} |
+  "ng" % { res << "operator -"} |
+  "nt" % { res << "operator !"} |
+  "co" % { res << "operator ~"} |
+  "pm" % { res << "operator ->*"} |
+  "ml" % { res << "operator *"} |
+  "dv" % { res << "operator /"} |
+  "rm" % { res << "operator %"} |
+  "pl" % { res << "operator +"} |
+  "mi" % { res << "operator -"} |
+  "ls" % { res << "operator <<"} |
+  "rs" % { res << "operator >>"} |
+  "lt" % { res << "operator <"} |
+  "rt" % { res << "operator >"} |
+  "le" % { res << "operator <="} |
+  "ge" % { res << "operator >="} |
+  "eq" % { res << "operator =="} |
+  "ne" % { res << "operator !="} |
+  "an" % { res << "operator &"} |
+  "or" % { res << "operator |"} |
+  "eo" % { res << "operator ^"} |
+  "aa" % { res << "operator &&" } |
+  "oo" % { res << "operator ||" } |
+  "aS" % { res << "operator =" } |
+  "mL" % { res << "operator *=" } |
+  "dV" % { res << "operator /=" } |
+  "rM" % { res << "operator %=" } |
+  "pL" % { res << "operator +=" } |
+  "mI" % { res << "operator -=" } |
+  "lS" % { res << "operator <<=" } |
+  "rS" % { res << "operator >>=" } |
+  "aN" % { res << "operator &=" } |
+  "oR" % { res << "operator |=" } |
+  "eO" % { res << "operator ^=" } |
+  "cm" % { res << "operator ," }
+;
+
 std_prefix = "St" % { res << "::std" };
 
 simple_name = (
@@ -50,7 +99,8 @@ parameters_list = ((typename % { params ||= []; params << typename })+)
 };
 
 qualified_name = ("N" . ( std_prefix | simple_name ) :> simple_name+ :> "E" :> parameters_list?) |
-  (std_prefix :> simple_name);
+  (std_prefix :> simple_name) |
+  (operators :> parameters_list);
 
 mangled_name := "_Z" . qualified_name;
 

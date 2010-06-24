@@ -42,7 +42,8 @@ module Elf::TestDemangler
       "_ZN11mynamespace12list_of_intsE" => "mynamespace::list_of_ints",
       "_ZN11mynamespace8functionEv" => "mynamespace::function()",
       "_ZN11mynamespace8functionEib" => "mynamespace::function(int, bool)",
-      "_ZN11mynamespace8functionEPibPv" => "mynamespace::function(int*, bool, void*)"
+      "_ZN11mynamespace8functionEPibPv" => "mynamespace::function(int*, bool, void*)",
+      "_ZdlPv" => "operator delete(void*)"
     }
   end
 
