@@ -43,12 +43,13 @@ typename = ( simple_typename |
               ('P' . simple_typename) % { typename << "*" }
             );
 
-parameters_list = ((typename % { params << typename })*)
-> { params = [] };
+parameters_list = ((typename % { params ||= []; params << typename })+)
+%{
+  params = [] if params == ['void']
+  res << "(#{params.join(', ')})"
+};
 
-returnval = typename % { res = "#{typename} #{res}(#{params.join(', ')})" };
-
-qualified_name = ("N" . ( std_prefix | simple_name ) :> simple_name+ :> parameters_list :> "E" :> returnval?) |
+qualified_name = ("N" . ( std_prefix | simple_name ) :> simple_name+ :> "E" :> parameters_list?) |
   (std_prefix :> simple_name);
 
 mangled_name := "_Z" . qualified_name;
