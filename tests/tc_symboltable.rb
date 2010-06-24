@@ -21,7 +21,7 @@ require 'elf'
 
 # Test handling of symbols tables in ELF files with Ruby-elf
 class TC_SymbolTable < Test::Unit::TestCase
-  include Elf::BaseTest
+  include Elf::FullTest
   Os = "linux"
   Arch = "amd64"
   Compiler="gcc"

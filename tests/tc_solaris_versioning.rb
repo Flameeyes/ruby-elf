@@ -24,7 +24,7 @@ require 'elf'
 # This test makes sure that ruby-elf can read versioning info out of
 # Solaris ELF files too.
 class TC_Solaris_Versioning < Test::Unit::TestCase
-  include Elf::BaseTest
+  include Elf::FullTest
   Os = "solaris"
   Arch = "x86"
   Compiler = "gcc"

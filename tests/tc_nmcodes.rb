@@ -25,7 +25,7 @@ require 'elf'
 # file and will ensure that the symbols in there reports the correct
 # nm(1)-style code.
 module Elf::TestNMCodes
-  include Elf::BaseTest
+  include Elf::FullTest
   BaseFilename = "symboltypes.o"
 
   ExpectedSections = [".symtab"]

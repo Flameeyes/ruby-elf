@@ -25,7 +25,7 @@ require 'elf'
 # Sun-specific extensions, this test checks for their presence and for
 # their type and value, to ensure ruby-elf detects them correctly.
 class TC_SunW_Sections < Test::Unit::TestCase
-  include Elf::BaseTest
+  include Elf::FullTest
   Os = "solaris"
   Arch = "x86"
   Compiler = "suncc"

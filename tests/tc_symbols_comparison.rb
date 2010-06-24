@@ -26,9 +26,9 @@ require 'elf'
 # or not.
 class TC_Symbols_Comparison < Test::Unit::TestCase
   def setup
-    @versioned_library = Elf::File.new(Elf::BaseTest::TestDir + "linux/amd64/gcc/versioning.so")
-    @unversioned_library = Elf::File.new(Elf::BaseTest::TestDir + "linux/amd64/gcc/versioning-unversioned.so")
-    @versioned_user = Elf::File.new(Elf::BaseTest::TestDir + "linux/amd64/gcc/versioning-user-versioned")
+    @versioned_library = Elf::File.new(Elf::FullTest::TestDir + "linux/amd64/gcc/versioning.so")
+    @unversioned_library = Elf::File.new(Elf::FullTest::TestDir + "linux/amd64/gcc/versioning-unversioned.so")
+    @versioned_user = Elf::File.new(Elf::FullTest::TestDir + "linux/amd64/gcc/versioning-user-versioned")
 
     @versioned_asymbol_base = @versioned_library[".dynsym"].
       find { |sym| sym.name == "asymbol" and sym.version == nil }

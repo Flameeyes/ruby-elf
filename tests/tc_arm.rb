@@ -24,7 +24,7 @@ require 'elf'
 # test is intended to properly check for presence and parsing of this
 # section, and to avoid possible misreading of it.
 class TC_ARM < Test::Unit::TestCase
-  include Elf::BaseTest
+  include Elf::FullTest
   Os = "linux"
   Arch = "arm"
   Compiler = "gcc"

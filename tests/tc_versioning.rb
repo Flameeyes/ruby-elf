@@ -25,7 +25,7 @@ require 'elf'
 # create symbols with multiple versions; this test ensures that
 # ruby-elf can read the versioning information correctly.
 class TC_Versioning < Test::Unit::TestCase
-  include Elf::BaseTest
+  include Elf::FullTest
   Os = "linux"
   Arch = "amd64"
   Compiler = "gcc"

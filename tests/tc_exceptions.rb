@@ -26,7 +26,7 @@ require 'elf'
 # ELF files, so that reading a non-ELF file won't cause unexpected
 # problems.
 class TC_Exceptions < Test::Unit::TestCase
-  TestDir = Pathname.new(Elf::BaseTest::TestDir + "invalid/")
+  TestDir = Pathname.new(Elf::FullTest::TestDir + "invalid/")
 
   # We cannot use the fileno count trick on JRuby :(
   if RUBY_PLATFORM != "java"
@@ -230,7 +230,7 @@ class TC_Exceptions < Test::Unit::TestCase
   #
   # Expected behaviour: Elf::Section::MissingSection exception is raised
   def test_missing_section
-    elf = Elf::File.new(Elf::BaseTest::TestDir + "linux/arm/gcc/dynamic_executable.o")
+    elf = Elf::File.new(Elf::FullTest::TestDir + "linux/arm/gcc/dynamic_executable.o")
 
     # Make sure that the has_section? function behaves correctly and
     # _don't_ throw an exception.
@@ -250,7 +250,7 @@ class TC_Exceptions < Test::Unit::TestCase
   # Expected behaviour: Elf::Section:MissingSection exception is
   # raised
   def test_missing_section_index
-    elf = Elf::File.new(Elf::BaseTest::TestDir + "linux/arm/gcc/dynamic_executable.o")
+    elf = Elf::File.new(Elf::FullTest::TestDir + "linux/arm/gcc/dynamic_executable.o")
 
     assert_raise Elf::File::MissingSection do
       elf[12300]
@@ -264,7 +264,7 @@ class TC_Exceptions < Test::Unit::TestCase
   #
   # Expected behaviour: TypeError exception is raised
   def test_has_section_invalid_argument
-    elf = Elf::File.new(Elf::BaseTest::TestDir + "linux/arm/gcc/dynamic_executable.o")
+    elf = Elf::File.new(Elf::FullTest::TestDir + "linux/arm/gcc/dynamic_executable.o")
 
     assert_raise TypeError do
       elf.has_section?({:a => :b})
@@ -278,7 +278,7 @@ class TC_Exceptions < Test::Unit::TestCase
   #
   # Expected behaviour: TypeError exception is raised
   def test_invalid_section_comparison
-    elf = Elf::File.new(Elf::BaseTest::TestDir + "linux/arm/gcc/dynamic_executable.o")
+    elf = Elf::File.new(Elf::FullTest::TestDir + "linux/arm/gcc/dynamic_executable.o")
 
     assert_raise TypeError do
       elf[".ARM.attributes"] == "Foobar"

@@ -17,7 +17,7 @@
 
 require 'elf'
 
-module Elf::BaseTest
+module Elf::FullTest
   TestDir = Pathname.new(__FILE__).dirname + "data"
 
   def filename
@@ -188,7 +188,7 @@ module Elf::BaseTest
 end
 
 module Elf::TestExecutable
-  include Elf::BaseTest
+  include Elf::FullTest
   ExpectedSections = [ ".text" ]
 
   # Test section flags handling.
