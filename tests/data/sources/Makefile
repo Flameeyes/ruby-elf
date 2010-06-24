@@ -7,7 +7,8 @@ linux-amd64-gcc: \
 	../linux/amd64/gcc/dynamic_executable \
 	../linux/amd64/gcc/static_executable \
 	../linux/amd64/gcc/symboltypes.o \
-	../linux/amd64/gcc/versioning.so
+	../linux/amd64/gcc/versioning.so \
+	../linux/amd64/gcc/cxxsymbols.o
 linux-amd64-suncc: \
 	../linux/amd64/suncc/dynamic_executable.o \
 	../linux/amd64/suncc/dynamic_executable \
@@ -78,6 +79,9 @@ solaris-x86-gcc: \
 
 ../linux/amd64/gcc/versioning.so: versioning.c versioning.ld
 	x86_64-pc-linux-gnu-gcc -shared -fPIC versioning.c -Wl,--version-script=versioning.ld -o $@
+
+../linux/amd64/gcc/cxxsymbols.o: cxxsymbols.c
+	x86_64-pc-linux-gnu-g++ -c $< -o $@
 
 ../linux/x86/gcc/dynamic_executable.o: executable.c
 	x86_64-pc-linux-gnu-gcc -m32 -c executable.c -o $@

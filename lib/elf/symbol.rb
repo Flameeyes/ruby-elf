@@ -21,6 +21,8 @@
 # along with this generator; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
+require 'elf/symbol/demangler_gcc3'
+
 module Elf
   class Symbol
     class Binding < Value
@@ -315,6 +317,17 @@ module Elf
       return false if section != nil and other.section != nil
 
       return true
+    end
+
+    Demanglers = [ Elf::Symbol::Demangler::GCC3 ]
+    def demangle
+      demangled = nil
+
+      Demanglers.each do |demangler|
+        return demangled if (demangled ||= demangler.demangle(name))
+      end
+
+      return name
     end
   end
 end

@@ -35,6 +35,7 @@ require Pathname.new(__FILE__).dirname + 'tc_symboltable'
 require Pathname.new(__FILE__).dirname + 'tc_stringtable'
 require Pathname.new(__FILE__).dirname + 'tc_symbols_comparison'
 require Pathname.new(__FILE__).dirname + 'tc_values'
+require Pathname.new(__FILE__).dirname + 'tc_demangler'
 
 class TS_RubyElf
   def self.suite
@@ -66,7 +67,8 @@ end
  Elf::TestDynamicExecutable.subsuite,
  Elf::TestStaticExecutable.subsuite,
  Elf::TestRelocatable.subsuite,
- Elf::TestNMCodes.subsuite
+ Elf::TestNMCodes.subsuite,
+ Elf::TestDemangler.subsuite
 ].each do |suite|
   
   Test::Unit::UI::Console::TestRunner.run(suite, verbose)
