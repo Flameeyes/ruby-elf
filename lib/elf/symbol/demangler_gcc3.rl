@@ -84,13 +84,39 @@ simple_name = (
     <: [a-zA-Z_]
 );
 
-simple_typename = ( 'v' % { typename = 'void' } |
-                    'i' % { typename = 'int' } |
-                    'b' % { typename = 'bool' } );
+simple_typename =
+  'v' % { typename = 'void' } |
+  'b' % { typename = 'bool' } |
+  'c' % { typename = 'char' } |
+  'a' % { typename = 'signed char' } |
+  'h' % { typename = 'unsigned char' } |
+  's' % { typename = 'short' } |
+  't' % { typename = 'unsigned short' } |
+  'i' % { typename = 'int' } |
+  'j' % { typename = 'unsigned int' } |
+  'l' % { typename = 'long' } |
+  'm' % { typename = 'unsigned long' } |
+  'x' % { typename = '__int64' } |
+  'y' % { typename = 'unsigned __int64' } |
+  'w' % { typename = 'wchar_t' } |
+  'f' % { typename = 'float' } |
+  'd' % { typename = 'double' } |
+  'e' % { typename = 'long double' } |
+  'Cf' % { typename = '__complex__ float' } |
+  'Cd' % { typename = '__complex__ double' } |
+  'z' % { typename = '...' }
+;
 
-typename = ( simple_typename |
-              ('P' . simple_typename) % { typename << "*" }
-            );
+typename = (
+            ( 'P' % { suffix = "#{suffix}*" } |
+              'R' % { suffix = "#{suffix}&" }
+            )? .
+            ('V' % { prefix = "volatile #{prefix}" } )?.
+            ('K' % { prefix = "const #{prefix}" } )?.
+            simple_typename
+            )
+> { prefix = typename = suffix = '' }
+% { typename = "#{prefix}#{typename}#{suffix}" };
 
 parameters_list = ((typename % { params ||= []; params << typename })+)
 %{
