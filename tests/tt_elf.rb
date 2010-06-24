@@ -17,7 +17,7 @@
 
 require 'elf'
 
-module Elf::FullTest
+module Elf::BaseTest
   TestDir = Pathname.new(__FILE__).dirname + "data"
 
   def filename
@@ -31,6 +31,10 @@ module Elf::FullTest
   def teardown
     @elf.close if @elf
   end
+end
+
+module Elf::FullTest
+  include Elf::BaseTest
 
   # Test iteration over sections.
   #
