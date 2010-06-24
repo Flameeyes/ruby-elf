@@ -22,15 +22,19 @@ require 'elf'
 require 'getoptlong'
 
 opts = GetoptLong.new(
-  ["--dynamic", "-D", GetoptLong::NO_ARGUMENT]
+  ["--dynamic", "-D", GetoptLong::NO_ARGUMENT],
+  ["--demangle", "-C", GetoptLong::NO_ARGUMENT]
 )
 
 scan_section = '.symtab'
+demangle = false
 
 opts.each do |opt, arg|
   case opt
   when '--dynamic'
     scan_section = '.dynsym'
+  when '--demangle'
+    demangle = true
   end
 end
 
@@ -66,7 +70,9 @@ files.each do |file|
         version_name = sym.version
         version_name = version_name ? "@@#{version_name}" : ""
 
-        puts "#{addr} #{flag} #{sym.name}#{version_name}"
+        name = demangle ? sym.demangle : sym.name
+
+        puts "#{addr} #{flag} #{name}#{version_name}"
       end
     end
   rescue Errno::ENOENT
