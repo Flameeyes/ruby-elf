@@ -18,6 +18,7 @@
 require 'test/unit'
 require 'pathname'
 require 'elf'
+require File.dirname(__FILE__) + '/tt_elf' unless defined? Elf::BaseTest
 
 # Test for GNU versioning support
 #
@@ -43,6 +44,10 @@ class TC_Versioning < Test::Unit::TestCase
     ".gnu.version_d" => Elf::GNU::SymbolVersionDef,
     ".gnu.version_r" => Elf::GNU::SymbolVersionNeed
   }
+
+  # ignore some of the common tests that we don't really care about.
+  undef test_version, test_elf_filetype, test_elf_class,
+  test_elf_dataencoding, test_elf_abi, test_elf_abi_version
 
   def test__gnu_version
     assert_equal(@elf[".dynsym"].size, @elf[".gnu.version"].size,

@@ -18,6 +18,7 @@
 require 'test/unit'
 require 'pathname'
 require 'elf'
+require File.dirname(__FILE__) + '/tt_elf' unless defined? Elf::BaseTest
 
 # Tests for nm(1)-style codes support in Ruby-Elf
 #
@@ -25,10 +26,8 @@ require 'elf'
 # file and will ensure that the symbols in there reports the correct
 # nm(1)-style code.
 module Elf::TestNMCodes
-  include Elf::FullTest
+  include Elf::BaseTest
   BaseFilename = "symboltypes.o"
-
-  ExpectedSections = [".symtab"]
 
   def dotest_symbols(table)
     table.each_pair do |sym, code|
@@ -80,7 +79,7 @@ module Elf::TestNMCodes
 
   module ICC
     Compiler = "icc"
-    ExpectedABI = Elf::OsAbi::Linux
+
     # For some reason ICC adds a .0 to unit-static symbols
     def test_static
       dotest_symbols({ "static_variable.0"                   => 'd',

@@ -50,6 +50,9 @@ class TS_RubyElf
     suite << TC_StringTable.suite
     suite << TC_Symbols_Comparison.suite
     suite << TC_Values.suite
+    # this is just a bunch of assertions in one or two tests so don't
+    # make it its own suite, if at all possible.
+    suite << Elf::TestDemangler.subsuite
   end
 end
 
@@ -68,7 +71,6 @@ end
  Elf::TestStaticExecutable.subsuite,
  Elf::TestRelocatable.subsuite,
  Elf::TestNMCodes.subsuite,
- Elf::TestDemangler.subsuite
 ].each do |suite|
   
   Test::Unit::UI::Console::TestRunner.run(suite, verbose)
