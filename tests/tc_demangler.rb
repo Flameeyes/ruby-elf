@@ -60,6 +60,7 @@ module Elf::TestDemangler
       "_ZN11mynamespace7MyClassD1Ev" => "mynamespace::MyClass::~MyClass()",
       "_ZN11mynamespace7MyClassD2Ev" => "mynamespace::MyClass::~MyClass()",
       "_ZN11mynamespace7MyClass6methodEv" => "mynamespace::MyClass::method()",
+      "_ZN11mynamespace7MyClass12staticmethodEv" => "mynamespace::MyClass::staticmethod()",
       "_ZdlPv" => "operator delete(void*)"
     }
   end

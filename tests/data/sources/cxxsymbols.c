@@ -20,12 +20,15 @@ namespace mynamespace {
     ~MyClass();
 
     void method();
+
+    static void staticmethod();
   };
 
   MyClass::MyClass() {}
   MyClass::MyClass(int a) {}
   MyClass::~MyClass() {}
   void MyClass::method() {}
+  void MyClass::staticmethod() {}
 
   void function(MyClass a) {}
   void function(MyClass *a) {}
