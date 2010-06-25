@@ -124,9 +124,21 @@ register = "S" . ([0-9A-Z]*) >mark . "_"
   currname[-1] << registers[regname]
 };
 
+action markbase {
+  markbase = p
+}
+
+action savebase {
+  basename = data[(markbase)..(p-1)].sub(/^[0-9]*/, '')
+}
+
 qualified_name = (
   (std_prefix :> simple_name) |
-  ( 'N' % { regmark = nil } . (simple_name+ | register) %savereg :> simple_name :> 'E') |
+  ( 'N' % { regmark = nil } . (simple_name+ | register) %savereg
+    :> simple_name >markbase %savebase
+    :> ( ('C'[123]) % { currname[-1] << "::#{basename}" } )?
+    :> ( ('D'[012]) % { currname[-1] << "::~#{basename}" } )?
+    :> 'E') |
   register
 ) >{ currname << "" };
 
@@ -147,8 +159,16 @@ parameters_list = ((typename % { params ||= []; params << typename })+)
   res << "(#{params.join(', ')})"
 };
 
-globals = qualified_name >{currname << ""} %{res << currname[-1]; currname.pop} :> parameters_list? |
-  operators :> parameters_list;
+action append_currname {
+  res << currname[-1]
+  currname.pop
+}
+
+globals = (
+           qualified_name >{currname << ""} %append_currname |
+           operators |
+           simple_name >{ currname << "" } %append_currname
+           ) :> parameters_list?;
 
 mangled_name := "_Z" . globals;
 

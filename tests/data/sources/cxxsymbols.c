@@ -14,7 +14,15 @@ namespace mynamespace {
   void function(const double &a) {}
 
   class MyClass {
+  public:
+    MyClass();
+    MyClass(int);
+    ~MyClass();
   };
+
+  MyClass::MyClass() {}
+  MyClass::MyClass(int a) {}
+  MyClass::~MyClass() {}
 
   void function(MyClass a) {}
   void function(MyClass *a) {}
