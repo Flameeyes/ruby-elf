@@ -1,7 +1,9 @@
 MANPAGES = $(patsubst %.xml,%,$(wildcard manpages/*.xml))
 DEMANGLERS = $(patsubst %.rl,%.rb,$(wildcard lib/elf/symbol/demangler_*.rl))
 
-all: manpages-build $(DEMANGLERS)
+all: manpages-build demanglers-build
+
+demanglers-build: $(DEMANGLERS)
 
 manpages-build: $(MANPAGES)
 
