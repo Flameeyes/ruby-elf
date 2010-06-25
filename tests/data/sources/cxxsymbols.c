@@ -12,4 +12,12 @@ namespace mynamespace {
   void function(signed char *const a) {}
   void function(const volatile float *a) {}
   void function(const double &a) {}
+
+  class MyClass {
+  };
+
+  void function(MyClass a) {}
+  void function(MyClass *a) {}
+  void function(MyClass *a, MyClass b) {}
+  void function(MyClass &a) {}
 }

@@ -74,15 +74,24 @@ operators =
 
 std_prefix = "St" % { res << "::std" };
 
+action markreg {
+  regmark = p unless regmark
+}
+
+action savereg {
+  last_register = next_register(last_register)
+  registers[last_register] = currname.dup
+}
+
 simple_name = (
   [0-9]+ >mark
     %{ 
       len = (data[mark..(p-1)].to_i) -1
-      res << "::#{data[p..(p+len)]}"
+      currname << "::#{data[p..(p+len)]}"
       p += len
     }
     <: [a-zA-Z_]
-);
+) >markreg %savereg;
 
 simple_typename =
   'v' % { typename = 'void' } |
@@ -107,13 +116,26 @@ simple_typename =
   'z' % { typename = '...' }
 ;
 
+register = "S" . ([0-9A-Z]*) >mark . "_"
+%{
+$stderr.puts registers.inspect
+  regname = data[mark..(p-2)]
+  currname << registers[regname]
+};
+
+qualified_name = (
+  (std_prefix :> simple_name) |
+  ( 'N' % { regmark = nil } . (simple_name | register) :> simple_name :> 'E') |
+  register
+) >{ currname = "" };
+
 typename = (
             ( 'P' % { suffix = "#{suffix}*" } |
               'R' % { suffix = "#{suffix}&" }
             )? .
             ('V' % { prefix = "volatile #{prefix}" } )?.
             ('K' % { prefix = "const #{prefix}" } )?.
-            simple_typename
+            ( simple_typename | qualified_name %{typename = currname} )
             )
 > { prefix = typename = suffix = '' }
 % { typename = "#{prefix}#{typename}#{suffix}" };
@@ -124,11 +146,10 @@ parameters_list = ((typename % { params ||= []; params << typename })+)
   res << "(#{params.join(', ')})"
 };
 
-qualified_name = ("N" . ( std_prefix | simple_name ) :> simple_name+ :> "E" :> parameters_list?) |
-  (std_prefix :> simple_name) |
-  (operators :> parameters_list);
+globals = qualified_name >{currname = ""} %{res << currname} :> parameters_list? |
+  operators :> parameters_list;
 
-mangled_name := "_Z" . qualified_name;
+mangled_name := "_Z" . globals;
 
 }%%
 
@@ -136,9 +157,35 @@ module Elf
   class Symbol
     module Demangler
       class GCC3
+        def self.increase_string(string, idx = -1)
+          return "1#{string}" if string[idx].nil?
+
+          if ("0"[0].."8"[0]).include?(string[idx]) or
+              ("A"[0].."Y"[0]).include?(string[idx])
+            string[idx] = string[idx]+1
+          elsif string[idx] == 57 # '9'
+            string[idx] = "A"
+          elsif string[idx] == 90 # 'Z'
+            string[idx] = "0"
+            return increase_string(string, idx-1)
+          end
+
+          return string
+        end
+
+        def self.next_register(latest)
+          return "" if latest.nil?
+          return "0" if latest == ""
+
+          return increase_string(latest.dup)
+        end
+
         %% write data;
         def self.demangle(data)
           res = ""
+          currname = ""
+          last_register = nil
+          registers = {}
 
           %% write init;
           eof = pe;

@@ -330,7 +330,7 @@ module Elf
       # We're going to remove top-namespace specifications as we don't
       # need them, but it's easier for the demangler to still emit
       # them.
-      @demangled.gsub!(/(^| )::/, '\1') if @demangled
+      @demangled.gsub!(/(^| |\()::/, '\1') if @demangled
 
       return @demangled ||= name
     end

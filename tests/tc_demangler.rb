@@ -49,6 +49,10 @@ module Elf::TestDemangler
       "_ZN11mynamespace8functionEPa" => "mynamespace::function(signed char*)",
       "_ZN11mynamespace8functionEPVKf" => "mynamespace::function(const volatile float*)",
       "_ZN11mynamespace8functionERKd" => "mynamespace::function(const double&)",
+      "_ZN11mynamespace8functionENS_7MyClassE" => "mynamespace::function(mynamespace::MyClass)",
+      "_ZN11mynamespace8functionEPNS_7MyClassE" => "mynamespace::function(mynamespace::MyClass*)",
+      "_ZN11mynamespace8functionERNS_7MyClassE" => "mynamespace::function(mynamespace::MyClass&)",
+      "_ZN11mynamespace8functionEPNS_7MyClassES0_" => "mynamespace::function(mynamespace::MyClass*, mynamespace::MyClass)",
       "_ZdlPv" => "operator delete(void*)"
     }
   end
