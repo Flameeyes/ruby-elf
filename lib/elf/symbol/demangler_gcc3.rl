@@ -79,19 +79,21 @@ action markreg {
 }
 
 action savereg {
-  last_register = next_register(last_register)
-  registers[last_register] = currname.dup
+  unless currname[-1].empty? or registers.has_value?(currname[-1])
+    last_register = next_register(last_register)
+    registers[last_register] = currname[-1].dup
+  end
 }
 
 simple_name = (
   [0-9]+ >mark
     %{ 
       len = (data[mark..(p-1)].to_i) -1
-      currname << "::#{data[p..(p+len)]}"
+      currname[-1] << "::#{data[p..(p+len)]}"
       p += len
     }
     <: [a-zA-Z_]
-) >markreg %savereg;
+) >markreg;
 
 simple_typename =
   'v' % { typename = 'void' } |
@@ -118,16 +120,15 @@ simple_typename =
 
 register = "S" . ([0-9A-Z]*) >mark . "_"
 %{
-$stderr.puts registers.inspect
   regname = data[mark..(p-2)]
-  currname << registers[regname]
+  currname[-1] << registers[regname]
 };
 
 qualified_name = (
   (std_prefix :> simple_name) |
-  ( 'N' % { regmark = nil } . (simple_name | register) :> simple_name :> 'E') |
+  ( 'N' % { regmark = nil } . (simple_name+ | register) %savereg :> simple_name :> 'E') |
   register
-) >{ currname = "" };
+) >{ currname << "" };
 
 typename = (
             ( 'P' % { suffix = "#{suffix}*" } |
@@ -135,10 +136,10 @@ typename = (
             )? .
             ('V' % { prefix = "volatile #{prefix}" } )?.
             ('K' % { prefix = "const #{prefix}" } )?.
-            ( simple_typename | qualified_name %{typename = currname} )
+            ( simple_typename | qualified_name %savereg )
             )
-> { prefix = typename = suffix = '' }
-% { typename = "#{prefix}#{typename}#{suffix}" };
+> { prefix = suffix = ''; typename = nil; currname << "" }
+% { typename = "#{prefix}#{typename || currname[-1]}#{suffix}"; currname.pop };
 
 parameters_list = ((typename % { params ||= []; params << typename })+)
 %{
@@ -146,7 +147,7 @@ parameters_list = ((typename % { params ||= []; params << typename })+)
   res << "(#{params.join(', ')})"
 };
 
-globals = qualified_name >{currname = ""} %{res << currname} :> parameters_list? |
+globals = qualified_name >{currname << ""} %{res << currname[-1]; currname.pop} :> parameters_list? |
   operators :> parameters_list;
 
 mangled_name := "_Z" . globals;
@@ -183,7 +184,7 @@ module Elf
         %% write data;
         def self.demangle(data)
           res = ""
-          currname = ""
+          currname = []
           last_register = nil
           registers = {}
 
