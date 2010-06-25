@@ -72,8 +72,6 @@ operators =
   "cm" % { res << "operator ," }
 ;
 
-std_prefix = "St" % { res << "::std" };
-
 action markreg {
   regmark = p unless regmark
 }
@@ -132,9 +130,13 @@ action savebase {
   basename = data[(markbase)..(p-1)].sub(/^[0-9]*/, '')
 }
 
+std_prefix = "St" % { res << "::std" };
+
+shorthands = std_prefix;
+
 qualified_name = (
   (std_prefix :> simple_name) |
-  ( 'N' % { regmark = nil } . ( simple_name+ | register) %savereg
+  ( 'N' % { regmark = nil } . ( (shorthands | simple_name)+ | register) %savereg
     . simple_name >markbase %savebase
     :> ( ('C'[123]) % { currname[-1] << "::#{basename}" } )?
     :> ( ('D'[012]) % { currname[-1] << "::~#{basename}" } )?
