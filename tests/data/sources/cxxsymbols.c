@@ -18,11 +18,14 @@ namespace mynamespace {
     MyClass();
     MyClass(int);
     ~MyClass();
+
+    void method();
   };
 
   MyClass::MyClass() {}
   MyClass::MyClass(int a) {}
   MyClass::~MyClass() {}
+  void MyClass::method() {}
 
   void function(MyClass a) {}
   void function(MyClass *a) {}

@@ -134,8 +134,8 @@ action savebase {
 
 qualified_name = (
   (std_prefix :> simple_name) |
-  ( 'N' % { regmark = nil } . (simple_name+ | register) %savereg
-    :> simple_name >markbase %savebase
+  ( 'N' % { regmark = nil } . ( simple_name+ | register) %savereg
+    . simple_name >markbase %savebase
     :> ( ('C'[123]) % { currname[-1] << "::#{basename}" } )?
     :> ( ('D'[012]) % { currname[-1] << "::~#{basename}" } )?
     :> 'E') |
