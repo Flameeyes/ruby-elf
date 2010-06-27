@@ -196,6 +196,8 @@ class Pathname
     # Explicitly list this so that it won't pollute the output
     rescue Elf::File::NotAnELF
       return nil
+    rescue Exception => e
+      $stderr.puts "harvest.rb: #{e.message} - #{self.to_s}"
     ensure
       elf.close unless elf.nil?
     end
