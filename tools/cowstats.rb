@@ -64,7 +64,7 @@ def self.sort_by_cb(column)
     @results_sorter = Proc.new do |x, y|
       x[1][:rel_size] <=> y[1][:rel_size]
     end
-  when '.datal.rel.ro'
+  when '.data.rel.ro'
     @results_sorter = Proc.new do |x, y|
       x[1][:relro_size] <=> y[1][:relro_size]
     end
