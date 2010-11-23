@@ -136,7 +136,7 @@ module Elf
             entry[:flags] = @file.read_half
 
             tmp = @file.read_half # damn Drepper and overloaded values
-            entry[:private] = tmp & (1 << 15) == (1 << 15)
+            entry[:private] = !(tmp & (1 << 15) == 0)
             index = tmp & ~(1 << 15)
 
             entry[:name] = link[@file.read_word]
