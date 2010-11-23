@@ -185,22 +185,29 @@ module Elf
     end
 
     def version
-      return nil if (!@file.has_section?('.gnu.version')) or
-        ( section.is_a?(Integer) and section == Elf::Section::Abs ) or
-        ( section.is_a? Elf::Section and section.name == ".bss" )
+      # bit 15 is meant to say that this symbol is _not_ the default
+      # version to link to; we don't care about that here so we simply
+      # ignore its presence.
+      version_idx = version_index & ~(1 << 15)
 
-      version_idx = @file['.gnu.version'][@idx]
-      
-      return nil unless version_idx && version_idx >= 2
+      return nil unless version_idx && version_idx >= 1
 
-      name_idx = (version_idx & (1 << 15) == 0) ? 0 : 1
-      version_idx2 = version_idx & ~(1 << 15)
+      return '' if version_idx == 1
 
-      if section.nil? or @file['.gnu.version_d'][version_idx2].nil?
+      if section.nil? or @file['.gnu.version_d'][version_idx].nil?
         return @file['.gnu.version_r'][version_idx][:name]
       else
-        return @file['.gnu.version_d'][version_idx2][:names][name_idx]
+        return @file['.gnu.version_d'][version_idx][:names][0]
       end
+    end
+
+    # the default symbol version is the one that the link editor will
+    # use when linking against the library; any symbol is the default
+    # symbol unless bit 15 of its version index is set.
+    #
+    # An undefined symbol cannot be the default symbol
+    def version_default?
+      !section.nil? and (version_index & (1 << 15) == 0)
     end
 
     def defined?
@@ -333,6 +340,15 @@ module Elf
       @demangled.gsub!(/(^| |\()::/, '\1') if @demangled
 
       return @demangled ||= name
+    end
+
+    private
+    def version_index
+      return nil if (!@file.has_section?('.gnu.version')) or
+        ( section.is_a?(Integer) and section == Elf::Section::Abs ) or
+        ( section.is_a? Elf::Section and section.name == ".bss" )
+
+      @file['.gnu.version'][@idx]
     end
   end
 end
