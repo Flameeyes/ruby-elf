@@ -68,7 +68,7 @@ files.each do |file|
         end
 
         version_name = sym.version
-        version_name = version_name ? "@@#{version_name}" : ""
+        version_name = version_name ? "@#{sym.version_default? ? '@' : ''}#{version_name}" : ""
 
         name = demangle ? sym.demangle : sym.name
 
