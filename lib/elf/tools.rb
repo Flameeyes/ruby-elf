@@ -35,6 +35,8 @@ end
 
 # Output an error message, prefixed with the tool name.
 def self.puterror(string)
+  return if @quiet
+
   @output_mutex.synchronize {
     $stderr.puts "#{to_s}: #{string}"
   }
@@ -44,7 +46,10 @@ end
 # options, since they are only expected to contain file names,
 # rather than options.
 def self.parse_arguments
-  opts = Options + [["--help", "-?", GetoptLong::NO_ARGUMENT]]
+  opts = Options + [
+                    ["--help", "-?", GetoptLong::NO_ARGUMENT],
+                    ["--quiet", "-q", GetoptLong::NO_ARGUMENT],
+                   ]
 
   opts = GetoptLong.new(*opts)
   opts.each do |opt, arg|
