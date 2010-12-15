@@ -49,6 +49,11 @@
           <arg choice="opt"><option>--total</option></arg>
           <arg choice="opt"><option>--ignore-cxx</option></arg>
           <arg choice="opt"><option>--ignore-profiling</option></arg>
+          <arg choice="opt"><option>--ignore-data-rel-ro</option></arg>
+          <arg choice="opt">
+            <option>--sort-by</option>
+            <replaceable>section-column</replaceable>
+          </arg>
 
 	  <xi:include href="filelists.xmli"  xpointer="xpointer(id('filelist.synopsis')/*)" />
 
@@ -146,6 +151,47 @@
 	      </para>
 	    </listitem>
 	  </varlistentry>
+
+          <varlistentry>
+            <term><option>--ignore-data-rel-ro</option></term>
+            <term><option>-r</option></term>
+            <listitem>
+              <para>
+                Don't report constants found in the .data.rel.ro
+                section, and consider it as non-relocated. This is
+                helpful to reduce the noise when looking for writable
+                data symbols, or when analysing non-PIC builds.
+              </para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term>
+              <option>--sort-by</option>
+              <replaceable>section-column</replaceable>
+            </term>
+            <term>
+              <option>-S</option>
+              <replaceable>section-column</replaceable>
+            </term>
+
+            <listitem>
+              <para>
+                Sort the output of <option>--statistics</option> by
+                the given column. Useful when looking for which
+                objects have the most hit for one particular CoW
+                problem. The column can be one of the following
+                section names:
+              </para>
+
+              <itemizedlist>
+                <listitem><para>.bss</para></listitem>
+                <listitem><para>.data</para></listitem>
+                <listitem><para>.data.rel</para></listitem>
+                <listitem><para>.data.rel.ro</para></listitem>
+              </itemizedlist>
+            </listitem>
+          </varlistentry>
 
 	  <xi:include href="filelists.xmli" xpointer="xpointer(id('filelist.option')/*)" />
 
