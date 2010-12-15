@@ -65,7 +65,7 @@ def self.analysis(file)
       next
     end
 
-    if not elf.has_section?(".dynsym")
+    if not elf.has_section?(".dynsym") or elf[".dynsym"].class != Elf::SymbolTable
       puterror "#{file}: not a dynamically linked file"
       next
     end
