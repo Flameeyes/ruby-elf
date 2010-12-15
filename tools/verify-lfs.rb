@@ -72,17 +72,17 @@ end
 def self.analysis(file)
   Elf::File.open(file) do |elf|
     unless @elftypes.include? elf.type
-      puterror "#{file}: not #{@elfdescr}"
+      putnotice "#{file}: not #{@elfdescr}"
       next
     end
 
     if not elf.has_section?(@elftable) or elf[@elftable].class != Elf::SymbolTable
-      puterror "#{file}: not a dynamically linked file"
+      putnotice "#{file}: not a dynamically linked file"
       next
     end
 
     if elf.elf_class == Elf::Class::Elf64
-      puterror "#{file}: testing 64-bit ELF files is meaningless"
+      putnotice "#{file}: testing 64-bit ELF files is meaningless"
       next
     end
 

@@ -42,6 +42,16 @@ def self.puterror(string)
   }
 end
 
+# Output a notice about a file, do not prefix with the tool name, do
+# not print if doing recursive analysis
+def self.putnotice(message)
+  return if @quiet or @recursive
+
+  @output_mutex.synchronize {
+    $stderr.puts message
+  }
+end
+
 # Parse the arguments for the tool; it does not parse the @file
 # options, since they are only expected to contain file names,
 # rather than options.
@@ -92,7 +102,7 @@ def execute(filename)
     # so we take the FILENAME out and just use the one we know
     # already.  We also take out the final dot on the phrase so that
     # we follow the output messages from other tools, like cat.
-    puterror "#{filename}: #{e.message.gsub(/\.? - .*/, '')}"
+    putnotice "#{filename}: #{e.message.gsub(/\.? - .*/, '')}"
   rescue Exception => e
     puterror "#{filename}: #{e.message} (#{e.class})\n\t#{e.backtrace.join("\n\t")}"
     exit -1
@@ -115,7 +125,7 @@ def self.try_execute(filename)
       end
     # if the path does not point to a regular file, ignore it
     elsif File.ftype(filename) != "file"
-      puterror "#{filename}: not a regular file"
+      putnotice "#{filename}: not a regular file"
     else
       @execution_threads.add(Thread.new {
                                execute(filename)
@@ -126,7 +136,7 @@ def self.try_execute(filename)
     # so we take the FILENAME out and just use the one we know
     # already.  We also take out the final dot on the phrase so that
     # we follow the output messages from other tools, like cat.
-    puterror "#{filename}: #{e.message.gsub(/\.? - .*/, '')}"
+    putnotice "#{filename}: #{e.message.gsub(/\.? - .*/, '')}"
   rescue SystemExit => e
     exit e.status
   rescue Exception => e

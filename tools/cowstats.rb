@@ -95,11 +95,11 @@ def self.analysis(file)
   
   Elf::File.open(file) do |elf|
     if elf.type != Elf::File::Type::Rel
-      puterror "#{file}: not an object file"
+      putnotice "#{file}: not an object file"
       next
     end
     if not elf.has_section?(".symtab")
-      puterror "#{file}: no .symtab section found"
+      putnotice "#{file}: no .symtab section found"
       next
     end
 
