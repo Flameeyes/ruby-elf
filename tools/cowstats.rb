@@ -30,7 +30,7 @@ Options = [
            # Ignore Profiling false positives
            ["--ignore-profiling", "-p", GetoptLong::NO_ARGUMENT ],
            # Ignore .data.rel.ro relocated constants
-           ["--ignore-data-rel-ro", "-R", GetoptLong::NO_ARGUMENT ],
+           ["--ignore-data-rel-ro", "-r", GetoptLong::NO_ARGUMENT ],
            # Decide sorting column
            ["--sort-by", "-S", GetoptLong::REQUIRED_ARGUMENT ]
           ]
