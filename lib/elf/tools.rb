@@ -81,6 +81,21 @@ def self.parse_arguments
   end
 end
 
+def execute(filename)
+  begin
+    analysis(filename)
+  rescue Errno::ENOENT, Errno::EACCES, Errno::EISDIR, Elf::File::NotAnELF => e
+    # The Errno exceptions have their message ending in " - FILENAME",
+    # so we take the FILENAME out and just use the one we know
+    # already.  We also take out the final dot on the phrase so that
+    # we follow the output messages from other tools, like cat.
+    puterror "#{filename}: #{e.message.gsub(/\.? - .*/, '')}"
+  rescue Exception => e
+    puterror "#{filename}: #{e.message} (#{e.class})\n\t#{e.backtrace.join("\n\t")}"
+    exit -1
+  end
+end
+
 # Try to execute the analysis function on a given filename argument.
 def self.try_execute(filename)
   begin
@@ -100,7 +115,7 @@ def self.try_execute(filename)
       puterror "#{filename}: not a regular file"
     else
       @execution_threads.add(Thread.new {
-                               analysis(filename)
+                               execute(filename)
                              })
     end
   rescue Errno::ENOENT, Errno::EACCES, Errno::EISDIR, Elf::File::NotAnELF => e
@@ -109,6 +124,8 @@ def self.try_execute(filename)
     # already.  We also take out the final dot on the phrase so that
     # we follow the output messages from other tools, like cat.
     puterror "#{filename}: #{e.message.gsub(/\.? - .*/, '')}"
+  rescue SystemExit => e
+    exit e.status
   rescue Exception => e
     puterror "#{filename}: #{e.message} (#{e.class})\n\t#{e.backtrace.join("\n\t")}"
     exit -1
