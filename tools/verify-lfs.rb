@@ -16,8 +16,8 @@
 # along with this generator; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
-# Simple script to assess the amount of space saved by duplicate removal of
-# entries in symbols' tables.
+# This script verifies whether a file or a tree of files is using
+# non-LFS interfaces, or mixing non-LFS and LFS interfaces.
 
 require 'elf/tools'
 
