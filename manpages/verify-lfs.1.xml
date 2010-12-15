@@ -1,0 +1,116 @@
+<?xml version='1.0'?>
+<!--
+   Copyright © 2010, Diego "Flameeyes" Pettenò <flameeyes@gmail.com>
+  
+   This program is free software; you can redistribute it and/or modify
+   it under the terms of the GNU General Public License as published by
+   the Free Software Foundation; either version 2 of the License, or
+   (at your option) any later version.
+  
+   This program is distributed in the hope that it will be useful,
+   but WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+   GNU General Public License for more details.
+  
+   You should have received a copy of the GNU General Public License
+   along with this generator; if not, write to the Free Software
+   Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+-->
+<article xmlns="http://docbook.org/ns/docbook"
+	 xmlns:xl="http://www.w3.org/1999/xlink"
+	 xmlns:xi="http://www.w3.org/2001/XInclude"
+	 version="5.0" xml:lang="en">
+  <info>
+    <title>verify-lfs</title>
+
+    <xi:include parse="xml" href="author.xmli" />
+  </info>
+
+  <section>
+    <title>Reference</title>
+
+    <refentry>
+      <info>
+	<date>December 2010</date>
+	<productname>ruby-elf</productname>
+      </info>
+      <refmeta>
+        <refentrytitle>verify-lfs</refentrytitle>
+	<manvolnum>1</manvolnum>
+      </refmeta>
+      <refnamediv>
+        <refname>verify-lfs</refname>
+	<refpurpose>ELF analyzer to identify software not using solely LFS interfaces</refpurpose>
+      </refnamediv>
+      <refsynopsisdiv>
+        <cmdsynopsis>
+          <command>verify-lfs</command>
+
+	  <xi:include href="filelists.xmli"  xpointer="xpointer(id('filelist.synopsis')/*)" />
+
+          <arg choice="opt">
+            <replaceable>files</replaceable>
+          </arg>
+        </cmdsynopsis>
+      </refsynopsisdiv>
+
+      <refsect1>
+        <title>Description</title>
+        <para>
+	  <command>verify-lfs</command> is a script that analyses the
+	  symbols required by ELF executables and libraries, listing
+	  the objects that rely entirely or partially on the
+	  pre-largefile interface functions of glibc.
+        </para>
+      </refsect1>
+
+      <refsect1>
+        <title>Options</title>
+        
+        <variablelist>
+	  <xi:include href="filelists.xmli" xpointer="xpointer(id('filelist.option')/*)" />
+	</variablelist>
+      </refsect1>
+
+      <refsect1>
+	<title>Bugs and Missing Features</title>
+	<para>
+	  <command>verify-lfs</command> uses a manually-tweaked
+	  regular expression to identify which interface is being
+	  used; this expressions might be incomplete or lead to false
+	  positive, please double-check the results, and report back
+	  if you have hit false positives, or false negatives.
+	</para>
+
+	<xi:include href="filelists.xmli" xpointer="xpointer(id('filelist.bugpara')/*)" />
+      </refsect1>
+
+      <refsect1>
+        <title>Credits</title>
+
+        <para>
+          The original idea for this script comes from the
+          <filename>summarise-stat64</filename> Perl script written by
+          Greg Banks of SGI. A huge thanks to Greg for the idea and
+          the script.
+        </para>
+      </refsect1>
+
+      <refsect1>
+        <title>See Also</title>
+        <para>
+	  <citation xl:href="http://blog.flameeyes.eu/">Flameeyes's
+	  Weblog</citation> http://blog.flameeyes.eu/
+        </para>
+
+	<para>
+	  Related tools:
+	  <citerefentry>
+	    <refentrytitle>nm</refentrytitle>
+	    <manvolnum>1</manvolnum>
+	  </citerefentry>
+	</para>
+      </refsect1>
+    </refentry>
+  </section>
+</article>
