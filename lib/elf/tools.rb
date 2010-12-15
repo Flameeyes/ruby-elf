@@ -88,13 +88,16 @@ def self.try_execute(filename)
     # with a list of targets, so load it with execute_on_file.
     if filename[0..0] == "@"
       execute_on_file(filename[1..-1])
-      # if the path references a directory, and we're going to run
-      # recursively, descend into that.
+    # if the path references a directory, and we're going to run
+    # recursively, descend into that.
     elsif @recursive and File.directory?(filename)
       Dir.foreach(filename) do |children|
         next if children == "." or children == ".."
         try_execute(File.join(filename, children))
       end
+    # if the path does not point to a regular file, ignore it
+    elsif File.ftype(filename) != "file"
+      puterror "#{filename}: not a regular file"
     else
       @execution_threads.add(Thread.new {
                                analysis(filename)
