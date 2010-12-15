@@ -49,6 +49,7 @@ def self.parse_arguments
   opts = Options + [
                     ["--help", "-?", GetoptLong::NO_ARGUMENT],
                     ["--quiet", "-q", GetoptLong::NO_ARGUMENT],
+                    ["--recursive", "-R", GetoptLong::NO_ARGUMENT],
                    ]
 
   opts = GetoptLong.new(*opts)
@@ -96,12 +97,19 @@ def self.execute(filename)
   end
 end
 
-# Try to execute the analysis function on a given filename; before
-# doing that, check if the first character is a @ character, in which
-# case load the rest of the parameter as filename and check that.
+# Try to execute the analysis function on a given filename argument.
 def self.try_execute(filename)
+  # if the file name starts with '@', it is not a target, but a file
+  # with a list of targets, so load it with execute_on_file.
   if filename[0..0] == "@"
     execute_on_file(filename[1..-1])
+  # if the path references a directory, and we're going to run
+  # recursively, descend into that.
+  elsif @recursive and File.directory?(filename)
+    Dir.foreach(filename) do |children|
+      next if children == "." or children == ".."
+      try_execute(File.join(filename, children))
+    end
   else
     @execution_threads.add(Thread.new {
                              execute(filename)
