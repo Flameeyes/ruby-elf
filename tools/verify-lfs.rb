@@ -24,6 +24,31 @@ require 'elf/tools'
 Options = [
           ]
 
+SymbolNamesList = [
+                   "__[fl]?xstat",
+                   "statv?fs",
+                   "(|_IO_)f[gs]etpos",
+                   "(read|scan)dir",
+                   "getdirentries",
+                   "mko?stemp",
+                   "(|__)p(read|write)",
+                   "p(read|write)v",
+                   "(send|tmp)file",
+                   "[gs]etrlimit",
+                   "versionsort",
+                   "f?truncate",
+                   "(|f(|re))open",
+                   "openat",
+                   "fseeko",
+                   "ftello",
+                   "lseek",
+                   "glob(|free)",
+                   "ftw",
+                   "lockf"
+                  ]
+
+SymbolNames = "(#{SymbolNamesList.join("|")})"
+
 def self.before_options
 end
 
@@ -56,8 +81,12 @@ def self.analysis(file)
     elf[".dynsym"].each do |symbol|
       next unless symbol.section == Elf::Section::Undef
 
-      use_stat32 ||= (symbol.to_s =~ /^__(|l|f)xstat(|v?fs)$/)
-      use_stat64 ||= (symbol.to_s =~ /^__(|l|f)xstat(|v?fs)64$/)
+      use_stat32 ||= (symbol.to_s =~ /^#{SymbolNames}$/)
+      use_stat64 ||= (symbol.to_s =~ /^#{SymbolNames}64$/)
+
+      # avoid running the whole list if we hit both as we cannot hit
+      # _more_
+      break if use_stat32 and use_stat64
     end
 
     if use_stat32 and use_stat64
