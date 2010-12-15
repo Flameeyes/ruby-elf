@@ -81,10 +81,25 @@ def self.parse_arguments
   end
 end
 
-# Execute the analysis function, handling the common exception cases
-def self.execute(filename)
+# Try to execute the analysis function on a given filename argument.
+def self.try_execute(filename)
   begin
-    analysis(filename)
+    # if the file name starts with '@', it is not a target, but a file
+    # with a list of targets, so load it with execute_on_file.
+    if filename[0..0] == "@"
+      execute_on_file(filename[1..-1])
+      # if the path references a directory, and we're going to run
+      # recursively, descend into that.
+    elsif @recursive and File.directory?(filename)
+      Dir.foreach(filename) do |children|
+        next if children == "." or children == ".."
+        try_execute(File.join(filename, children))
+      end
+    else
+      @execution_threads.add(Thread.new {
+                               analysis(filename)
+                             })
+    end
   rescue Errno::ENOENT, Errno::EACCES, Errno::EISDIR, Elf::File::NotAnELF => e
     # The Errno exceptions have their message ending in " - FILENAME",
     # so we take the FILENAME out and just use the one we know
@@ -94,26 +109,6 @@ def self.execute(filename)
   rescue Exception => e
     puterror "#{filename}: #{e.message} (#{e.class})\n\t#{e.backtrace.join("\n\t")}"
     exit -1
-  end
-end
-
-# Try to execute the analysis function on a given filename argument.
-def self.try_execute(filename)
-  # if the file name starts with '@', it is not a target, but a file
-  # with a list of targets, so load it with execute_on_file.
-  if filename[0..0] == "@"
-    execute_on_file(filename[1..-1])
-  # if the path references a directory, and we're going to run
-  # recursively, descend into that.
-  elsif @recursive and File.directory?(filename)
-    Dir.foreach(filename) do |children|
-      next if children == "." or children == ".."
-      try_execute(File.join(filename, children))
-    end
-  else
-    @execution_threads.add(Thread.new {
-                             execute(filename)
-                           })
   end
 end
 
