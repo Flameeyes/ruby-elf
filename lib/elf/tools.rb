@@ -90,7 +90,7 @@ def self.try_execute(filename)
       execute_on_file(filename[1..-1])
     # if the path references a directory, and we're going to run
     # recursively, descend into that.
-    elsif @recursive and File.directory?(filename)
+    elsif @recursive and File.ftype(filename) == "directory"
       Dir.foreach(filename) do |children|
         next if children == "." or children == ".."
         try_execute(File.join(filename, children))
