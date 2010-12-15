@@ -84,7 +84,10 @@ end
 def execute(filename)
   begin
     analysis(filename)
-  rescue Errno::ENOENT, Errno::EACCES, Errno::EISDIR, Elf::File::NotAnELF => e
+  rescue Errno::ENOENT, Errno::EACCES, Errno::EISDIR, Elf::File::NotAnELF,
+    Elf::File::InvalidElfClass, Elf::File::InvalidDataEncoding,
+    Elf::File::UnsupportedElfVersion, Elf::File::InvalidOsAbi, Elf::File::InvalidElfType,
+    Elf::File::InvalidMachine => e
     # The Errno exceptions have their message ending in " - FILENAME",
     # so we take the FILENAME out and just use the one we know
     # already.  We also take out the final dot on the phrase so that
