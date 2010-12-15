@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8" standalone="no"?>
 <!--
-   Copyright © 2008, Diego "Flameeyes" Pettenò <flameeyes@gmail.com>
+   Copyright © 2008-2010, Diego "Flameeyes" Pettenò <flameeyes@gmail.com>
   
    This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -17,30 +17,53 @@
    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 -->
 <fragment>
-  <arg xmlns="http://docbook.org/ns/docbook" xml:id="filelist.synopsis" choice="opt">
-    <option>@</option><replaceable>file</replaceable>
-  </arg>
+  <cmdsynopsis xmlns="http://docbook.org/ns/docbook" xml:id="filelist.synopsis">
+    <arg choice="opt"><option>--recursive</option></arg>
+    <arg choice="opt">
+      <option>@</option><replaceable>file</replaceable>
+    </arg>
+  </cmdsynopsis>
   
-  <varlistentry xmlns="http://docbook.org/ns/docbook" xml:id="filelist.option">
-    <term>
-      <option>@</option><replaceable>path</replaceable>
-    </term>
-    <listitem>
-      <para>
-	Read the list of files to analyse from the given file
-	(or standard input if <replaceable>path</replaceable>
-	is <filename>-</filename>). Useful to pass a long list
-	of files. When used with stdin or named pipes, this
-	also allows asynchronous analysis.
-      </para>
-    </listitem>
-  </varlistentry>
+  <variablelist xmlns="http://docbook.org/ns/docbook" xml:id="filelist.option">
+    <varlistentry>
+      <term>
+        <option>--recursive</option>
+      </term>
+      <term>
+        <option>-R</option>
+      </term>
+      <listitem>
+        <para>
+          Recursively descend into directories to search for files to
+          scan. This affects both the paths passed from the command
+          line and those found in argument files.
+        </para>
+      </listitem>
+    </varlistentry>
 
-  <para xmlns="http://docbook.org/ns/docbook" xml:id="filelist.bugpara">
-    Parsing of files to provide further arguments
-    (<option>@</option><replaceable>file</replaceable>) is not
-    entirely comforming to other tools handling of the same syntax. No
-    options are parsed from the file, and filenames are expected to be
-    separated by newlines rather than whitespace.
-  </para>
+    <varlistentry>
+      <term>
+        <option>@</option><replaceable>path</replaceable>
+      </term>
+      <listitem>
+        <para>
+          Read the list of files to analyse from the given file (or
+          standard input if <replaceable>path</replaceable> is
+          <filename>-</filename>). Useful to pass a long list of
+          files. When used with stdin or named pipes, this also allows
+          asynchronous analysis.
+        </para>
+      </listitem>
+    </varlistentry>
+  </variablelist>
+
+  <section xmlns="http://docbook.org/ns/docbook" xml:id="filelist.bugpara">
+    <para>
+      Parsing of files to provide further arguments
+      (<option>@</option><replaceable>file</replaceable>) is not
+      entirely comforming to other tools handling of the same syntax. No
+      options are parsed from the file, and filenames are expected to be
+      separated by newlines rather than whitespace.
+    </para>
+  </section>
 </fragment>
