@@ -46,6 +46,10 @@
         <cmdsynopsis>
           <command>verify-lfs</command>
 
+          <arg choice="opt">
+            <option>--objects</option>
+          </arg>
+
 	  <xi:include href="filelists.xmli"  xpointer="xpointer(id('filelist.synopsis')/*)" />
 
           <arg choice="opt">
@@ -68,6 +72,21 @@
         <title>Options</title>
         
         <variablelist>
+          <varlistentry>
+            <term><option>--objects</option></term>
+            <term><option>-o</option></term>
+
+            <listitem>
+              <para>
+                Scan for relocatable object files (ET_REL) rather than
+                executables or dynamic libraries. This mode is
+                designed to help identify which object might be
+                miscompiled to not use LFS functions as it was instead
+                intended.
+              </para>
+            </listitem>
+          </varlistentry>
+
 	  <xi:include href="filelists.xmli" xpointer="xpointer(id('filelist.option')/*)" />
 	</variablelist>
       </refsect1>

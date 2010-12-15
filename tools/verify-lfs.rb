@@ -22,6 +22,8 @@
 require 'elf/tools'
 
 Options = [
+           # Scan only object files (rather than non-object files)
+           ["--objects", "-o", GetoptLong::NO_ARGUMENT]
           ]
 
 SymbolNamesList = [
@@ -55,17 +57,26 @@ end
 def self.after_options
   @files_mixing = []
   @files_nolfs = []
+
+  if @objects
+    @elftypes = [ Elf::File::Type::Rel ]
+    @elfdescr = "a relocatable object file"
+    @elftable = ".symtab"
+  else
+    @elftypes = [ Elf::File::Type::Exec, Elf::File::Type::Dyn ]
+    @elfdescr = "an executable or dynamic file"
+    @elftable = ".dynsym"
+  end
 end
 
 def self.analysis(file)
   Elf::File.open(file) do |elf|
-    if elf.type != Elf::File::Type::Exec and
-        elf.type != Elf::File::Type::Dyn
-      puterror "#{file}: not an executable or dynamic file"
+    unless @elftypes.include? elf.type
+      puterror "#{file}: not #{@elfdescr}"
       next
     end
 
-    if not elf.has_section?(".dynsym") or elf[".dynsym"].class != Elf::SymbolTable
+    if not elf.has_section?(@elftable) or elf[@elftable].class != Elf::SymbolTable
       puterror "#{file}: not a dynamically linked file"
       next
     end
@@ -78,7 +89,7 @@ def self.analysis(file)
     use_stat32 = false
     use_stat64 = false
 
-    elf[".dynsym"].each do |symbol|
+    elf[@elftable].each do |symbol|
       next unless symbol.section == Elf::Section::Undef
 
       use_stat32 ||= (symbol.to_s =~ /^#{SymbolNames}$/)
