@@ -102,9 +102,11 @@ class TC_Versioning < Test::Unit::TestCase
         unless first_asymbol_seen
           assert_equal("VERSION1", sym.version,
                        "Defined symbol \"asymbol\" is not reporting the expected version")
+          assert_equal(true, sym.version_default?,
+                       "Defined symbol \"asymbol\" with version \"VERSION1\" is not reported as default symbol")
           first_asymbol_seen = true
         else
-          assert_equal(nil, sym.version,
+          assert_equal('', sym.version,
                         "Defined symbol \"asymbol\" is reporting an unexpected version")
         end
       end
