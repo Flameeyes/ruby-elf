@@ -12,8 +12,10 @@ XSL_NS_ROOT=http://docbook.sourceforge.net/release/xsl-ns/current
 %: %.xml $(wildcard manpages/*.xmli)
 	xsltproc --stringparam man.copyright.section.enabled 0 --xinclude -o $@ $(XSL_NS_ROOT)/manpages/docbook.xsl $<
 
+RAGEL = ragel
+
 %.rb: %.rl
-	ragel -R $< -o $@
+	$(RAGEL) -R $< -o $@
 
 clean:
 	-rm $(MANPAGES)
