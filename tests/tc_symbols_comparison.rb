@@ -70,21 +70,6 @@ class TC_Symbols_Comparison < Test::Unit::TestCase
     assert((@versioned_asymbol_versioned != @versioned_asymbol_base))
   end
 
-  def test_equality_different_objects
-    assert((@versioned_asymbol_base == @unversioned_asymbol))
-    assert((@unversioned_asymbol == @versioned_asymbol_base))
-  end
-
-  def test_equality2_different_objects
-    assert((@versioned_asymbol_base.eql? @unversioned_asymbol))
-    assert((@unversioned_asymbol.eql? @versioned_asymbol_base))
-  end
-
-  def test_inequality_different_objects
-    assert(!(@versioned_asymbol_base != @unversioned_asymbol))
-    assert(!(@unversioned_asymbol != @versioned_asymbol_base))
-  end
-
   def test_not_equality_different_objects
     assert(!(@versioned_asymbol_versioned == @unversioned_asymbol))
     assert(!(@unversioned_asymbol == @versioned_asymbol_versioned))
