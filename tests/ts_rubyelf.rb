@@ -19,23 +19,28 @@ require 'test/unit/ui/console/testrunner'
 require 'test/unit/testsuite'
 require 'pathname'
 
-require Pathname.new(__FILE__).dirname + 'tt_elf'
+# Avoid repeating the same call over and over
+def require_testfile(file)
+  require File.expand_path("../#{file}", __FILE__)
+end
 
-require Pathname.new(__FILE__).dirname + 'tc_bytestream'
-require Pathname.new(__FILE__).dirname + 'tc_dynamic_executable'
-require Pathname.new(__FILE__).dirname + 'tc_static_executable'
-require Pathname.new(__FILE__).dirname + 'tc_relocatable'
-require Pathname.new(__FILE__).dirname + 'tc_exceptions'
-require Pathname.new(__FILE__).dirname + 'tc_arm'
-require Pathname.new(__FILE__).dirname + 'tc_sunw_sections'
-require Pathname.new(__FILE__).dirname + 'tc_versioning'
-require Pathname.new(__FILE__).dirname + 'tc_solaris_versioning'
-require Pathname.new(__FILE__).dirname + 'tc_nmcodes'
-require Pathname.new(__FILE__).dirname + 'tc_symboltable'
-require Pathname.new(__FILE__).dirname + 'tc_stringtable'
-require Pathname.new(__FILE__).dirname + 'tc_symbols_comparison'
-require Pathname.new(__FILE__).dirname + 'tc_values'
-require Pathname.new(__FILE__).dirname + 'tc_demangler'
+require_testfile 'tt_elf'
+
+require_testfile 'tc_bytestream'
+require_testfile 'tc_dynamic_executable'
+require_testfile 'tc_static_executable'
+require_testfile 'tc_relocatable'
+require_testfile 'tc_exceptions'
+require_testfile 'tc_arm'
+require_testfile 'tc_sunw_sections'
+require_testfile 'tc_versioning'
+require_testfile 'tc_solaris_versioning'
+require_testfile 'tc_nmcodes'
+require_testfile 'tc_symboltable'
+require_testfile 'tc_stringtable'
+require_testfile 'tc_symbols_comparison'
+require_testfile 'tc_values'
+require_testfile 'tc_demangler'
 
 class TS_RubyElf
   def self.suite
