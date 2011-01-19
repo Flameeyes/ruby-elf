@@ -187,8 +187,9 @@ class Pathname
       elf = Elf::File.open(self)
 
       if ($machines.nil? or $machines.include?(elf.machine)) and
-          (elf.has_section?('.dynsym') and elf.has_section?('.dynstr'))
-
+          (elf.has_section?('.dynsym') and elf.has_section?('.dynstr') and
+           elf.has_section?('.dynamic')) and
+          (elf[".dynsym"].class == Elf::SymbolTable)
         return to_s
       else
         return nil
@@ -288,8 +289,6 @@ so_files.each do |so|
 
   begin
     Elf::File.open(so) do |elf|
-      next if !elf.has_section?(".dynsym") or elf[".dynsym"].class != Elf::SymbolTable
-
       name = so
       abi = "#{elf.elf_class} #{elf.abi} #{elf.machine.to_s.gsub("'", "\\'" )}"
 
