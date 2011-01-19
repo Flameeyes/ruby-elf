@@ -207,9 +207,10 @@ class Pathname
     res = Set.new
     children.each do |entry|
       begin
-        if entry.directory?
+        case entry.ftype
+        when "directory"
           res.merge entry.so_files if recursive
-        else
+        when "file"
           res << entry.maybe_queue
         end
         # When using C-c to stop, well, stop.
