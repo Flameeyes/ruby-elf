@@ -105,20 +105,20 @@ db = PGconn.open(pg_params)
 
 db.exec("DROP TABLE IF EXISTS symbols, multimplementations, objects CASCADE")
 
-db.exec("CREATE TABLE objects ( id INTEGER PRIMARY KEY, name VARCHAR(4096), abi VARCHAR(255), UNIQUE(name, abi) )")
+db.exec("CREATE TABLE objects ( id INTEGER PRIMARY KEY, name VARCHAR(4096), abi VARCHAR(255), exported BOOLEAN, UNIQUE(name, abi) )")
 db.exec("CREATE TABLE multimplementations ( id INTEGER REFERENCES objects(id) ON DELETE CASCADE, path VARCHAR(4096), UNIQUE(path) )")
 db.exec("CREATE TABLE symbols ( object INTEGER REFERENCES objects(id) ON DELETE CASCADE, symbol TEXT,
          PRIMARY KEY(object, symbol) )")
 
 db.exec("CREATE VIEW symbol_count AS
-         SELECT symbol, abi, COUNT(*) AS occurrences FROM symbols INNER JOIN objects ON symbols.object = objects.id GROUP BY symbol, abi")
+         SELECT symbol, abi, COUNT(*) AS occurrences, BOOL_OR(objects.exported) AS exported FROM symbols INNER JOIN objects ON symbols.object = objects.id GROUP BY symbol, abi")
 db.exec("CREATE VIEW duplicate_symbols AS
-         SELECT * FROM symbol_count WHERE occurrences > 1 ORDER BY occurrences DESC, symbol ASC")
+         SELECT * FROM symbol_count WHERE occurrences > 1 AND exported = 't' ORDER BY occurrences DESC, symbol ASC")
 
 db.exec("PREPARE newmulti (int, text) AS
          INSERT INTO multimplementations (id, path) VALUES($1, $2)")
-db.exec("PREPARE newobject (int, text, text) AS
-         INSERT INTO objects(id, name, abi) VALUES($1, $2, $3)")
+db.exec("PREPARE newobject (int, text, text, boolean) AS
+         INSERT INTO objects(id, name, abi, exported) VALUES($1, $2, $3, $4)")
 db.exec("PREPARE newsymbol (int, text) AS
          INSERT INTO symbols VALUES($1, $2)")
 
@@ -314,11 +314,13 @@ so_files.each do |so|
         break
       end
 
+      shared = (so != name) || (elf['.dynamic'].soname != nil)
+
       unless impid
         val += 1
         impid = val
         
-        db.exec("EXECUTE newobject(#{impid}, '#{name}', '#{abi}')")
+        db.exec("EXECUTE newobject(#{impid}, '#{name}', '#{abi}', '#{shared}')")
       end
 
       db.exec("EXECUTE newmulti(#{impid}, '#{so}')") if so != name
