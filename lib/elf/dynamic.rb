@@ -254,6 +254,14 @@ module Elf
       @entries.size
     end
 
+    def soname
+      each_entry do |entry|
+        return entry.parsed if entry.type == Type::SoName
+      end
+
+      return nil
+    end
+
     # Returns the value of DT_RPATH entries in the file
     def rpath
       @rpath ||= auxiliary_library_path(Type::RPath)
