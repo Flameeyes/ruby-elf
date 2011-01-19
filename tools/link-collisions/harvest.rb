@@ -288,6 +288,8 @@ so_files.each do |so|
 
   begin
     Elf::File.open(so) do |elf|
+      next if !elf.has_section?(".dynsym") or elf[".dynsym"].class != Elf::SymbolTable
+
       name = so
       abi = "#{elf.elf_class} #{elf.abi} #{elf.machine.to_s.gsub("'", "\\'" )}"
 
