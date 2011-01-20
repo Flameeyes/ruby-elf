@@ -11,6 +11,9 @@
 # C++ symbols
 .*					^_Z(d[al]Pv|[nd][aw]j)$
 
+# ARM EABI symbols
+.*					^__aeabi_
+
 # Scratchbox is totally messed up
 /opt/scratchbox/
 
@@ -269,3 +272,7 @@ strigi/strigi[lt]a_.*\.so		^(deleteS|s)trigiAnalyzerFactory$
 /lib(32|64)?/k3d/plugins/k3d-.*\.module		^register_k3d_plugins$
 /lib(32|64)?/frei0r-1/.*\.so			^f0r_((con|de)struct|(de)?init||get_(param_(info|value)|plugin_info)|set_param_value|update2?)$
 /lib(32|64)?/kvirc/[0-9\.]+/modules/.*\.so	^KVIrc_module_info$
+/lib(32|64)?/ModemManager/libmm.*\.so		^mm_plugin_(create|major_version)$
+/lib(32|64)?/rsyslog/.*\.so			^modInit$
+/lib(32|64)?/(connman|flimflam)/plugins/.*\.so	^connman_plugin_desc$
+/lib(32|64)?/pppd/[0-9.]\+/.*\.so		^pppd_version$

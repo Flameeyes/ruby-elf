@@ -16,8 +16,6 @@ java-libmawt		jre/lib/(amd64|i386)/(xawt|motif21|headless)/libmawt.so
 
 ncurses-lib$2		/lib(|32|64)/lib(n?curses|form|menu|panel)w?\.so
 
-xorg-vservers		/bin/X(nest|vfb|org)$
-
 php5			php5/bin/php(-cgi)?$
 php5			apache2/modules/libphp5\.so
 
@@ -101,20 +99,12 @@ libossp-uuid		/libossp-uuid(_dce)?\.so
 
 libunwind		/libunwind(-x86)?\.so
 
-cmake			/bin/c(c?make|pack|test)$
-
 libdmalloc		/libdmalloc(cxx)?\.so
 libmpatrol		/libmpa(lloc|trol(mt)?)\.so
 
-urxvt			/bin/urxvtd?
-
 libk3d			/libk3d(ngui|python|sdk)\.so
 
-GDB			/bin/gdb(-armulator)?
-
 fftw			/lib(32|64)?/lib[ds]?fftw(3[lf]?(_threads)?)?\.so
-
-vile			/bin/x?vile$
 
 CLHEP			/lib(32|64)?/libCLHEP(-(Vector|GenericFunctions|Matrix|Random|Geometry))?-[0-9\.]+\.so
 

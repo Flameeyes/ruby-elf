@@ -160,3 +160,6 @@ lib(gcj|gauche|Synopsis)\.so						^GC_
 # These binaries contain a copy of their library rather than using it.
 /bin/alsaplayer
 /bin/aften
+
+# bash and gdb are known for linking readline statically
+/bin/(bash|gdb)				^(_?rl_|readline).*
