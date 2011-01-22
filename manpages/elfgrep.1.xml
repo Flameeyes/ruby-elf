@@ -79,7 +79,7 @@
 	    </arg>
 	  </group>
 
-	  <xi:include href="filelists.xmli"  xpointer="xpointer(id('filelist.synopsis')/*)" />
+	  <xi:include href="common.xmli"  xpointer="xpointer(id('filelist.synopsis')/*)" />
         </cmdsynopsis>
       </refsynopsisdiv>
 
@@ -195,7 +195,7 @@
 	    </listitem>
 	  </varlistentry>
 
-	  <xi:include href="filelists.xmli" xpointer="xpointer(id('filelist.option')/*)" />
+	  <xi:include href="common.xmli" xpointer="xpointer(id('filelist.option')/*)" />
 	</variablelist>
       </refsect1>
 
@@ -208,7 +208,7 @@
 	  symlinked file such as a library.
 	</para>
 
-	<xi:include href="filelists.xmli" xpointer="xpointer(id('filelist.bugpara')/*)" />
+	<xi:include href="common.xmli" xpointer="xpointer(id('filelist.bugpara')/*)" />
       </refsect1>
 
       <refsect1>

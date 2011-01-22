@@ -50,7 +50,7 @@
             <option>--objects</option>
           </arg>
 
-	  <xi:include href="filelists.xmli"  xpointer="xpointer(id('filelist.synopsis')/*)" />
+	  <xi:include href="common.xmli"  xpointer="xpointer(id('filelist.synopsis')/*)" />
         </cmdsynopsis>
       </refsynopsisdiv>
 
@@ -83,7 +83,7 @@
             </listitem>
           </varlistentry>
 
-	  <xi:include href="filelists.xmli" xpointer="xpointer(id('filelist.option')/*)" />
+	  <xi:include href="common.xmli" xpointer="xpointer(id('filelist.option')/*)" />
 	</variablelist>
       </refsect1>
 
@@ -97,7 +97,7 @@
 	  if you have hit false positives, or false negatives.
 	</para>
 
-	<xi:include href="filelists.xmli" xpointer="xpointer(id('filelist.bugpara')/*)" />
+	<xi:include href="common.xmli" xpointer="xpointer(id('filelist.bugpara')/*)" />
       </refsect1>
 
       <refsect1>
