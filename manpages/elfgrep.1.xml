@@ -1,0 +1,203 @@
+<?xml version='1.0'?>
+<!--
+   Copyright © 2011, Diego "Flameeyes" Pettenò <flameeyes@gmail.com>
+  
+   This program is free software; you can redistribute it and/or modify
+   it under the terms of the GNU General Public License as published by
+   the Free Software Foundation; either version 2 of the License, or
+   (at your option) any later version.
+  
+   This program is distributed in the hope that it will be useful,
+   but WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+   GNU General Public License for more details.
+  
+   You should have received a copy of the GNU General Public License
+   along with this generator; if not, write to the Free Software
+   Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+-->
+<article xmlns="http://docbook.org/ns/docbook"
+	 xmlns:xl="http://www.w3.org/1999/xlink"
+	 xmlns:xi="http://www.w3.org/2001/XInclude"
+	 version="5.0" xml:lang="en">
+  <info>
+    <title>elfgrep</title>
+
+    <xi:include parse="xml" href="author.xmli" />
+  </info>
+
+  <section>
+    <title>Reference</title>
+
+    <refentry>
+      <info>
+	<date>January 2011</date>
+	<productname>ruby-elf</productname>
+      </info>
+      <refmeta>
+        <refentrytitle>elfgrep</refentrytitle>
+	<manvolnum>1</manvolnum>
+      </refmeta>
+      <refnamediv>
+        <refname>elfgrep</refname>
+	<refpurpose>Search for symbols matching an expression in ELF files</refpurpose>
+      </refnamediv>
+      <refsynopsisdiv>
+        <cmdsynopsis>
+          <command>elfgrep</command>
+
+	  <arg choice="opt">
+	    <option>--match-version</option>
+	  </arg>
+
+	  <arg choice="opt">
+	    <option>--no-match-undefined</option>
+	  </arg>
+
+	  <arg choice="opt">
+	    <option>--no-match-defined</option>
+	  </arg>
+
+	  <arg choice="opt">
+	    <option>--invert-match</option>
+	  </arg>
+
+	  <arg>
+	    <option>--regexp</option>
+	    <replaceable>regular-expression</replaceable>
+	  </arg>
+
+	  <xi:include href="filelists.xmli"  xpointer="xpointer(id('filelist.synopsis')/*)" />
+
+          <arg choice="opt">
+            <replaceable>files</replaceable>
+          </arg>
+        </cmdsynopsis>
+      </refsynopsisdiv>
+
+      <refsect1>
+        <title>Description</title>
+        <para>
+	  <command>elfgrep</command> is a simple script that allows to
+	  earch for particular symbols within a file, by matching
+	  regular expression on their name. It is insipired by the
+	  common Unix
+	  <citerefentry><refentrytitle>grep</refentrytitle><manvolnum>1</manvolnum></citerefentry>
+	  tool.
+	</para>
+      </refsect1>
+
+      <refsect1>
+        <title>Options</title>
+
+	<variablelist>
+	  <varlistentry>
+	    <term><option>--match-version</option></term>
+	    <term><option>-V</option></term>
+	    <listitem>
+	      <para>
+		Append the ELF version information for the symbol,
+		separated by an @ symbol, before testing the
+		expression for match. This allows to match only
+		symbols that are defined with a particular version.
+	      </para>
+	    </listitem>
+	  </varlistentry>
+
+	  <varlistentry>
+	    <term><option>--no-match-undefined</option></term>
+	    <term><option>-U</option></term>
+	    <listitem>
+	      <para>
+		Do not report matches on undefined symbols; useful if
+		you're looking for the objects defining the symbol,
+		and not those using it.
+	      </para>
+	    </listitem>
+	  </varlistentry>
+
+	  <varlistentry>
+	    <term><option>--no-match-defined</option></term>
+	    <term><option>-D</option></term>
+	    <listitem>
+	      <para>
+		Do not report matches on defined symbols; useful if
+		you're looking for the objects using the symbol,
+		and not those defining it.
+	      </para>
+	    </listitem>
+	  </varlistentry>
+
+	  <varlistentry>
+	    <term><option>--invert-match</option></term>
+	    <term><option>-v</option></term>
+	    <listitem>
+	      <para>
+		Invert the sense of matching, to select non-matching
+		symbols. This does not invert the sense of
+		<option>--no-match-undefined</option> and
+		<option>--no-match-defined</option>.
+	      </para>
+	    </listitem>
+	  </varlistentry>
+
+	  <varlistentry>
+	    <term>
+	      <option>--regexp</option>
+	      <replaceable>regular-expression</replaceable>
+	    </term>
+	    <term>
+	      <option>-e</option>
+	      <replaceable>regular-expression</replaceable>
+	    </term>
+	    <listitem>
+	      <para>
+		Specifies the regular expression to apply to the
+		symbols. In contrast to regular
+		<citerefentry><refentrytitle>grep</refentrytitle><manvolnum>1</manvolnum></citerefentry>
+		you <emphasis>have</emphasis> to provide a
+		<option>--regexp</option> pattern.
+	      </para>
+	    </listitem>
+	  </varlistentry>
+
+	  <xi:include href="filelists.xmli" xpointer="xpointer(id('filelist.option')/*)" />
+	</variablelist>
+      </refsect1>
+
+      <refsect1>
+	<title>Bugs and Missing Features</title>
+
+	<para>
+	  More options compatible with the standard tools like
+	  <option>--files-with-matches</option> and
+	  <option>--files-without-match</option> would be neat.
+	</para>
+
+	<xi:include href="filelists.xmli" xpointer="xpointer(id('filelist.bugpara')/*)" />
+      </refsect1>
+
+      <refsect1>
+        <title>See Also</title>
+        <para>
+	  <citation xl:href="http://blog.flameeyes.eu/">Flameeyes's
+	  Weblog</citation> http://blog.flameeyes.eu/
+        </para>
+
+	<para>
+	  Related tools:
+
+	  <citerefentry>
+	    <refentrytitle>grep</refentrytitle>
+	    <manvolnum>1</manvolnum>
+	  </citerefentry>,
+	  
+	  <citerefentry>
+	    <refentrytitle>nm</refentrytitle>
+	    <manvolnum>1</manvolnum>
+	  </citerefentry>.
+	</para>
+      </refsect1>
+    </refentry>
+  </section>
+</article>
