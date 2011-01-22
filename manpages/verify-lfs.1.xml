@@ -51,10 +51,6 @@
           </arg>
 
 	  <xi:include href="filelists.xmli"  xpointer="xpointer(id('filelist.synopsis')/*)" />
-
-          <arg choice="opt">
-            <replaceable>files</replaceable>
-          </arg>
         </cmdsynopsis>
       </refsynopsisdiv>
 

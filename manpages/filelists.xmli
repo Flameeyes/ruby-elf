@@ -20,9 +20,12 @@
   <cmdsynopsis xmlns="http://docbook.org/ns/docbook" xml:id="filelist.synopsis">
     <arg choice="opt"><option>--quiet</option></arg>
     <arg choice="opt"><option>--recursive</option></arg>
-    <arg choice="opt">
-      <option>@</option><replaceable>file</replaceable>
-    </arg>
+    <group choice="opt" rep="repeat">
+      <arg choice="plain">
+	<option>@</option><replaceable>file</replaceable>
+      </arg>
+      <arg choice="plain"><replaceable>file</replaceable></arg>
+    </group>
   </cmdsynopsis>
   
   <variablelist xmlns="http://docbook.org/ns/docbook" xml:id="filelist.option">
