@@ -94,7 +94,7 @@ def self.analysis(file)
       gotmatch ||= matched
 
       if matched
-        break if @files_with_matches
+        break if @files_with_matches or @files_without_match
 
         puts "#{file} #{symbol.nm_code rescue '?'} #{symname}"
       end
