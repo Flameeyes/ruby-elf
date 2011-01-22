@@ -46,26 +46,38 @@
         <cmdsynopsis>
           <command>elfgrep</command>
 
+	  <arg choice="req">
+	    <option>--regexp</option>
+	    <replaceable>regular-expression</replaceable>
+	  </arg>
+
 	  <arg choice="opt">
 	    <option>--match-version</option>
 	  </arg>
 
-	  <arg choice="opt">
-	    <option>--no-match-undefined</option>
-	  </arg>
+	  <group choice="opt">
+	    <arg choice="plain">
+	      <option>--no-match-undefined</option>
+	    </arg>
 
-	  <arg choice="opt">
-	    <option>--no-match-defined</option>
-	  </arg>
+	    <arg choice="plain">
+	      <option>--no-match-defined</option>
+	    </arg>
+	  </group>
 
 	  <arg choice="opt">
 	    <option>--invert-match</option>
 	  </arg>
 
-	  <arg>
-	    <option>--regexp</option>
-	    <replaceable>regular-expression</replaceable>
-	  </arg>
+	  <group choice="opt">
+	    <arg choice="plain">
+	      <option>--files-without-match</option>
+	    </arg>
+
+	    <arg choice="plain">
+	      <option>--files-with-matches</option>
+	    </arg>
+	  </group>
 
 	  <xi:include href="filelists.xmli"  xpointer="xpointer(id('filelist.synopsis')/*)" />
 
@@ -91,6 +103,26 @@
         <title>Options</title>
 
 	<variablelist>
+	  <varlistentry>
+	    <term>
+	      <option>--regexp</option>
+	      <replaceable>regular-expression</replaceable>
+	    </term>
+	    <term>
+	      <option>-e</option>
+	      <replaceable>regular-expression</replaceable>
+	    </term>
+	    <listitem>
+	      <para>
+		Specifies the regular expression to apply to the
+		symbols. In contrast to regular
+		<citerefentry><refentrytitle>grep</refentrytitle><manvolnum>1</manvolnum></citerefentry>
+		you <emphasis>have</emphasis> to provide a
+		<option>--regexp</option> pattern.
+	      </para>
+	    </listitem>
+	  </varlistentry>
+
 	  <varlistentry>
 	    <term><option>--match-version</option></term>
 	    <term><option>-V</option></term>
@@ -142,21 +174,27 @@
 	  </varlistentry>
 
 	  <varlistentry>
-	    <term>
-	      <option>--regexp</option>
-	      <replaceable>regular-expression</replaceable>
-	    </term>
-	    <term>
-	      <option>-e</option>
-	      <replaceable>regular-expression</replaceable>
-	    </term>
+	    <term><option>--files-without-match</option></term>
+	    <term><option>-l</option></term>
+
 	    <listitem>
 	      <para>
-		Specifies the regular expression to apply to the
-		symbols. In contrast to regular
-		<citerefentry><refentrytitle>grep</refentrytitle><manvolnum>1</manvolnum></citerefentry>
-		you <emphasis>have</emphasis> to provide a
-		<option>--regexp</option> pattern.
+		Suppress normal output; instead print the name of each
+		input file from which no output would normally have
+		been printed.
+	      </para>
+	    </listitem>
+	  </varlistentry>
+
+	  <varlistentry>
+	    <term><option>--files-with-matches</option></term>
+	    <term><option>-l</option></term>
+
+	    <listitem>
+	      <para>
+		Suppress normal output; instead print the name of each
+		input file from which output would normally have been
+		printed. The scalling will stop on the first match.
 	      </para>
 	    </listitem>
 	  </varlistentry>
@@ -169,9 +207,9 @@
 	<title>Bugs and Missing Features</title>
 
 	<para>
-	  More options compatible with the standard tools like
-	  <option>--files-with-matches</option> and
-	  <option>--files-without-match</option> would be neat.
+	  Because it shares architecture with the more complex tools
+	  library, it currently fails to execute when called against a
+	  symlinked file such as a library.
 	</para>
 
 	<xi:include href="filelists.xmli" xpointer="xpointer(id('filelist.bugpara')/*)" />
