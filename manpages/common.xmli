@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="utf-8" standalone="no"?>
 <!--
-   Copyright © 2008-2010, Diego "Flameeyes" Pettenò <flameeyes@gmail.com>
-  
+   Copyright © 2008-2011, Diego "Flameeyes" Pettenò <flameeyes@gmail.com>
+
    This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
    the Free Software Foundation; either version 2 of the License, or
    (at your option) any later version.
-  
+
    This program is distributed in the hope that it will be useful,
    but WITHOUT ANY WARRANTY; without even the implied warranty of
    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
    GNU General Public License for more details.
-  
+
    You should have received a copy of the GNU General Public License
    along with this generator; if not, write to the Free Software
    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
@@ -22,12 +22,12 @@
     <arg choice="opt"><option>--recursive</option></arg>
     <group choice="opt" rep="repeat">
       <arg choice="plain">
-	<option>@</option><replaceable>file</replaceable>
+        <option>@</option><replaceable>file</replaceable>
       </arg>
       <arg choice="plain"><replaceable>file</replaceable></arg>
     </group>
   </cmdsynopsis>
-  
+
   <variablelist xmlns="http://docbook.org/ns/docbook" xml:id="filelist.option">
     <varlistentry>
       <term>
@@ -38,9 +38,8 @@
       </term>
       <listitem>
         <para>
-          Do not output warnings and errors to the standard
-          error. Designed to increase the signal-to-noise ratio when
-          analysing eterogeneous trees recursively, or when producing
+          Do not output warnings and errors to the standard error. Designed to increase the
+          signal-to-noise ratio when analysing eterogeneous trees recursively, or when producing
           output to redirect to automated systems.
         </para>
       </listitem>
@@ -55,9 +54,8 @@
       </term>
       <listitem>
         <para>
-          Recursively descend into directories to search for files to
-          scan. This affects both the paths passed from the command
-          line and those found in argument files.
+          Recursively descend into directories to search for files to scan. This affects both the
+          paths passed from the command line and those found in argument files.
         </para>
       </listitem>
     </varlistentry>
@@ -68,11 +66,9 @@
       </term>
       <listitem>
         <para>
-          Read the list of files to analyse from the given file (or
-          standard input if <replaceable>path</replaceable> is
-          <filename>-</filename>). Useful to pass a long list of
-          files. When used with stdin or named pipes, this also allows
-          asynchronous analysis.
+          Read the list of files to analyse from the given file (or standard input if
+          <replaceable>path</replaceable> is <filename>-</filename>). Useful to pass a long list of
+          files. When used with stdin or named pipes, this also allows asynchronous analysis.
         </para>
       </listitem>
     </varlistentry>
@@ -81,17 +77,25 @@
   <section xmlns="http://docbook.org/ns/docbook" xml:id="filelist.bugpara">
     <para>
       Parsing of files to provide further arguments
-      (<option>@</option><replaceable>file</replaceable>) is not
-      entirely comforming to other tools handling of the same syntax. No
-      options are parsed from the file, and filenames are expected to be
-      separated by newlines rather than whitespace.
+      (<option>@</option><replaceable>file</replaceable>) is not entirely comforming to other tools
+      handling of the same syntax. No options are parsed from the file, and filenames are expected
+      to be separated by newlines rather than whitespace.
     </para>
 
     <para>
-      Symbolic links are only followed when they are passed directly
-      to the command line, or through @-lists; symbolic links are
-      <emphasis>not</emphasis> followed when using the
+      Symbolic links are only followed when they are passed directly to the command line, or through
+      @-lists; symbolic links are <emphasis>not</emphasis> followed when using the
       <option>--recursive</option> option, to avoid loops.
     </para>
   </section>
 </fragment>
+<!--
+   Local Variables:
+   mode: nxml
+   mode: auto-fill
+   mode: flyspell
+   ispell-local-dictionary: "english"
+   fill-column: 100
+   indent-tabs-mode: nil
+   End:
+-->

@@ -1,25 +1,25 @@
 <?xml version='1.0'?>
 <!--
-   Copyright © 2008-2010, Diego "Flameeyes" Pettenò <flameeyes@gmail.com>
-  
-   This program is free software; you can redistribute it and/or modify
-   it under the terms of the GNU General Public License as published by
-   the Free Software Foundation; either version 2 of the License, or
-   (at your option) any later version.
-  
-   This program is distributed in the hope that it will be useful,
-   but WITHOUT ANY WARRANTY; without even the implied warranty of
-   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-   GNU General Public License for more details.
-  
-   You should have received a copy of the GNU General Public License
-   along with this generator; if not, write to the Free Software
-   Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+Copyright © 2008-2011, Diego "Flameeyes" Pettenò <flameeyes@gmail.com>
+
+This program is free software; you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation; either version 2 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this generator; if not, write to the Free Software
+Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 -->
 <article xmlns="http://docbook.org/ns/docbook"
-	 xmlns:xl="http://www.w3.org/1999/xlink"
-	 xmlns:xi="http://www.w3.org/2001/XInclude"
-	 version="5.0" xml:lang="en">
+         xmlns:xl="http://www.w3.org/1999/xlink"
+         xmlns:xi="http://www.w3.org/2001/XInclude"
+         version="5.0" xml:lang="en">
   <info>
     <title>missingstatic</title>
 
@@ -31,268 +31,260 @@
 
     <refentry>
       <info>
-	<date>October 2008</date>
-	<productname>ruby-elf</productname>
+        <date>October 2008</date>
+        <productname>ruby-elf</productname>
       </info>
       <refmeta>
         <refentrytitle>missingstatic</refentrytitle>
-	<manvolnum>1</manvolnum>
+        <manvolnum>1</manvolnum>
       </refmeta>
       <refnamediv>
         <refname>missingstatic</refname>
-	<refpurpose>ELF analyzer to identify missing static modifiers</refpurpose>
+        <refpurpose>ELF analyzer to identify missing static modifiers</refpurpose>
       </refnamediv>
       <refsynopsisdiv>
         <cmdsynopsis>
           <command>missingstatic</command>
           <arg choice="opt"><option>--hidden-only</option></arg>
-	  <arg choice="opt"><option>--show-type</option></arg>
+          <arg choice="opt"><option>--show-type</option></arg>
           <arg choice="opt">
-	    <option>--exclude-regexp</option>
-	    <replaceable>regular-expression</replaceable>
-	  </arg>
-	  <arg choice="opt">
-	    <option>--exclude-tags</option>
-	    <replaceable>tags-file</replaceable>
-	  </arg>
+            <option>--exclude-regexp</option>
+            <replaceable>regular-expression</replaceable>
+          </arg>
+          <arg choice="opt">
+            <option>--exclude-tags</option>
+            <replaceable>tags-file</replaceable>
+          </arg>
 
-	  <xi:include href="common.xmli"  xpointer="xpointer(id('filelist.synopsis')/*)" />
+          <xi:include href="common.xmli"  xpointer="xpointer(id('filelist.synopsis')/*)" />
         </cmdsynopsis>
       </refsynopsisdiv>
 
       <refsect1>
         <title>Description</title>
         <para>
-	  <command>missingstatic</command> is a script that analyses
-	  ELF object files to identify symbols that are unused outside
-	  their compilation unit. Those symbols are usually candidate
-	  for the <constant>static</constant> modifier, to make the
-	  symbol local to the unit.
-	</para>
+          <command>missingstatic</command> is a script that analyses ELF object files to identify
+          symbols that are unused outside their compilation unit. Those symbols are usually
+          candidate for the <constant>static</constant> modifier, to make the symbol local to the
+          unit.
+        </para>
 
-	<para>
-	  In addition to symbols that are used only internally to an
-	  unit, this script will most likely report the almost entire
-	  set of externally-visible API in the case of libraries. For
-	  this reason, options are provided to reduce the scope of
-	  action.
-	</para>
+        <para>
+          In addition to symbols that are used only internally to an unit, this script will most
+          likely report the almost entire set of externally-visible API in the case of
+          libraries. For this reason, options are provided to reduce the scope of action.
+        </para>
       </refsect1>
 
       <refsect1>
         <title>Options</title>
-        
+
         <variablelist>
           <varlistentry>
             <term><option>--hidden-only</option></term>
             <term><option>-h</option></term>
             <listitem>
               <para>
-		Only show symbols that have hidden visibility. Hidden
-		symbols are not visible from outside the module, and
-		thus will ignore the external visible symbols that
-		compose the externally-visible API. This option is
-		only useful for libraries that make proper use of
-		visibility attributes.
+                Only show symbols that have hidden visibility. Hidden symbols are not visible from
+                outside the module, and thus will ignore the external visible symbols that compose
+                the externally-visible API. This option is only useful for libraries that make
+                proper use of visibility attributes.
               </para>
             </listitem>
           </varlistentry>
 
-	  <varlistentry>
-	    <term><option>--show-type</option></term>
-	    <term><option>-t</option></term>
-	    <listitem>
-	      <para>
-		Show the type of the symbol. The symbols reported by
-		the script might be functions, variables, or
-		constants. By default, only the name of the symbol,
-		with this option, a letter in front of the symbol will
-		tell you the type of it; the letters are the same as
-		used by GNU
-		<citerefentry><refentrytitle>nm</refentrytitle><manvolnum>1</manvolnum></citerefentry>:
-
-		<variablelist>
-		  <varlistentry>
-		    <term>T</term>
-		    <listitem>
-		      <para>
-			The symbol is in the text (code) section, and
-			is thus a function
-		      </para>
-		    </listitem>
-		  </varlistentry>
-
-		  <varlistentry>
-		    <term>B</term>
-		    <listitem>
-		      <para>
-			The symbol is in the uninitialised data
-			section (known as BSS), and is thus a
-			variable.
-		      </para>
-		    </listitem>
-		  </varlistentry>
-
-		  <varlistentry>
-		    <term>D</term>
-		    <listitem>
-		      <para>
-			The symbol is in the initialised data section,
-			and is thus a variable.
-		      </para>
-		    </listitem>
-		  </varlistentry>
-
-		  <varlistentry>
-		    <term>R</term>
-		    <listitem>
-		      <para>
-			The symbol is in the read only data section,
-			and is thus a constant.
-		      </para>
-		    </listitem>
-		  </varlistentry>
-
-		</variablelist>
-
-	      </para>
-	    </listitem>
-	  </varlistentry>
-        
           <varlistentry>
-            <term>
-      	      <option>--exclude-regexp</option>
-	      <replaceable>regular-expression</replaceable>
-	    </term>
-            <term>
-	      <option>-x</option>
-	      <replaceable>regular-expression</replaceable>
-	    </term>
+            <term><option>--show-type</option></term>
+            <term><option>-t</option></term>
             <listitem>
               <para>
-		Ignore symbols whose name triggers the given regular
-		expression. This option is useful to hide all the
-		symbols of the public API of a library if they all
-		have the same prefix. It can be used multiple times.
+                Show the type of the symbol. The symbols reported by the script might be functions,
+                variables, or constants. By default, only the name of the symbol, with this option,
+                a letter in front of the symbol will tell you the type of it; the letters are the
+                same as used by GNU
+                <citerefentry><refentrytitle>nm</refentrytitle><manvolnum>1</manvolnum></citerefentry>:
+
+                <variablelist>
+                  <varlistentry>
+                    <term>T</term>
+                    <listitem>
+                      <para>
+                        The symbol is in the text (code) section, and is thus a function
+                      </para>
+                    </listitem>
+                  </varlistentry>
+
+                  <varlistentry>
+                    <term>B</term>
+                    <listitem>
+                      <para>
+                        The symbol is in the uninitialised data section (known as BSS), and is thus
+                        a variable.
+                      </para>
+                    </listitem>
+                  </varlistentry>
+
+                  <varlistentry>
+                    <term>D</term>
+                    <listitem>
+                      <para>
+                        The symbol is in the initialised data section, and is thus a variable.
+                      </para>
+                    </listitem>
+                  </varlistentry>
+
+                  <varlistentry>
+                    <term>R</term>
+                    <listitem>
+                      <para>
+                        The symbol is in the read only data section, and is thus a constant.
+                      </para>
+                    </listitem>
+                  </varlistentry>
+
+                </variablelist>
+
               </para>
             </listitem>
           </varlistentry>
 
-	  <varlistentry>
-	    <term>
-	      <option>--exclude-tags</option>
-	      <replaceable>tags-file</replaceable>
-	    </term>
-	    <term>
-	      <option>-X</option>
-	      <replaceable>tags-file</replaceable>
-	    </term>
-	    <listitem>
-	      <para>
-		Ignore symbols present in a tags file created by
-		<command>exuberant-ctags</command>. This option is
-		useful to hide all the symbols in the public header
-		files of a project, by creating a list of
-		public-visible symbols. See the <link
-		linkend="examples">EXAMPLES</link> section for how to
-		generate such a tags file.  It can be used multiple
-		times.
-	      </para>
-	      
-	    </listitem>
-	  </varlistentry>
+          <varlistentry>
+            <term>
+              <option>--exclude-regexp</option>
+              <replaceable>regular-expression</replaceable>
+            </term>
+            <term>
+              <option>-x</option>
+              <replaceable>regular-expression</replaceable>
+            </term>
+            <listitem>
+              <para>
+                Ignore symbols whose name triggers the given regular expression. This option is
+                useful to hide all the symbols of the public API of a library if they all have the
+                same prefix. It can be used multiple times.
+              </para>
+            </listitem>
+          </varlistentry>
 
-	  <xi:include href="common.xmli" xpointer="xpointer(id('filelist.option')/*)" />
+          <varlistentry>
+            <term>
+              <option>--exclude-tags</option>
+              <replaceable>tags-file</replaceable>
+            </term>
+            <term>
+              <option>-X</option>
+              <replaceable>tags-file</replaceable>
+            </term>
+            <listitem>
+              <para>
+                Ignore symbols present in a tags file created by
+                <command>exuberant-ctags</command>. This option is useful to hide all the symbols in
+                the public header files of a project, by creating a list of public-visible
+                symbols. See the <link linkend="examples">EXAMPLES</link> section for how to
+                generate such a tags file.  It can be used multiple times.
+              </para>
 
-	</variablelist>
+            </listitem>
+          </varlistentry>
+
+          <xi:include href="common.xmli" xpointer="xpointer(id('filelist.option')/*)" />
+
+        </variablelist>
       </refsect1>
 
       <refsect1 xml:id="examples">
-	<title>Examples</title>
-	
-	<refsect2>
-	  <title>Generating the tags file</title>
+        <title>Examples</title>
 
-	  <para>
-	    To generate a tags file compatible with the
-	    <option>--exclude-tags</option> command-line option, you can
-	    use
-	    <citerefentry>
-	      <refentrytitle>exuberant-ctags</refentrytitle>
-	      <manvolnum>1</manvolnum>
-	    </citerefentry> 
-	    with a command similar to the following:
-	  </para>
-	  
-	  <example>
-	    <title>
-	      Generate a tags file for public header files
-	    </title>
-	    
-	    <programlisting>
-	      exuberant-ctags --c-kinds=px -f public-symbols include/public/*.h
-	    </programlisting>
-	  </example>
-	</refsect2>
+        <refsect2>
+          <title>Generating the tags file</title>
 
-	<refsect2>
-	  <title>Sorting <command>missingstatic</command> output</title>
-	  
-	  <para>
-	    Sine sorting by translation unit is non-trivial inside the
-	    script, piping through 
-	    <citerefentry>
-	      <refentrytitle>sort</refentrytitle>
-	      <manvolnum>1</manvolnum>
-	    </citerefentry>
-	    is suggested. Using the <option>-k</option> option it's
-	    possible to sort for the desired key, may it be the symbol
-	    name, the translation unit name or the symbol type.
-	  </para>
-	  
-	  <example>
-	    <title>Sorting <command>missingstatic</command> output for
-	    translation unit name </title>
-	    
-	    <programlisting>
-	      find . -name '*.o' | missingstatic -h | sort -k2
-	    </programlisting>
-	  </example>
-	</refsect2>
+          <para>
+            To generate a tags file compatible with the <option>--exclude-tags</option> command-line
+            option, you can use
+            <citerefentry>
+              <refentrytitle>exuberant-ctags</refentrytitle>
+              <manvolnum>1</manvolnum>
+            </citerefentry>
+            with a command similar to the following:
+          </para>
+
+          <example>
+            <title>
+              Generate a tags file for public header files
+            </title>
+
+            <programlisting>
+              exuberant-ctags --c-kinds=px -f public-symbols include/public/*.h
+            </programlisting>
+          </example>
+        </refsect2>
+
+        <refsect2>
+          <title>Sorting <command>missingstatic</command> output</title>
+
+          <para>
+            Since sorting by translation unit is non-trivial inside the script, piping through
+            <citerefentry>
+              <refentrytitle>sort</refentrytitle>
+              <manvolnum>1</manvolnum>
+            </citerefentry>
+            is suggested. Using the <option>-k</option> option it's possible to sort for the desired
+            key, may it be the symbol name, the translation unit name or the symbol type.
+          </para>
+
+          <example>
+            <title>Sorting <command>missingstatic</command> output for translation unit name
+            </title>
+
+            <programlisting>
+              find . -name '*.o' | missingstatic -h | sort -k2
+            </programlisting>
+          </example>
+        </refsect2>
       </refsect1>
-	
-      <refsect1>
-	<title>Bugs and Missing Features</title>
-	<para>
-	  <command>missingstatic</command> assumes that all the
-	  sources for a module and just that module will be passed to
-	  it, if more or less sources will be passed to the command,
-	  the results might not be the expected ones.
-	</para>
 
-	<xi:include href="common.xmli" xpointer="xpointer(id('filelist.bugpara')/*)" />
+      <refsect1>
+        <title>Bugs and Missing Features</title>
+        <para>
+          <command>missingstatic</command> assumes that all the sources for a module and just that
+          module will be passed to it, if more or less sources will be passed to the command, the
+          results might not be the expected ones.
+        </para>
+
+        <xi:include href="common.xmli" xpointer="xpointer(id('filelist.bugpara')/*)" />
       </refsect1>
 
       <refsect1>
         <title>See Also</title>
         <para>
-	  <citation xl:href="http://blog.flameeyes.eu/">Flameeyes's
-	  Weblog</citation> http://blog.flameeyes.eu/
+          <citation xl:href="http://blog.flameeyes.eu/">Flameeyes's Weblog</citation>
+          http://blog.flameeyes.eu/
         </para>
 
-	<para>
-	  Related tools:
-	  <citerefentry>
-	    <refentrytitle>nm</refentrytitle>
-	    <manvolnum>1</manvolnum>
-	  </citerefentry>,
+        <para>
+          Related tools:
 
-	  <citerefentry>
-	    <refentrytitle>exuberant-ctags</refentrytitle>
-	    <manvolnum>1</manvolnum>
-	  </citerefentry>.
-	</para>
+          <citerefentry>
+            <refentrytitle>nm</refentrytitle>
+            <manvolnum>1</manvolnum>
+          </citerefentry>,
+
+          <citerefentry>
+            <refentrytitle>exuberant-ctags</refentrytitle>
+            <manvolnum>1</manvolnum>
+          </citerefentry>.
+        </para>
       </refsect1>
     </refentry>
   </section>
 </article>
+<!--
+    Local Variables:
+    mode: nxml
+    mode: auto-fill
+    mode: flyspell
+    ispell-local-dictionary: "english"
+    fill-column: 100
+    indent-tabs-mode: nil
+    End:
+-->

@@ -1,25 +1,25 @@
 <?xml version='1.0'?>
 <!--
-   Copyright © 2008, Diego "Flameeyes" Pettenò <flameeyes@gmail.com>
-  
-   This program is free software; you can redistribute it and/or modify
-   it under the terms of the GNU General Public License as published by
-   the Free Software Foundation; either version 2 of the License, or
-   (at your option) any later version.
-  
-   This program is distributed in the hope that it will be useful,
-   but WITHOUT ANY WARRANTY; without even the implied warranty of
-   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-   GNU General Public License for more details.
-  
-   You should have received a copy of the GNU General Public License
-   along with this generator; if not, write to the Free Software
-   Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+Copyright © 2008-2011, Diego "Flameeyes" Pettenò <flameeyes@gmail.com>
+
+This program is free software; you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation; either version 2 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this generator; if not, write to the Free Software
+Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 -->
 <article xmlns="http://docbook.org/ns/docbook"
-	 xmlns:xl="http://www.w3.org/1999/xlink"
-	 xmlns:xi="http://www.w3.org/2001/XInclude"
-	 version="5.0" xml:lang="en">
+         xmlns:xl="http://www.w3.org/1999/xlink"
+         xmlns:xi="http://www.w3.org/2001/XInclude"
+         version="5.0" xml:lang="en">
   <info>
     <title>rbelf-size</title>
 
@@ -31,310 +31,291 @@
 
     <refentry>
       <info>
-	<date>October 2008</date>
-	<productname>ruby-elf</productname>
+        <date>October 2008</date>
+        <productname>ruby-elf</productname>
       </info>
       <refmeta>
         <refentrytitle>rbelf-size</refentrytitle>
-	<manvolnum>1</manvolnum>
+        <manvolnum>1</manvolnum>
       </refmeta>
       <refnamediv>
         <refname>rbelf-size</refname>
-	<refpurpose>List section sizes of ELF files</refpurpose>
+        <refpurpose>List section sizes of ELF files</refpurpose>
       </refnamediv>
       <refsynopsisdiv>
         <cmdsynopsis>
           <command>rbelf-size</command>
 
           <arg choice="opt">
-	    <option>--relocation-stats</option>
-	    <arg choice="opt"><option>--decibel</option></arg>
-	  </arg>
+            <option>--relocation-stats</option>
+            <arg choice="opt"><option>--decibel</option></arg>
+          </arg>
 
-	  <xi:include href="common.xmli"  xpointer="xpointer(id('filelist.synopsis')/*)" />
+          <xi:include href="common.xmli"  xpointer="xpointer(id('filelist.synopsis')/*)" />
         </cmdsynopsis>
       </refsynopsisdiv>
 
       <refsect1>
         <title>Description</title>
         <para>
-	  <command>rbelf-size</command> is a replacement for the
-	  standard
-	  <citerefentry><refentrytitle>size</refentrytitle><manvolnum>1</manvolnum></citerefentry>
-	  utility, as provided by GNU binutils and similar
-	  suites. Instead of showing the sum of all the invariant,
-	  variant and unallocated sections as the size, it divides
-	  them depending on how they are treated, differentiating
-	  between invariant data, invariant code, variant data and
-	  relocated invariant data.
-	</para>
+          <command>rbelf-size</command> is a replacement for the standard
+          <citerefentry><refentrytitle>size</refentrytitle><manvolnum>1</manvolnum></citerefentry>
+          utility, as provided by GNU binutils and similar suites. Instead of showing the sum of all
+          the invariant, variant and unallocated sections as the size, it divides them depending on
+          how they are treated, differentiating between invariant data, invariant code, variant data
+          and relocated invariant data.
+        </para>
       </refsect1>
 
       <refsect1>
         <title>Options</title>
 
-	<variablelist>
-	  <varlistentry>
-	    <term><option>--relocation-stats</option></term>
-	    <term><option>-r</option></term>
-	    <listitem>
-	      <para>
-		Instead of reporting size data compatible with
-		<citerefentry><refentrytitle>size</refentrytitle><manvolnum>1</manvolnum></citerefentry>
-		report size for shared, private and relocated
-		areas. This is helpful to assess the validity of
-		shared object approaches.
-	      </para>
-	    </listitem>
-	  </varlistentry>
+        <variablelist>
+          <varlistentry>
+            <term><option>--relocation-stats</option></term>
+            <term><option>-r</option></term>
+            <listitem>
+              <para>
+                Instead of reporting size data compatible with
+                <citerefentry><refentrytitle>size</refentrytitle><manvolnum>1</manvolnum></citerefentry>
+                report size for shared, private and relocated areas. This is helpful to assess the
+                validity of shared object approaches.
+              </para>
+            </listitem>
+          </varlistentry>
 
-	  <varlistentry>
-	    <term><option>--decibel</option></term>
-	    <term><option>-d</option></term>
-	    <listitem>
-	      <para>
-		When using the <option>--relocation-stats</option>
-		option, a ratio is displayed between the size of
-		relocated and shared code areas, to better assess the
-		advantages and disadvantages for shared object
-		approaches.
-	      </para>
+          <varlistentry>
+            <term><option>--decibel</option></term>
+            <term><option>-d</option></term>
+            <listitem>
+              <para>
+                When using the <option>--relocation-stats</option> option, a ratio is displayed
+                between the size of relocated and shared code areas, to better assess the advantages
+                and disadvantages for shared object approaches.
+              </para>
 
-	      <para>
-		Since that ratio can easily skyrocket into thousands
-		if there is very little relocated data, and a lot of
-		shared data, it might be easier to appreciate the
-		results by using a logaritmic scale.
-	      </para>
-	    </listitem>
-	  </varlistentry>
+              <para>
+                Since that ratio can easily skyrocket into thousands if there is very little
+                relocated data, and a lot of shared data, it might be easier to appreciate the
+                results by using a logaritmic scale.
+              </para>
+            </listitem>
+          </varlistentry>
 
-	  <xi:include href="common.xmli" xpointer="xpointer(id('filelist.option')/*)" />
-	</variablelist>
+          <xi:include href="common.xmli" xpointer="xpointer(id('filelist.option')/*)" />
+        </variablelist>
       </refsect1>
 
       <refsect1>
-	<title>Compatible Output</title>
+        <title>Compatible Output</title>
 
-	<para>
-	  The output of <command>rbelf-size</command> differs from
-	  that of <command>size</command> for the number and type of
-	  columns it outputs. While the original BSD command outputs
-	  the size of the "text", "data" and "bss" sections, this tool
-	  splits them further.
-	</para>
+        <para>
+          The output of <command>rbelf-size</command> differs from that of <command>size</command>
+          for the number and type of columns it outputs. While the original BSD command outputs the
+          size of the "text", "data" and "bss" sections, this tool splits them further.
+        </para>
 
-	<variablelist>
-	  <varlistentry>
-	    <term>exec</term>
-	    <listitem>
-	      <para>
-		Counts in all the sections containing executable code,
-		this includes the <varname>.text</varname> section,
-		and others.
-	      </para>
-	    </listitem>
-	  </varlistentry>
+        <variablelist>
+          <varlistentry>
+            <term>exec</term>
+            <listitem>
+              <para>
+                Counts in all the sections containing executable code, this includes the
+                <varname>.text</varname> section, and others.
+              </para>
+            </listitem>
+          </varlistentry>
 
-	  <varlistentry>
-	    <term>data</term>
-	    <listitem>
-	      <para>
-		Counts in all the sections containing variable data,
-		this excludes read-only data sections, but includes
-		relocated data and other kind of allocated and
-		writeable data sections. If the compiler is GCC or
-		outputs GCC-compatible section names this won't count
-		in relocated constants.
-	      </para>
-	    </listitem>
-	  </varlistentry>
-	  
-	  <varlistentry>
-	    <term>relro</term>
-	    <listitem>
-	      <para>
-		Counts in the relocated constants (read-only relocated
-		data). This column will be non-null only for binaries
-		compiled by GCC or by compilers emitting
-		GCC-compatible section names. The sections counted in
-		this entry will are relocated at runtime, but are
-		never otherwise modified. The reason why this is
-		separated is that this section may be touched by
-		<citerefentry><refentrytitle>prelink</refentrytitle><manvolnum>8</manvolnum></citerefentry>
-		so that the runtime relocation is not needed, and thus
-		would count just as common constant data.
-	      </para>
-	    </listitem>
-	  </varlistentry>
+          <varlistentry>
+            <term>data</term>
+            <listitem>
+              <para>
+                Counts in all the sections containing variable data, this excludes read-only data
+                sections, but includes relocated data and other kind of allocated and writeable data
+                sections. If the compiler is GCC or outputs GCC-compatible section names this won't
+                count in relocated constants.
+              </para>
+            </listitem>
+          </varlistentry>
 
-	  <varlistentry>
-	    <term>bss</term>
-	    <listitem>
-	      <para>
-		Just like <command>size</command> bss column, this
-		counts in the size of sections that are allocated at
-		runtime as mapped to the zero page. It supports TLS
-		<varname>.tbss</varname> section.
-	      </para>
-	    </listitem>
-	  </varlistentry>
+          <varlistentry>
+            <term>relro</term>
+            <listitem>
+              <para>
+                Counts in the relocated constants (read-only relocated data). This column will be
+                non-null only for binaries compiled by GCC or by compilers emitting GCC-compatible
+                section names. The sections counted in this entry will are relocated at runtime, but
+                are never otherwise modified. The reason why this is separated is that this section
+                may be touched by
+                <citerefentry><refentrytitle>prelink</refentrytitle><manvolnum>8</manvolnum></citerefentry>
+                so that the runtime relocation is not needed, and thus would count just as common
+                constant data.
+              </para>
+            </listitem>
+          </varlistentry>
 
-	  <varlistentry>
-	    <term>total</term>
-	    <listitem>
-	      <para>
-		Counts in the sum of all the previous sections.
-	      </para>
-	    </listitem>
-	  </varlistentry>
-	</variablelist>
+          <varlistentry>
+            <term>bss</term>
+            <listitem>
+              <para>
+                Just like <command>size</command> bss column, this counts in the size of sections
+                that are allocated at runtime as mapped to the zero page. It supports TLS
+                <varname>.tbss</varname> section.
+              </para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term>total</term>
+            <listitem>
+              <para>
+                Counts in the sum of all the previous sections.
+              </para>
+            </listitem>
+          </varlistentry>
+        </variablelist>
       </refsect1>
 
       <refsect1>
-	<title>Relocation Statistics</title>
+        <title>Relocation Statistics</title>
 
-	<para>
-	  When using shared objects rather than static linking, there
-	  are many trade-offs to be made. One of these relates to the
-	  amount of code that will get relocated (and thus becomes
-	  private, per-process resident memory).
-	</para>
+        <para>
+          When using shared objects rather than static linking, there are many trade-offs to be
+          made. One of these relates to the amount of code that will get relocated (and thus becomes
+          private, per-process resident memory).
+        </para>
 
-	<para>
-	  The <option>--relocation-stats</option> option was devised
-	  as a mean to assess the cost/benefit of using shared
-	  objects, rather than using static link (e.g. with multicall
-	  binaries).
-	</para>
+        <para>
+          The <option>--relocation-stats</option> option was devised as a mean to assess the
+          cost/benefit of using shared objects, rather than using static link (e.g. with multicall
+          binaries).
+        </para>
 
-	<variablelist>
-	  <varlistentry>
-	    <term>shared</term>
-	    <listitem>
-	      <para>
-		Areas of memory that are always shared among
-		processes; these include executable areas with
-		Position Indipendent Code, and read-only data areas.
-	      </para>
+        <variablelist>
+          <varlistentry>
+            <term>shared</term>
+            <listitem>
+              <para>
+                Areas of memory that are always shared among processes; these include executable
+                areas with Position Indipendent Code, and read-only data areas.
+              </para>
 
-	      <para>
-		Generally, this is what we would want to have as big
-		as possible, compared to the rest.
-	      </para>
-	    </listitem>
-	  </varlistentry>
+              <para>
+                Generally, this is what we would want to have as big as possible, compared to the
+                rest.
+              </para>
+            </listitem>
+          </varlistentry>
 
-	  <varlistentry>
-	    <term>private</term>
-	    <listitem>
-	      <para>
-		Areas of memory that will always be private to the
-		process; these includes writeable data areas and areas
-		remapped to the zero page (what above is called bss).
-	      </para>
+          <varlistentry>
+            <term>private</term>
+            <listitem>
+              <para>
+                Areas of memory that will always be private to the process; these includes writeable
+                data areas and areas remapped to the zero page (what above is called bss).
+              </para>
 
-	      <para>
-		This is a worst-case value, as even though the
-		writeable sections _may_ become private, if they are
-		left untouched they will be shared among multiple (if
-		not all) processes. It is, though, useful to consider
-		the worst-case scenario for assesment.
-	      </para>
-	    </listitem>
-	  </varlistentry>
+              <para>
+                This is a worst-case value, as even though the writeable sections _may_ become
+                private, if they are left untouched they will be shared among multiple (if not all)
+                processes. It is, though, useful to consider the worst-case scenario for assesment.
+              </para>
+            </listitem>
+          </varlistentry>
 
-	  <varlistentry>
-	    <term>relocated</term>
-	    <listitem>
-	      <para>
-		This value sums up the size of the memory areas that
-		will be relocated when using shared objects (or
-		Position Indipendent Executables). Relocated areas
-		include .data.rel.ro sections, which contain data
-		read-only for the code, but written to by the dynamic
-		linker.
-	      </para>
+          <varlistentry>
+            <term>relocated</term>
+            <listitem>
+              <para>
+                This value sums up the size of the memory areas that will be relocated when using
+                shared objects (or Position Indipendent Executables). Relocated areas include
+                .data.rel.ro sections, which contain data read-only for the code, but written to by
+                the dynamic linker.
+              </para>
 
-	      <para>
-		Again this value is an approximation nearing the
-		worst-case scenario.
-	      </para>
-	    </listitem>
-	  </varlistentry>
+              <para>
+                Again this value is an approximation nearing the worst-case scenario.
+              </para>
+            </listitem>
+          </varlistentry>
 
-	  <varlistentry>
-	    <term>ratio</term>
-	    <listitem>
-	      <para>
-		The ratio between shared and relocated code in the
-		current executable or shared object. Using this value
-		you can have a quick idea of the cost/benefit of using
-		shared objects for a particular task.
-	      </para>
+          <varlistentry>
+            <term>ratio</term>
+            <listitem>
+              <para>
+                The ratio between shared and relocated code in the current executable or shared
+                object. Using this value you can have a quick idea of the cost/benefit of using
+                shared objects for a particular task.
+              </para>
 
-	      <para>
-		When using <option>--decibel</option> the value will
-		be represented in deciBels, which should make it even
-		easier to understand: a negative value shows a overly
-		high cost, while a value between 1 and 10 will
-		indicate some work might be needed to improve the
-		benefits.
-	      </para>
-	    </listitem>
-	  </varlistentry>
-	</variablelist>
+              <para>
+                When using <option>--decibel</option> the value will be represented in deciBels,
+                which should make it even easier to understand: a negative value shows a overly high
+                cost, while a value between 1 and 10 will indicate some work might be needed to
+                improve the benefits.
+              </para>
+            </listitem>
+          </varlistentry>
+        </variablelist>
       </refsect1>
 
       <refsect1>
-	<title>Bugs and Missing Features</title>
+        <title>Bugs and Missing Features</title>
 
-	<para>
-	  The name <varname>total</varname> for the sum of the colums
-	  is misleading since it's actually not the total size of the
-	  file, nor the total size of the allocated entries.
-	</para>
+        <para>
+          The name <varname>total</varname> for the sum of the colums is misleading since it's
+          actually not the total size of the file, nor the total size of the allocated entries.
+        </para>
 
-	<para>
-	  Right now, all the sections are counted in if their flags
-	  match, it might be better to limit to allocated sections all
-	  over the place.
-	</para>
+        <para>
+          Right now, all the sections are counted in if their flags match, it might be better to
+          limit to allocated sections all over the place.
+        </para>
 
-	<para>
-	  The size of the columns is fixed to 8 digits, it might not
-	  be enough to fill in enough space for some big ELF files.
-	</para>
+        <para>
+          The size of the columns is fixed to 8 digits, it might not be enough to fill in enough
+          space for some big ELF files.
+        </para>
 
-	<xi:include href="common.xmli" xpointer="xpointer(id('filelist.bugpara')/*)" />
+        <xi:include href="common.xmli" xpointer="xpointer(id('filelist.bugpara')/*)" />
       </refsect1>
 
       <refsect1>
         <title>See Also</title>
         <para>
-	  <citation xl:href="http://blog.flameeyes.eu/">Flameeyes's
-	  Weblog</citation> http://blog.flameeyes.eu/
+          <citation xl:href="http://blog.flameeyes.eu/">Flameeyes's Weblog</citation>
+          http://blog.flameeyes.eu/
         </para>
 
-	<para>
-	  Related tools:
+        <para>
+          Related tools:
 
-	  <citerefentry>
-	    <refentrytitle>cowstats</refentrytitle>
-	    <manvolnum>1</manvolnum>
-	  </citerefentry>,
-	  
-	  <citerefentry>
-	    <refentrytitle>size</refentrytitle>
-	    <manvolnum>1</manvolnum>
-	  </citerefentry>.
+          <citerefentry>
+            <refentrytitle>cowstats</refentrytitle>
+            <manvolnum>1</manvolnum>
+          </citerefentry>,
 
-	  <citerefentry>
-	    <refentrytitle>prelink</refentrytitle>
-	    <manvolnum>8</manvolnum>
-	  </citerefentry>
-	</para>
+          <citerefentry>
+            <refentrytitle>size</refentrytitle>
+            <manvolnum>1</manvolnum>
+          </citerefentry>,
+
+          <citerefentry>
+            <refentrytitle>prelink</refentrytitle>
+            <manvolnum>8</manvolnum>
+          </citerefentry>.
+        </para>
       </refsect1>
     </refentry>
   </section>
 </article>
+<!--
+    Local Variables:
+    mode: nxml
+    mode: auto-fill
+    mode: flyspell
+    ispell-local-dictionary: "english"
+    fill-column: 100
+    indent-tabs-mode: nil
+    End:
+-->
