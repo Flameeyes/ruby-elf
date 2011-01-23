@@ -156,7 +156,7 @@
 .*/lib(|32|64)/zsh/.*/zsh/.*\.so$	^(enables|features)_$
 
 # OSS wrappers and other LD_PRELOAD libraries
-lib((pa|esd|arts)dsp|aoss|jackasyn|(soap|sand)box|fake(ch)?root|zzuf|v4l(1compat|2convert)|trash|syncdir|honeyd)	^((__)?(m(un)?map(64)?|f?(open(64)?|close))|ioctl|poll|connect|glob|bind)$
+lib((pa|esd|arts)dsp|aoss|jackasyn|(soap|sand)box|fake(ch)?root|zzuf|v4l(1compat|2convert)|trash|syncdir|honeyd)	^((__)?(m(un)?map(64)?|f?(open(at)?(64)?(_2)?|close))|ioctl|poll|connect|glob|bind|execvp?)$
 
 lib(fake(ch)?root|(soap|sand)box|trash)(-[0-9\.]+)?\.so									^f?(l?ch(own|mod)|(un)?link|rename|(mk|rm)dir|remove|creat|mkfifo|l?utimen?s?|(__x)?mknode|symlink|access|truncate)(64)?(at)?$
 
@@ -276,3 +276,4 @@ strigi/strigi[lt]a_.*\.so		^(deleteS|s)trigiAnalyzerFactory$
 /lib(32|64)?/rsyslog/.*\.so			^modInit$
 /lib(32|64)?/(connman|flimflam)/plugins/.*\.so	^connman_plugin_desc$
 /lib(32|64)?/pppd/[0-9.]\+/.*\.so		^pppd_version$
+/lib(32|64)?/device-mapper/.*\.so		^(process_event|(un)?register_device)$
