@@ -79,6 +79,16 @@
 	    </arg>
 	  </group>
 
+	  <group choice="opt">
+	    <arg choice="plain">
+	      <option>--with-filename</option>
+	    </arg>
+
+	    <arg choice="plain">
+	      <option>--no-filename</option>
+	    </arg>
+	  </group>
+
 	  <xi:include href="common.xmli"  xpointer="xpointer(id('filelist.synopsis')/*)" />
         </cmdsynopsis>
       </refsynopsisdiv>
@@ -191,6 +201,30 @@
 		Suppress normal output; instead print the name of each
 		input file from which output would normally have been
 		printed. The scalling will stop on the first match.
+	      </para>
+	    </listitem>
+	  </varlistentry>
+
+	  <varlistentry>
+	    <term><option>--with-filename</option></term>
+	    <term><option>-H</option></term>
+
+	    <listitem>
+	      <para>
+		Print the file name for each match. This is the
+		default when there is more than one file to search.
+	      </para>
+	    </listitem>
+	  </varlistentry>
+
+	  <varlistentry>
+	    <term><option>--no-filename</option></term>
+	    <term><option>-h</option></term>
+
+	    <listitem>
+	      <para>
+		Suppress the prefixing of file names on output. This
+		is the default when there is only one file to search.
 	      </para>
 	    </listitem>
 	  </varlistentry>

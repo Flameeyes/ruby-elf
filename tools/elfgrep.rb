@@ -34,7 +34,11 @@ Options = [
            # List only files with matches
            ["--files-with-matches", "-l", GetoptLong::NO_ARGUMENT],
            # List only files without match
-           ["--files-without-match", "-L", GetoptLong::NO_ARGUMENT]
+           ["--files-without-match", "-L", GetoptLong::NO_ARGUMENT],
+           # Print the name of the file for each match
+           ["--with-filename", "-H", GetoptLong::NO_ARGUMENT],
+           # Don't print the name of the file for each match
+           ["--no-filename", "-h", GetoptLong::NO_ARGUMENT]
           ]
 
 # We define callbacks for some behaviour-changing options as those
@@ -48,6 +52,24 @@ end
 
 def self.files_without_match_cb
   @show = :files_without_match
+end
+
+def self.with_filename_cb
+  @print_filename = true
+end
+
+def self.no_filename_cb
+  @print_filename = false
+end
+
+# we make this a method so that we don't have to worry about deciding
+# on the base of how many targets we have; we have to do this
+# because we cannot know, in after_options, whether the user passed
+# @-file lists.
+def self.print_filename
+  @print_filename = !@single_target if @print_filename.nil?
+
+  @print_filename
 end
 
 def self.before_options
@@ -103,7 +125,7 @@ def self.analysis(file)
       if matched
         break unless @show == :full_match
 
-        puts "#{"#{file} " unless @single_target}#{symbol.nm_code rescue '?'} #{symname}"
+        puts "#{"#{file} " if print_filename}#{symbol.nm_code rescue '?'} #{symname}"
       end
     end
 
