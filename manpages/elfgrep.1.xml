@@ -236,12 +236,6 @@
       <refsect1>
 	<title>Bugs and Missing Features</title>
 
-	<para>
-	  Because it shares architecture with the more complex tools
-	  library, it currently fails to execute when called against a
-	  symlinked file such as a library.
-	</para>
-
 	<xi:include href="common.xmli" xpointer="xpointer(id('filelist.bugpara')/*)" />
       </refsect1>
 

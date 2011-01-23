@@ -86,5 +86,12 @@
       options are parsed from the file, and filenames are expected to be
       separated by newlines rather than whitespace.
     </para>
+
+    <para>
+      Symbolic links are only followed when they are passed directly
+      to the command line, or through @-lists; symbolic links are
+      <emphasis>not</emphasis> followed when using the
+      <option>--recursive</option> option, to avoid loops.
+    </para>
   </section>
 </fragment>
