@@ -168,6 +168,8 @@ end
 
 # Execute the analysis function on all the lines of a file
 def self.execute_on_file(file)
+  @single_target = false
+
   file = $stdin if file == "-"
   file = File.new(file) if file.class == String
 
@@ -184,7 +186,14 @@ def self.main
     before_options if respond_to? :before_options
     parse_arguments
     after_options if respond_to? :after_options
-    
+
+    # We set the @single_target attribute to true if we're given a
+    # single filename as a target, so that tools like elfgrep can
+    # avoid printing again the filename on the output. Since we could
+    # be given a single @-prefixed file to use as a list, we'll reset
+    # @single_target in self.execute_on_file
+    @single_target = (ARGV.size == 1)
+
     if ARGV.size == 0
       execute_on_file($stdin)
     else

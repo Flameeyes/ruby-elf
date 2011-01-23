@@ -96,7 +96,7 @@ def self.analysis(file)
       if matched
         break if @files_with_matches or @files_without_match
 
-        puts "#{file} #{symbol.nm_code rescue '?'} #{symname}"
+        puts "#{"#{file} " unless @single_target}#{symbol.nm_code rescue '?'} #{symname}"
       end
     end
 
