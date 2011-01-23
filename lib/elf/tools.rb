@@ -83,10 +83,20 @@ def self.parse_arguments
     # If there is a function with the same name of the parameter
     # defined (with a _cb suffix), call that, otherwise set the
     # attribute with the same name to the given value.
-    if respond_to?(attrname + "_cb")
-      method(attrname + "_cb").call(attrval)
-    else
+    cb = method("#{attrname}_cb") rescue nil
+    case
+    when cb.nil?
       instance_variable_set("@#{attrname}", attrval)
+    when cb.arity == 0
+      raise ArgumentError("wrong number of arguments in callback (0 for 1)") unless
+        arg.size == 0
+      cb.call
+    when cb.arity == 1
+      # fallback to provide a single "true" parameter if there was no
+      # required argument
+      cb.call(attrval)
+    else
+      raise ArgumentError("wrong number of arguments in callback (#{cb.arity} for #{arg.size})")
     end
   end
 end
