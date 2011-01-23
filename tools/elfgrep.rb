@@ -37,12 +37,24 @@ Options = [
            ["--files-without-match", "-L", GetoptLong::NO_ARGUMENT]
           ]
 
+# We define callbacks for some behaviour-changing options as those
+# will let us consider them positionally, similar to what grep(1)
+# does. If you try -lLl and similar combinations on grep(1), the last
+# one passed is the one to be considered.
+
+def self.files_with_matches_cb
+  @show = :files_with_matches
+end
+
+def self.files_without_match_cb
+  @show = :files_without_match
+end
+
 def self.before_options
   @invert_match = false
   @match_undefined = true
   @match_defined = true
-  @files_with_matches = false
-  @files_without_match = false
+  @show = :full_match
 end
 
 def self.after_options
@@ -53,11 +65,6 @@ def self.after_options
 
   if @no_match_undefined and @no_match_defined
     puterror "you need to match at least defined or undefined symbols"
-    exit -1
-  end
-
-  if @files_with_matches and @files_without_match
-    puterror "you cannot list both files with and without matches"
     exit -1
   end
 
@@ -94,13 +101,17 @@ def self.analysis(file)
       gotmatch ||= matched
 
       if matched
-        break if @files_with_matches or @files_without_match
+        break unless @show == :full_match
 
         puts "#{"#{file} " unless @single_target}#{symbol.nm_code rescue '?'} #{symname}"
       end
     end
 
-    puts file if(gotmatch and @files_with_matches) or
-      (not gotmatch and @files_without_match)
+    case @show
+    when :files_with_matches
+      puts file if gotmatch
+    when :files_without_match
+      puts file if not gotmatch
+    end
   end
 end
