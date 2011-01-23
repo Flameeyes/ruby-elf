@@ -116,15 +116,29 @@ def self.try_execute(filename)
     # with a list of targets, so load it with execute_on_file.
     if filename[0..0] == "@"
       execute_on_file(filename[1..-1])
+      return
+    end
+
+    # find the file type so we don't have to look it up many times; if
+    # we're running a recursive scan, we don't want to look into
+    # symlinks as they might create loops or duplicate content, while
+    # we usually want to check them out if they are given directly in
+    # the list of files to analyse
+    file_stat = if @recursive
+                  File.lstat(filename)
+                else
+                  File.stat(filename)
+                end
+
     # if the path references a directory, and we're going to run
     # recursively, descend into that.
-    elsif @recursive and File.ftype(filename) == "directory"
+    if @recursive and file_stat.directory?
       Dir.foreach(filename) do |children|
         next if children == "." or children == ".."
         try_execute(File.join(filename, children))
       end
     # if the path does not point to a regular file, ignore it
-    elsif File.ftype(filename) != "file"
+    elsif not file_stat.file?
       putnotice "#{filename}: not a regular file"
     else
       @execution_threads.add(Thread.new {
