@@ -43,6 +43,8 @@ Options = [
            ["--count", "-c", GetoptLong::NO_ARGUMENT],
            # Match fixed strings and not regular expressions
            ["--fixed-strings", "-F", GetoptLong::NO_ARGUMENT],
+           # Make elfgrep case-insensitive
+           ["--ignore-case", "-i", GetoptLong::NO_ARGUMENT],
           ]
 
 # We define callbacks for some behaviour-changing options as those
@@ -108,12 +110,13 @@ def self.after_options
   @match_undefined = !@no_match_undefined
   @match_defined = !@no_match_defined
 
+  regexp_options = @ignore_case ? Regexp::IGNORECASE : 0
   @regexp = Regexp.union(@patterns.collect { |pattern|
                            # escape the pattern, so that it works like
                            # it was a fixed string.
                            pattern = Regexp.escape(pattern) if @match == :fixed_strings
 
-                           Regexp.new(pattern)
+                           Regexp.new(pattern, regexp_options)
                          })
 end
 

@@ -56,6 +56,10 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
           </arg>
 
           <arg choice="opt">
+            <option>--ignore-case</option>
+          </arg>
+
+          <arg choice="opt">
             <option>--match-version</option>
           </arg>
 
@@ -144,6 +148,17 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
                   <citerefentry><refentrytitle>grep</refentrytitle><manvolnum>1</manvolnum></citerefentry>
                   you <emphasis>have</emphasis> to provide at least an expression through the
                   <option>--regexp</option> option.
+                </para>
+              </listitem>
+            </varlistentry>
+
+            <varlistentry>
+              <term><option>--ignore-case</option></term>
+              <term><option>-i</option></term>
+              <listitem>
+                <para>
+                  Ignore case distinction in both the <replaceable>PATTERN</replaceable> and the
+                  symbols' names.
                 </para>
               </listitem>
             </varlistentry>
