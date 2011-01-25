@@ -69,6 +69,10 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
             <option>--invert-match</option>
           </arg>
 
+          <arg choice="opt">
+            <option>--count</option>
+          </arg>
+
           <group choice="opt">
             <arg choice="plain">
               <option>--files-without-match</option>
@@ -168,6 +172,17 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
                 Invert the sense of matching, to select non-matching symbols. This does not invert
                 the sense of <option>--no-match-undefined</option> and
                 <option>--no-match-defined</option>.
+              </para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term><option>--count</option></term>
+            <term><option>-c</option></term>
+            <listitem>
+              <para>
+                Suppress normal output; instead print a count of matching lines for each input
+                file. With the <option>--invert-match</option> option, count non-matching lines.
               </para>
             </listitem>
           </varlistentry>

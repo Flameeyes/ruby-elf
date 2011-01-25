@@ -38,7 +38,9 @@ Options = [
            # Print the name of the file for each match
            ["--with-filename", "-H", GetoptLong::NO_ARGUMENT],
            # Don't print the name of the file for each match
-           ["--no-filename", "-h", GetoptLong::NO_ARGUMENT]
+           ["--no-filename", "-h", GetoptLong::NO_ARGUMENT],
+           # Only output matches' count
+           ["--count", "-c", GetoptLong::NO_ARGUMENT]
           ]
 
 # We define callbacks for some behaviour-changing options as those
@@ -103,7 +105,7 @@ def self.analysis(file)
       return
     end
 
-    gotmatch = false
+    matches = 0
     elf[".dynsym"].each do |symbol|
       next if
         (symbol.section == Elf::Section::Abs) or
@@ -119,21 +121,22 @@ def self.analysis(file)
       # We don't care where it matches, but we do care that it matches
       # or not; we use an invert match since we have to further compare
       # that to @invert_match
-      matched = (@invert_match == (@regexp =~ symname).nil?)
-      gotmatch ||= matched
+      if (@invert_match == (@regexp =~ symname).nil?)
+        matches = matches+1
 
-      if matched
         break unless @show == :full_match
+        next if @count
 
-        puts "#{"#{file} " if print_filename}#{symbol.nm_code rescue '?'} #{symname}"
+        puts "#{"#{file}:" if print_filename}#{symbol.nm_code rescue '?'} #{symname}"
       end
     end
 
-    case @show
-    when :files_with_matches
+    if @show == :files_with_matches
       puts file if gotmatch
-    when :files_without_match
+    elsif @show == :files_without_match
       puts file if not gotmatch
+    elsif @count
+      puts "#{"#{file}:" if print_filename}#{matches}"
     end
   end
 end
