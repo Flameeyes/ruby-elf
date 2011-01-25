@@ -31,10 +31,10 @@
   <variablelist xmlns="http://docbook.org/ns/docbook" xml:id="filelist.option">
     <varlistentry>
       <term>
-        <option>--quiet</option>
+        <option>-q</option>
       </term>
       <term>
-        <option>-q</option>
+        <option>--quiet</option>
       </term>
       <listitem>
         <para>
@@ -47,10 +47,10 @@
 
     <varlistentry>
       <term>
-        <option>--recursive</option>
+        <option>-R</option>
       </term>
       <term>
-        <option>-R</option>
+        <option>--recursive</option>
       </term>
       <listitem>
         <para>

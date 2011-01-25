@@ -81,8 +81,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
         <variablelist>
           <varlistentry>
-            <term><option>--hidden-only</option></term>
             <term><option>-h</option></term>
+            <term><option>--hidden-only</option></term>
             <listitem>
               <para>
                 Only show symbols that have hidden visibility. Hidden symbols are not visible from
@@ -94,8 +94,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
           </varlistentry>
 
           <varlistentry>
-            <term><option>--show-type</option></term>
             <term><option>-t</option></term>
+            <term><option>--show-type</option></term>
             <listitem>
               <para>
                 Show the type of the symbol. The symbols reported by the script might be functions,
@@ -150,11 +150,11 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
           <varlistentry>
             <term>
-              <option>--exclude-regexp</option>
+              <option>-x</option>
               <replaceable>regular-expression</replaceable>
             </term>
             <term>
-              <option>-x</option>
+              <option>--exclude-regexp</option>
               <replaceable>regular-expression</replaceable>
             </term>
             <listitem>
@@ -168,11 +168,11 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
           <varlistentry>
             <term>
-              <option>--exclude-tags</option>
+              <option>-X</option>
               <replaceable>tags-file</replaceable>
             </term>
             <term>
-              <option>-X</option>
+              <option>--exclude-tags</option>
               <replaceable>tags-file</replaceable>
             </term>
             <listitem>

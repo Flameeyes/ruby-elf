@@ -124,8 +124,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
           <variablelist>
             <varlistentry>
-              <term><option>--fixed-strings</option></term>
               <term><option>-F</option></term>
+              <term><option>--fixed-strings</option></term>
               <listitem>
                 <para>
                   Interpret <replaceable>PATTERN</replaceable> as a fixed string.
@@ -135,13 +135,14 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
             <varlistentry>
               <term>
-                <option>--regexp</option>
-                <replaceable>PATTERN</replaceable>
-              </term>
-              <term>
                 <option>-e</option>
                 <replaceable>PATTERN</replaceable>
               </term>
+              <term>
+                <option>--regexp</option>
+                <replaceable>PATTERN</replaceable>
+              </term>
+
               <listitem>
                 <para>
                   Specifies the expression to match on the symbols. In contrast to regular
@@ -153,8 +154,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
             </varlistentry>
 
             <varlistentry>
-              <term><option>--ignore-case</option></term>
               <term><option>-i</option></term>
+              <term><option>--ignore-case</option></term>
               <listitem>
                 <para>
                   Ignore case distinction in both the <replaceable>PATTERN</replaceable> and the
@@ -164,8 +165,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
             </varlistentry>
 
             <varlistentry>
-              <term><option>--match-version</option></term>
               <term><option>-V</option></term>
+              <term><option>--match-version</option></term>
               <listitem>
                 <para>
                   Append the ELF version information for the symbol, separated by an @ symbol, before
@@ -176,8 +177,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
             </varlistentry>
 
             <varlistentry>
-              <term><option>--no-match-undefined</option></term>
               <term><option>-U</option></term>
+              <term><option>--no-match-undefined</option></term>
               <listitem>
                 <para>
                   Do not report matches on undefined symbols; useful if you're looking for the objects
@@ -187,8 +188,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
             </varlistentry>
 
             <varlistentry>
-              <term><option>--no-match-defined</option></term>
               <term><option>-D</option></term>
+              <term><option>--no-match-defined</option></term>
               <listitem>
                 <para>
                   Do not report matches on defined symbols; useful if you're looking for the objects
@@ -198,8 +199,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
             </varlistentry>
 
             <varlistentry>
-              <term><option>--invert-match</option></term>
               <term><option>-v</option></term>
+              <term><option>--invert-match</option></term>
               <listitem>
                 <para>
                   Invert the sense of matching, to select non-matching symbols. This does not invert
@@ -217,8 +218,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
           <variablelist>
 
             <varlistentry>
-              <term><option>--count</option></term>
               <term><option>-c</option></term>
+              <term><option>--count</option></term>
               <listitem>
                 <para>
                   Suppress normal output; instead print a count of matching lines for each input
@@ -228,8 +229,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
             </varlistentry>
 
             <varlistentry>
-              <term><option>--files-without-match</option></term>
               <term><option>-l</option></term>
+              <term><option>--files-without-match</option></term>
 
               <listitem>
                 <para>
@@ -240,8 +241,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
             </varlistentry>
 
             <varlistentry>
-              <term><option>--files-with-matches</option></term>
               <term><option>-l</option></term>
+              <term><option>--files-with-matches</option></term>
 
               <listitem>
                 <para>
@@ -252,8 +253,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
             </varlistentry>
 
             <varlistentry>
-              <term><option>--with-filename</option></term>
               <term><option>-H</option></term>
+              <term><option>--with-filename</option></term>
 
               <listitem>
                 <para>
@@ -264,8 +265,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
             </varlistentry>
 
             <varlistentry>
-              <term><option>--no-filename</option></term>
               <term><option>-h</option></term>
+              <term><option>--no-filename</option></term>
 
               <listitem>
                 <para>

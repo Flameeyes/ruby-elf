@@ -86,8 +86,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
         <variablelist>
           <varlistentry>
-            <term><option>--statistics</option></term>
             <term><option>-s</option></term>
+            <term><option>--statistics</option></term>
             <listitem>
               <para>
                 Instead of reporting all the variables found in Copy-on-Write sections, only
@@ -100,8 +100,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
           </varlistentry>
 
           <varlistentry>
-            <term><option>--total</option></term>
             <term><option>-t</option></term>
+            <term><option>--total</option></term>
             <listitem>
               <para>
                 Shows some rough totals for the amount of data in Copy-on-Write sections for the
@@ -112,8 +112,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
           </varlistentry>
 
           <varlistentry>
-            <term><option>--ignore-cxx</option></term>
             <term><option>-x</option></term>
+            <term><option>--ignore-cxx</option></term>
             <listitem>
               <para>
                 Ignore some C++ entries that could be considered false positives. C++ object files
@@ -125,8 +125,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
           </varlistentry>
 
           <varlistentry>
-            <term><option>--ignore-profiling</option></term>
             <term><option>-p</option></term>
+            <term><option>--ignore-profiling</option></term>
             <listitem>
               <para>
                 Similarly to C++, also profiling (with <command>gcov</command>) will add some
@@ -137,8 +137,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
           </varlistentry>
 
           <varlistentry>
-            <term><option>--ignore-data-rel-ro</option></term>
             <term><option>-r</option></term>
+            <term><option>--ignore-data-rel-ro</option></term>
             <listitem>
               <para>
                 Don't report constants found in the .data.rel.ro section, and consider it as
@@ -150,11 +150,11 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
           <varlistentry>
             <term>
-              <option>--sort-by</option>
+              <option>-S</option>
               <replaceable>section-column</replaceable>
             </term>
             <term>
-              <option>-S</option>
+              <option>--sort-by</option>
               <replaceable>section-column</replaceable>
             </term>
 

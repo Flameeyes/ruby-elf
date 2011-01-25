@@ -72,8 +72,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
         <variablelist>
           <varlistentry>
-            <term><option>--relocation-stats</option></term>
             <term><option>-r</option></term>
+            <term><option>--relocation-stats</option></term>
             <listitem>
               <para>
                 Instead of reporting size data compatible with
@@ -85,8 +85,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
           </varlistentry>
 
           <varlistentry>
-            <term><option>--decibel</option></term>
             <term><option>-d</option></term>
+            <term><option>--decibel</option></term>
             <listitem>
               <para>
                 When using the <option>--relocation-stats</option> option, a ratio is displayed
