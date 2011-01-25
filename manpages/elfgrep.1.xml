@@ -115,143 +115,160 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
       <refsect1>
         <title>Options</title>
 
-        <variablelist>
-          <varlistentry>
-            <term><option>--fixed-strings</option></term>
-            <term><option>-F</option></term>
-            <listitem>
-              <para>
-                Interpret <replaceable>PATTERN</replaceable> as a fixed string.
-              </para>
-            </listitem>
-          </varlistentry>
+        <refsect2>
+          <title>Matching Control</title>
 
-          <varlistentry>
-            <term>
-              <option>--regexp</option>
-              <replaceable>PATTERN</replaceable>
-            </term>
-            <term>
-              <option>-e</option>
-              <replaceable>PATTERN</replaceable>
-            </term>
-            <listitem>
-              <para>
-                Specifies the expression to match on the symbols. In contrast to regular
-                <citerefentry><refentrytitle>grep</refentrytitle><manvolnum>1</manvolnum></citerefentry>
-                you <emphasis>have</emphasis> to provide at least an expression through the
-                <option>--regexp</option> option.
-              </para>
-            </listitem>
-          </varlistentry>
+          <variablelist>
+            <varlistentry>
+              <term><option>--fixed-strings</option></term>
+              <term><option>-F</option></term>
+              <listitem>
+                <para>
+                  Interpret <replaceable>PATTERN</replaceable> as a fixed string.
+                </para>
+              </listitem>
+            </varlistentry>
 
-          <varlistentry>
-            <term><option>--match-version</option></term>
-            <term><option>-V</option></term>
-            <listitem>
-              <para>
-                Append the ELF version information for the symbol, separated by an @ symbol, before
-                testing the expression for match. This allows to match only symbols that are defined
-                with a particular version.
-              </para>
-            </listitem>
-          </varlistentry>
+            <varlistentry>
+              <term>
+                <option>--regexp</option>
+                <replaceable>PATTERN</replaceable>
+              </term>
+              <term>
+                <option>-e</option>
+                <replaceable>PATTERN</replaceable>
+              </term>
+              <listitem>
+                <para>
+                  Specifies the expression to match on the symbols. In contrast to regular
+                  <citerefentry><refentrytitle>grep</refentrytitle><manvolnum>1</manvolnum></citerefentry>
+                  you <emphasis>have</emphasis> to provide at least an expression through the
+                  <option>--regexp</option> option.
+                </para>
+              </listitem>
+            </varlistentry>
 
-          <varlistentry>
-            <term><option>--no-match-undefined</option></term>
-            <term><option>-U</option></term>
-            <listitem>
-              <para>
-                Do not report matches on undefined symbols; useful if you're looking for the objects
-                defining the symbol, and not those using it.
-              </para>
-            </listitem>
-          </varlistentry>
+            <varlistentry>
+              <term><option>--match-version</option></term>
+              <term><option>-V</option></term>
+              <listitem>
+                <para>
+                  Append the ELF version information for the symbol, separated by an @ symbol, before
+                  testing the expression for match. This allows to match only symbols that are defined
+                  with a particular version.
+                </para>
+              </listitem>
+            </varlistentry>
 
-          <varlistentry>
-            <term><option>--no-match-defined</option></term>
-            <term><option>-D</option></term>
-            <listitem>
-              <para>
-                Do not report matches on defined symbols; useful if you're looking for the objects
-                using the symbol, and not those defining it.
-              </para>
-            </listitem>
-          </varlistentry>
+            <varlistentry>
+              <term><option>--no-match-undefined</option></term>
+              <term><option>-U</option></term>
+              <listitem>
+                <para>
+                  Do not report matches on undefined symbols; useful if you're looking for the objects
+                  defining the symbol, and not those using it.
+                </para>
+              </listitem>
+            </varlistentry>
 
-          <varlistentry>
-            <term><option>--invert-match</option></term>
-            <term><option>-v</option></term>
-            <listitem>
-              <para>
-                Invert the sense of matching, to select non-matching symbols. This does not invert
-                the sense of <option>--no-match-undefined</option> and
-                <option>--no-match-defined</option>.
-              </para>
-            </listitem>
-          </varlistentry>
+            <varlistentry>
+              <term><option>--no-match-defined</option></term>
+              <term><option>-D</option></term>
+              <listitem>
+                <para>
+                  Do not report matches on defined symbols; useful if you're looking for the objects
+                  using the symbol, and not those defining it.
+                </para>
+              </listitem>
+            </varlistentry>
 
-          <varlistentry>
-            <term><option>--count</option></term>
-            <term><option>-c</option></term>
-            <listitem>
-              <para>
-                Suppress normal output; instead print a count of matching lines for each input
-                file. With the <option>--invert-match</option> option, count non-matching lines.
-              </para>
-            </listitem>
-          </varlistentry>
+            <varlistentry>
+              <term><option>--invert-match</option></term>
+              <term><option>-v</option></term>
+              <listitem>
+                <para>
+                  Invert the sense of matching, to select non-matching symbols. This does not invert
+                  the sense of <option>--no-match-undefined</option> and
+                  <option>--no-match-defined</option>.
+                </para>
+              </listitem>
+            </varlistentry>
+          </variablelist>
+        </refsect2>
 
-          <varlistentry>
-            <term><option>--files-without-match</option></term>
-            <term><option>-l</option></term>
+        <refsect2>
+          <title>Output Control</title>
 
-            <listitem>
-              <para>
-                Suppress normal output; instead print the name of each input file from which no
-                output would normally have been printed.
-              </para>
-            </listitem>
-          </varlistentry>
+          <variablelist>
 
-          <varlistentry>
-            <term><option>--files-with-matches</option></term>
-            <term><option>-l</option></term>
+            <varlistentry>
+              <term><option>--count</option></term>
+              <term><option>-c</option></term>
+              <listitem>
+                <para>
+                  Suppress normal output; instead print a count of matching lines for each input
+                  file. With the <option>--invert-match</option> option, count non-matching lines.
+                </para>
+              </listitem>
+            </varlistentry>
 
-            <listitem>
-              <para>
-                Suppress normal output; instead print the name of each input file from which output
-                would normally have been printed. The scalling will stop on the first match.
-              </para>
-            </listitem>
-          </varlistentry>
+            <varlistentry>
+              <term><option>--files-without-match</option></term>
+              <term><option>-l</option></term>
 
-          <varlistentry>
-            <term><option>--with-filename</option></term>
-            <term><option>-H</option></term>
+              <listitem>
+                <para>
+                  Suppress normal output; instead print the name of each input file from which no
+                  output would normally have been printed.
+                </para>
+              </listitem>
+            </varlistentry>
 
-            <listitem>
-              <para>
-                Print the file name for each match. This is the default when there is more than one
-                file to search.
-              </para>
-            </listitem>
-          </varlistentry>
+            <varlistentry>
+              <term><option>--files-with-matches</option></term>
+              <term><option>-l</option></term>
 
-          <varlistentry>
-            <term><option>--no-filename</option></term>
-            <term><option>-h</option></term>
+              <listitem>
+                <para>
+                  Suppress normal output; instead print the name of each input file from which output
+                  would normally have been printed. The scalling will stop on the first match.
+                </para>
+              </listitem>
+            </varlistentry>
 
-            <listitem>
-              <para>
-                Suppress the prefixing of file names on output. This is the default when there is
-                only one file to search.
-              </para>
-            </listitem>
-          </varlistentry>
+            <varlistentry>
+              <term><option>--with-filename</option></term>
+              <term><option>-H</option></term>
 
-          <xi:include href="common.xmli" xpointer="xpointer(id('filelist.option')/*)" />
-        </variablelist>
+              <listitem>
+                <para>
+                  Print the file name for each match. This is the default when there is more than one
+                  file to search.
+                </para>
+              </listitem>
+            </varlistentry>
+
+            <varlistentry>
+              <term><option>--no-filename</option></term>
+              <term><option>-h</option></term>
+
+              <listitem>
+                <para>
+                  Suppress the prefixing of file names on output. This is the default when there is
+                  only one file to search.
+                </para>
+              </listitem>
+            </varlistentry>
+          </variablelist>
+        </refsect2>
+
+        <refsect2>
+          <title>General Options</title>
+
+          <variablelist>
+            <xi:include href="common.xmli" xpointer="xpointer(id('filelist.option')/*)" />
+          </variablelist>
+        </refsect2>
       </refsect1>
 
       <refsect1>
