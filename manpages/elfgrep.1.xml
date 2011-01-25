@@ -46,7 +46,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
         <cmdsynopsis>
           <command>elfgrep</command>
 
-          <arg choice="req">
+          <arg choice="req" rep="repeat">
             <option>--regexp</option>
             <replaceable>regular-expression</replaceable>
           </arg>
@@ -125,7 +125,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
               <para>
                 Specifies the regular expression to apply to the symbols. In contrast to regular
                 <citerefentry><refentrytitle>grep</refentrytitle><manvolnum>1</manvolnum></citerefentry>
-                you <emphasis>have</emphasis> to provide a <option>--regexp</option> pattern.
+                you <emphasis>have</emphasis> to provide at least an expression through the
+                <option>--regexp</option> option.
               </para>
             </listitem>
           </varlistentry>

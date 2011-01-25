@@ -74,16 +74,22 @@ def self.print_filename
   @print_filename
 end
 
+def self.regexp_cb(pattern)
+  @patterns << pattern
+end
+
 def self.before_options
   @invert_match = false
   @match_undefined = true
   @match_defined = true
   @show = :full_match
+
+  @patterns = []
 end
 
 def self.after_options
-  if @regexp.nil?
-    puterror "you need to provide an expression"
+  if @patterns.size ==0
+    puterror "you need to provide at least expression"
     exit -1
   end
 
@@ -94,7 +100,10 @@ def self.after_options
 
   @match_undefined = !@no_match_undefined
   @match_defined = !@no_match_defined
-  @regexp = Regexp.new(@regexp)
+
+  @regexp = Regexp.union(@patterns.collect { |pattern|
+                           Regexp.new(pattern)
+                         })
 end
 
 def self.analysis(file)
