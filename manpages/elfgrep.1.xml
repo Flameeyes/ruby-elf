@@ -275,6 +275,13 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
         <title>Bugs and Missing Features</title>
 
         <para>
+          By default, <application>elfgrep</application> uses standard Ruby regular expressions,
+          which are neither the basic or extended regular expressions as implemented by
+          <citerefentry><refentrytitle>grep</refentrytitle><manvolnum>1</manvolnum></citerefentry>
+          nor the Perl (or compatible) regular expressions.
+        </para>
+
+        <para>
           The <option>--fixed-strings</option> option does not conform completely with the
           equivalent option from
           <citerefentry><refentrytitle>grep</refentrytitle><manvolnum>1</manvolnum></citerefentry>
