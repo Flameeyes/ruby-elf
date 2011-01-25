@@ -101,6 +101,10 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
             </arg>
           </group>
 
+          <arg choice="opt">
+            <option>--null</option>
+          </arg>
+
           <xi:include href="common.xmli"  xpointer="xpointer(id('filelist.synopsis')/*)" />
         </cmdsynopsis>
       </refsynopsisdiv>
@@ -272,6 +276,22 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
                 <para>
                   Suppress the prefixing of file names on output. This is the default when there is
                   only one file to search.
+                </para>
+              </listitem>
+            </varlistentry>
+
+            <varlistentry>
+              <term><option>-Z</option></term>
+              <term><option>--null</option></term>
+
+              <listitem>
+                <para>
+                  Output a zero byte (the ASCII <literal>NUL</literal> character) instead of the
+                  character that normally follows a file name. For example <command>elfgrep
+                  -lZ</command> outputs a zero byte after each file name instead of the usual
+                  newline. This option makes the output unambiguous, even in presence of file names
+                  containing unusual characters like newlines, so that it can be used with commands
+                  like <command>xargs -0</command>.
                 </para>
               </listitem>
             </varlistentry>

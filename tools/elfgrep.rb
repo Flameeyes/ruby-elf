@@ -45,6 +45,8 @@ Options = [
            ["--fixed-strings", "-F", GetoptLong::NO_ARGUMENT],
            # Make elfgrep case-insensitive
            ["--ignore-case", "-i", GetoptLong::NO_ARGUMENT],
+           # Use NULLs to terminate filenames
+           ["--null", "-Z", GetoptLong::NO_ARGUMENT],
           ]
 
 # We define callbacks for some behaviour-changing options as those
@@ -157,16 +159,16 @@ def self.analysis(file)
         break unless @show == :full_match
         next if @count
 
-        puts "#{"#{file}:" if print_filename}#{symbol.nm_code rescue '?'} #{symname}"
+        puts "#{"#{file}#{@null ? '\0' : ':'}" if print_filename}#{symbol.nm_code rescue '?'} #{symname}"
       end
     end
 
     if @show == :files_with_matches
-      puts file if matches > 0
+      printf "%s%s", file, @null ? "\0" : "\n" if matches > 0
     elsif @show == :files_without_match
-      puts file if matches == 0
+      printf "%s%s", file, @null ? "\0" : "\n" if matches == 0
     elsif @count
-      puts "#{"#{file}:" if print_filename}#{matches}"
+      puts "#{"#{file}#{@null ? '\0' : ':'}" if print_filename}#{matches}"
     end
   end
 end
