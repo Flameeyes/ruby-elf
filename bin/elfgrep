@@ -123,6 +123,17 @@ def self.after_options
 end
 
 def self.analysis(file)
+  if not @print_filename
+    file_prefix = ""
+  else
+    file_prefix = sprintf("%s%s ",
+                          file,
+                          @null ? "\0" : ":")
+  end
+  file_list = sprintf("%s%s",
+                      file,
+                      @null ? "\0" : "\n")
+
   Elf::File.open(file) do |elf|
     table = [".dynsym", ".symtab"].find do |table|
       begin
@@ -159,16 +170,16 @@ def self.analysis(file)
         break unless @show == :full_match
         next if @count
 
-        puts "#{"#{file}#{@null ? '\0' : ':'}" if print_filename}#{symbol.nm_code rescue '?'} #{symname}"
+        puts "#{file_prefix}#{symbol.nm_code rescue '?'} #{symname}"
       end
     end
 
     if @show == :files_with_matches
-      printf "%s%s", file, @null ? "\0" : "\n" if matches > 0
+      puts file_list if matches > 0
     elsif @show == :files_without_match
-      printf "%s%s", file, @null ? "\0" : "\n" if matches == 0
+      puts file_list if matches == 0
     elsif @count
-      puts "#{"#{file}#{@null ? '\0' : ':'}" if print_filename}#{matches}"
+      puts "#{file_prefix}#{matches}"
     end
   end
 end
