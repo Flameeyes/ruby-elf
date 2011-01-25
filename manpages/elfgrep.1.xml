@@ -250,6 +250,12 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
             <manvolnum>1</manvolnum>
           </citerefentry>.
         </para>
+
+        <para>
+          Lots of description of options above are lifted directly from the
+          <application>grep</application> man page, to avoid confusing with different
+          wordings.
+        </para>
       </refsect1>
     </refentry>
   </section>
