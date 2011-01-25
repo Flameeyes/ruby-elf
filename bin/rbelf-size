@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby
-# -*- coding: utf-8 -*-
+# -*- mode: ruby; coding: utf-8 -*-
 # Copyright © 2008-2010 Diego E. "Flameeyes" Pettenò <flameeyes@gmail.com>
 #
 # This program is free software; you can redistribute it and/or modify
