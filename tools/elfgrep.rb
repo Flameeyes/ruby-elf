@@ -119,14 +119,21 @@ end
 
 def self.analysis(file)
   Elf::File.open(file) do |elf|
-    if not elf.has_section?(".dynsym") or
-        elf[".dynsym"].class != Elf::SymbolTable
-      putnotice "#{file}: not a dynamically linked file"
+    table = [".dynsym", ".symtab"].find do |table|
+      begin
+        (elf[table].class == Elf::SymbolTable)
+      rescue Elf::File::MissingSection
+        false
+      end
+    end
+
+    if table.nil?
+      putnotice "#{file}: unable to find symbol table"
       return
     end
 
     matches = 0
-    elf[".dynsym"].each do |symbol|
+    elf[table].each do |symbol|
       next if
         (symbol.section == Elf::Section::Abs) or
         (symbol.name == '') or
