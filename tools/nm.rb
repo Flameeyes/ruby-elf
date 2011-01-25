@@ -55,11 +55,6 @@ files.each do |file|
 
       elf[scan_section].each do |sym|
         next if sym.name == ''
-
-        addr = sprintf("%0#{addrsize}x", sym.value)
-
-        addr = ' ' * addrsize unless sym.section
-
         begin
           flag = sym.nm_code
         rescue Elf::Symbol::UnknownNMCode => e
@@ -72,7 +67,7 @@ files.each do |file|
 
         name = demangle ? sym.demangle : sym.name
 
-        puts "#{addr} #{flag} #{name}#{version_name}"
+        puts "#{sym.address_string} #{flag} #{name}#{version_name}"
       end
     end
   rescue Errno::ENOENT

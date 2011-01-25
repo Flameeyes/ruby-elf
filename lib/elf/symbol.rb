@@ -289,6 +289,20 @@ module Elf
       return nmflag
     end
 
+    # Reports the symbol's address as a string, if any is provided
+    #
+    # Reports a string full of whitespace if the symbols is not
+    # defined (as there is no address)
+    def address_string
+      addrsize = (@file.elf_class == Elf::Class::Elf32 ? 8 : 16)
+
+      if section
+        sprintf("%0#{addrsize}x", value)
+      else
+        ' ' * addrsize
+      end
+    end
+
     # Check whether two symbols are the same
     #
     # This function compares the name, version and section of two
