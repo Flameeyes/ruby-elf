@@ -40,13 +40,19 @@ Options = [
            # Don't print the name of the file for each match
            ["--no-filename", "-h", GetoptLong::NO_ARGUMENT],
            # Only output matches' count
-           ["--count", "-c", GetoptLong::NO_ARGUMENT]
+           ["--count", "-c", GetoptLong::NO_ARGUMENT],
+           # Match fixed strings and not regular expressions
+           ["--fixed-strings", "-F", GetoptLong::NO_ARGUMENT],
           ]
 
 # We define callbacks for some behaviour-changing options as those
 # will let us consider them positionally, similar to what grep(1)
 # does. If you try -lLl and similar combinations on grep(1), the last
 # one passed is the one to be considered.
+
+def self.fixed_strings_cb
+  @match = :fixed_strings
+end
 
 def self.files_with_matches_cb
   @show = :files_with_matches
@@ -83,6 +89,7 @@ def self.before_options
   @match_undefined = true
   @match_defined = true
   @show = :full_match
+  @match = :regexp
 
   @patterns = []
 end
@@ -102,6 +109,10 @@ def self.after_options
   @match_defined = !@no_match_defined
 
   @regexp = Regexp.union(@patterns.collect { |pattern|
+                           # escape the pattern, so that it works like
+                           # it was a fixed string.
+                           pattern = Regexp.escape(pattern) if @match == :fixed_strings
+
                            Regexp.new(pattern)
                          })
 end

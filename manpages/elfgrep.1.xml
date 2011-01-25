@@ -46,9 +46,13 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
         <cmdsynopsis>
           <command>elfgrep</command>
 
+          <arg choice="opt">
+            <option>--fixed-strings</option>
+          </arg>
+
           <arg choice="req" rep="repeat">
             <option>--regexp</option>
-            <replaceable>regular-expression</replaceable>
+            <replaceable>PATTERN</replaceable>
           </arg>
 
           <arg choice="opt">
@@ -113,17 +117,27 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
         <variablelist>
           <varlistentry>
+            <term><option>--fixed-strings</option></term>
+            <term><option>-F</option></term>
+            <listitem>
+              <para>
+                Interpret <replaceable>PATTERN</replaceable> as a fixed string.
+              </para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
             <term>
               <option>--regexp</option>
-              <replaceable>regular-expression</replaceable>
+              <replaceable>PATTERN</replaceable>
             </term>
             <term>
               <option>-e</option>
-              <replaceable>regular-expression</replaceable>
+              <replaceable>PATTERN</replaceable>
             </term>
             <listitem>
               <para>
-                Specifies the regular expression to apply to the symbols. In contrast to regular
+                Specifies the expression to match on the symbols. In contrast to regular
                 <citerefentry><refentrytitle>grep</refentrytitle><manvolnum>1</manvolnum></citerefentry>
                 you <emphasis>have</emphasis> to provide at least an expression through the
                 <option>--regexp</option> option.
@@ -242,6 +256,13 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
       <refsect1>
         <title>Bugs and Missing Features</title>
+
+        <para>
+          The <option>--fixed-strings</option> option does not conform completely with the
+          equivalent option from
+          <citerefentry><refentrytitle>grep</refentrytitle><manvolnum>1</manvolnum></citerefentry>
+          as it doesn't take a newline-separated list of strings, but only a single string.
+        </para>
 
         <xi:include href="common.xmli" xpointer="xpointer(id('filelist.bugpara')/*)" />
       </refsect1>
