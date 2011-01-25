@@ -162,9 +162,9 @@ def self.analysis(file)
     end
 
     if @show == :files_with_matches
-      puts file if gotmatch
+      puts file if matches > 0
     elsif @show == :files_without_match
-      puts file if not gotmatch
+      puts file if matches == 0
     elsif @count
       puts "#{"#{file}:" if print_filename}#{matches}"
     end
