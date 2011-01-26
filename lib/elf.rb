@@ -36,6 +36,7 @@ class Integer
 end
 
 module Elf
+  VERSION = "1.0.0"
 
   MagicString = "\177ELF"
 
