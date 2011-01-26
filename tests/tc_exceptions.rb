@@ -170,7 +170,9 @@ class TC_Exceptions < Test::Unit::TestCase
       raise Exception.new("A file named 'invaliddestination' is present in the #{TestDir.realpath} directory")
     end
 
+    File.symlink("invaliddestination", TestDir + "invalidlink")
     helper_open_exception Errno::ENOENT, "invalidlink"
+    File.delete(TestDir + "invalidlink")
   end
 
   # Test behaviour when a file contains an invalid section type
