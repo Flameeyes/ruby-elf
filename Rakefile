@@ -5,10 +5,27 @@ require 'elf'
 
 task :default => [:test]
 
-desc "Build the Ruby demanglers based on the Ragel code"
-task :demanglers do
-  sh 'make demanglers-build'
+rule '.rb' => '.rl' do |t|
+  sh "ragel", "-R", "-o", t.name, t.source
 end
+
+desc "Build the Ruby demanglers based on the Ragel code"
+task :demanglers => FileList["lib/elf/symbol/demangler_*.rl"].collect { |file|
+  file.sub(/\.rl$/, ".rb")
+}
+
+XSL_NS_ROOT="http://docbook.sourceforge.net/release/xsl-ns/current"
+
+rule '.1' => [ '.1.xml' ] + FileList["manpages/*.xmli"] do |t|
+  sh "xsltproc", "--stringparam", "man.copyright.section.enabled", "0", \
+  "--xinclude", "-o", t.name, "#{XSL_NS_ROOT}/manpages/docbook.xsl", \
+  t.source
+end
+
+desc "Build the man pages for the installed tools"
+task :manpages => FileList["manpages/*.1.xml"].collect { |file|
+  file.sub(/\.1\.xml$/, ".1")
+}
 
 require 'rake/testtask'
 
