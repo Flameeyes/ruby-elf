@@ -1,4 +1,7 @@
+*.gemspec
+*~
 /coverage
 /lib/elf/symbol/demangler_*.rb
 /manpages/*.1
 /profiling
+pkg/
