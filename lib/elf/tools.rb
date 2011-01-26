@@ -67,14 +67,9 @@ def self.parse_arguments
     if opt == "--help"
       # check if we're executing from a tarball or the git repository,
       # if so we can't use the system man page.
-      require 'pathname'
-      filepath = Pathname.new($0)
-      localman = filepath.dirname + "../manpages" + filepath.basename.sub(".rb", ".1")
-      if localman.exist?
-        exec("man #{localman.to_s}")
-      else
-        exec("man #{to_s}")
-      end
+      manpage = File.expand_path("../../../manpages/#{to_s}.1", __FILE__)
+      manpage = to_s unless File.exist?(manpage)
+      exec("man #{manpage}")
     end
 
     attrname = opt.gsub(/^--/, "").gsub("-", "_")
