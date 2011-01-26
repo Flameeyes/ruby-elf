@@ -9,10 +9,12 @@ rule '.rb' => '.rl' do |t|
   sh "ragel", "-R", "-o", t.name, t.source
 end
 
-desc "Build the Ruby demanglers based on the Ragel code"
-task :demanglers => FileList["lib/elf/symbol/demangler_*.rl"].collect { |file|
+DemanglersList = FileList["lib/elf/symbol/demangler_*.rl"].collect { |file|
   file.sub(/\.rl$/, ".rb")
 }
+
+desc "Build the Ruby demanglers based on the Ragel code"
+task :demanglers => DemanglersList
 
 XSL_NS_ROOT="http://docbook.sourceforge.net/release/xsl-ns/current"
 
@@ -22,10 +24,12 @@ rule '.1' => [ '.1.xml' ] + FileList["manpages/*.xmli"] do |t|
   t.source
 end
 
-desc "Build the man pages for the installed tools"
-task :manpages => FileList["manpages/*.1.xml"].collect { |file|
+ManpagesList = FileList["manpages/*.1.xml"].collect { |file|
   file.sub(/\.1\.xml$/, ".1")
 }
+
+desc "Build the man pages for the installed tools"
+task :manpages => ManpagesList
 
 require 'rake/testtask'
 
@@ -61,9 +65,9 @@ Spec = Gem::Specification.new do |s|
   s.email = "flameeyes@gmail.com"
 
   s.files = IO.popen("git ls-files").lines.collect do |line|
-    next if line =~ /^(\.gitignore$|tests\/|.*\.xmli$)/
-    line.strip.sub(/\.1\.xml$/, '.1')
-  end
+    next if line =~ /^(\.gitignore\n$|tests\/|.*\.xmli?\n$|Rakefile\n$)/
+    line.strip
+  end | DemanglersList | ManpagesList
 
   s.executables = FileList["bin/*"].collect { |bin|
     next if bin =~ /~$/
@@ -89,7 +93,7 @@ Rake::PackageTask.new("ruby-elf", Elf::VERSION) do |pkg|
   pkg.package_files = IO.popen("git ls-files").lines.collect do |line|
     next if line == /^\.gitignore/
     line.strip
-  end
+  end | DemanglersList | ManpagesList
   pkg.package_files << "ruby-elf-#{Elf::VERSION}.gemspec"
 end
 
