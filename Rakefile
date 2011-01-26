@@ -65,7 +65,7 @@ Spec = Gem::Specification.new do |s|
   s.email = "flameeyes@gmail.com"
 
   s.files = IO.popen("git ls-files").lines.collect do |line|
-    next if line =~ /^(\.gitignore\n$|tests\/|.*\.xmli?\n$|Rakefile\n$)/
+    next if line =~ /^(\.gitignore\n$|tests\/|.*\.xmli?\n$|Rakefile\n$|.*\.rl\n$)/
     line.strip
   end | DemanglersList | ManpagesList
 
