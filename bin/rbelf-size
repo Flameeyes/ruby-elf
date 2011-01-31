@@ -50,17 +50,17 @@ def self.analysis(file)
     # Get the size of each section, and then, depending on its type,
     # flags and eventually name, decide what to sum it to.
     elf.each_section do |section|
+      # This tool only interests itself with size of sections that are
+      # loaded into memory at runtime, and not those that only impact
+      # the size of the on-disk file.
+      next unless section.flags.include?(Elf::Section::Flags::Alloc)
+
       case
       # When the section is NoBits, it is not allocated in the file,
       # and is only allocated in ram, this is the case of .bss and
       # .tbss sections.
       when section.type == Elf::Section::Type::NoBits
         sectype = :bss
-      # Beside NoBits sections, we dnn't care about other sections
-      # that are not allocated, as they only impact the size of the
-      # file on disk and not of the loaded image.
-      when !section.flags.include?(Elf::Section::Flags::Alloc)
-        next
       # If the section contains executable code, count it separately;
       # size(1) will count it all as text, but we don't need to do
       # that.
@@ -94,7 +94,7 @@ def self.analysis(file)
             section.type == Elf::Section::Type::Hash or
             section.type == Elf::Section::Type::GNU::Hash)
         sectype = :overhead
-      when section.flags.include?(Elf::Section::Flags::Alloc)
+      else
         sectype = :rodata
       end
 
