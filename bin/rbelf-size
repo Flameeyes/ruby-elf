@@ -133,9 +133,13 @@ def self.standard_size(results, file)
     @header = false
   end
 
-  results.each_pair do |key, val|
-    results[key] = val.to_s.rjust(9)
-  end
-
-  puts "#{results[:exec]} #{results[:data]} #{results[:rodata]} #{results[:relro]} #{results[:bss]} #{results[:overhead]} #{results[:total]} #{file}"
+  printf("% 9d % 9d % 9d % 9d % 9d % 9d % 9d %s\n",
+         results[:exec],
+         results[:data],
+         results[:rodata],
+         results[:relro],
+         results[:bss],
+         results[:overhead],
+         results[:total],
+         file)
 end
