@@ -166,6 +166,19 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
           </varlistentry>
 
           <varlistentry>
+            <term>overhead</term>
+            <listitem>
+              <para>
+                Total size of sections providing object's metadata for the link editor and dynamic
+                loader. These include the symbol and string tables, the version tables and the hash
+                table used during linking and execution. These values are usually tied to the amount
+                of symbols exposed by an object, and can easily be reduced by hiding internal,
+                non-public symbols.
+              </para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
             <term>total</term>
             <listitem>
               <para>

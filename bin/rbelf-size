@@ -43,6 +43,7 @@ def self.analysis(file)
       :rodata => 0,
       :relro => 0,
       :bss => 0,
+      :overhead => 0,
       :total => 0
     }
 
@@ -55,6 +56,11 @@ def self.analysis(file)
       # .tbss sections.
       when section.type == Elf::Section::Type::NoBits
         sectype = :bss
+      # Beside NoBits sections, we dnn't care about other sections
+      # that are not allocated, as they only impact the size of the
+      # file on disk and not of the loaded image.
+      when !section.flags.include?(Elf::Section::Flags::Alloc)
+        next
       # If the section contains executable code, count it separately;
       # size(1) will count it all as text, but we don't need to do
       # that.
@@ -65,9 +71,7 @@ def self.analysis(file)
       #
       # We check further though since we might want to count it
       # separately.
-      when (section.flags.include?(Elf::Section::Flags::Write) and
-            section.flags.include?(Elf::Section::Flags::Alloc))
-        
+      when section.flags.include?(Elf::Section::Flags::Write)
         # This makes it GCC-specific but that's just because I
         # cannot find anything in ELF specs that gives an easy way
         # to deal with this.
@@ -76,6 +80,20 @@ def self.analysis(file)
         # the exception of prelinking, where this area can then
         # become mostly read-only and thus not creating dirty pages.
         sectype = (section.name =~ /^\.data\.rel\.ro(\..+)?/) ? :relro : :data
+      # A number of sections are loaded into memory on the image but
+      # are not really used for anything beside providing metadata for
+      # link editor and loader; these section are an object's
+      # "overhead" and can usually be reduced by reducing the amount
+      # of symbols exposed by the object itself.
+      when (section.class == Elf::StringTable or
+            section.class == Elf::SymbolTable or
+            section.type == Elf::Section::Type::Dynamic or
+            section.type == Elf::Section::Type::GNU::VerDef or
+            section.type == Elf::Section::Type::GNU::VerNeed or
+            section.type == Elf::Section::Type::GNU::VerSym or
+            section.type == Elf::Section::Type::Hash or
+            section.type == Elf::Section::Type::GNU::Hash)
+        sectype = :overhead
       when section.flags.include?(Elf::Section::Flags::Alloc)
         sectype = :rodata
       end
@@ -111,7 +129,7 @@ end
 
 def self.standard_size(results, file)
   if @header
-    puts "     exec      data    rodata     relro       bss     total filename"
+    puts "     exec      data    rodata     relro       bss  overhead     total filename"
     @header = false
   end
 
@@ -119,5 +137,5 @@ def self.standard_size(results, file)
     results[key] = val.to_s.rjust(9)
   end
 
-  puts "#{results[:exec]} #{results[:data]} #{results[:rodata]} #{results[:relro]} #{results[:bss]} #{results[:total]} #{file}"
+  puts "#{results[:exec]} #{results[:data]} #{results[:rodata]} #{results[:relro]} #{results[:bss]} #{results[:overhead]} #{results[:total]} #{file}"
 end
