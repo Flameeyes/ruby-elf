@@ -19,7 +19,8 @@ linux-amd64-icc: \
 	../linux/amd64/icc/static_executable \
 	../linux/amd64/icc/symboltypes.o
 
-linux-x86: \
+linux-x86: linux
+linux-x86-gcc: \
 	../linux/x86/gcc/dynamic_executable.o \
 	../linux/x86/gcc/dynamic_executable \
 	../linux/x86/gcc/static_executable \
