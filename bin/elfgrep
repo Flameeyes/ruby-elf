@@ -127,12 +127,14 @@ def self.after_options
 
   regexp_options = @ignore_case ? Regexp::IGNORECASE : 0
   @regexp = Regexp.union(@patterns.collect { |pattern|
-                           # escape the pattern, so that it works like
-                           # it was a fixed string.
-                           pattern = Regexp.escape(pattern) if @match == :fixed_strings
-
-                           Regexp.new(pattern, regexp_options)
-                         })
+                           if @match == :fixed_strings
+                             pattern.split(/\r?\n/).collect { |string|
+                               Regexp.new(Regexp.escape(string), regexp_options)
+                             }
+                           else
+                             Regexp.new(pattern, regexp_options)
+                           end
+                         }.flatten)
 end
 
 def self.analysis(file)

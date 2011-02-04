@@ -140,7 +140,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
               <term><option>--fixed-strings</option></term>
               <listitem>
                 <para>
-                  Interpret <replaceable>PATTERN</replaceable> as a fixed string.
+                  Interpret <replaceable>PATTERN</replaceable> as a list of fixed strings, separated
+                  by newlines, any of which is to be matched.
                 </para>
               </listitem>
             </varlistentry>
@@ -322,13 +323,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
           which are neither the basic or extended regular expressions as implemented by
           <citerefentry><refentrytitle>grep</refentrytitle><manvolnum>1</manvolnum></citerefentry>
           nor the Perl (or compatible) regular expressions.
-        </para>
-
-        <para>
-          The <option>--fixed-strings</option> option does not conform completely with the
-          equivalent option from
-          <citerefentry><refentrytitle>grep</refentrytitle><manvolnum>1</manvolnum></citerefentry>
-          as it doesn't take a newline-separated list of strings, but only a single string.
         </para>
 
         <xi:include href="common.xmli" xpointer="xpointer(id('filelist.bugpara')/*)" />
