@@ -230,7 +230,8 @@ module Elf
         # When the section header string table index is set to zero,
         # there is not going to be a string table in the file, this
         # happens usually when the file is a static ELF file built
-        # directly with an assembler.
+        # directly with an assembler, or when it was passed through
+        # the elfkickers' sstrip utility.
         #
         # To handle this specific case, set the @string_table attribute
         # to false, that is distinct from nil, and raise
@@ -316,7 +317,7 @@ module Elf
     def has_section?(sect_idx_or_name)
 
       if sect_idx_or_name.is_a? String and not @string_table.is_a? Elf::Section
-        return false if @string_table == false
+        raise MissingStringTable.new(sect_idx_or_name) if @string_table == false
         raise StringTableNotLoaded.new(sect_idx_or_name) if @string_table.nil?
       end
 
