@@ -25,10 +25,9 @@ require File.dirname(__FILE__) + '/tt_elf' unless defined? Elf::BaseTest
 # GNU binutils and glibc support a versioning feature that allows to
 # create symbols with multiple versions; this test ensures that
 # ruby-elf can read the versioning information correctly.
-class TC_Versioning < Test::Unit::TestCase
+module Elf::TestVersioning
   include Elf::FullTest
   Os = "linux"
-  Arch = "amd64"
   Compiler = "gcc"
   BaseFilename = "versioning.so"
   ExpectedSections = [".gnu.version", ".gnu.version_d", ".gnu.version_r"]
@@ -79,15 +78,14 @@ class TC_Versioning < Test::Unit::TestCase
   def test__gnu_version_r
     section = @elf[".gnu.version_r"]
 
-    
-    assert_equal(1, section.size,
+    assert_equal(self.class::ExpectedRequiredVersions, section.size,
                  "Wrong amount of needed versions")
 
     # The indexes are incremental between defined and needed
     assert(section[3],
            "Version with index 3 not found.")
 
-    assert_equal("GLIBC_2.2.5", section[3][:name],
+    assert_equal(self.class::ExpectedGlibcVersion, section[3][:name],
                  "The needed version is not the right name")
   end
 
@@ -96,7 +94,7 @@ class TC_Versioning < Test::Unit::TestCase
     @elf[".dynsym"].each do |sym|
       case sym.name
       when "tolower"
-        assert_equal("GLIBC_2.2.5", sym.version,
+        assert_equal(self.class::ExpectedGlibcVersion, sym.version,
                      "Imported \"tolower\" symbol is not reporting the expected version")
       when "asymbol"
         unless first_asymbol_seen
@@ -113,5 +111,23 @@ class TC_Versioning < Test::Unit::TestCase
     end
   end
 
-end
+  class LinuxAMD64 < Test::Unit::TestCase
+    Arch = "amd64"
+    ExpectedGlibcVersion = "GLIBC_2.2.5"
+    ExpectedRequiredVersions = 1
+    include Elf::TestVersioning
+  end
 
+  class LinuxX86 < Test::Unit::TestCase
+    Arch = "x86"
+    ExpectedGlibcVersion = "GLIBC_2.0"
+    ExpectedRequiredVersions = 2
+    include Elf::TestVersioning
+  end
+
+  def self.subsuite
+    suite = Test::Unit::TestSuite.new("GNU Versioning")
+    suite << LinuxAMD64.suite
+    suite << LinuxX86.suite
+  end
+end

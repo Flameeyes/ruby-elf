@@ -49,7 +49,6 @@ class TS_RubyElf
     suite << TC_Exceptions.suite
     suite << TC_ARM.suite
     suite << TC_SunW_Sections.suite
-    suite << TC_Versioning.suite
     suite << TC_Solaris_Versioning.suite
     suite << TC_SymbolTable.suite
     suite << TC_StringTable.suite
@@ -76,6 +75,7 @@ end
  Elf::TestStaticExecutable.subsuite,
  Elf::TestRelocatable.subsuite,
  Elf::TestNMCodes.subsuite,
+ Elf::TestVersioning.subsuite,
 ].each do |suite|
   
   Test::Unit::UI::Console::TestRunner.run(suite, verbose)
