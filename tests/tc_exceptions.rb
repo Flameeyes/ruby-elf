@@ -216,17 +216,6 @@ class TC_Exceptions < Test::Unit::TestCase
     elf.close
   end
 
-  # Test behaviour when a file lacks a string table and a section is
-  # tested by name.
-  #
-  # Expected behaviour: the method return false, as the section (by
-  # name) is certainly not present.
-  def test_missing_string_table_test
-    elf = Elf::File.new(TestDir + "unknown_section_type")
-    assert_equal false, elf.has_section?(".symtab")
-    elf.close
-  end
-
   # Test behaviour when a section is requested in a file that does not
   # have it.
   #
@@ -294,6 +283,24 @@ class TC_Exceptions < Test::Unit::TestCase
 
     assert_raise TypeError do
       elf.is_compatible("foo")
+    end
+
+    elf.close
+  end
+
+  # Test behaviour when opening a file that has no string table; this
+  # is the case for files that have been passed through the sstrip
+  # tool, which might not even work anymore (as they lack proper
+  # symbol tables).
+  def test_no_stringtable
+    elf = Elf::File.new(Elf::FullTest::TestDir + "linux/amd64/gcc/dynamic_executable_sstrip")
+
+    assert_raise Elf::File::MissingStringTable do
+      elf.has_section?(".dynamic")
+    end
+
+    assert_raise Elf::File::MissingStringTable do
+      elf[".dynsym"]
     end
 
     elf.close

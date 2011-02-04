@@ -5,6 +5,7 @@ linux-amd64: linux-amd64-gcc linux-amd64-suncc linux-amd64-icc linux-x86
 linux-amd64-gcc: \
 	../linux/amd64/gcc/dynamic_executable.o \
 	../linux/amd64/gcc/dynamic_executable \
+	../linux/amd64/gcc/dynamic_executable_sstrip \
 	../linux/amd64/gcc/static_executable \
 	../linux/amd64/gcc/symboltypes.o \
 	../linux/amd64/gcc/versioning.so \
@@ -60,6 +61,10 @@ solaris-x86-gcc: \
 
 ../linux/amd64/gcc/dynamic_executable: executable.c
 	x86_64-pc-linux-gnu-gcc executable.c -o $@
+
+../linux/amd64/gcc/dynamic_executable_sstrip: ../linux/amd64/gcc/dynamic_executable
+	cp $< $@
+	sstrip64 $@
 
 ../linux/amd64/gcc/static_executable: executable.c
 	x86_64-pc-linux-gnu-gcc -static executable.c -o $@
