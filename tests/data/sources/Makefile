@@ -24,6 +24,7 @@ linux-x86-gcc: \
 	../linux/x86/gcc/dynamic_executable.o \
 	../linux/x86/gcc/dynamic_executable \
 	../linux/x86/gcc/static_executable \
+	../linux/x86/gcc/versioning.so \
 
 linux-arm: \
 	../linux/arm/gcc/dynamic_executable.o \
@@ -92,6 +93,9 @@ solaris-x86-gcc: \
 
 ../linux/x86/gcc/static_executable: executable.c
 	x86_64-pc-linux-gnu-gcc -static -m32 executable.c -o $@
+
+../linux/x86/gcc/versioning.so: versioning.c versioning.ld
+	x86_64-pc-linux-gnu-gcc -m32 -Wl,-h,versioning.so -shared -fPIC versioning.c -Wl,--version-script=versioning.ld -o $@
 
 ../linux/arm/gcc/dynamic_executable.o: executable.c
 	arm-linux-gnu-gcc -c executable.c -o $@
