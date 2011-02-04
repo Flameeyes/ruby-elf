@@ -17,6 +17,17 @@
 # along with this generator; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
+def git_files
+  unless File.exists?(".git")
+    raise Exception.new("Can't execute this task outside of Ruby-Elf git repository")
+  end
+
+  # we use read.split because lines will include the final \n and it's
+  # a bother; we also skip over .gitignore since we never want to
+  # package that.
+  IO.popen("git ls-files").read.split(/\r?\n/).reject { |file| file == ".gitignore" }
+end
+
 Spec = Gem::Specification.new do |s|
   s.platform = Gem::Platform::RUBY
   s.summary = "Pure Ruby ELF file parser and utilities"
@@ -30,10 +41,10 @@ Spec = Gem::Specification.new do |s|
   s.author = "Diego Elio Pettenò"
   s.email = "flameeyes@gmail.com"
 
-  s.files = IO.popen("git ls-files").lines.collect do |line|
-    next if line =~ /^(\.gitignore\n$|tests\/|.*\.xmli?\n$|Rakefile\n$|.*\.rl\n$)/
-    line.strip
-  end | DemanglersList | ManpagesList
+  s.files = git_files.reject { |file|
+    file =~ /(^Rakefile$|^(tests|tasks)\/|\.(xmli|rl)?$)/
+  }
+  s.files |= DemanglersList | ManpagesList
 
   s.executables = FileList["bin/*"].collect { |bin|
     next if bin =~ /~$/
@@ -56,10 +67,7 @@ require 'rake/packagetask'
 Rake::PackageTask.new("ruby-elf", Elf::VERSION) do |pkg|
   pkg.need_tar_bz2 = true
   pkg.package_dir = "pkg"
-  pkg.package_files = IO.popen("git ls-files").lines.collect do |line|
-    next if line == /^\.gitignore/
-    line.strip
-  end | DemanglersList | ManpagesList
+  pkg.package_files = git_files | DemanglersList | ManpagesList
   pkg.package_files << "ruby-elf-#{Elf::VERSION}.gemspec"
 end
 
