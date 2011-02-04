@@ -12,17 +12,6 @@ end
 
 task :default => [:test]
 
-rule '.rb' => '.rl' do |t|
-  sh "ragel", "-R", "-o", t.name, t.source
-end
-
-DemanglersList = FileList["lib/elf/symbol/demangler_*.rl"].collect { |file|
-  file.sub(/\.rl$/, ".rb")
-}
-
-desc "Build the Ruby demanglers based on the Ragel code"
-task :demanglers => DemanglersList
-
 require 'rake/testtask'
 
 Rake::TestTask.new do |t|
