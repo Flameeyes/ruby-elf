@@ -6,7 +6,7 @@
 $:.insert(0, File.expand_path("../#{file}/lib", __FILE__))
 require 'elf'
 
-FileList["tasks/*.rb"].each do |file|
+FileList["tasks/*.rb"].sort.each do |file|
   require file
 end
 
