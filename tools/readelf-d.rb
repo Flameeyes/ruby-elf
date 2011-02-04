@@ -36,8 +36,11 @@ files.each do |file|
       
       addrsize = (elf.elf_class == Elf::Class::Elf32 ? 8 : 16)
 
-      puts "Dynamic section at offset 0x#{dynsection.offset.hex} contains #{dynsection.size} entries"
-      puts "  Tag        Type                         Name/Value"
+      printf("Dynamic section at offset 0x%x contains %d entries\n",
+             dynsection.offset,
+             dynsection.size)
+
+      puts "  Tag        Type                         Name/Value\n"
 
       dynsection.each_entry do |entry|
 

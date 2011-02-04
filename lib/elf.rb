@@ -28,13 +28,6 @@ require 'elf/symbol'
 require 'elf/file'
 require 'elf/section'
 
-# We need this quite e lot
-class Integer
-  def hex
-    sprintf "%x", self
-  end
-end
-
 module Elf
   VERSION = "1.0.1"
 

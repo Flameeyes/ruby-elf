@@ -133,14 +133,18 @@ module Elf
                 end
 
       rescue Elf::Value::OutOfBound => e
-        e.append_message("While processing symbol #{@idx}. Symbol info: 0x#{info.hex}")
+        e.append_message(sprintf("While processing symbol %d. Symbol 'info' value: 0x%x",
+                                 @idx,
+                                 info))
         raise e
       end
 
       begin
         @visibility = Visibility[@other & 0x03]
       rescue Elf::Value::OutOfBound => e
-        e.append_message("While procesing symbol #{@idx}. Symbol other info: 0x#{@other.hex}")
+        e.append_message(sprintf("While procesing symbol %d. Symbol 'other' value: 0x%x",
+                                 @idx,
+                                 other))
         raise e
       end
 
@@ -223,7 +227,7 @@ module Elf
         section = if symbol.section.nil?
                     nil
                   elsif symbol.section.is_a?(Integer)
-                    symbol.section.hex
+                    sprintf("%x", symbol.section)
                   else
                     symbol.section.name
                   end
