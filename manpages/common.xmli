@@ -16,10 +16,18 @@
    along with this generator; if not, write to the Free Software
    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 -->
-<fragment>
+<fragment xmlns:xi="http://www.w3.org/2001/XInclude">
   <cmdsynopsis xmlns="http://docbook.org/ns/docbook" xml:id="filelist.synopsis">
+    <xi:include parse="xml" xpointer="xpointer(id('filelist.synopsis.options')/*)" />
+    <xi:include parse="xml" xpointer="xpointer(id('filelist.synopsis.arguments')/*)" />
+  </cmdsynopsis>
+
+  <cmdsynopsis xmlns="http://docbook.org/ns/docbook" xml:id="filelist.synopsis.options">
     <arg choice="opt"><option>--quiet</option></arg>
     <arg choice="opt"><option>--recursive</option></arg>
+  </cmdsynopsis>
+
+  <cmdsynopsis xmlns="http://docbook.org/ns/docbook" xml:id="filelist.synopsis.arguments">
     <group choice="opt" rep="repeat">
       <arg choice="plain">
         <option>@</option><replaceable>file</replaceable>

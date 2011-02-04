@@ -100,6 +100,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
             <option>--null</option>
           </arg>
 
+          <xi:include href="common.xmli"  xpointer="xpointer(id('filelist.synopsis.options')/*)" />
+
           <group choice="req">
             <arg choice="plain" rep="repeat">
               <option>--regexp</option>
@@ -111,7 +113,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
             </arg>
           </group>
 
-          <xi:include href="common.xmli"  xpointer="xpointer(id('filelist.synopsis')/*)" />
+          <xi:include href="common.xmli"  xpointer="xpointer(id('filelist.synopsis.arguments')/*)" />
         </cmdsynopsis>
       </refsynopsisdiv>
 
