@@ -99,11 +99,6 @@ def self.before_options
 end
 
 def self.after_options
-  if @patterns.size ==0
-    puterror "you need to provide at least expression"
-    exit -1
-  end
-
   if @no_match_undefined and @no_match_defined
     puterror "you need to match at least defined or undefined symbols"
     exit -1
@@ -111,6 +106,24 @@ def self.after_options
 
   @match_undefined = !@no_match_undefined
   @match_defined = !@no_match_defined
+
+  # if we don't have listed patterns yet (i.e. no -e option), let's
+  # check whether we have at least one argument and if that argument
+  # doesn't start with '@'. If we have no arguments, the targets are
+  # to be given by stdin, and that won't include the actual pattern,
+  # if we have an @-prefixed argument, that's a list of targets and
+  # can't include the pattern either.
+  if (@patterns.size == 0 and
+      ARGV.size >= 1 and
+      ARGV[0] !~ /^@/)
+
+    @patterns << ARGV.delete_at(0)
+  end
+
+  if @patterns.size == 0
+    puterror "you need to provide at least expression"
+    exit -1
+  end
 
   regexp_options = @ignore_case ? Regexp::IGNORECASE : 0
   @regexp = Regexp.union(@patterns.collect { |pattern|
