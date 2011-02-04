@@ -6,6 +6,10 @@
 $:.insert(0, File.expand_path("../#{file}/lib", __FILE__))
 require 'elf'
 
+FileList["tasks/*.rb"].each do |file|
+  require file
+end
+
 task :default => [:test]
 
 rule '.rb' => '.rl' do |t|
@@ -18,21 +22,6 @@ DemanglersList = FileList["lib/elf/symbol/demangler_*.rl"].collect { |file|
 
 desc "Build the Ruby demanglers based on the Ragel code"
 task :demanglers => DemanglersList
-
-XSL_NS_ROOT="http://docbook.sourceforge.net/release/xsl-ns/current"
-
-rule '.1' => [ '.1.xml' ] + FileList["manpages/*.xmli"] do |t|
-  sh "xsltproc", "--stringparam", "man.copyright.section.enabled", "0", \
-  "--xinclude", "-o", t.name, "#{XSL_NS_ROOT}/manpages/docbook.xsl", \
-  t.source
-end
-
-ManpagesList = FileList["manpages/*.1.xml"].collect { |file|
-  file.sub(/\.1\.xml$/, ".1")
-}
-
-desc "Build the man pages for the installed tools"
-task :manpages => ManpagesList
 
 require 'rake/testtask'
 
