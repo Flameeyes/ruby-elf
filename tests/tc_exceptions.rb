@@ -289,4 +289,13 @@ class TC_Exceptions < Test::Unit::TestCase
     elf.close
   end
 
+  def test_is_compatible
+    elf = Elf::File.new(Elf::FullTest::TestDir + "linux/arm/gcc/dynamic_executable.o")
+
+    assert_raise TypeError do
+      elf.is_compatible("foo")
+    end
+
+    elf.close
+  end
 end
