@@ -74,16 +74,6 @@ def self.no_filename_cb
   @print_filename = false
 end
 
-# we make this a method so that we don't have to worry about deciding
-# on the base of how many targets we have; we have to do this
-# because we cannot know, in after_options, whether the user passed
-# @-file lists.
-def self.print_filename
-  @print_filename = !@single_target if @print_filename.nil?
-
-  @print_filename
-end
-
 def self.regexp_cb(pattern)
   @patterns << pattern
 end
@@ -125,6 +115,10 @@ def self.after_options
     exit -1
   end
 
+  @print_filename = true if @print_filename.nil? and not single_target?
+  @file_prefix_fmt = @print_filename ? "%s#{@null ? "\0" : ":"} " : ""
+  @file_list_fmt = "%s#{@null ? "\0" : "\n"}"
+
   regexp_options = @ignore_case ? Regexp::IGNORECASE : 0
   @regexp = Regexp.union(@patterns.collect { |pattern|
                            if @match == :fixed_strings
@@ -138,16 +132,8 @@ def self.after_options
 end
 
 def self.analysis(file)
-  if not print_filename
-    file_prefix = ""
-  else
-    file_prefix = sprintf("%s%s ",
-                          file,
-                          @null ? "\0" : ":")
-  end
-  file_list = sprintf("%s%s",
-                      file,
-                      @null ? "\0" : "\n")
+  file_prefix = sprintf(@file_prefix_fmt, file)
+  file_list = sprintf(@file_list_fmt, file)
 
   Elf::File.open(file) do |elf|
     table = [".dynsym", ".symtab"].find do |table|
