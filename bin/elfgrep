@@ -123,7 +123,7 @@ def self.after_options
 end
 
 def self.analysis(file)
-  if not @print_filename
+  if not print_filename
     file_prefix = ""
   else
     file_prefix = sprintf("%s%s ",
