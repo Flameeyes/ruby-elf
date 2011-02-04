@@ -7,7 +7,7 @@ $:.insert(0, File.expand_path("../#{file}/lib", __FILE__))
 require 'elf'
 
 FileList["tasks/*.rb"].sort.each do |file|
-  require file
+  require File.expand_path("../#{file}", __FILE__)
 end
 
 task :default => [:test]
