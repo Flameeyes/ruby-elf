@@ -41,6 +41,7 @@ require_testfile 'tc_stringtable'
 require_testfile 'tc_symbols_comparison'
 require_testfile 'tc_values'
 require_testfile 'tc_demangler'
+require_testfile 'tc_shared_object'
 
 class TS_RubyElf
   def self.suite
@@ -76,6 +77,7 @@ end
  Elf::TestRelocatable.subsuite,
  Elf::TestNMCodes.subsuite,
  Elf::TestVersioning.subsuite,
+ Elf::TestSharedObject.subsuite,
 ].each do |suite|
   
   Test::Unit::UI::Console::TestRunner.run(suite, verbose)
