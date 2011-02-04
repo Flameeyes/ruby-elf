@@ -78,7 +78,7 @@ solaris-x86-gcc: \
 	icc -fPIC -c symboltypes.c -o $@
 
 ../linux/amd64/gcc/versioning.so: versioning.c versioning.ld
-	x86_64-pc-linux-gnu-gcc -shared -fPIC versioning.c -Wl,--version-script=versioning.ld -o $@
+	x86_64-pc-linux-gnu-gcc -Wl,-h,versioning.so -shared -fPIC versioning.c -Wl,--version-script=versioning.ld -o $@
 
 ../linux/amd64/gcc/cxxsymbols.o: cxxsymbols.c
 	x86_64-pc-linux-gnu-g++ -c $< -o $@
@@ -117,4 +117,4 @@ solaris-x86-gcc: \
 	i386-pc-solaris2.11-gcc executable.c -o $@
 
 ../solaris/x86/gcc/versioning.so: versioning.c versioning.ld
-	i386-pc-solaris2.11-gcc -shared -fPIC versioning.c -Wl,--version-script=versioning.ld -o $@
+	i386-pc-solaris2.11-gcc -Wl,-h,versioning.so -shared -fPIC versioning.c -Wl,--version-script=versioning.ld -o $@
