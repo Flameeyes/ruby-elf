@@ -20,8 +20,7 @@
 require 'rake/testtask'
 
 Rake::TestTask.new do |t|
-  t.pattern = "tests/tc_*.rb"
-  t.libs = ["lib", "tests"]
+  t.libs = ["lib", "test"]
 end
 
 task :test => :demanglers
@@ -30,8 +29,7 @@ begin
   require 'rcov/rcovtask'
   
   Rcov::RcovTask.new do |t|
-    t.pattern = "tests/tc_*.rb"
-    t.libs = ["lib", "tests"]
+    t.libs = ["lib", "test"]
   end
 
   task :rcov => :demanglers
