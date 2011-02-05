@@ -20,7 +20,7 @@
 require 'rake/testtask'
 
 Rake::TestTask.new do |t|
-  t.test_files = ['tests/ts_rubyelf.rb']
+  t.pattern = "tests/tc_*.rb"
   t.libs = ["lib", "tests"]
 end
 
@@ -30,7 +30,7 @@ begin
   require 'rcov/rcovtask'
   
   Rcov::RcovTask.new do |t|
-    t.test_files = ['tests/ts_rubyelf.rb']
+    t.pattern = "tests/tc_*.rb"
     t.libs = ["lib", "tests"]
   end
 
