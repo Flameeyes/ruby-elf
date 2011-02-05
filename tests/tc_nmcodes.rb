@@ -15,10 +15,7 @@
 # along with this generator; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
-require 'test/unit'
-require 'pathname'
-require 'elf'
-require File.dirname(__FILE__) + '/tt_elf' unless defined? Elf::BaseTest
+require 'tt_elf'
 
 # Tests for nm(1)-style codes support in Ruby-Elf
 #

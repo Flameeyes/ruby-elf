@@ -15,9 +15,8 @@
 # along with this generator; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
-require 'test/unit'
-require 'pathname'
-require 'elf'
+require 'tmpdir'
+require 'tt_elf'
 
 # Test for proper exception handling in the RubyElf library.  This
 # test unit should make sure that proper error handling is present

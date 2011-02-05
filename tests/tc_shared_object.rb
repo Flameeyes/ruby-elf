@@ -15,10 +15,7 @@
 # along with this generator; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
-require 'test/unit'
-require 'pathname'
-require 'elf'
-require 'elf/utils/loader'
+require 'tt_elf'
 
 # Test proper handling of Executable ELF files.
 module Elf::TestSharedObject

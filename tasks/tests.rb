@@ -21,6 +21,7 @@ require 'rake/testtask'
 
 Rake::TestTask.new do |t|
   t.test_files = ['tests/ts_rubyelf.rb']
+  t.libs = ["lib", "tests"]
 end
 
 task :test => :demanglers
@@ -30,6 +31,7 @@ begin
   
   Rcov::RcovTask.new do |t|
     t.test_files = ['tests/ts_rubyelf.rb']
+    t.libs = ["lib", "tests"]
   end
 
   task :rcov => :demanglers

@@ -15,9 +15,7 @@
 # along with this generator; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
-require 'test/unit'
-require 'pathname'
-require 'elf'
+require 'tt_elf'
 
 # Test handling of symbols tables in ELF files with Ruby-elf
 class TC_StringTable < Test::Unit::TestCase
@@ -67,4 +65,3 @@ class TC_StringTable < Test::Unit::TestCase
     end
   end
 end
-
