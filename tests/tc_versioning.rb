@@ -124,10 +124,4 @@ module Elf::TestVersioning
     ExpectedRequiredVersions = 2
     include Elf::TestVersioning
   end
-
-  def self.subsuite
-    suite = Test::Unit::TestSuite.new("GNU Versioning")
-    suite << LinuxAMD64.suite
-    suite << LinuxX86.suite
-  end
 end

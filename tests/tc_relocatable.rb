@@ -126,17 +126,4 @@ module Elf::TestRelocatable
     include Elf::TestRelocatable
     include Elf::TestExecutable::SolarisX86_SunStudio
   end
-
-  def self.subsuite
-    suite = Test::Unit::TestSuite.new("Relocatable objects")
-    suite << LinuxX86.suite
-    suite << LinuxAMD64.suite
-    suite << LinuxAMD64_ICC.suite
-    suite << LinuxAMD64_SunStudio.suite
-    suite << LinuxSparc.suite
-    suite << LinuxArm.suite
-    suite << BareH8300.suite
-    suite << SolarisX86_GCC.suite
-    suite << SolarisX86_SunStudio.suite
-  end
 end

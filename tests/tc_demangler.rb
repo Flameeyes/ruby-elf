@@ -64,11 +64,4 @@ module Elf::TestDemangler
       "_ZdlPv" => "operator delete(void*)"
     }
   end
-
-
-  def self.subsuite
-    suite = Test::Unit::TestSuite.new("C++ name demangler")
-    suite << GCC3.suite
-  end
 end
-

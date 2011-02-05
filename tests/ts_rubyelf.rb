@@ -43,24 +43,6 @@ require_testfile 'tc_values'
 require_testfile 'tc_demangler'
 require_testfile 'tc_shared_object'
 
-class TS_RubyElf
-  def self.suite
-    suite = Test::Unit::TestSuite.new("Ruby-Elf testsuite")
-    suite << TC_Bytestream.suite
-    suite << TC_Exceptions.suite
-    suite << TC_ARM.suite
-    suite << TC_SunW_Sections.suite
-    suite << TC_Solaris_Versioning.suite
-    suite << TC_SymbolTable.suite
-    suite << TC_StringTable.suite
-    suite << TC_Symbols_Comparison.suite
-    suite << TC_Values.suite
-    # this is just a bunch of assertions in one or two tests so don't
-    # make it its own suite, if at all possible.
-    suite << Elf::TestDemangler.subsuite
-  end
-end
-
 # The verbose parameter is different between the Test::Unit shipped
 # with Ruby 1.8 and the one provided by test-unit 2.x gem.
 begin
@@ -71,14 +53,32 @@ rescue NameError
   }
 end
 
-[TS_RubyElf,
- Elf::TestDynamicExecutable.subsuite,
- Elf::TestStaticExecutable.subsuite,
- Elf::TestRelocatable.subsuite,
- Elf::TestNMCodes.subsuite,
- Elf::TestVersioning.subsuite,
- Elf::TestSharedObject.subsuite,
-].each do |suite|
-  
-  Test::Unit::UI::Console::TestRunner.run(suite, verbose)
+suite = Test::Unit::TestSuite.new("Ruby-Elf testsuite")
+suite << TC_Bytestream.suite
+suite << TC_Exceptions.suite
+suite << TC_ARM.suite
+suite << TC_SunW_Sections.suite
+suite << TC_Solaris_Versioning.suite
+suite << TC_SymbolTable.suite
+suite << TC_StringTable.suite
+suite << TC_Symbols_Comparison.suite
+suite << TC_Values.suite
+# this is just a bunch of assertions in one or two tests so don't
+# make it its own suite, if at all possible.
+suite << Elf::TestDemangler::GCC3.suite
+
+[
+ Elf::TestDynamicExecutable,
+ Elf::TestStaticExecutable,
+ Elf::TestRelocatable,
+ Elf::TestNMCodes,
+ Elf::TestVersioning,
+ Elf::TestSharedObject,
+].each do |test_template|
+  [:LinuxAMD64, :LinuxAMD64_ICC, :LinuxAMD64_SunStudio, :LinuxX86, :LinuxSparc, :LinuxArm,
+   :SolarisX86_GCC, :SolarisX86_SunStudio, :BareH8300].each do |testunit|
+    suite << test_template.const_get(testunit).suite rescue NameError
+  end
 end
+
+Test::Unit::UI::Console::TestRunner.run(suite, verbose)

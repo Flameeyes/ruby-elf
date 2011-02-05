@@ -166,12 +166,4 @@ module Elf::TestNMCodes
                        "relocated_static_tls_variable"       => 'd' })
     end
   end
-
-  def self.subsuite
-    suite = Test::Unit::TestSuite.new("nm(1)-style codes")
-    suite << LinuxAMD64.suite
-    suite << LinuxAMD64_ICC.suite
-    suite << LinuxAMD64_SunStudio.suite
-    suite << SolarisX86_SunStudio.suite
-  end
 end

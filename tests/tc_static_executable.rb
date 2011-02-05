@@ -107,14 +107,4 @@ module Elf::TestStaticExecutable
     include Elf::TestExecutable::BareH8300
     PrintfSymname = "_printf"
   end
-
-  def self.subsuite
-    suite = Test::Unit::TestSuite.new("Static executables")
-    suite << LinuxX86.suite
-    suite << LinuxAMD64.suite
-    suite << LinuxAMD64_ICC.suite
-    suite << LinuxSparc.suite
-    suite << LinuxArm.suite
-    suite << BareH8300.suite
-  end
 end
