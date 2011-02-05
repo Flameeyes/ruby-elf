@@ -16,6 +16,7 @@
 # Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 require 'tmpdir'
+require 'fileutils'
 require 'tt_elf'
 
 # Test for proper exception handling in the RubyElf library.  This
@@ -24,9 +25,7 @@ require 'tt_elf'
 # similar.  This test should cover all the possible cases of broken
 # ELF files, so that reading a non-ELF file won't cause unexpected
 # problems.
-class TC_Exceptions < Test::Unit::TestCase
-  TestDir = Pathname.new(Elf::FullTest::TestDir + "invalid/")
-
+class Elf::TC_Exceptions < Test::Unit::TestCase
   # We cannot use the fileno count trick on JRuby :(
   if RUBY_PLATFORM != "java"
     # Define setup and teardown functions to make sure that no
@@ -34,13 +33,13 @@ class TC_Exceptions < Test::Unit::TestCase
     # to leak when exception happens, otherwise we likely have a bug in
     # the code.
     def setup
-      file = File.new(TestDir + "nonelf")
+      file = File.new(get_test_file("invalid/nonelf"))
       @fileno_before = file.fileno
       file.close
     end
 
     def teardown
-      file = File.new(TestDir + "nonelf")
+      file = File.new(get_test_file("invalid/nonelf"))
       @fileno_after = file.fileno
       file.close
 
@@ -54,7 +53,7 @@ class TC_Exceptions < Test::Unit::TestCase
   # Helper to check for exceptions on opening a file.
   def helper_open_exception(exception_class, subpath)
     assert_raise exception_class do
-      Elf::File.new(TestDir + subpath)
+      Elf::File.new(get_test_file("invalid/#{subpath}"))
     end
   end
 
@@ -62,10 +61,12 @@ class TC_Exceptions < Test::Unit::TestCase
   #
   # Expected behaviour: Errno::ENOENT exception is raised
   def test_nofile
+    filepath = get_test_file("invalid/notfound")
+
     # Check that the file does not exist or we're going to throw an
     # exception to signal an error in the test.
-    if File.exists? TestDir + "notfound"
-      raise Exception.new("A file named 'notfound' is present in the #{TestDir.realpath} directory")
+    if File.exists?(filepath)
+      raise Exception.new("File '#{filepath}' present in the test directory.")
     end
 
     helper_open_exception Errno::ENOENT, "notfound"
@@ -143,14 +144,17 @@ class TC_Exceptions < Test::Unit::TestCase
   def test_named_pipe
     # Since we cannot add the pipe to the git repository, we've got to
     # create one ourselves :(
-    pipepath = Pathname.new(Dir.tmpdir) + "ruby-elf-tests-#{Process.pid}-#{Time.new.strftime("%s")}"
+    pipedir = File.expand_path("ruby-elf-tests-#{Process.pid}-#{Time.new.strftime("%s")}", Dir.tmpdir)
+    pipepath = File.expand_path("fifo", pipedir)
     begin
-      pipepath.mkdir
-      system("mkfifo #{pipepath}/fifo")
+      Dir.mkdir(pipedir)
+      system("mkfifo #{pipepath}")
 
-      helper_open_exception Errno::EINVAL, pipepath + "fifo"
+      assert_raise Errno::EINVAL do
+        Elf::File.new(pipepath)
+      end
     ensure
-      pipepath.rmtree
+      FileUtils.rmtree(pipedir)
     end
   end
 
@@ -165,13 +169,16 @@ class TC_Exceptions < Test::Unit::TestCase
   #
   # Expected behaviour: Errno::ENOENT exception is raised
   def test_broken_link
-    if File.exists? TestDir + "invaliddestination"
-      raise Exception.new("A file named 'invaliddestination' is present in the #{TestDir.realpath} directory")
+    destpath = get_test_file("invalid/invaliddestination")
+    linkpath = get_test_file("invalid/invalidlink")
+
+    if File.exists?(destpath)
+      raise Exception.new("File '#{destpath}' present in the test directory.")
     end
 
-    File.symlink("invaliddestination", TestDir + "invalidlink")
+    File.symlink("invaliddestination", linkpath)
     helper_open_exception Errno::ENOENT, "invalidlink"
-    File.delete(TestDir + "invalidlink")
+    File.delete(linkpath)
   end
 
   # Test behaviour when a file contains an invalid section type
@@ -180,7 +187,7 @@ class TC_Exceptions < Test::Unit::TestCase
   # Expected behaviour: Elf::Section::UnknownType exception is raised
   def test_unknown_section_type
     begin
-      elf = Elf::File.new(TestDir + "unknown_section_type")
+      elf = Elf::File.new(get_test_file("invalid/unknown_section_type"))
       elf[11] # We need an explicit request for the corrupted section
     rescue Elf::Section::UnknownType => e
       assert_equal(0x0000ff02, e.type_id,
@@ -206,7 +213,7 @@ class TC_Exceptions < Test::Unit::TestCase
   # Expected behaviour: Elf::File::MissingStringTable exception is
   # raised
   def test_missing_string_table_request
-    elf = Elf::File.new(TestDir + "unknown_section_type")
+    elf = Elf::File.new(get_test_file("invalid/unknown_section_type"))
 
     assert_raise Elf::File::MissingStringTable do
       elf[".symtab"]
@@ -220,7 +227,7 @@ class TC_Exceptions < Test::Unit::TestCase
   #
   # Expected behaviour: Elf::Section::MissingSection exception is raised
   def test_missing_section
-    elf = Elf::File.new(Elf::FullTest::TestDir + "linux/arm/gcc/dynamic_executable.o")
+    elf = Elf::File.new(get_test_file("linux/arm/gcc/dynamic_executable.o"))
 
     # Make sure that the has_section? function behaves correctly and
     # _don't_ throw an exception.
@@ -240,7 +247,7 @@ class TC_Exceptions < Test::Unit::TestCase
   # Expected behaviour: Elf::Section:MissingSection exception is
   # raised
   def test_missing_section_index
-    elf = Elf::File.new(Elf::FullTest::TestDir + "linux/arm/gcc/dynamic_executable.o")
+    elf = Elf::File.new(get_test_file("linux/arm/gcc/dynamic_executable.o"))
 
     assert_raise Elf::File::MissingSection do
       elf[12300]
@@ -254,7 +261,7 @@ class TC_Exceptions < Test::Unit::TestCase
   #
   # Expected behaviour: TypeError exception is raised
   def test_has_section_invalid_argument
-    elf = Elf::File.new(Elf::FullTest::TestDir + "linux/arm/gcc/dynamic_executable.o")
+    elf = Elf::File.new(get_test_file("linux/arm/gcc/dynamic_executable.o"))
 
     assert_raise TypeError do
       elf.has_section?({:a => :b})
@@ -268,7 +275,7 @@ class TC_Exceptions < Test::Unit::TestCase
   #
   # Expected behaviour: TypeError exception is raised
   def test_invalid_section_comparison
-    elf = Elf::File.new(Elf::FullTest::TestDir + "linux/arm/gcc/dynamic_executable.o")
+    elf = Elf::File.new(get_test_file("linux/arm/gcc/dynamic_executable.o"))
 
     assert_raise TypeError do
       elf[".ARM.attributes"] == "Foobar"
@@ -278,7 +285,7 @@ class TC_Exceptions < Test::Unit::TestCase
   end
 
   def test_is_compatible
-    elf = Elf::File.new(Elf::FullTest::TestDir + "linux/arm/gcc/dynamic_executable.o")
+    elf = Elf::File.new(get_test_file("linux/arm/gcc/dynamic_executable.o"))
 
     assert_raise TypeError do
       elf.is_compatible("foo")
@@ -292,7 +299,7 @@ class TC_Exceptions < Test::Unit::TestCase
   # tool, which might not even work anymore (as they lack proper
   # symbol tables).
   def test_no_stringtable
-    elf = Elf::File.new(Elf::FullTest::TestDir + "linux/amd64/gcc/dynamic_executable_sstrip")
+    elf = Elf::File.new(get_test_file("linux/amd64/gcc/dynamic_executable_sstrip"))
 
     assert_raise Elf::File::MissingStringTable do
       elf.has_section?(".dynamic")

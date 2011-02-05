@@ -18,15 +18,19 @@
 require 'elf'
 require 'test/unit'
 
-module Elf::BaseTest
-  TestDir = Pathname.new(__FILE__).dirname + "data"
+class Test::Unit::TestCase
+  def get_test_file(filename = ".")
+    File.expand_path("../data/#{filename}", __FILE__)
+  end
+end
 
+module Elf::BaseTest
   def filename
     "#{self.class::Os}/#{self.class::Arch}/#{self.class::Compiler}/#{self.class::BaseFilename}"
   end
 
   def setup
-    @elf = Elf::File.new( TestDir + filename )
+    @elf = Elf::File.new(get_test_file(filename))
   end
 
   def teardown

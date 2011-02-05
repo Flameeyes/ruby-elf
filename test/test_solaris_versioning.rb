@@ -57,7 +57,7 @@ class TC_Solaris_Versioning < Test::Unit::TestCase
 
     assert_equal(1, section[1][:names].size,
                  "First version has more than one expected name")
-    assert_equal(Pathname(@elf.path).basename.to_s, section[1][:names][0],
+    assert_equal(File.basename(@elf.path), section[1][:names][0],
                  "First version name does not coincide with the filename")
     assert_equal(Elf::GNU::SymbolVersionDef::FlagBase, section[1][:flags] & Elf::GNU::SymbolVersionDef::FlagBase,
                  "First version does not report as base version")
