@@ -281,11 +281,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
         </para>
 
         <para>
-          Right now, all the sections are counted in if their flags match, it might be better to
-          limit to allocated sections all over the place.
-        </para>
-
-        <para>
           The size of the columns is fixed to 8 digits, it might not be enough to fill in enough
           space for some big ELF files.
         </para>
