@@ -179,10 +179,14 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
           </varlistentry>
 
           <varlistentry>
-            <term>total</term>
+            <term>allocated</term>
             <listitem>
               <para>
-                Counts in the sum of all the previous sections.
+                Sum of the size of all the previously-shown sections, which shows the actual
+                allocated memory used by the object. It is important to note that sections are
+                usually loaded on an alignment of the page size, which on Linux is 4KiB (4096
+                bytes), so the size of the actual memory reserved for the ELF structures in memory
+                is going to be higher than this number.
               </para>
             </listitem>
           </varlistentry>
@@ -274,11 +278,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
       <refsect1>
         <title>Bugs and Missing Features</title>
-
-        <para>
-          The name <varname>total</varname> for the sum of the colums is misleading since it's
-          actually not the total size of the file, nor the total size of the allocated entries.
-        </para>
 
         <para>
           The size of the columns is fixed to 8 digits, it might not be enough to fill in enough

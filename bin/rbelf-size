@@ -44,7 +44,7 @@ def self.analysis(file)
       :relro => 0,
       :bss => 0,
       :overhead => 0,
-      :total => 0
+      :allocated => 0
     }
 
     # Get the size of each section, and then, depending on its type,
@@ -101,7 +101,7 @@ def self.analysis(file)
       results[sectype] += section.size unless sectype.nil?
     end
 
-    results[:total] = results.values.inject { |sum, val| sum += val }
+    results[:allocated] = results.values.inject { |sum, val| sum += val }
 
     if @relocation_stats
       relocation_stats(results, file)
@@ -129,7 +129,7 @@ end
 
 def self.standard_size(results, file)
   if @header
-    puts "     exec      data    rodata     relro       bss  overhead     total filename"
+    puts "     exec      data    rodata     relro       bss  overhead allocated filename"
     @header = false
   end
 
@@ -140,6 +140,6 @@ def self.standard_size(results, file)
          results[:relro],
          results[:bss],
          results[:overhead],
-         results[:total],
+         results[:allocated],
          file)
 end
