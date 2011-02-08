@@ -39,9 +39,7 @@ module Elf::Tools
                    # Decide sorting column
                    ["--sort-by", "-S", GetoptLong::REQUIRED_ARGUMENT ]
                   ]
-    end
 
-    def self.before_options
       @statistics = false
       @total = false
       @ignore_cxx = false
@@ -52,8 +50,13 @@ module Elf::Tools
         # 0 is the filename
         x[0] <=> y[0]
       end
-  
+
       @files_info = {}
+
+      @data_total = 0
+      @bss_total = 0
+      @rel_total = 0
+      @relro_total = 0
     end
 
     def self.sort_by_cb(column)
@@ -77,15 +80,6 @@ module Elf::Tools
       else
         puterror "invalid sort column: #{column}"
         exit -1
-      end
-    end
-
-    def self.after_options
-      if @total
-        @data_total = 0
-        @bss_total = 0
-        @rel_total = 0
-        @relro_total = 0
       end
     end
 
