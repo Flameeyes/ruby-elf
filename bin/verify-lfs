@@ -23,13 +23,6 @@ require 'elf/tools'
 
 module Elf::Tools
   class VerifyLFS < Elf::Tool
-    def initialize
-      @options |= [
-                   # Scan only object files (rather than non-object files)
-                   ["--objects", "-o", GetoptLong::NO_ARGUMENT]
-                  ]
-    end
-
     SymbolNamesList = [
                        "__[fl]?xstat",
                        "statv?fs",
@@ -53,9 +46,14 @@ module Elf::Tools
                        "lockf"
                       ]
 
-    SymbolNames = "(#{SymbolNamesList.join("|")})"
+    SymbolRegex32 = Regexp.union(SymbolNamesList.collect { |sym| /^#{sym}$/ })
+    SymbolRegex64 = Regexp.union(SymbolNamesList.collect { |sym| /^#{sym}64$/ })
 
-    def self.before_options
+    def initialize
+      @options |= [
+                   # Scan only object files (rather than non-object files)
+                   ["--objects", "-o", GetoptLong::NO_ARGUMENT]
+                  ]
     end
 
     def self.after_options
@@ -96,8 +94,8 @@ module Elf::Tools
         elf[@elftable].each do |symbol|
           next unless symbol.section == Elf::Section::Undef
 
-          use_stat32 ||= (symbol.to_s =~ /^#{SymbolNames}$/)
-          use_stat64 ||= (symbol.to_s =~ /^#{SymbolNames}64$/)
+          use_stat32 ||= (symbol.to_s =~ SymbolRegex32)
+          use_stat64 ||= (symbol.to_s =~ SymbolRegex64)
 
           # avoid running the whole list if we hit both as we cannot hit
           # _more_
