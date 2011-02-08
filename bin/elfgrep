@@ -18,169 +18,177 @@
 
 require 'elf/tools'
 
-Options = [
-           # Expression to match on the symbol name
-           ["--regexp", "-e", GetoptLong::REQUIRED_ARGUMENT],
-           # Append the version information when matching the symbol
-           # name
-           ["--match-version", "-V", GetoptLong::NO_ARGUMENT],
-           # Don't match undefined symbols
-           ["--no-match-undefined", "-U", GetoptLong::NO_ARGUMENT],
-           # Don't match defined symbols
-           ["--no-match-defined", "-D", GetoptLong::NO_ARGUMENT],
-           # Invert selection, show symbols not matching the
-           # expression
-           ["--invert-match", "-v", GetoptLong::NO_ARGUMENT],
-           # List only files with matches
-           ["--files-with-matches", "-l", GetoptLong::NO_ARGUMENT],
-           # List only files without match
-           ["--files-without-match", "-L", GetoptLong::NO_ARGUMENT],
-           # Print the name of the file for each match
-           ["--with-filename", "-H", GetoptLong::NO_ARGUMENT],
-           # Don't print the name of the file for each match
-           ["--no-filename", "-h", GetoptLong::NO_ARGUMENT],
-           # Only output matches' count
-           ["--count", "-c", GetoptLong::NO_ARGUMENT],
-           # Match fixed strings and not regular expressions
-           ["--fixed-strings", "-F", GetoptLong::NO_ARGUMENT],
-           # Make elfgrep case-insensitive
-           ["--ignore-case", "-i", GetoptLong::NO_ARGUMENT],
-           # Use NULLs to terminate filenames
-           ["--null", "-Z", GetoptLong::NO_ARGUMENT],
-          ]
+module Elf::Tools
+  class ElfGrep < Elf::Tool
+    def self.initialize
+      super
 
-# We define callbacks for some behaviour-changing options as those
-# will let us consider them positionally, similar to what grep(1)
-# does. If you try -lLl and similar combinations on grep(1), the last
-# one passed is the one to be considered.
+      @options |= [
+                   # Expression to match on the symbol name
+                   ["--regexp", "-e", GetoptLong::REQUIRED_ARGUMENT],
+                   # Append the version information when matching the symbol
+                   # name
+                   ["--match-version", "-V", GetoptLong::NO_ARGUMENT],
+                   # Don't match undefined symbols
+                   ["--no-match-undefined", "-U", GetoptLong::NO_ARGUMENT],
+                   # Don't match defined symbols
+                   ["--no-match-defined", "-D", GetoptLong::NO_ARGUMENT],
+                   # Invert selection, show symbols not matching the
+                   # expression
+                   ["--invert-match", "-v", GetoptLong::NO_ARGUMENT],
+                   # List only files with matches
+                   ["--files-with-matches", "-l", GetoptLong::NO_ARGUMENT],
+                   # List only files without match
+                   ["--files-without-match", "-L", GetoptLong::NO_ARGUMENT],
+                   # Print the name of the file for each match
+                   ["--with-filename", "-H", GetoptLong::NO_ARGUMENT],
+                   # Don't print the name of the file for each match
+                   ["--no-filename", "-h", GetoptLong::NO_ARGUMENT],
+                   # Only output matches' count
+                   ["--count", "-c", GetoptLong::NO_ARGUMENT],
+                   # Match fixed strings and not regular expressions
+                   ["--fixed-strings", "-F", GetoptLong::NO_ARGUMENT],
+                   # Make elfgrep case-insensitive
+                   ["--ignore-case", "-i", GetoptLong::NO_ARGUMENT],
+                   # Use NULLs to terminate filenames
+                   ["--null", "-Z", GetoptLong::NO_ARGUMENT],
+                  ]
+    end
 
-def self.fixed_strings_cb
-  @match = :fixed_strings
-end
+    # We define callbacks for some behaviour-changing options as those
+    # will let us consider them positionally, similar to what grep(1)
+    # does. If you try -lLl and similar combinations on grep(1), the last
+    # one passed is the one to be considered.
 
-def self.files_with_matches_cb
-  @show = :files_with_matches
-end
+    def self.fixed_strings_cb
+      @match = :fixed_strings
+    end
 
-def self.files_without_match_cb
-  @show = :files_without_match
-end
+    def self.files_with_matches_cb
+      @show = :files_with_matches
+    end
 
-def self.with_filename_cb
-  @print_filename = true
-end
+    def self.files_without_match_cb
+      @show = :files_without_match
+    end
 
-def self.no_filename_cb
-  @print_filename = false
-end
+    def self.with_filename_cb
+      @print_filename = true
+    end
 
-def self.regexp_cb(pattern)
-  @patterns << pattern
-end
+    def self.no_filename_cb
+      @print_filename = false
+    end
 
-def self.before_options
-  @invert_match = false
-  @match_undefined = true
-  @match_defined = true
-  @show = :full_match
-  @match = :regexp
+    def self.regexp_cb(pattern)
+      @patterns << pattern
+    end
 
-  @patterns = []
-end
+    def self.before_options
+      @invert_match = false
+      @match_undefined = true
+      @match_defined = true
+      @show = :full_match
+      @match = :regexp
 
-def self.after_options
-  if @no_match_undefined and @no_match_defined
-    puterror "you need to match at least defined or undefined symbols"
-    exit -1
-  end
+      @patterns = []
+    end
 
-  @match_undefined = !@no_match_undefined
-  @match_defined = !@no_match_defined
-
-  # if we don't have listed patterns yet (i.e. no -e option), let's
-  # check whether we have at least one argument and if that argument
-  # doesn't start with '@'. If we have no arguments, the targets are
-  # to be given by stdin, and that won't include the actual pattern,
-  # if we have an @-prefixed argument, that's a list of targets and
-  # can't include the pattern either.
-  if (@patterns.size == 0 and
-      ARGV.size >= 1 and
-      ARGV[0] !~ /^@/)
-
-    @patterns << ARGV.delete_at(0)
-  end
-
-  if @patterns.size == 0
-    puterror "you need to provide at least expression"
-    exit -1
-  end
-
-  @print_filename = true if @print_filename.nil? and not single_target?
-  @file_prefix_fmt = @print_filename ? "%s#{@null ? "\0" : ":"} " : ""
-  @file_list_fmt = "%s#{@null ? "\0" : "\n"}"
-
-  regexp_options = @ignore_case ? Regexp::IGNORECASE : 0
-  @regexp = Regexp.union(@patterns.collect { |pattern|
-                           if @match == :fixed_strings
-                             pattern.split(/\r?\n/).collect { |string|
-                               Regexp.new(Regexp.escape(string), regexp_options)
-                             }
-                           else
-                             Regexp.new(pattern, regexp_options)
-                           end
-                         }.flatten)
-end
-
-def self.analysis(file)
-  file_prefix = sprintf(@file_prefix_fmt, file)
-  file_list = sprintf(@file_list_fmt, file)
-
-  Elf::File.open(file) do |elf|
-    table = [".dynsym", ".symtab"].find do |table|
-      begin
-        (elf[table].class == Elf::SymbolTable)
-      rescue Elf::File::MissingSection
-        false
+    def self.after_options
+      if @no_match_undefined and @no_match_defined
+        puterror "you need to match at least defined or undefined symbols"
+        exit -1
       end
-    end
 
-    if table.nil?
-      putnotice "#{file}: unable to find symbol table"
-      return
-    end
+      @match_undefined = !@no_match_undefined
+      @match_defined = !@no_match_defined
 
-    matches = 0
-    elf[table].each do |symbol|
-      next if
-        (symbol.section == Elf::Section::Abs) or
-        (symbol.name == '') or
-        (symbol.section == Elf::Section::Undef and
-         not @match_undefined) or
-        (symbol.section != Elf::Section::Undef and
-         not @match_defined)
+      # if we don't have listed patterns yet (i.e. no -e option), let's
+      # check whether we have at least one argument and if that argument
+      # doesn't start with '@'. If we have no arguments, the targets are
+      # to be given by stdin, and that won't include the actual pattern,
+      # if we have an @-prefixed argument, that's a list of targets and
+      # can't include the pattern either.
+      if (@patterns.size == 0 and
+          ARGV.size >= 1 and
+          ARGV[0] !~ /^@/)
 
-      symname = symbol.name
-      symname += "@#{symbol.version}" if @match_version
-
-      # We don't care where it matches, but we do care that it matches
-      # or not; we use an invert match since we have to further compare
-      # that to @invert_match
-      if (@invert_match == (@regexp =~ symname).nil?)
-        matches = matches+1
-
-        break unless @show == :full_match
-        next if @count
-
-        puts "#{file_prefix}#{symbol.address_string} #{symbol.nm_code rescue '?'} #{symname}"
+        @patterns << ARGV.delete_at(0)
       end
+
+      if @patterns.size == 0
+        puterror "you need to provide at least expression"
+        exit -1
+      end
+
+      @print_filename = true if @print_filename.nil? and not single_target?
+      @file_prefix_fmt = @print_filename ? "%s#{@null ? "\0" : ":"} " : ""
+      @file_list_fmt = "%s#{@null ? "\0" : "\n"}"
+
+      regexp_options = @ignore_case ? Regexp::IGNORECASE : 0
+      @regexp = Regexp.union(@patterns.collect { |pattern|
+                               if @match == :fixed_strings
+                                 pattern.split(/\r?\n/).collect { |string|
+                                   Regexp.new(Regexp.escape(string), regexp_options)
+                                 }
+                               else
+                                 Regexp.new(pattern, regexp_options)
+                               end
+                             }.flatten)
     end
 
-    if @show == :files_with_matches
-      puts file_list if matches > 0
-    elsif @show == :files_without_match
-      puts file_list if matches == 0
-    elsif @count
-      puts "#{file_prefix}#{matches}"
+    def self.analysis(file)
+      file_prefix = sprintf(@file_prefix_fmt, file)
+      file_list = sprintf(@file_list_fmt, file)
+
+      Elf::File.open(file) do |elf|
+        table = [".dynsym", ".symtab"].find do |table|
+          begin
+            (elf[table].class == Elf::SymbolTable)
+          rescue Elf::File::MissingSection
+            false
+          end
+        end
+
+        if table.nil?
+          putnotice "#{file}: unable to find symbol table"
+          return
+        end
+
+        matches = 0
+        elf[table].each do |symbol|
+          next if
+            (symbol.section == Elf::Section::Abs) or
+            (symbol.name == '') or
+            (symbol.section == Elf::Section::Undef and
+             not @match_undefined) or
+            (symbol.section != Elf::Section::Undef and
+             not @match_defined)
+
+          symname = symbol.name
+          symname += "@#{symbol.version}" if @match_version
+
+          # We don't care where it matches, but we do care that it matches
+          # or not; we use an invert match since we have to further compare
+          # that to @invert_match
+          if (@invert_match == (@regexp =~ symname).nil?)
+            matches = matches+1
+
+            break unless @show == :full_match
+            next if @count
+
+            puts "#{file_prefix}#{symbol.address_string} #{symbol.nm_code rescue '?'} #{symname}"
+          end
+        end
+
+        if @show == :files_with_matches
+          puts file_list if matches > 0
+        elsif @show == :files_without_match
+          puts file_list if matches == 0
+        elsif @count
+          puts "#{file_prefix}#{matches}"
+        end
+      end
     end
   end
 end

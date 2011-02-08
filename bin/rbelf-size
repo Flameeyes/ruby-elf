@@ -20,126 +20,133 @@
 
 require 'elf/tools'
 
-Options = [
-           # Give relocation data for shared object assesment
-           ["--relocation-stats", "-r", GetoptLong::NO_ARGUMENT],
-           # Use deciBel scale for the shared-to-relocated ratio
-           ["--decibel", "-d", GetoptLong::NO_ARGUMENT]
-          ]
+module Elf::Tools
+  class Size < Elf::Tool
+    def self.initialize
+      super
+      @options |= [
+                   # Give relocation data for shared object assesment
+                   ["--relocation-stats", "-r", GetoptLong::NO_ARGUMENT],
+                   # Use deciBel scale for the shared-to-relocated ratio
+                   ["--decibel", "-d", GetoptLong::NO_ARGUMENT]
+                  ]
+    end
 
-def self.before_options
-  @relocation_stats = false
-end
+    def self.before_options
+      @relocation_stats = false
+    end
 
-def self.after_options
-  @header = true
-end
+    def self.after_options
+      @header = true
+    end
 
-def self.analysis(file)
-  Elf::File.open(file) do |elf|
-    results = {
-      :exec => 0,
-      :data => 0,
-      :rodata => 0,
-      :relro => 0,
-      :bss => 0,
-      :overhead => 0,
-      :allocated => 0
-    }
+    def self.analysis(file)
+      Elf::File.open(file) do |elf|
+        results = {
+          :exec => 0,
+          :data => 0,
+          :rodata => 0,
+          :relro => 0,
+          :bss => 0,
+          :overhead => 0,
+          :allocated => 0
+        }
 
-    # Get the size of each section, and then, depending on its type,
-    # flags and eventually name, decide what to sum it to.
-    elf.each_section do |section|
-      # This tool only interests itself with size of sections that are
-      # loaded into memory at runtime, and not those that only impact
-      # the size of the on-disk file.
-      next unless section.flags.include?(Elf::Section::Flags::Alloc)
+        # Get the size of each section, and then, depending on its type,
+        # flags and eventually name, decide what to sum it to.
+        elf.each_section do |section|
+          # This tool only interests itself with size of sections that are
+          # loaded into memory at runtime, and not those that only impact
+          # the size of the on-disk file.
+          next unless section.flags.include?(Elf::Section::Flags::Alloc)
 
-      case
-      # When the section is NoBits, it is not allocated in the file,
-      # and is only allocated in ram, this is the case of .bss and
-      # .tbss sections.
-      when section.type == Elf::Section::Type::NoBits
-        sectype = :bss
-      # If the section contains executable code, count it separately;
-      # size(1) will count it all as text, but we don't need to do
-      # that.
-      when section.flags.include?(Elf::Section::Flags::ExecInstr)
-        sectype = :exec
-      # If the section is going to be allocated and writeable at
-      # runtime, it is usually a data section, of some kind.
-      #
-      # We check further though since we might want to count it
-      # separately.
-      when section.flags.include?(Elf::Section::Flags::Write)
-        # This makes it GCC-specific but that's just because I
-        # cannot find anything in ELF specs that gives an easy way
-        # to deal with this.
-        #
-        # By all means, .data.rel.ro is just the same as .data, with
-        # the exception of prelinking, where this area can then
-        # become mostly read-only and thus not creating dirty pages.
-        sectype = (section.name =~ /^\.data\.rel\.ro(\..+)?/) ? :relro : :data
-      # A number of sections are loaded into memory on the image but
-      # are not really used for anything beside providing metadata for
-      # link editor and loader; these section are an object's
-      # "overhead" and can usually be reduced by reducing the amount
-      # of symbols exposed by the object itself.
-      when (section.class == Elf::StringTable or
-            section.class == Elf::SymbolTable or
-            section.type == Elf::Section::Type::Dynamic or
-            section.type == Elf::Section::Type::GNU::VerDef or
-            section.type == Elf::Section::Type::GNU::VerNeed or
-            section.type == Elf::Section::Type::GNU::VerSym or
-            section.type == Elf::Section::Type::Hash or
-            section.type == Elf::Section::Type::GNU::Hash)
-        sectype = :overhead
-      else
-        sectype = :rodata
+          case
+            # When the section is NoBits, it is not allocated in the file,
+            # and is only allocated in ram, this is the case of .bss and
+            # .tbss sections.
+          when section.type == Elf::Section::Type::NoBits
+            sectype = :bss
+            # If the section contains executable code, count it separately;
+            # size(1) will count it all as text, but we don't need to do
+            # that.
+          when section.flags.include?(Elf::Section::Flags::ExecInstr)
+            sectype = :exec
+            # If the section is going to be allocated and writeable at
+            # runtime, it is usually a data section, of some kind.
+            #
+            # We check further though since we might want to count it
+            # separately.
+          when section.flags.include?(Elf::Section::Flags::Write)
+            # This makes it GCC-specific but that's just because I
+            # cannot find anything in ELF specs that gives an easy way
+            # to deal with this.
+            #
+            # By all means, .data.rel.ro is just the same as .data, with
+            # the exception of prelinking, where this area can then
+            # become mostly read-only and thus not creating dirty pages.
+            sectype = (section.name =~ /^\.data\.rel\.ro(\..+)?/) ? :relro : :data
+            # A number of sections are loaded into memory on the image but
+            # are not really used for anything beside providing metadata for
+            # link editor and loader; these section are an object's
+            # "overhead" and can usually be reduced by reducing the amount
+            # of symbols exposed by the object itself.
+          when (section.class == Elf::StringTable or
+                section.class == Elf::SymbolTable or
+                section.type == Elf::Section::Type::Dynamic or
+                section.type == Elf::Section::Type::GNU::VerDef or
+                section.type == Elf::Section::Type::GNU::VerNeed or
+                section.type == Elf::Section::Type::GNU::VerSym or
+                section.type == Elf::Section::Type::Hash or
+                section.type == Elf::Section::Type::GNU::Hash)
+            sectype = :overhead
+          else
+            sectype = :rodata
+          end
+
+          results[sectype] += section.size unless sectype.nil?
+        end
+
+        results[:allocated] = results.values.inject { |sum, val| sum += val }
+
+        if @relocation_stats
+          relocation_stats(results, file)
+        else
+          standard_size(results, file)
+        end
+      end
+    end
+
+    def self.relocation_stats(results, file)
+      if @header
+        puts "      shared      private    relocated        ratio   filename"
+        @header = false
       end
 
-      results[sectype] += section.size unless sectype.nil?
+      size_shared = results[:exec] + results[:rodata]
+      size_private = results[:data] + results[:bss]
+      size_relocated = results[:relro]
+
+      ratio = size_shared.to_f/size_relocated
+      ratio = 10 * Math::log10(ratio) if @decibel
+
+      printf "% 12s % 12s % 12s % 12.2f   %s\n", size_shared, size_private, size_relocated, ratio, file
     end
 
-    results[:allocated] = results.values.inject { |sum, val| sum += val }
+    def self.standard_size(results, file)
+      if @header
+        puts "     exec      data    rodata     relro       bss  overhead allocated filename"
+        @header = false
+      end
 
-    if @relocation_stats
-      relocation_stats(results, file)
-    else
-      standard_size(results, file)
+      printf("% 9d % 9d % 9d % 9d % 9d % 9d % 9d %s\n",
+             results[:exec],
+             results[:data],
+             results[:rodata],
+             results[:relro],
+             results[:bss],
+             results[:overhead],
+             results[:allocated],
+             file)
     end
   end
-end
-
-def self.relocation_stats(results, file)
-  if @header
-    puts "      shared      private    relocated        ratio   filename"
-    @header = false
-  end
-
-  size_shared = results[:exec] + results[:rodata]
-  size_private = results[:data] + results[:bss]
-  size_relocated = results[:relro]
-
-  ratio = size_shared.to_f/size_relocated
-  ratio = 10 * Math::log10(ratio) if @decibel
-
-  printf "% 12s % 12s % 12s % 12.2f   %s\n", size_shared, size_private, size_relocated, ratio, file
-end
-
-def self.standard_size(results, file)
-  if @header
-    puts "     exec      data    rodata     relro       bss  overhead allocated filename"
-    @header = false
-  end
-
-  printf("% 9d % 9d % 9d % 9d % 9d % 9d % 9d %s\n",
-         results[:exec],
-         results[:data],
-         results[:rodata],
-         results[:relro],
-         results[:bss],
-         results[:overhead],
-         results[:allocated],
-         file)
 end
