@@ -34,10 +34,25 @@ module Elf::Tools
                    # Exclude symbols present in a tags file (from exuberant-ctags)
                    ["--exclude-tags", "-X", GetoptLong::REQUIRED_ARGUMENT]
                   ]
+
+      # List of patterns to exclude; this include all the used
+      # symbols, the entrypoints to the system's dynamic loader, and
+      # those provided by the user as to be ignored.
+      #
+      # For technical limits, we have two arrays, one includes all the
+      # regular expressions given by the user, the other is a list of
+      # full strings matching.
+      @exclude_patterns = []
+      @exclude_symbols = [ "main" ]
+
+      @hidden_only = false
+      @show_type = false
+
+      @all_defined = []
     end
 
     def self.exclude_tags_cb(arg)
-      @exclude_names += File.readlines(arg).delete_if do |line|
+      @exclude_symbols |= File.readlines(arg).delete_if do |line|
         line[0..0] == '!' # Internal exuberant-ctags symbol
       end.collect do |line|
         line.split[0]
@@ -45,23 +60,7 @@ module Elf::Tools
     end
 
     def self.exclude_regexp_cb(arg)
-      @exclude_regexps << Regexp.new(arg)
-    end
-
-    def self.before_options
-      # The main symbol is used by all the standalone executables,
-      # reporting it is pointless as it will always be a false
-      # positive. It cannot be marked static.
-      #
-      # The excluded_names variable will contain also all the used symbols
-      @exclude_names = ["main"]
-      @exclude_regexps = []
-      @hidden_only = false
-      @show_type = false
-    end
-
-    def self.after_options
-      @all_defined = []
+      @exclude_patterns << Regexp.new(arg)
     end
 
     def self.analysis(filename)
@@ -78,7 +77,7 @@ module Elf::Tools
         # Gather all the symbols, defined and missing in the translation unit
         elf['.symtab'].each do |sym|
           if sym.section == Elf::Section::Undef
-            @exclude_names << sym.name
+            @exclude_symbols |= [ sym.name ]
           elsif sym.bind == Elf::Symbol::Binding::Local
             next
           elsif (sym.section.is_a? Elf::Section) or
@@ -93,16 +92,11 @@ module Elf::Tools
     end
 
     def self.results
-      @exclude_names.uniq!
+      @excluded_patterns |= Regexp.union(@exclude_symbols.collect { |sym| "^#{Regexp.escape(sym)}$" })
+      exclusions = Regexp.union(@exclude_patterns)
 
       @all_defined.each do |symbol|
-        next if @exclude_names.include? symbol.name
-
-        excluded = false
-        @exclude_regexps.each do |exclude_sym|
-          break if excluded = exclude_sym.match(symbol.name)
-        end
-        next if excluded
+        next if symbol.name =~ exclusions
 
         if @show_type
           begin
