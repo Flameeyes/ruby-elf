@@ -49,7 +49,8 @@ module Elf::Tools
     SymbolRegex32 = Regexp.union(SymbolNamesList.collect { |sym| /^#{sym}$/ })
     SymbolRegex64 = Regexp.union(SymbolNamesList.collect { |sym| /^#{sym}64$/ })
 
-    def initialize
+    def self.initialize
+      super
       @options |= [
                    # Scan only object files (rather than non-object files)
                    ["--objects", "-o", GetoptLong::NO_ARGUMENT]
