@@ -38,16 +38,16 @@ module Elf::Tools
       @execution_threads = nil
 
       @options |= [
-                   ["--no-scan-ldpath",     "-L", GetoptLong::NO_ARGUMENT ],
-                   ["--scan-path",          "-p", GetoptLong::NO_ARGUMENT ],
-                   ["--suppressions",       "-s", GetoptLong::REQUIRED_ARGUMENT ],
-                   ["--multiplementations", "-m", GetoptLong::REQUIRED_ARGUMENT ],
-                   ["--elf-machine",        "-M", GetoptLong::REQUIRED_ARGUMENT ],
-                   ["--postgres-username",  "-U", GetoptLong::REQUIRED_ARGUMENT ],
-                   ["--postgres-password",  "-P", GetoptLong::REQUIRED_ARGUMENT ],
-                   ["--postgres-hostname",  "-H", GetoptLong::REQUIRED_ARGUMENT ],
-                   ["--postgres-port",      "-T",  GetoptLong::REQUIRED_ARGUMENT ],
-                   ["--postgres-database",  "-D", GetoptLong::REQUIRED_ARGUMENT ]
+                   ["--no-scan-ldpath",      "-L", GetoptLong::NO_ARGUMENT ],
+                   ["--scan-path",           "-p", GetoptLong::NO_ARGUMENT ],
+                   ["--suppressions",        "-s", GetoptLong::REQUIRED_ARGUMENT ],
+                   ["--multimplementations", "-m", GetoptLong::REQUIRED_ARGUMENT ],
+                   ["--elf-machine",         "-M", GetoptLong::REQUIRED_ARGUMENT ],
+                   ["--postgres-username",   "-U", GetoptLong::REQUIRED_ARGUMENT ],
+                   ["--postgres-password",   "-P", GetoptLong::REQUIRED_ARGUMENT ],
+                   ["--postgres-hostname",   "-H", GetoptLong::REQUIRED_ARGUMENT ],
+                   ["--postgres-port",       "-T",  GetoptLong::REQUIRED_ARGUMENT ],
+                   ["--postgres-database",   "-D", GetoptLong::REQUIRED_ARGUMENT ]
                   ]
 
       # we remove the -R option since we always want to be recursive in our search
@@ -125,20 +125,19 @@ module Elf::Tools
       @total_suppressions = Regexp.union(@total_suppressions)
 
       @multimplementation_files.each do |multimplementation|
-        File.open(multimplementation) do |file|
-          file.each_line do |line|
-            implementation, paths = line.
-              gsub(/#\s.*/, '').
-              strip.
-              split(/\s+/, 2)
+        @multimplementations |= \
+        File.new(multimplementation).read.split(/\r?\n/).collect do |line|
+          implementation, paths = line.
+            gsub(/#\s.*/, '').
+            strip.
+            split(/\s+/, 2)
 
-            next unless implementation
-            next unless paths
+          next if (implementation.nil? or paths.nil?)
 
-            @multimplementations << [ implementation, Regexp.new(paths) ]
-          end
+          [ implementation, Regexp.new(paths) ]
         end
       end
+      @multimplementations.delete_if { |x| x.nil? }
 
       @targets |=
         ( !@no_scan_ldpath             ? Elf::Utilities.system_library_path : [] ) |
