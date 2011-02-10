@@ -243,7 +243,7 @@ module Elf
             try_execute(input.sub(/\r?\n/, ''))
           }
         else
-          @targets.each { |target| try_execute(target) }
+          @targets.uniq.each { |target| try_execute(target) }
         end
 
         if @execution_threads
