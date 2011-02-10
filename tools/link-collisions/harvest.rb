@@ -46,8 +46,9 @@ module Elf::Tools
                    ["--postgres-username",   "-U", GetoptLong::REQUIRED_ARGUMENT ],
                    ["--postgres-password",   "-P", GetoptLong::REQUIRED_ARGUMENT ],
                    ["--postgres-hostname",   "-H", GetoptLong::REQUIRED_ARGUMENT ],
-                   ["--postgres-port",       "-T",  GetoptLong::REQUIRED_ARGUMENT ],
-                   ["--postgres-database",   "-D", GetoptLong::REQUIRED_ARGUMENT ]
+                   ["--postgres-port",       "-T", GetoptLong::REQUIRED_ARGUMENT ],
+                   ["--postgres-database",   "-D", GetoptLong::REQUIRED_ARGUMENT ],
+                   ["--output",              "-o", GetoptLong::REQUIRED_ARGUMENT ],
                   ]
 
       # we remove the -R option since we always want to be recursive in our search
@@ -64,6 +65,8 @@ module Elf::Tools
       @partial_suppressions = []
 
       @multimplementations = []
+
+      @output = "collisions.log"
     end
 
     def self.suppressions_cb(arg)
@@ -158,6 +161,9 @@ module Elf::Tools
          SELECT symbol, abi, COUNT(*) AS occurrences, BOOL_OR(objects.exported) AS exported FROM symbols INNER JOIN objects ON symbols.object = objects.id GROUP BY symbol, abi")
       @db.exec("CREATE VIEW duplicate_symbols AS
          SELECT * FROM symbol_count WHERE occurrences > 1 AND exported = 't' ORDER BY occurrences DESC, symbol ASC")
+
+      @db.exec("PREPARE getinstances (text, text) AS
+         SELECT name FROM symbols INNER JOIN objects ON symbols.object = objects.id WHERE symbol = $1 AND abi = $2 ORDER BY name")
 
       @db.exec(<<EOF)
 CREATE FUNCTION implementation (
@@ -295,6 +301,15 @@ CREATE INDEX objects_name ON objects(name);
 CREATE INDEX symbols_symbol ON symbols(symbol);
 COMMIT;
 EOF
+
+      outfile = File.new(@output, "w")
+
+      db_exec("SELECT * FROM duplicate_symbols").each do |row|
+        outfile.puts "Symbol #{row['symbol']} (#{row['abi']}) present #{row['occurrences']} times"
+        db_exec( "EXECUTE getinstances ('#{row['symbol']}', '#{row['abi']}')" ).each do |path|
+          outfile.puts "  #{path['name']}"
+        end
+      end
     end
   end
 end
