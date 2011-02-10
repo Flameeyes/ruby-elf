@@ -159,9 +159,6 @@ module Elf::Tools
       @db.exec("CREATE VIEW duplicate_symbols AS
          SELECT * FROM symbol_count WHERE occurrences > 1 AND exported = 't' ORDER BY occurrences DESC, symbol ASC")
 
-      @db.exec("PREPARE newmulti (int, text) AS
-         INSERT INTO multimplementations (id, path) VALUES($1, $2)")
-
       @db.exec(<<EOF)
 CREATE FUNCTION implementation (
     p_implementation TEXT,
@@ -184,6 +181,21 @@ CREATE FUNCTION implementation (
     END IF;
   END;
 ' LANGUAGE 'plpgsql';
+EOF
+
+      @db.exec(<<EOF)
+CREATE FUNCTION multimplementation (
+  p_id INTEGER,
+  p_filepath TEXT
+) RETURNS BOOLEAN AS $$
+  BEGIN
+    INSERT INTO multimplementations (id, path) VALUES(p_id, p_filepath);
+    RETURN 't';
+  EXCEPTION
+    WHEN unique_violation THEN
+      RETURN 'f';
+  END;
+$$ LANGUAGE 'plpgsql';
 EOF
 
       @db.exec(<<EOF)
@@ -246,11 +258,12 @@ EOF
 
         if filename != name
           # If this is a collapsed multimplementation, add it to the list
-          db_exec("EXECUTE newmulti(#{impid}, '#{filename}')")
-        elsif res[0]["created"] != "t"
-          # otherwise we simply skip over it because we've already seen the file!
-          next
+          res = db_exec("SELECT multimplementation(#{impid}, '#{filename}') AS created");
         end
+
+        # skip over the file if we already visited it (either directly
+        # or as a multimplementation.
+        next if res[0]["created"] != "t"
 
         query = ""
         elf['.dynsym'].each do |sym|
