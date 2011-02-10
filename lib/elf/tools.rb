@@ -116,7 +116,7 @@ module Elf
 
       # We consider having a single target means that we're given exactly
       # one argument, and that argument is not a targets' list itself.
-      return (ARGV.size == 1 and ARGV[0] !~ /^@/)
+      return @targets.size == 1
     end
 
     def self.execute(filename)
@@ -154,13 +154,6 @@ module Elf
     # Try to execute the analysis function on a given filename argument.
     def self.try_execute(filename)
       begin
-        # if the file name starts with '@', it is not a target, but a file
-        # with a list of targets, so load it with execute_on_file.
-        if filename[0..0] == "@"
-          execute_on(filename[1..-1])
-          return
-        end
-
         # find the file type so we don't have to look it up many times; if
         # we're running a recursive scan, we don't want to look into
         # symlinks as they might create loops or duplicate content, while
@@ -229,12 +222,28 @@ module Elf
       begin
         before_options
         parse_arguments
+
+        # collect all the arguments passed; if the argument starts
+        # with '@', then open the file and split the lines in further
+        # arguments.
+        @targets = ARGV.collect { |argument|
+          if argument[0..0] == "@"
+            ::File.new(argument[1..-1]).read.split(/\r?\n/)
+          else
+            argument
+          end
+        }.flatten
+
         after_options
 
-        if ARGV.size == 0
-          execute_on($stdin)
+        # if we have no targets (neither direct arguments, nor added
+        # by #after_options, we readthe targets from stdin.
+        if @targets.empty?
+          $stdin.each_line { |input|
+            try_execute(input.sub(/\r?\n/, ''))
+          }
         else
-          execute_on(ARGV)
+          @targets.each { |target| try_execute(target) }
         end
 
         if @execution_threads
