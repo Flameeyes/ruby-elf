@@ -157,7 +157,7 @@ module Elf
         # if the file name starts with '@', it is not a target, but a file
         # with a list of targets, so load it with execute_on_file.
         if filename[0..0] == "@"
-          execute_on_file(filename[1..-1])
+          execute_on(filename[1..-1])
           return
         end
 
@@ -200,19 +200,12 @@ module Elf
     end
 
     # Execute the analysis function on all the elements of an array.
-    def self.execute_on_array(array)
-      array.each do |filename|
+    def self.execute_on(param)
+      param = ::File.new(param) if param.is_a? String
+      param = param.read.split(/\r?\n/) if param.is_a? IO
+
+      param.each do |filename|
         try_execute(filename)
-      end
-    end
-
-    # Execute the analysis function on all the lines of a file
-    def self.execute_on_file(file)
-      file = $stdin if file == "-"
-      file = File.new(file) if file.class == String
-
-      file.each_line do |line|
-        try_execute(line.chomp("\n"))
       end
     end
 
@@ -239,9 +232,9 @@ module Elf
         after_options
 
         if ARGV.size == 0
-          execute_on_file($stdin)
+          execute_on($stdin)
         else
-          execute_on_array(ARGV)
+          execute_on(ARGV)
         end
 
         if @execution_threads

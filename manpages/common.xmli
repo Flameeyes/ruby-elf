@@ -74,9 +74,9 @@
       </term>
       <listitem>
         <para>
-          Read the list of files to analyse from the given file (or standard input if
-          <replaceable>path</replaceable> is <filename>-</filename>). Useful to pass a long list of
-          files. When used with stdin or named pipes, this also allows asynchronous analysis.
+          Read the list of files to analyse from the given file; useful to pass a long list of
+          files. The files are read before the processing start, so that the list of target files is
+          available.
         </para>
       </listitem>
     </varlistentry>
