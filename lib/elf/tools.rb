@@ -137,6 +137,20 @@ module Elf
       end
     end
 
+    def self.thread_execute(filename)
+      # If our child set @execution_threads to nil, it doesn't really
+      # support running multithreaded, this is the case for instance
+      # of the link collision harvester script, where the db access
+      # and pkey generation has to be synchronous.
+      unless @execution_threads.nil?
+        @execution_threads.add(Thread.new {
+                                 execute(filename)
+                               })
+      else
+        execute(filename)
+      end
+    end
+
     # Try to execute the analysis function on a given filename argument.
     def self.try_execute(filename)
       begin
@@ -169,9 +183,7 @@ module Elf
         elsif not file_stat.file?
           putnotice "#{filename}: not a regular file"
         else
-          @execution_threads.add(Thread.new {
-                                   execute(filename)
-                                 })
+          thread_execute(filename)
         end
       rescue Errno::ENOENT, Errno::EACCES, Errno::EISDIR, Elf::File::NotAnELF => e
         # The Errno exceptions have their message ending in " - FILENAME",
@@ -232,8 +244,10 @@ module Elf
           execute_on_array(ARGV)
         end
 
-        @execution_threads.list.each do |thread|
-          thread.join
+        if @execution_threads
+          @execution_threads.list.each do |thread|
+            thread.join
+          end
         end
 
         results
