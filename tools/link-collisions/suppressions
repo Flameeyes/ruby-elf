@@ -60,28 +60,31 @@
 .*\.exe\.so				^WinMain$
 
 # GTK and GNOME plugins
-.*						^g_module_check_init$
-/gtk-2\.0/.*/modules/.*\.so			^gtk_module_init$
-/gtk-2\.0/.*/immodules/im-.*\.so		^im_module_(create|init|exit|list)$
-/gtk-2\.0/.*/engines/.*\.so			^(theme_(create_rc_style|init|exit))$
-/gtk-2\.0/.*/loaders/libpixbuf.*\.so		^(load|fill_(info|vtable)|get_info)$
-/gtk-2\.0/.*/printbackends/.*\.so		^pb_module_(init|create|exit)$
-/pango/.*/modules/pango-.*\.so			^script_engine_(list|create|init|exit)$
-/gnome-vfs-2\.0/modules/lib.*\.so		^vfs_module_(init|shutdown)$
-/libglade/.*/lib.*\.so				^glade_module_register_widgets$
-/(goffice|gnumeric)/[0-9\.]+/plugins/.*\.so	^go_plugin_(depends|header|init|shutdown)$
-/evolution/[0-9\.]+/plugins/.*\.so		^e_plugin_lib_enable$
-/abiword-[0-9\.]+/plugins/lib.*\.so		^abi_plugin_((un)?register|supports_version)$
-/libgda(-[0-9\.]+)?/providers/lib.*\.so		^plugin_(init|get_(name|description)|create_provider)$
-/gedit-[0-9]+/plugins/lib.*\.so			^register_gedit_plugin$
-/brasero/plugins/lib.*\.so			^brasero_plugin_register$
-/gnome-settings-daemon-[0-9\.]+/lib.*\.so	^register_gnome_settings_plugin$
-/gimp/[0-9\.]+/modules/.*\.so			^gimp_module_(query|register)$
-/epiphany/[0-9\.]+/extensions/.*\.so		^register_module$
-/libgnomedb/plugins/.*\.so			^plugin_init$
-/totem/plugins/.*\.so				^register_totem_plugin$
-/rhythmbox/plugins/.*\.so			^register_rb_plugin$
-/nautilus/extensions-[0-9\.]+/.*\.so		^nautilus_module_(initialize|list_types|shutdown)$
+.*								^g_module_check_init$
+/gtk-2\.0/.*/modules/.*\.so					^gtk_module_init$
+/gtk-2\.0/.*/immodules/im-.*\.so				^im_module_(create|init|exit|list)$
+/gtk-2\.0/.*/engines/.*\.so					^(theme_(create_rc_style|init|exit))$
+/(gtk-2\.0|gdk-pixbuf-2\.0)/.*/loaders/libpixbuf.*\.so		^(load|fill_(info|vtable)|get_info)$
+/gtk-2\.0/.*/printbackends/.*\.so				^pb_module_(init|create|exit)$
+/pango/.*/modules/pango-.*\.so					^script_engine_(list|create|init|exit)$
+/gnome-vfs-2\.0/modules/lib.*\.so				^vfs_module_(init|shutdown)$
+/libglade/.*/lib.*\.so						^glade_module_register_widgets$
+/(goffice|gnumeric)/[0-9\.]+/plugins/.*\.so			^go_plugin_(depends|header|init|shutdown)$
+/evolution/[0-9\.]+/plugins/.*\.so				^e_plugin_lib_enable$
+/abiword-[0-9\.]+/plugins/lib.*\.so				^abi_plugin_((un)?register|supports_version)$
+/libgda(-[0-9\.]+)?/providers/lib.*\.so				^plugin_(init|get_(name|description)|create_provider)$
+/gedit-[0-9]+/plugins/lib.*\.so					^register_gedit_plugin$
+/brasero/plugins/lib.*\.so					^brasero_plugin_register$
+/gnome-settings-daemon-[0-9\.]+/lib.*\.so			^register_gnome_settings_plugin$
+/gimp/[0-9\.]+/modules/.*\.so					^gimp_module_(query|register)$
+/epiphany/[0-9\.]+/extensions/.*\.so				^register_module$
+/libgnomedb/plugins/.*\.so					^plugin_init$
+/totem/plugins/.*\.so						^register_totem_plugin$
+/rhythmbox/plugins/.*\.so					^register_rb_plugin$
+/nautilus/extensions-[0-9\.]+/.*\.so				^nautilus_module_(initialize|list_types|shutdown)$
+/gio/modules/.*\.so                                             ^g_io_module_(un)?load$
+/evince/.*/backends/.*\.so                                      ^register_evince_backend$
+/notification-daemon-[0-9\.]+/.*\.so                            ^(add_notification_action|clear_notification_actions|(create|move)_notification|notification_tick|set_notification_(arrow|hints|icon|text|timeout))$
 
 # XFCE
 /lib(32|64)?/thunarx-[0-9\.]+/.*\.so		^thunar_extension_(initialize|list_types|shutdown)$
@@ -98,6 +101,7 @@
 .*					^JNI_OnLoad$
 # Sun Java implementation
 ^/opt/sun-jdk-.*/.*			^JavaMain$
+/icedtea6/.*                            ^JavaMain$
 
 # ZSH modules
 .*/zsh/.*/zsh/.*\.so			^(boot|setup|cleanup|finish)_$
@@ -106,7 +110,7 @@
 .*/wireshark/plugins/.*/.*\.so		^(version|plugin_(reg_handoff|register))$
 
 # Samba plugins
-.*/samba/(vfs|auth|charset)/.*\.so	^init_module$
+.*/samba/(vfs|auth|charset)/.*\.so	^init_(samba_)?module$
 
 # XawTV plugins
 .*/xawtv/.*\.so				^ng_plugin_init$
@@ -156,9 +160,9 @@
 .*/lib(|32|64)/zsh/.*/zsh/.*\.so$	^(enables|features)_$
 
 # OSS wrappers and other LD_PRELOAD libraries
-lib((pa|esd|arts)dsp|aoss|jackasyn|(soap|sand)box|fake(ch)?root|zzuf|v4l(1compat|2convert)|trash|syncdir|honeyd)	^((__)?(m(un)?map(64)?|f?(open(at)?(64)?(_2)?|close))|ioctl|poll|connect|glob|bind|execvp?)$
+lib((pulse|esd|arts)dsp|aoss|jackasyn|(soap|sand)box|fake(ch)?root|zzuf|v4l(1compat|2convert)|trash|syncdir|honeyd|tsocks)	^((__)?(m(un)?map(64)?|f?(open(at)?(64)?(_2)?|close))|ioctl|poll|connect|glob|bind|execvp?)$
 
-lib(fake(ch)?root|(soap|sand)box|trash)(-[0-9\.]+)?\.so									^f?(l?ch(own|mod)|(un)?link|rename|(mk|rm)dir|remove|creat|mkfifo|l?utimen?s?|(__x)?mknode|symlink|access|truncate)(64)?(at)?$
+lib(fake(ch)?root|(soap|sand)box|trash)(-[0-9\.]+)?\.so									^f?(l?ch(own|mod)|(un)?link|rename|(mk|rm)dir|remove|creat|mkfifo|l?utimen?s?|(__x)?mknod(e|at)|symlink|access|truncate)(64)?(at)?$
 
 # Memory debug libraries
 lib(mudflap(th)?|dmalloc(cxx)?|duma|efence|jemalloc|mem(usage|intercept)|zzuf)\.so	^(([mcv]|re)alloc|c?free|m(un)?map(64)?|(posix_)?memalign|mem(cpy)|strn?(dup|cat|cpy)|__invoke_dynamic_linker__|_Z(n[aw]j|d[al]Pv)|RKSt9nothrow_t|Page_AllowAccess)$
@@ -182,7 +186,7 @@ strigi/strigi[lt]a_.*\.so		^(deleteS|s)trigiAnalyzerFactory$
 .*/unrealircd/modules/m_.*\.so				^(Mod_(Init|Load|Version|Unload|Header)|compiler_version)$
 
 # VLC
-.*/vlc/.*/lib.*_plugin\.so		^vlc_entry(_(license|copyright))?__[0-9_]+[me]$
+.*/vlc/.*/lib.*_plugin\.so		^vlc_entry(_(license|copyright))?__[0-9_]+[a-z]$
 
 # GStreamer
 .*/gstreamer-.*/lib.*\.so		^gst_plugin_desc$
