@@ -148,31 +148,50 @@ module Elf::Tools
 
       @db = PGconn.open(pg_params)
 
-      @db.exec("DROP TABLE IF EXISTS symbols, multimplementations, objects CASCADE")
-      @db.exec("DROP LANGUAGE IF EXISTS plpgsql CASCADE");
-
-      @db.exec("CREATE LANGUAGE plpgsql");
-      @db.exec("CREATE TABLE objects ( id SERIAL PRIMARY KEY, name VARCHAR(4096), abi VARCHAR(255), exported BOOLEAN, UNIQUE(name, abi) )")
-      @db.exec("CREATE TABLE multimplementations ( id INTEGER REFERENCES objects(id) ON DELETE CASCADE, path VARCHAR(4096), UNIQUE(path) )")
-      @db.exec("CREATE TABLE symbols ( object INTEGER REFERENCES objects(id) ON DELETE CASCADE, symbol TEXT,
-         PRIMARY KEY(object, symbol) )")
-
-      @db.exec("CREATE VIEW symbol_count AS
-         SELECT symbol, abi, COUNT(*) AS occurrences, BOOL_OR(objects.exported) AS exported FROM symbols INNER JOIN objects ON symbols.object = objects.id GROUP BY symbol, abi")
-      @db.exec("CREATE VIEW duplicate_symbols AS
-         SELECT * FROM symbol_count WHERE occurrences > 1 AND exported = 't' ORDER BY occurrences DESC, symbol ASC")
-
-      @db.exec("PREPARE getinstances (text, text) AS
-         SELECT name FROM symbols INNER JOIN objects ON symbols.object = objects.id WHERE symbol = $1 AND abi = $2 ORDER BY name")
-
       @db.exec(<<EOF)
+BEGIN TRANSACTION;
+
+DROP TABLE IF EXISTS symbols, multimplementations, objects CASCADE;
+DROP LANGUAGE IF EXISTS plpgsql CASCADE;
+
+CREATE LANGUAGE plpgsql;
+CREATE TABLE objects (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(4096),
+    abi VARCHAR(255),
+    exported BOOLEAN,
+    UNIQUE(name, abi)
+);
+CREATE TABLE multimplementations (
+    id INTEGER REFERENCES objects(id) ON DELETE CASCADE,
+    path VARCHAR(4096),
+    UNIQUE(path)
+);
+CREATE TABLE symbols (
+    object INTEGER REFERENCES objects(id) ON DELETE CASCADE,
+    symbol TEXT,
+    PRIMARY KEY(object, symbol)
+);
+
+CREATE VIEW symbol_count AS
+   SELECT symbol, abi, COUNT(*) AS occurrences, BOOL_OR(objects.exported) AS exported
+     FROM symbols INNER JOIN objects ON symbols.object = objects.id GROUP BY symbol, abi;
+CREATE VIEW duplicate_symbols AS
+   SELECT * FROM symbol_count
+     WHERE occurrences > 1 AND exported = 't'
+     ORDER BY occurrences DESC, symbol ASC;
+
+PREPARE getinstances (text, text) AS
+   SELECT name FROM symbols INNER JOIN objects ON symbols.object = objects.id
+      WHERE symbol = $1 AND abi = $2 ORDER BY name;
+
 CREATE FUNCTION implementation (
     p_implementation TEXT,
     p_abi TEXT,
     p_exported BOOLEAN,
     OUT implementation_id INTEGER,
     OUT created BOOLEAN
-) AS '
+) AS $$
   BEGIN
     SELECT INTO implementation_id id FROM objects
       WHERE name = p_implementation AND abi = p_abi;
@@ -183,13 +202,11 @@ CREATE FUNCTION implementation (
       INSERT INTO objects(name, abi, exported)
         VALUES(p_implementation, p_abi, p_exported);
       SELECT INTO implementation_id
-        currval(pg_get_serial_sequence(''objects'', ''id''));
+        currval(pg_get_serial_sequence('objects', 'id'));
     END IF;
   END;
-' LANGUAGE 'plpgsql';
-EOF
+$$ LANGUAGE 'plpgsql';
 
-      @db.exec(<<EOF)
 CREATE FUNCTION multimplementation (
   p_id INTEGER,
   p_filepath TEXT
@@ -202,9 +219,7 @@ CREATE FUNCTION multimplementation (
       RETURN 'f';
   END;
 $$ LANGUAGE 'plpgsql';
-EOF
 
-      @db.exec(<<EOF)
 CREATE FUNCTION symbol (
     p_object INTEGER,
     p_symbol TEXT
@@ -217,6 +232,8 @@ CREATE FUNCTION symbol (
       RETURN;
   END;
 ' LANGUAGE 'plpgsql';
+
+COMMIT;
 EOF
     end
 
