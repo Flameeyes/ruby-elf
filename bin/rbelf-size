@@ -46,15 +46,15 @@ module Elf::Tools
       @execution_threads = nil if @differential
 
       if @relocation_stats
-        printf("% 12s % 12s % 12s % 12s %s\n",
-               "shared", "private", "relocated", "ratio", "filename")
         @print_results = method(:relocation_stats)
+        @results_fields = [ :shared, :private, :relocated, :ratio ]
       else
-        printf("% 12s % 12s % 12s % 12s % 12s % 12s % 12s %s\n",
-               "exec", "data", "rodata", "relro", "bss", "overhead",
-               "allocated", "filename")
         @print_results = method(:standard_size)
+        @results_fields = [ :exec, :data, :rodata, :relro, :bss, :overhead, :allocated ]
       end
+
+      printf(("% 12s " * @results_fields.size) + "%s\n",
+             *(@results_fields + ["filename"]))
     end
 
     def self.analysis(file)
