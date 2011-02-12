@@ -33,9 +33,7 @@ module Elf::Tools
                    # the following.
                    ["--differential", "-D", GetoptLong::NO_ARGUMENT],
                   ]
-    end
 
-    def self.before_options
       @relocation_stats = false
     end
 

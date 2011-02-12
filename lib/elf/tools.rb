@@ -65,9 +65,6 @@ module Elf
       }
     end
 
-    def self.before_options
-    end
-
     def self.after_options
     end
 
@@ -220,7 +217,6 @@ module Elf
       initialize
 
       begin
-        before_options
         parse_arguments
 
         # collect all the arguments passed; if the argument starts

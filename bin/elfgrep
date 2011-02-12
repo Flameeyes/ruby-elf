@@ -53,6 +53,14 @@ module Elf::Tools
                    # Use NULLs to terminate filenames
                    ["--null", "-Z", GetoptLong::NO_ARGUMENT],
                   ]
+
+      @invert_match = false
+      @match_undefined = true
+      @match_defined = true
+      @show = :full_match
+      @match = :regexp
+
+      @patterns = []
     end
 
     # We define callbacks for some behaviour-changing options as those
@@ -82,16 +90,6 @@ module Elf::Tools
 
     def self.regexp_cb(pattern)
       @patterns << pattern
-    end
-
-    def self.before_options
-      @invert_match = false
-      @match_undefined = true
-      @match_defined = true
-      @show = :full_match
-      @match = :regexp
-
-      @patterns = []
     end
 
     def self.after_options
