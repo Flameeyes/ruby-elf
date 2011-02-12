@@ -297,11 +297,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
         <title>Bugs and Missing Features</title>
 
         <para>
-          The size of the columns is fixed to 8 digits, it might not be enough to fill in enough
-          space for some big ELF files.
-        </para>
-
-        <para>
           When using the <option>--differential</option> option, analysis of the arguments happens
           sequentially in a single thread rather than in parallel.
         </para>

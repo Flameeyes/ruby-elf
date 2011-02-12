@@ -50,7 +50,7 @@ module Elf::Tools
                "shared", "private", "relocated", "ratio", "filename")
         @print_results = method(:relocation_stats)
       else
-        printf("% 9s % 9s % 9s % 9s % 9s % 9s % 9s %s\n",
+        printf("% 12s % 12s % 12s % 12s % 12s % 12s % 12s %s\n",
                "exec", "data", "rodata", "relro", "bss", "overhead",
                "allocated", "filename")
         @print_results = method(:standard_size)
@@ -166,7 +166,7 @@ module Elf::Tools
     end
 
     def self.standard_size(results, file)
-      results, format = condition_results(results, "% 9d % 9d % 9d % 9d % 9d % 9d % 9d %s\n")
+      results, format = condition_results(results, "% 12d % 12d % 12d % 12d % 12d % 12d % 12d %s\n")
 
       printf(format,
              results[:exec],
