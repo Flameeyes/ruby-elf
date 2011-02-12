@@ -45,15 +45,22 @@ module Elf::Tools
       # use multithreaded scan here.
       @execution_threads = nil if @differential
 
+      @processing = []
+
       results_formats = {:filename => "  %s\n"}
+
       if @relocation_stats
-        @print_results = method(:relocation_stats)
+        @processing << :relocation_stats
+        @processing << :convert_ratio if @decibel
         @results_fields = [ :shared, :private, :relocated, :ratio, :filename ]
       else
-        @print_results = method(:standard_size)
+        @processing << :count_allocated
         @results_fields = [ :exec, :data, :rodata, :relro, :bss, :overhead, :allocated, :filename ]
       end
 
+      @processing << :apply_differential if @differential
+      @processing << :print_results
+      @processing << :differential_format if @differential
 
       printf( (@results_fields.collect { |field| results_formats[field] || "% 12s" }).join(" "),
               *@results_fields)
@@ -129,60 +136,49 @@ module Elf::Tools
           results[sectype] += section.size unless sectype.nil?
         end
 
-        results[:allocated] = results.values.inject { |sum, val| sum += val }
+        results[:filename] = file
 
-        @print_results.call(results, file)
+        @processing.each do |process|
+          method(process).call(results)
+        end
       end
     end
 
-    # simple convenience function to apply differential rules if
-    # needed.
-    def self.condition_results(results, format)
-      return [results, format] unless @differential
+    def self.count_allocated(results)
+      results[:allocated] = results.values.inject { |sum, val| sum += val rescue sum}
+    end
 
-      return [@first_results = results, format] if @first_results.nil?
-
-      results.each_pair do |key, value|
-        results[key] = results[key] - @first_results[key]
+    def self.apply_differential(results)
+      if @first_results.nil?
+        (@first_results = results.dup).delete(:filename)
+        return
       end
 
-      return [results, format.gsub(/%( [0-9]+d)/, '%+\1')]
+      @results_fields.each do |field|
+        results[field] = results[field] - @first_results[field] rescue nil
+      end
     end
 
-    def self.relocation_stats(results, file)
-      format = "% 12d % 12d % 12d % 12.2f   %s\n"
-
-      results = {
-        :shared => results[:exec] + results[:rodata],
-        :private => results[:data] + results[:bss],
-        :relocated => results[:relro]
-      }
-
-      results[:ratio] = results[:shared].to_f/results[:relocated]
-      results[:ratio] = 10 * Math::log10(results[:ratio]) if @decibel
-
-      results, format = condition_results(results, @format)
-
-      printf(format,
-             results[:shared],
-             results[:private],
-             results[:relocated],
-             results[:ratio],
-             file)
+    def self.differential_format(results)
+      @format.gsub!(/%( [0-9]+d)/, '%+\1')
+      @processing.delete(:differential_format)
     end
 
-    def self.standard_size(results, file)
-      results, format = condition_results(results, @format)
+    def self.relocation_stats(results)
+      results[:shared]    = results[:exec] + results[:rodata]
+      results[:private]   = results[:data] + results[:bss]
+      results[:relocated] = results[:relro]
 
-      printf(format,
-             results[:exec],
-             results[:data],
-             results[:rodata],
-             results[:relro],
-             results[:bss],
-             results[:overhead],
-             results[:allocated],
-             file)
+      results[:ratio]     = results[:shared].to_f/results[:relocated]
+    end
+
+    def conver_ratio(results)
+      results[:ratio] = 10 * Math::log10(results[:ratio])
+    end
+
+    def self.print_results(results)
+      printf(@format,
+             *(@results_fields.collect { |field| results[field] }))
     end
   end
 end
