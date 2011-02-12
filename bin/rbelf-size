@@ -147,20 +147,20 @@ module Elf::Tools
       format = "% 12d % 12d % 12d % 12.2f   %s\n"
 
       results = {
-        :size_shared => results[:exec] + results[:rodata],
-        :size_private => results[:data] + results[:bss],
-        :size_relocated => results[:relro]
+        :shared => results[:exec] + results[:rodata],
+        :private => results[:data] + results[:bss],
+        :relocated => results[:relro]
       }
 
-      results[:ratio] = results[:size_shared].to_f/results[:size_relocated]
+      results[:ratio] = results[:shared].to_f/results[:relocated]
       results[:ratio] = 10 * Math::log10(results[:ratio]) if @decibel
 
       results, format = condition_results(results, "% 12d % 12d % 12d % 12.2f   %s\n")
 
       printf(format,
-             results[:size_shared],
-             results[:size_private],
-             results[:size_relocated],
+             results[:shared],
+             results[:private],
+             results[:relocated],
              results[:ratio],
              file)
     end
