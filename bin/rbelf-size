@@ -53,7 +53,7 @@ module Elf::Tools
         @results_fields = [ :exec, :data, :rodata, :relro, :bss, :overhead, :allocated ]
       end
 
-      printf(("% 12s " * @results_fields.size) + "%s\n",
+      printf(("% 12s " * @results_fields.size) + "  %s\n",
              *(@results_fields + ["filename"]))
     end
 
@@ -166,7 +166,7 @@ module Elf::Tools
     end
 
     def self.standard_size(results, file)
-      results, format = condition_results(results, "% 12d % 12d % 12d % 12d % 12d % 12d % 12d %s\n")
+      results, format = condition_results(results, "% 12d % 12d % 12d % 12d % 12d % 12d % 12d   %s\n")
 
       printf(format,
              results[:exec],
