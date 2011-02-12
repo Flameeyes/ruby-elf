@@ -40,12 +40,16 @@ module Elf::Tools
     end
 
     def self.after_options
-      @header = true
-
       # to properly handle the differential size count, we have to
       # process all the files in sequence; this means that we cannot
       # use multithreaded scan here.
       @execution_threads = nil if @differential
+
+      if @relocation_stats
+        puts "      shared      private    relocated        ratio   filename"
+      else
+        puts "     exec      data    rodata     relro       bss  overhead allocated filename"
+      end
     end
 
     def self.analysis(file)
@@ -139,11 +143,6 @@ module Elf::Tools
     end
 
     def self.relocation_stats(results, file)
-      if @header
-        puts "      shared      private    relocated        ratio   filename"
-        @header = false
-      end
-
       format = "% 12d % 12d % 12d % 12.2f   %s\n"
 
       results = {
@@ -166,11 +165,6 @@ module Elf::Tools
     end
 
     def self.standard_size(results, file)
-      if @header
-        puts "     exec      data    rodata     relro       bss  overhead allocated filename"
-        @header = false
-      end
-
       results, format = condition_results(results, "% 9d % 9d % 9d % 9d % 9d % 9d % 9d %s\n")
 
       printf(format,
