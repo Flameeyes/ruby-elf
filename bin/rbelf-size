@@ -47,8 +47,10 @@ module Elf::Tools
 
       if @relocation_stats
         puts "      shared      private    relocated        ratio   filename"
+        @print_results = method(:relocation_stats)
       else
         puts "     exec      data    rodata     relro       bss  overhead allocated filename"
+        @print_results = method(:standard_size)
       end
     end
 
@@ -120,11 +122,7 @@ module Elf::Tools
 
         results[:allocated] = results.values.inject { |sum, val| sum += val }
 
-        if @relocation_stats
-          relocation_stats(results, file)
-        else
-          standard_size(results, file)
-        end
+        @print_results.call(results, file)
       end
     end
 
