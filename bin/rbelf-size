@@ -45,16 +45,22 @@ module Elf::Tools
       # use multithreaded scan here.
       @execution_threads = nil if @differential
 
+      results_formats = {:filename => "  %s\n"}
       if @relocation_stats
         @print_results = method(:relocation_stats)
-        @results_fields = [ :shared, :private, :relocated, :ratio ]
+        @results_fields = [ :shared, :private, :relocated, :ratio, :filename ]
       else
         @print_results = method(:standard_size)
-        @results_fields = [ :exec, :data, :rodata, :relro, :bss, :overhead, :allocated ]
+        @results_fields = [ :exec, :data, :rodata, :relro, :bss, :overhead, :allocated, :filename ]
       end
 
-      printf(("% 12s " * @results_fields.size) + "  %s\n",
-             *(@results_fields + ["filename"]))
+
+      printf( (@results_fields.collect { |field| results_formats[field] || "% 12s" }).join(" "),
+              *@results_fields)
+
+      results_formats[:ratio] = "%12.2f" # special format only for printing
+
+      @format = (@results_fields.collect { |field| results_formats[field] || "% 12d" }).join(" ")
     end
 
     def self.analysis(file)
@@ -155,7 +161,7 @@ module Elf::Tools
       results[:ratio] = results[:shared].to_f/results[:relocated]
       results[:ratio] = 10 * Math::log10(results[:ratio]) if @decibel
 
-      results, format = condition_results(results, "% 12d % 12d % 12d % 12.2f   %s\n")
+      results, format = condition_results(results, @format)
 
       printf(format,
              results[:shared],
@@ -166,7 +172,7 @@ module Elf::Tools
     end
 
     def self.standard_size(results, file)
-      results, format = condition_results(results, "% 12d % 12d % 12d % 12d % 12d % 12d % 12d   %s\n")
+      results, format = condition_results(results, @format)
 
       printf(format,
              results[:exec],
