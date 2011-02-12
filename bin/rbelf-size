@@ -28,7 +28,10 @@ module Elf::Tools
                    # Give relocation data for shared object assesment
                    ["--relocation-stats", "-r", GetoptLong::NO_ARGUMENT],
                    # Use deciBel scale for the shared-to-relocated ratio
-                   ["--decibel", "-d", GetoptLong::NO_ARGUMENT]
+                   ["--decibel", "-d", GetoptLong::NO_ARGUMENT],
+                   # Show differences between the first parameter and
+                   # the following.
+                   ["--differential", "-D", GetoptLong::NO_ARGUMENT],
                   ]
     end
 
@@ -38,6 +41,11 @@ module Elf::Tools
 
     def self.after_options
       @header = true
+
+      # to properly handle the differential size count, we have to
+      # process all the files in sequence; this means that we cannot
+      # use multithreaded scan here.
+      @execution_threads = nil if @differential
     end
 
     def self.analysis(file)
@@ -116,20 +124,45 @@ module Elf::Tools
       end
     end
 
+    # simple convenience function to apply differential rules if
+    # needed.
+    def self.condition_results(results, format)
+      return [results, format] unless @differential
+
+      return [@first_results = results, format] if @first_results.nil?
+
+      results.each_pair do |key, value|
+        results[key] = results[key] - @first_results[key]
+      end
+
+      return [results, format.gsub(/%( [0-9]+d)/, '%+\1')]
+    end
+
     def self.relocation_stats(results, file)
       if @header
         puts "      shared      private    relocated        ratio   filename"
         @header = false
       end
 
-      size_shared = results[:exec] + results[:rodata]
-      size_private = results[:data] + results[:bss]
-      size_relocated = results[:relro]
+      format = "% 12d % 12d % 12d % 12.2f   %s\n"
 
-      ratio = size_shared.to_f/size_relocated
-      ratio = 10 * Math::log10(ratio) if @decibel
+      results = {
+        :size_shared => results[:exec] + results[:rodata],
+        :size_private => results[:data] + results[:bss],
+        :size_relocated => results[:relro]
+      }
 
-      printf "% 12s % 12s % 12s % 12.2f   %s\n", size_shared, size_private, size_relocated, ratio, file
+      results[:ratio] = results[:size_shared].to_f/results[:size_relocated]
+      results[:ratio] = 10 * Math::log10(results[:ratio]) if @decibel
+
+      results, format = condition_results(results, "% 12d % 12d % 12d % 12.2f   %s\n")
+
+      printf(format,
+             results[:size_shared],
+             results[:size_private],
+             results[:size_relocated],
+             results[:ratio],
+             file)
     end
 
     def self.standard_size(results, file)
@@ -138,7 +171,9 @@ module Elf::Tools
         @header = false
       end
 
-      printf("% 9d % 9d % 9d % 9d % 9d % 9d % 9d %s\n",
+      results, format = condition_results(results, "% 9d % 9d % 9d % 9d % 9d % 9d % 9d %s\n")
+
+      printf(format,
              results[:exec],
              results[:data],
              results[:rodata],

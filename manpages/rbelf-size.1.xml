@@ -51,6 +51,10 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
             <arg choice="opt"><option>--decibel</option></arg>
           </arg>
 
+          <arg choice="opt">
+            <option>--differential</option>
+          </arg>
+
           <xi:include href="common.xmli"  xpointer="xpointer(id('filelist.synopsis')/*)" />
         </cmdsynopsis>
       </refsynopsisdiv>
@@ -98,6 +102,19 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
                 Since that ratio can easily skyrocket into thousands if there is very little
                 relocated data, and a lot of shared data, it might be easier to appreciate the
                 results by using a logaritmic scale.
+              </para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term><option>-D</option></term>
+            <term><option>--differential</option></term>
+
+            <listitem>
+              <para>
+                Provides sizes of multiple arguments as a comparison to the first. It is designed to
+                allow comparing multiple versions of the same binary or multiple implementation of
+                the same application to evaluate the overall trend in static memory allocation.
               </para>
             </listitem>
           </varlistentry>
@@ -282,6 +299,11 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
         <para>
           The size of the columns is fixed to 8 digits, it might not be enough to fill in enough
           space for some big ELF files.
+        </para>
+
+        <para>
+          When using the <option>--differential</option> option, analysis of the arguments happens
+          sequentially in a single thread rather than in parallel.
         </para>
 
         <xi:include href="common.xmli" xpointer="xpointer(id('filelist.bugpara')/*)" />
