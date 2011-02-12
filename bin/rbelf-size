@@ -46,10 +46,13 @@ module Elf::Tools
       @execution_threads = nil if @differential
 
       if @relocation_stats
-        puts "      shared      private    relocated        ratio   filename"
+        printf("% 12s % 12s % 12s % 12s %s\n",
+               "shared", "private", "relocated", "ratio", "filename")
         @print_results = method(:relocation_stats)
       else
-        puts "     exec      data    rodata     relro       bss  overhead allocated filename"
+        printf("% 9s % 9s % 9s % 9s % 9s % 9s % 9s %s\n",
+               "exec", "data", "rodata", "relro", "bss", "overhead",
+               "allocated", "filename")
         @print_results = method(:standard_size)
       end
     end
