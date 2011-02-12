@@ -172,7 +172,7 @@ module Elf::Tools
       results[:ratio]     = results[:shared].to_f/results[:relocated]
     end
 
-    def convert_ratio(results)
+    def self.convert_ratio(results)
       results[:ratio] = 10 * Math::log10(results[:ratio])
     end
 
