@@ -119,7 +119,7 @@ module Elf::Tools
         exit -1
       end
 
-      @print_filename = true if @print_filename.nil? and not single_target?
+      @print_filename = (@recursive or @targets.size > 1) if @print_filename.nil?
       @file_prefix_fmt = @print_filename ? "%s#{@null ? "\0" : ":"} " : ""
       @file_list_fmt = "%s#{@null ? "\0" : "\n"}"
 
