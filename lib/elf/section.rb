@@ -58,29 +58,37 @@ module Elf
     def Section.read(elf, sectdata)
       begin
         if Type::ProcSpecific.include?(sectdata[:type_id])
-          case elf.machine
-          when Elf::Machine::ARM
-            type = Type::ProcARM[sectdata[:type_id]]
-          else
+          begin
+            case elf.machine
+            when Elf::Machine::ARM
+              type = Type::ProcARM[sectdata[:type_id]]
+            else
+              type = Type[sectdata[:type_id]]
+            end
+          rescue Value::OutOfBound
             type = Type[sectdata[:type_id]]
           end
         elsif Type::OsSpecific.include?(sectdata[:type_id])
-          # Unfortunately, even though OS ABIs are well-defined for both
-          # GNU/Linux and Solaris, they don't seem to get used at all.
-          #
-          # For this reason, instead of basing ourselves on (just) the
-          # OS ABI, the name of the section is used to identify the type
-          # of section to use
+          begin
+            # Unfortunately, even though OS ABIs are well-defined for both
+            # GNU/Linux and Solaris, they don't seem to get used at all.
+            #
+            # For this reason, instead of basing ourselves on (just) the
+            # OS ABI, the name of the section is used to identify the type
+            # of section to use
 
-          # Don't set the name if there is no string table loaded
-          name = elf.string_table ? elf.string_table[sectdata[:name_idx]] : ""
-          if elf.abi == Elf::OsAbi::Solaris or
-              name =~ /^\.SUNW_/
-            type = Type::SunW[sectdata[:type_id]]
-          elsif elf.abi == Elf::OsAbi::Linux or
-              name =~ /^\.gnu\./
-            type = Type::GNU[sectdata[:type_id]]
-          else
+            # Don't set the name if there is no string table loaded
+            name = elf.string_table ? elf.string_table[sectdata[:name_idx]] : ""
+            if elf.abi == Elf::OsAbi::Solaris or
+                name =~ /^\.SUNW_/
+              type = Type::SunW[sectdata[:type_id]]
+            elsif elf.abi == Elf::OsAbi::Linux or
+                name =~ /^\.gnu\./
+              type = Type::GNU[sectdata[:type_id]]
+            else
+              type = Type[sectdata[:type_id]]
+            end
+          rescue Value::OutOfBound
             type = Type[sectdata[:type_id]]
           end
         else
