@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
-# -*- coding: utf-8 -*-
-# Copyright © 2007-2010 Diego E. "Flameeyes" Pettenò <flameeyes@gmail.com>
+# -*- mode: ruby; coding: utf-8 -*-
+# Copyright © 2008-2011 Diego E. "Flameeyes" Pettenò <flameeyes@gmail.com>
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -16,34 +16,51 @@
 # along with this generator; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
-# readelf -d implementation based on elf.rb (very limited)
+# proof-of-concept reimplementation of readelf(1)
 
-require 'elf'
-require 'getoptlong'
+require 'elf/tools'
 
-files = ARGV.length > 0 ? ARGV : ['a.out']
+module Elf::Tools
+  class ReadElf < Elf::Tool
+    def self.initialize
+      super
+      @options |= [
+                   ["--all", "-a", GetoptLong::NO_ARGUMENT],
+                   ["--dynamic", "-d", GetoptLong::NO_ARGUMENT],
+                  ]
+    end
 
-files.each do |file|
-  puts
-  begin
-    Elf::File.open(file) do |elf|
-      dynsection = elf['.dynamic']
+    def self.all_cb
+      @dynamic = true
+    end
 
-      unless dynsection
-        puts "There is no dynamic section in this file."
-        next
+    def self.after_options
+    end
+
+    def self.analysis(file)
+      elf = Elf::File.open(file)
+
+      @addrsize = (elf.elf_class == Elf::Class::Elf32 ? 8 : 16)
+
+      @output_mutex.synchronize {
+        printf("\nFile: %s\n", file) if @targets.size != 1
+        read_dynamic(elf) if @dynamic
+      }
+    end
+
+    def self.read_dynamic(elf)
+      dynsection = elf[".dynamic"]
+
+      if dynsection.nil?
+        printf("\nThere is no dynamic section in this file.\n")
+        return
       end
-      
-      addrsize = (elf.elf_class == Elf::Class::Elf32 ? 8 : 16)
 
-      printf("Dynamic section at offset 0x%x contains %d entries\n",
-             dynsection.offset,
-             dynsection.size)
-
-      puts "  Tag        Type                         Name/Value\n"
+      printf("\nDynamic section at offset 0x%x contains %d entries:\n",
+             dynsection.offset, dynsection.size)
+      printf("  Tag                Type                 Name/Value\n")
 
       dynsection.each_entry do |entry|
-
         case entry.type
         when Elf::Dynamic::Type::Needed
           val = "Shared library: [#{entry.parsed}]"
@@ -61,19 +78,13 @@ files.each do |file|
         when Elf::Dynamic::Type::GNUPrelinked
           val = entry.parsed.getutc.strftime('%Y-%m-%dT%H:%M:%S')
         else
-          val = sprintf "0x%0#{addrsize}x", entry.value
+          val = sprintf("0x%x", entry.value)
         end
 
-        printf " 0x%08x %-28s %s\n", entry.type.to_i, "(#{entry.type.to_s})", val
+        printf(" 0x%016x %-20s %s\n", entry.type.to_i, "(#{entry.type.to_s})", val)
 
         break if entry.type == Elf::Dynamic::Type::Null
       end
     end
-  rescue Errno::ENOENT
-    $stderr.puts "readelf-d.rb: '#{file}': No such file"
-    exit 1
   end
 end
-
-exit 0
-
