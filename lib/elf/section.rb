@@ -298,7 +298,11 @@ module Elf
 
       class ProcARM < Value
         fill(
-             0x70000003 => [ :ARMAttributes, 'ARM Attributes' ]
+             0x70000001 => [ :ARMExIdx, 'ARM Exception Index' ],
+             0x70000002 => [ :ARMPreemptMap, 'ARM BDAPI DLL dynamic linking pre-emption map' ],
+             0x70000003 => [ :ARMAttributes, 'ARM Attributes' ],
+             0x70000004 => [ :ARMDebugOverlay, 'ARM Debug Overlay' ],
+             0x70000005 => [ :ARMOverlaySection, 'ARM Overlay Table' ]
              )
       end
 

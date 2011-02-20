@@ -363,5 +363,25 @@ module Elf
         @abi_version == other.abi_version and
         @machine == other.machine
     end
+
+    # Constants used for ARM-architecture files, as described by the
+    # official documentation, "ELF for the ARM® Architecture", 28
+    # October 2009.
+    module ARM
+      EFlags_EABI_Mask = 0xFF000000
+      EFlags_BE8       = 0x00800000
+    end
+
+    def arm_eabi_version
+      return nil if machine != Elf::Machine::ARM
+
+      return (flags & ARM::EFlags_EABI_Mask) >> 24
+    end
+
+    def arm_be8?
+      return nil if machine != Elf::Machine::ARM
+
+      return (flags & ARM::EFlags_EB8) == ARM::EFlags_EB8
+    end
   end
 end
