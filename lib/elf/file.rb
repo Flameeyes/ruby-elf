@@ -287,6 +287,10 @@ module Elf
       end
     end
 
+    def sections
+      return @sections_data.size
+    end
+
     def [](sect_idx_or_name)
       if sect_idx_or_name.is_a? String and not @string_table.is_a? Elf::Section
         raise MissingStringTable.new(sect_idx_or_name) if @string_table == false
