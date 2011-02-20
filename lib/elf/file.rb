@@ -87,6 +87,9 @@ module Elf
                 :abi_version, :machine
     attr_reader :string_table
 
+    # raw data access
+    attr_reader :shoff
+
     def read_addr
       case @elf_class
       when Class::Elf32 then read_u32
@@ -196,7 +199,7 @@ module Elf
         @version = read_word
         @entry = read_addr
         @phoff = read_off
-        shoff = read_off
+        @shoff = read_off
         @flags = read_word
         @ehsize = read_half
         @phentsize = read_half
@@ -209,7 +212,7 @@ module Elf
         @sections = {}
 
         @sections_data = []
-        seek(shoff)
+        seek(@shoff)
         for i in 1..shnum
           sectdata = {}
           sectdata[:idx]       = i-1
