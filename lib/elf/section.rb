@@ -39,7 +39,7 @@ module Elf
     Abs        = 0xfff1 # Absolute symbols
     Common     = 0xfff2 # Common symbols
     XIndex     = 0xffff
-    
+
     class UnknownType < Exception
       def initialize(type_id, section_name)
         @type_id = type_id
@@ -164,18 +164,6 @@ module Elf
       @link
     end
 
-    # Return a set of flag items, easier to check for single elements.
-    def flags
-      return @flags if @flags
-      
-      @flags = Set.new
-      Flags.each do |flag|
-        flags.add(flag) if (@flags_val & flag.val) == flag.val
-      end
-
-      @flags
-    end
-
     def load
       oldpos = @file.tell
       @file.seek(@offset, IO::SEEK_SET)
@@ -204,11 +192,53 @@ module Elf
              0x40000000 => [ :Ordered, 'Special ordering requirement' ],
              0x80000000 => [ :Exclude, 'Section is excluded unless referenced or allocated' ]
            )
-      
+
       # OS-specific flags mask
       MaskOS   = 0x0ff00000
       # Processor-specific flags mask
       MaskProc = 0xf0000000
+    end
+
+    # Return a set of flag items, easier to check for single elements.
+    def flags
+      return @flags if @flags
+
+      @flags = Set.new
+      Flags.each do |flag|
+        flags.add(flag) if (@flags_val & flag.val) == flag.val
+      end
+
+      @flags
+    end
+
+    FlagsToChars = [
+                    [Flags::Write, "W"],
+                    [Flags::Alloc, "A"],
+                    [Flags::ExecInstr, "X"],
+                    [Flags::Merge, "M"],
+                    [Flags::Strings, "S"],
+                    [Flags::InfoLink, "I"],
+                    [Flags::LinkOrder, "L"],
+                    [Flags::Group, "G"],
+                    [Flags::TLS, "T" ],
+                    [Flags::Exclude, "E"],
+                   ]
+
+    def flags_s
+      return @flags_s if @flags_s
+
+      @flags_s = FlagsToChars.collect { |flag, char|
+        flags.include?(flag) ? char : ""
+      }.join
+
+      @flags_s << 'o' if (@flags_val & Flags::MaskOS) != 0
+      @flags_s << 'p' if (@flags_val & Flags::MaskProc) != 0
+
+      return @flags_s
+    end
+
+    def flags_i
+      @flags_val
     end
 
     # Return the nm(1) code for the section.
