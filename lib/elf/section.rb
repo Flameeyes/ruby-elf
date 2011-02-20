@@ -55,7 +55,7 @@ module Elf
     # This function assumes that the elf file is aligned ad the
     # start of a section header, and returns the file moved at the
     # start of the next header.
-    def Section.read(elf, sectdata)
+    def Section.read(elf, index, sectdata)
       begin
         if Type::ProcSpecific.include?(sectdata[:type_id])
           begin
@@ -104,17 +104,18 @@ module Elf
                             ) if type.nil?
 
       if Type::Class[type]
-        return Type::Class[type].new(elf, sectdata, type)
+        return Type::Class[type].new(elf, index, sectdata, type)
       else
-        return Section.new(elf, sectdata, type)
+        return Section.new(elf, index, sectdata, type)
       end
     end
 
-    attr_reader :file, :type, :addr, :offset, :size, :addralign
-    attr_reader :entsize, :info
+    attr_reader :file, :index, :type, :addr, :offset, :size
+    attr_reader :addralign, :entsize, :info
 
-    def initialize(elf, sectdata, type)
+    def initialize(elf, index, sectdata, type)
       @file =      elf
+      @index =     index
       @type =      type
       @name =      sectdata[:name_idx]
       @flags_val = sectdata[:flags_val]
@@ -152,6 +153,7 @@ module Elf
 
     # Alias to_s to name so that using this in a string will report the name
     alias :to_s :name
+    alias :to_i :index
 
     def link
       # We didn't get the linked section header yet

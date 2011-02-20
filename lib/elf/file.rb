@@ -267,7 +267,7 @@ module Elf
         raise MissingSection.new(sect_idx_or_name) unless
           @sections_data[sect_idx_or_name]
 
-        @sections[sect_idx_or_name] = Section.read(self, @sections_data[sect_idx_or_name])
+        @sections[sect_idx_or_name] = Section.read(self, sect_idx_or_name, @sections_data[sect_idx_or_name])
       else
         raise MissingSection.new(sect_idx_or_name) unless
           @sections_names[sect_idx_or_name]
