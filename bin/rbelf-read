@@ -26,11 +26,13 @@ module Elf::Tools
       super
       @options |= [
                    ["--all", "-a", GetoptLong::NO_ARGUMENT],
+                   ["--section-headers", "-S", GetoptLong::NO_ARGUMENT],
                    ["--dynamic", "-d", GetoptLong::NO_ARGUMENT],
                   ]
     end
 
     def self.all_cb
+      @section_headers = true
       @dynamic = true
     end
 
@@ -44,8 +46,32 @@ module Elf::Tools
 
       @output_mutex.synchronize {
         printf("\nFile: %s\n", file) if @targets.size != 1
+        read_sections(elf) if @section_headers
         read_dynamic(elf) if @dynamic
       }
+    end
+
+    def self.read_sections(elf)
+      printf("There are %d section headers, starting at offset 0x%x:\n\nSection Headers:\n",
+             elf.sections, elf.shoff)
+
+      printf("[Nr] Name                 Type         Addr             Off      Size     ES Flags Lk Inf Al\n")
+
+      elf.each_section do |section|
+        flags_string = ""
+        flags_string << "W" if section.flags.include?(Elf::Section::Flags::Write)
+        flags_string << "A" if section.flags.include?(Elf::Section::Flags::Alloc)
+        flags_string << "X" if section.flags.include?(Elf::Section::Flags::ExecInstr)
+
+        printf("[%2d] %s %s %0#{@addrsize}x %08x %08x %2d %s %2d %3d %2d\n",
+               section.index,
+               section.name.ljust(20),
+               section.type.mnemonic.upcase.ljust(12),
+               section.addr, section.offset, section.size, section.entsize,
+               flags_string.ljust(5), section.link.to_i, section.info, section.addralign)
+      end
+
+      printf("\n")
     end
 
     def self.read_dynamic(elf)
