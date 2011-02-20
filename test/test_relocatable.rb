@@ -57,7 +57,7 @@ module Elf::TestRelocatable
     symbols_set = @elf['.symtab'].to_set
 
     assert_kind_of(Set, symbols_set)
-    assert_equal(@elf['.symtab'].size,
+    assert_equal(@elf['.symtab'].count,
                  symbols_set.size)
   end
 

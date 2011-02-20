@@ -46,7 +46,7 @@ module Elf::TestVersioning
   test_elf_dataencoding, test_elf_abi, test_elf_abi_version
 
   def test__gnu_version
-    assert_equal(@elf[".dynsym"].size, @elf[".gnu.version"].size,
+    assert_equal(@elf[".dynsym"].count, @elf[".gnu.version"].count,
                  "Wrong version information count")
   end
 
@@ -56,7 +56,7 @@ module Elf::TestVersioning
     # We always have a "latent" version with the soname of the
     # library, which is the one used by --default-symver option of GNU
     # ld.
-    assert_equal(2, section.size,
+    assert_equal(2, section.count,
                  "Wrong amount of versions defined")
 
     assert_equal(1, section[1][:names].size,
@@ -75,7 +75,7 @@ module Elf::TestVersioning
   def test__gnu_version_r
     section = @elf[".gnu.version_r"]
 
-    assert_equal(self.class::ExpectedRequiredVersions, section.size,
+    assert_equal(self.class::ExpectedRequiredVersions, section.count,
                  "Wrong amount of needed versions")
 
     # The indexes are incremental between defined and needed

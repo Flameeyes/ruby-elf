@@ -68,7 +68,7 @@ module Elf
     include ::Enumerable
 
     # Return the number of symbols in the section
-    def size
+    def count
       symbols.size
     end
 

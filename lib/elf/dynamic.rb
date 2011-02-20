@@ -248,7 +248,7 @@ module Elf
     end
 
     # Return the amount of entries in the .dynamic section.
-    def size
+    def count
       load unless @entries
 
       @entries.size

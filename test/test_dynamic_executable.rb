@@ -70,7 +70,7 @@ module Elf::TestDynamicExecutable
     symbols_set = @elf['.dynsym'].to_set
 
     assert_kind_of(Set, symbols_set)
-    assert_equal(@elf['.dynsym'].size,
+    assert_equal(@elf['.dynsym'].count,
                  symbols_set.size)
   end
 
