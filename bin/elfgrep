@@ -108,10 +108,10 @@ module Elf::Tools
       # if we have an @-prefixed argument, that's a list of targets and
       # can't include the pattern either.
       if (@patterns.size == 0 and
-          ARGV.size >= 1 and
-          ARGV[0] !~ /^@/)
+          @targets.size >= 1 and
+          @targets[0] !~ /^@/)
 
-        @patterns << ARGV.delete_at(0)
+        @patterns << @targets.delete_at(0)
       end
 
       if @patterns.size == 0
