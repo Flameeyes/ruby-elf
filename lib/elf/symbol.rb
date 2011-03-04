@@ -21,8 +21,6 @@
 # along with this generator; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
-require 'elf/symbol/demangler_gcc3'
-
 module Elf
   class Symbol
     class Binding < Value
@@ -344,20 +342,28 @@ module Elf
       return true
     end
 
-    Demanglers = [ Elf::Symbol::Demangler::GCC3 ]
-    def demangle
-      return @demangled if @demangled
+    begin
+      require 'elf/symbol/demangler_gcc3'
 
-      Demanglers.each do |demangler|
-        break if (@demangled ||= demangler.demangle(name))
+      Demanglers = [ Elf::Symbol::Demangler::GCC3 ]
+      def demangle
+        return @demangled if @demangled
+
+        Demanglers.each do |demangler|
+          break if (@demangled ||= demangler.demangle(name))
+        end
+
+        # We're going to remove top-namespace specifications as we don't
+        # need them, but it's easier for the demangler to still emit
+        # them.
+        @demangled.gsub!(/(^| |\()::/, '\1') if @demangled
+
+        return @demangled ||= name
       end
-
-      # We're going to remove top-namespace specifications as we don't
-      # need them, but it's easier for the demangler to still emit
-      # them.
-      @demangled.gsub!(/(^| |\()::/, '\1') if @demangled
-
-      return @demangled ||= name
+    rescue LoadError
+      def demangle
+        return name
+      end
     end
 
     private
