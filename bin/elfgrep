@@ -30,9 +30,9 @@ module Elf::Tools
                    # name
                    ["--match-version", "-V", GetoptLong::NO_ARGUMENT],
                    # Don't match undefined symbols
-                   ["--no-match-undefined", "-U", GetoptLong::NO_ARGUMENT],
+                   ["--match-undefined", "-U", GetoptLong::NO_ARGUMENT],
                    # Don't match defined symbols
-                   ["--no-match-defined", "-D", GetoptLong::NO_ARGUMENT],
+                   ["--match-defined", "-D", GetoptLong::NO_ARGUMENT],
                    # Invert selection, show symbols not matching the
                    # expression
                    ["--invert-match", "-v", GetoptLong::NO_ARGUMENT],
@@ -55,10 +55,9 @@ module Elf::Tools
                   ]
 
       @invert_match = false
-      @match_undefined = true
-      @match_defined = true
       @show = :full_match
       @match = :regexp
+      @match_symbols = nil
 
       @patterns = []
     end
@@ -67,6 +66,22 @@ module Elf::Tools
     # will let us consider them positionally, similar to what grep(1)
     # does. If you try -lLl and similar combinations on grep(1), the last
     # one passed is the one to be considered.
+
+    def self.match_undefined_cb
+      if @match_symbols == :defined
+        @match_symbols = :all
+      else
+        @match_symbols = :undefined
+      end
+    end
+
+    def self.match_defined_cb
+      if @match_symbols == :undefined
+        @match_symbols = :all
+      else
+        @match_symbols = :defined
+      end
+    end
 
     def self.fixed_strings_cb
       @match = :fixed_strings
@@ -98,8 +113,8 @@ module Elf::Tools
         exit -1
       end
 
-      @match_undefined = !@no_match_undefined
-      @match_defined = !@no_match_defined
+      @match_undefined = @match_symbols != :defined
+      @match_defined = @match_symbols != :undefined
 
       # if we don't have listed patterns yet (i.e. no -e option), let's
       # check whether we have at least one argument and if that argument

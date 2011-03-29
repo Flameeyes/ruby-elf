@@ -60,11 +60,11 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
           <group choice="opt">
             <arg choice="plain">
-              <option>--no-match-undefined</option>
+              <option>--match-undefined</option>
             </arg>
 
             <arg choice="plain">
-              <option>--no-match-defined</option>
+              <option>--match-defined</option>
             </arg>
           </group>
 
@@ -190,11 +190,12 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
             <varlistentry>
               <term><option>-U</option></term>
-              <term><option>--no-match-undefined</option></term>
+              <term><option>--match-undefined</option></term>
               <listitem>
                 <para>
-                  Do not report matches on undefined symbols; useful if you're looking for the objects
-                  defining the symbol, and not those using it.
+                  Report matches on undefined symbols. By default <command>elfgrep</command> will
+                  report matches on both defined and undefined symbols. This switch makes it ignore
+                  matches on defined symbols.
                 </para>
               </listitem>
             </varlistentry>
@@ -204,8 +205,9 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
               <term><option>--no-match-defined</option></term>
               <listitem>
                 <para>
-                  Do not report matches on defined symbols; useful if you're looking for the objects
-                  using the symbol, and not those defining it.
+                  Report matches on defined symbols. By default <command>elfgrep</command> will
+                  report matches on both defined and undefined symbols. This switch makes it ignore
+                  matches on undefined symbols.
                 </para>
               </listitem>
             </varlistentry>
