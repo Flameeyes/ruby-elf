@@ -43,7 +43,7 @@ begin
     s.email = "flameeyes@gmail.com"
 
     s.files = git_files.reject { |file|
-      file =~ /(^Rakefile$|^(tests|tasks)\/|\.(xmli|rl)?$)/
+      file =~ /(^Rakefile$|^(test|tasks)\/|\.(xmli|rl)?$)/
     }
     s.files |= DemanglersList | ManpagesList
 
