@@ -43,7 +43,7 @@ module Elf::Tools
       # regular expressions given by the user, the other is a list of
       # full strings matching.
       @exclude_patterns = []
-      @exclude_symbols = [ "main" ]
+      @exclude_symbols = Set.new([ "main" ])
 
       @hidden_only = false
       @show_type = false
@@ -77,7 +77,7 @@ module Elf::Tools
         # Gather all the symbols, defined and missing in the translation unit
         elf['.symtab'].each do |sym|
           if sym.section == Elf::Section::Undef
-            @exclude_symbols |= [ sym.name ]
+            @exclude_symbols << sym.name
           elsif sym.bind == Elf::Symbol::Binding::Local
             next
           elsif (sym.section.is_a? Elf::Section) or
@@ -92,7 +92,7 @@ module Elf::Tools
     end
 
     def self.results
-      @excluded_patterns |= Regexp.union(@exclude_symbols.collect { |sym| "^#{Regexp.escape(sym)}$" })
+      @exclude_patterns << Regexp.union(@exclude_symbols.collect { |sym| /^#{Regexp.escape(sym)}$/ })
       exclusions = Regexp.union(@exclude_patterns)
 
       @all_defined.each do |symbol|
