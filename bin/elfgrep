@@ -142,7 +142,7 @@ module Elf::Tools
       @regexp = Regexp.union(@patterns.collect { |pattern|
                                if @match == :fixed_strings
                                  pattern.split(/\r?\n/).collect { |string|
-                                   Regexp.new(Regexp.escape(string), regexp_options)
+                                   Regexp.new("^" + Regexp.escape(string) + "$", regexp_options)
                                  }
                                else
                                  Regexp.new(pattern, regexp_options)
