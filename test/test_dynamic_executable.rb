@@ -165,6 +165,7 @@ module Elf::TestDynamicExecutable
   end
 
   class LinuxAMD64_SunStudio < Test::Unit::TestCase
+    Compiler = "suncc"
     ExpectedLibC = "libc.so.6"
     include Elf::TestDynamicExecutable
     include Elf::TestExecutable::LinuxAMD64
