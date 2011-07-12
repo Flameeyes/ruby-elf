@@ -76,32 +76,38 @@ module Elf::TestStaticExecutable
   class LinuxX86 < Test::Unit::TestCase
     include Elf::TestStaticExecutable
     include Elf::TestExecutable::LinuxX86
+    ExpectedEntryPoint = 0x8048160
   end
 
   class LinuxAMD64 < Test::Unit::TestCase
     include Elf::TestStaticExecutable
     include Elf::TestExecutable::LinuxAMD64
+    ExpectedEntryPoint = 0x400200
   end
 
   class LinuxAMD64_ICC < Test::Unit::TestCase
     Compiler = "icc"
     include Elf::TestStaticExecutable
     include Elf::TestExecutable::LinuxAMD64
+    ExpectedEntryPoint = 0x400200
   end
 
   class LinuxSparc < Test::Unit::TestCase
     include Elf::TestStaticExecutable
     include Elf::TestExecutable::LinuxSparc
+    ExpectedEntryPoint = 0x10200
   end
 
   class LinuxArm < Test::Unit::TestCase
     include Elf::TestStaticExecutable
     include Elf::TestExecutable::LinuxArm
+    ExpectedEntryPoint = 0x8150
   end
 
   class BareH8300 < Test::Unit::TestCase
     include Elf::TestStaticExecutable
     include Elf::TestExecutable::BareH8300
     PrintfSymname = "_printf"
+    ExpectedEntryPoint = 0x10c
   end
 end

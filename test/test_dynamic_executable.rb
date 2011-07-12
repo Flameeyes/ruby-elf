@@ -149,12 +149,14 @@ module Elf::TestDynamicExecutable
     include Elf::TestDynamicExecutable
     include Elf::TestExecutable::LinuxX86
     include GLIBC
+    ExpectedEntryPoint = 0x8048320
   end
 
   class LinuxAMD64 < Test::Unit::TestCase
     include Elf::TestDynamicExecutable
     include Elf::TestExecutable::LinuxAMD64
     include GLIBC
+    ExpectedEntryPoint = 0x400460
   end
 
   class LinuxAMD64_ICC < Test::Unit::TestCase
@@ -162,6 +164,7 @@ module Elf::TestDynamicExecutable
     include Elf::TestDynamicExecutable
     include Elf::TestExecutable::LinuxAMD64
     include GLIBC
+    ExpectedEntryPoint = 0x400900
   end
 
   class LinuxAMD64_SunStudio < Test::Unit::TestCase
@@ -169,22 +172,26 @@ module Elf::TestDynamicExecutable
     ExpectedLibC = "libc.so.6"
     include Elf::TestDynamicExecutable
     include Elf::TestExecutable::LinuxAMD64
+    ExpectedEntryPoint = 0x400430
   end
 
   class LinuxSparc < Test::Unit::TestCase
     include Elf::TestDynamicExecutable
     include Elf::TestExecutable::LinuxSparc
     include GLIBC
+    ExpectedEntryPoint = 0x10340
   end
 
   class LinuxArm < Test::Unit::TestCase
     include Elf::TestDynamicExecutable
     include Elf::TestExecutable::LinuxArm
     include GLIBC
+    ExpectedEntryPoint = 0x8344
   end
 
   class SolarisX86_GCC < Test::Unit::TestCase
     ExpectedLibC = "libc.so.1"
+    ExpectedEntryPoint = 0x80485f0
     include Elf::TestDynamicExecutable
     include Elf::TestExecutable::SolarisX86_GCC
 
@@ -204,6 +211,7 @@ module Elf::TestDynamicExecutable
 
   class SolarisX86_SunStudio < Test::Unit::TestCase
     ExpectedLibC = "libc.so.1"
+    ExpectedEntryPoint = 0x8050910
     include Elf::TestDynamicExecutable
     include Elf::TestExecutable::SolarisX86_SunStudio
   end

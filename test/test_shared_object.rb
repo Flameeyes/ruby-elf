@@ -94,6 +94,7 @@ module Elf::TestSharedObject
     Os = "linux"
     Arch = "x86"
     Compiler = "gcc"
+    ExpectedEntryPoint = 0x400
 
     include Elf::TestSharedObject
   end
@@ -102,6 +103,7 @@ module Elf::TestSharedObject
     Os = "linux"
     Arch = "amd64"
     Compiler = "gcc"
+    ExpectedEntryPoint = 0x5a0
 
     include Elf::TestSharedObject
   end

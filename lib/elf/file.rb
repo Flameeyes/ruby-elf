@@ -84,7 +84,7 @@ module Elf
     end
 
     attr_reader :elf_class, :data_encoding, :type, :version, :abi,
-                :abi_version, :machine
+                :abi_version, :machine, :entry_address
     attr_reader :string_table
 
     # raw data access
@@ -197,7 +197,7 @@ module Elf
         end
 
         @version = read_word
-        @entry = read_addr
+        @entry_address = read_addr
         @phoff = read_off
         @shoff = read_off
         @flags = read_word

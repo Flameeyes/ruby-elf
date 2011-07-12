@@ -123,6 +123,16 @@ module Elf::FullTest
     end
   end
 
+  # Test for ELF entry point
+  ExpectedEntryPoint = nil
+
+  def test_entry_point
+    if !self.class::ExpectedEntryPoint.nil?
+      assert_equal(self.class::ExpectedEntryPoint, @elf.entry_address,
+                   "Unexpected ELF Entry Address")
+    end
+  end
+
   # Do a generalised test for presence of given sections
   #
   # Subclasses can fill the ExpectedSections array with the sections
