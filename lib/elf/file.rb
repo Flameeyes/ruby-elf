@@ -382,13 +382,13 @@ module Elf
     def arm_eabi_version
       return nil if machine != Elf::Machine::ARM
 
-      return (flags & ARM::EFlags_EABI_Mask) >> 24
+      return (@flags & ARM::EFlags_EABI_Mask) >> 24
     end
 
     def arm_be8?
       return nil if machine != Elf::Machine::ARM
 
-      return (flags & ARM::EFlags_EB8) == ARM::EFlags_EB8
+      return (@flags & ARM::EFlags_BE8) == ARM::EFlags_BE8
     end
   end
 end

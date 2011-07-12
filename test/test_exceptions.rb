@@ -311,4 +311,18 @@ class Elf::TC_Exceptions < Test::Unit::TestCase
 
     elf.close
   end
+
+  # Test behaviour when trying to access ARM-specific interfaces on a
+  # non-ARM file. This is not really an exception that is thrown but
+  # it fits here.
+  def test_not_arm
+    elf = Elf::File.new(get_test_file("linux/x86/gcc/dynamic_executable"))
+
+    assert_equal(nil, elf.arm_eabi_version,
+                 "ARM EABI reported on non-ARM file");
+    assert_equal(nil, elf.arm_be8?,
+                 "ARM BE8 reported on non-ARM file");
+
+    elf.close
+  end
 end

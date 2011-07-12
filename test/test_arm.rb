@@ -41,4 +41,14 @@ class TC_ARM < Test::Unit::TestCase
     assert_equal(Elf::Machine::ARM, @elf.machine,
                  "Wrong ELF machine type")
   end
+
+  def test_eabi_version
+    assert_equal(0, @elf.arm_eabi_version,
+                 "Wrong ARM EABI version")
+  end
+
+  def test_be8
+    assert(!@elf.arm_be8?,
+           "Wrong BE8 flag status")
+  end
 end
