@@ -84,7 +84,9 @@ module Elf
     end
 
     attr_reader :elf_class, :data_encoding, :type, :version, :abi,
-                :abi_version, :machine, :entry_address
+                :abi_version, :machine, :entry_address, :phoff, :shoff,
+                :flags, :ehsize, :phentsize, :phnum, :shentsize, :shnum,
+                :shstrndx
     attr_reader :string_table
 
     # raw data access
@@ -205,15 +207,15 @@ module Elf
         @phentsize = read_half
         @phnum = read_half
         @shentsize = read_half
-        shnum = read_half
-        shstrndx = read_half
+        @shnum = read_half
+        @shstrndx = read_half
 
         elf32 = elf_class == Class::Elf32
         @sections = {}
 
         @sections_data = []
         seek(@shoff)
-        for i in 1..shnum
+        for i in 1..@shnum
           sectdata = {}
           sectdata[:idx]       = i-1
           sectdata[:name_idx]  = read_word
@@ -240,10 +242,10 @@ module Elf
         # to false, that is distinct from nil, and raise
         # MissingStringTable on request. If the string table is not yet
         # loaded raise instead StringTableNotLoaded.
-        if shstrndx == 0 or not self[shstrndx].is_a? StringTable
+        if @shstrndx == 0 or not self[@shstrndx].is_a? StringTable
           @string_table = false
         else
-          @string_table = self[shstrndx]
+          @string_table = self[@shstrndx]
 
           @sections_names = {}
           @sections_data.each do |sectdata|
