@@ -64,7 +64,7 @@ module Elf
   
   class OsAbi < Value
     fill(
-             0 => [ :SysV, 'UNIX System V ABI' ],
+             0 => [ :SysV, 'UNIX - System V' ],
              1 => [ :HPUX, 'HP-UX' ],
              2 => [ :NetBSD, 'NetBSD' ],
              3 => [ :Linux, 'Linux' ],
@@ -134,7 +134,7 @@ module Elf
             59 => [ :ME16, 'Toyota ME16 processor' ],
             60 => [ :ST100, 'STMicroelectronic ST100 processor' ],
             61 => [ :Tinyj, 'Advanced Logic Corp. Tinyj emb.fam' ],
-            62 => [ :X8664, 'AMD x86-64 architecture' ],
+            62 => [ :X8664, 'AMD x86-64' ],
             63 => [ :PDSP, 'Sony DSP Processor' ],
             64 => [ :PDP10, 'DEC PDP-10' ],
             65 => [ :PDP11, 'DEC PDP-11' ],
