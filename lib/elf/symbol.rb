@@ -268,13 +268,16 @@ module Elf
 
         nmflag.downcase! if value == 0
 
+      when bind == Binding::GNU::Unique
+        nmflag = 'u'
+
       when section == Elf::Section::Abs
         nmflag = "A"
-      when section == Elf::Section::Common
-        # this _should_ be limited to objects with Type::Data, but
-        # turns out that ICC does not emit uninitialised variables
-        # correctly, creating a Type::None object defined in
-        # Section::Common. Handle that properly.
+      when type == Type::Common, section == Elf::Section::Common
+        # section check _should_ be limited to objects with
+        # Type::Data, but turns out that ICC does not emit
+        # uninitialised variables correctly, creating a Type::None
+        # object defined in Section::Common. Handle that properly.
         nmflag = 'C'
 
       when type == Type::Object, type == Type::TLS
@@ -295,10 +298,8 @@ module Elf
         nmflag = 'S'
       when type == Type::File
         nmflag = 'F'
-      when type == Type::Common
-        nmflag = 'C'
       when type == Type::GNU::IFunc
-        nmflag = 'i' # this is always lowercase on BFD nm
+        nmflag = 'i'
       end
 
       # If we haven't found the flag with the above code, we don't
