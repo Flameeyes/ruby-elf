@@ -268,16 +268,37 @@ module Elf
 
         nmflag.downcase! if value == 0
 
-      when section.is_a?(Integer)
-        nmflag = case section
-                 when Elf::Section::Abs then "A"
-                 when Elf::Section::Common then "C"
-                 else nil
+      when section == Elf::Section::Abs
+        nmflag = "A"
+      when section == Elf::Section::Common
+        # this _should_ be limited to objects with Type::Data, but
+        # turns out that ICC does not emit uninitialised variables
+        # correctly, creating a Type::None object defined in
+        # Section::Common. Handle that properly.
+        nmflag = 'C'
+
+      when type == Type::Object, type == Type::TLS
+        # data object, distinguish between writable or read-only data,
+        # as well as data in Section::Type::NoBits sections.
+        nmflag = case
+                 when section.is_a?(Integer) then nil
+                 when !section.flags.include?(Elf::Section::Flags::Write) then "R"
+                 when section.type == Elf::Section::Type::NoBits then "B"
+                 else "D"
                  end
 
-      else
-        # Find the nm(1) code for the section.
-        nmflag = section.nm_code
+      when type == Type::None
+        nmflag = 'N'
+      when type == Type::Func
+        nmflag = 'T'
+      when type == Type::Section
+        nmflag = 'S'
+      when type == Type::File
+        nmflag = 'F'
+      when type == Type::Common
+        nmflag = 'C'
+      when type == Type::GNU::IFunc
+        nmflag = 'i' # this is always lowercase on BFD nm
       end
 
       # If we haven't found the flag with the above code, we don't

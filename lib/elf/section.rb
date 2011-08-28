@@ -240,24 +240,6 @@ module Elf
     def flags_i
       @flags_val
     end
-
-    # Return the nm(1) code for the section.
-    #
-    # This function is usually mostly used by Elf::Symbol#nm_code. It
-    # moves the parts of the logic that have to deal with section
-    # flags and similar here, to stay closer with the section's data
-    def nm_code
-      @nmflag ||= case
-                  when flags.include?(Flags::ExecInstr)
-                    "T"
-                  when type == Type::NoBits then "B"
-                  when type == Type::Note then "N"
-                  when name =~ /\.rodata.*/ then "R"
-                  when name =~ /\.(t|pic)?data.*/ then "D"
-                  else
-                    nil
-                  end
-    end
   end
 end
 
