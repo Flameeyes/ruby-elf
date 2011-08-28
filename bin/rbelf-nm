@@ -1,0 +1,78 @@
+#!/usr/bin/env ruby
+# -*- coding: utf-8 -*-
+# Copyright © 2007-2010 Diego E. "Flameeyes" Pettenò <flameeyes@gmail.com>
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this generator; if not, write to the Free Software
+# Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+
+# bsd-nm implementation based on elf.rb (very limited)
+
+require 'elf/tools'
+require 'getoptlong'
+
+module Elf::Tools
+  class NM < Elf::Tool
+
+    def self.initialize
+      super
+      @options |= [
+                   ["--dynamic", "-D", GetoptLong::NO_ARGUMENT],
+                   ["--demangle", "-C", GetoptLong::NO_ARGUMENT]
+                  ]
+
+      @scan_section = '.symtab'
+      @demangle = false
+      @exitval = 0
+
+      # do not use multiple threads (unless we start caching the
+      # output, and synchronise on it).
+      @execution_threads = nil
+    end
+
+    def self.dynamic_cb
+      @scan_section = '.dynsym'
+    end
+
+    def self.analysis(file)
+      Elf::File.open(file) do |elf|
+        if not elf.has_section? @scan_section
+          puterror "No symbols"
+          @exitval = 1
+          return
+        end
+
+        elf[@scan_section].each do |sym|
+          next if sym.name == ''
+          begin
+            flag = sym.nm_code
+          rescue Elf::Symbol::UnknownNMCode => e
+            puterror(e.message)
+            flag = "?"
+          end
+
+          version_name = sym.version
+          version_name = version_name ? "@#{sym.version_default? ? '@' : ''}#{version_name}" : ""
+
+          name = @demangle ? sym.demangle : sym.name
+
+          puts "#{sym.address_string} #{flag} #{name}#{version_name}"
+        end
+      end
+    end
+
+    def self.results
+      exit @exitval
+    end
+  end
+end
