@@ -39,7 +39,6 @@ begin
     sh "git", "tag", "-m", "Release #{Elf::VERSION}", "ruby-elf-#{Elf::VERSION}"
     sh "gem", "push", "pkg/ruby-elf-#{Elf::VERSION}.gem"
     sh "rubyforge", "add_release", "ruby-elf", "ruby-elf", Elf::VERSION, "pkg/ruby-elf-#{Elf::VERSION}.tar.bz2"
-    sh "rubyforge", "add_file", "ruby-elf", "ruby-elf", Elf::VERSION, "pkg/ruby-elf-#{Elf::VERSION}.gem"
   end
 rescue Exception => e
   # This can happen for instance if you're not running from within a
