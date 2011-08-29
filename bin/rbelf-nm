@@ -90,8 +90,7 @@ module Elf::Tools
 
         symbols.sort! { |x, y| x[@sort] <=> y[@sort] } unless @sort.nil?
 
-        addrsize = (elf.elf_class == Elf::Class::Elf32 ? 8 : 16)
-        format_sym = "%#{addrsize}s %s %s\n"
+        format_sym = "%#{elf.address_print_size}s %s %s\n"
         @output_mutex.synchronize {
           symbols.each do |sym|
             printf(format_sym,

@@ -339,6 +339,15 @@ module Elf
       end
     end
 
+    # Returns the hex address size for the file.
+    #
+    # Since each ELF file uses either 32- or 64-bit addresses, it is
+    # important to know how many characters a file's address would
+    # require when printed as an hexadecimal string.
+    def address_print_size
+      (@elf_class == Elf::Class::Elf32 ? 8 : 16)
+    end
+
     def summary
       $stdout.puts "ELF file #{path}"
       $stdout.puts "ELF class: #{@elf_class} #{@data_encoding} ver. #{@version}"
