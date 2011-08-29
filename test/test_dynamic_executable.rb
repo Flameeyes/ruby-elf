@@ -125,6 +125,10 @@ module Elf::TestDynamicExecutable
                  @elf[".dynamic"].needed_sonames)
   end
 
+  def test_no_soname
+    assert_nil(@elf[".dynamic"].soname)
+  end
+
   def dotest_entry_type(type, fail_notfound = true)
     @elf[".dynamic"].each_entry do |entry|
       if entry[:type] == type
