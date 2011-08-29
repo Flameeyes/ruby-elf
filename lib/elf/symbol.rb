@@ -318,13 +318,7 @@ module Elf
     # Reports a string full of whitespace if the symbols is not
     # defined (as there is no address)
     def address_string
-      addrsize = (@file.elf_class == Elf::Class::Elf32 ? 8 : 16)
-
-      if section
-        sprintf("%0#{addrsize}x", value)
-      else
-        ' ' * addrsize
-      end
+      section ? sprintf("%0#{@file.address_print_size}x", value) : ''
     end
 
     # Check whether two symbols are the same
