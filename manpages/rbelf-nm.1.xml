@@ -54,6 +54,15 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
             <option>--demangle</option>
           </arg>
 
+          <arg choice="opt">
+            <option>--sort-by</option>
+            <group rep="norepeat" choice="req">
+              <arg choice="plain">name</arg>
+              <arg choice="plain">option</arg>
+              <arg choice="plain">none</arg>
+            </group>
+          </arg>
+
           <xi:include href="common.xmli"  xpointer="xpointer(id('filelist.synopsis')/*)" />
         </cmdsynopsis>
       </refsynopsisdiv>
@@ -91,6 +100,20 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
                 transform their native symbol names into Unix-compatible names to store in the
                 symbol tables, this option applies the opposite transformation to identify the
                 original symbols.
+              </para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term><option>-S</option> { <option>name</option> | <option>address</option> |
+            <option>none</option> }</term>
+            <term><option>--sort-by</option> { <option>name</option> | <option>address</option> |
+            <option>none</option> }</term>
+            <listitem>
+              <para>
+                Choose how to sort the output: by symbol name (the default), by symbol address, or
+                in the order of appearance in the symbol tables (which involves no sorting, and is
+                faster).
               </para>
             </listitem>
           </varlistentry>
