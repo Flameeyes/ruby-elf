@@ -196,7 +196,7 @@ module Elf
 
       return '' if version_idx == 1
 
-      if section.nil? or @file['.gnu.version_d'][version_idx].nil?
+      if section.nil? or not @file.has_section?(".gnu.version_d") or @file['.gnu.version_d'][version_idx].nil?
         return @file['.gnu.version_r'][version_idx][:name]
       else
         return @file['.gnu.version_d'][version_idx][:names][0]
