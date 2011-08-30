@@ -99,6 +99,26 @@ module Elf::TestNMCodes
                        "external_hot_function"  => 'T',
                        "static_hot_function"    => 't' })
     end
+
+    def test_undefined
+      dotest_symbols({
+                       "undefined_external_variable" => 'U'
+                     })
+    end
+
+    def test_weakrefs
+      dotest_symbols({
+                       "weak_reference_to_variable" => 'v',
+                       "weak_reference_to_function" => 'W'
+                     })
+    end
+
+    def test_gnu
+      dotest_symbols({
+                       "gnu_function" => 'i',
+                       "gnu_unique_object" => 'u'
+                     })
+    end
   end
 
   # Test section names symbols

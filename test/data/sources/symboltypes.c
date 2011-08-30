@@ -57,7 +57,10 @@ static __thread const char *relocated_static_tls_variable tc_used = "foo";
 void external_function() {
 }
 
+extern int undefined_external_variable;
+
 static void tc_used static_function() {
+  undefined_external_variable = 0;
 }
 
 /* Attributes cold and hot needs to be supported */
@@ -75,5 +78,22 @@ void __attribute__((hot)) external_hot_function() {
 
 static void __attribute__((hot)) tc_used static_hot_function() {
 }
+
+#endif
+
+#if defined(__GNUC__)
+int weak_reference_to_variable __attribute__((weak));
+void weak_reference_to_function() __attribute__((weak,alias("static_function")));
+
+void *gnu_indirect_function() __asm__ ("gnu_function");
+__asm__(".type gnu_function, %gnu_indirect_function");
+
+void *gnu_indirect_function()
+{
+  return 0l;
+}
+
+int gnu_unique_object = 1;
+__asm__(".type gnu_unique_object, %gnu_unique_object");
 
 #endif
