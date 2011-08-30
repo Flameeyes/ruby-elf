@@ -204,6 +204,16 @@ module Elf::FullTest
                    "Type for #{section} of different ID than expected")
     end
   end
+
+  # Test printable address size for correspondence
+  ExpectedAddressPrintSize = nil
+
+  def test_address_print_size
+    return if self.class::ExpectedAddressPrintSize.nil?
+
+    assert_equal(self.class::ExpectedAddressPrintSize, @elf.address_print_size,
+                 "Printable address size different than expected")
+  end
 end
 
 module Elf::TestExecutable
@@ -231,6 +241,7 @@ module Elf::TestExecutable
     ExpectedABI = Elf::OsAbi::SysV
     ExpectedABIVersion = 0
     ExpectedMachine = Elf::Machine::I386
+    ExpectedAddressPrintSize = 8
   end
 
   module LinuxAMD64
@@ -243,6 +254,7 @@ module Elf::TestExecutable
     ExpectedABI = Elf::OsAbi::SysV
     ExpectedABIVersion = 0
     ExpectedMachine = Elf::Machine::X8664
+    ExpectedAddressPrintSize = 16
   end
 
   module LinuxSparc
@@ -255,6 +267,7 @@ module Elf::TestExecutable
     ExpectedABI = Elf::OsAbi::SysV
     ExpectedABIVersion = 0
     ExpectedMachine = Elf::Machine::Sparc32Plus
+    ExpectedAddressPrintSize = 8
   end
 
   module LinuxArm
@@ -267,6 +280,7 @@ module Elf::TestExecutable
     ExpectedABI = Elf::OsAbi::ARM
     ExpectedABIVersion = 0
     ExpectedMachine = Elf::Machine::ARM
+    ExpectedAddressPrintSize = 8
   end
 
   module SolarisX86_GCC
@@ -279,6 +293,7 @@ module Elf::TestExecutable
     ExpectedABI = Elf::OsAbi::SysV
     ExpectedABIVersion = 0
     ExpectedMachine = Elf::Machine::I386
+    ExpectedAddressPrintSize = 8
   end
 
   module SolarisX86_SunStudio
@@ -291,6 +306,7 @@ module Elf::TestExecutable
     ExpectedABI = Elf::OsAbi::SysV
     ExpectedABIVersion = 0
     ExpectedMachine = Elf::Machine::I386
+    ExpectedAddressPrintSize = 8
   end
 
   module BareH8300
@@ -303,6 +319,7 @@ module Elf::TestExecutable
     ExpectedABI = Elf::OsAbi::SysV
     ExpectedABIVersion = 0
     ExpectedMachine = Elf::Machine::H8300
+    ExpectedAddressPrintSize = 8
   end
 
 end
