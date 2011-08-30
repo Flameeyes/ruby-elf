@@ -291,7 +291,15 @@ module Elf
                  end
 
       when type == Type::None
-        nmflag = 'N'
+        # try being smarter than simply reporthing this as a none-type
+        # symbol, as some compilers (namely pathCC) emit STT_NONE
+        # symbols that are instead functions.
+        nmflag = case
+                 when section.is_a?(Integer) then "N"
+                 when section.flags.include?(Elf::Section::Flags::ExecInstr) then "T"
+                 when section.type == Elf::Section::Type::NoBits then "B"
+                 else "N"
+                 end
       when type == Type::Func
         nmflag = 'T'
       when type == Type::Section
