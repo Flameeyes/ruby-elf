@@ -118,6 +118,23 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
             </listitem>
           </varlistentry>
 
+          <varlistentry>
+            <term><option>-V</option></term>
+            <term><option>--show-version</option></term>
+            <listitem>
+              <para>
+                Show the symbol version information in output. Version information for symbols is an
+                extension, and is implemented with different interfaces by Sun and GNU (for Linux).
+              </para>
+
+              <para>
+                Symbols exported with default version (the one selected for linking) are marked with
+                a <literal>@@</literal> separator, the rest are marked with a simple
+                <literal>@</literal>, while symbols without version information have no mark at all.
+              </para>
+            </listitem>
+          </varlistentry>
+
           <xi:include href="common.xmli" xpointer="xpointer(id('filelist.option')/*)" />
         </variablelist>
       </refsect1>

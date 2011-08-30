@@ -30,11 +30,13 @@ module Elf::Tools
                    ["--dynamic", "-D", GetoptLong::NO_ARGUMENT],
                    ["--demangle", "-C", GetoptLong::NO_ARGUMENT],
                    ["--sort-by", "-S", GetoptLong::REQUIRED_ARGUMENT],
+                   ["--show-version", "-V", GetoptLong::NO_ARGUMENT],
                   ]
 
       @scan_section = '.symtab'
       @demangle = false
       @exitval = 0
+      @show_version = false
 
       @sort = :name
     end
@@ -76,15 +78,19 @@ module Elf::Tools
             code = "?"
           end
 
-          version_name = sym.version
-          version_name = version_name ? "@#{sym.version_default? ? '@' : ''}#{version_name}" : ""
-
           name = @demangle ? sym.demangle : sym.name
+
+          if @show_version and sym.version
+            name = sprintf("%s@%s%s",
+                           name,
+                           sym.version_default? ? '@' : '',
+                           sym.version)
+          end
 
           symbols << {
             :address => sym.address_string,
             :code => code,
-            :name => "#{name}#{version_name}"
+            :name => name
           }
         end
 
