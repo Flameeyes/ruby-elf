@@ -262,11 +262,13 @@ module Elf
 
       when bind == Binding::Weak
         nmflag = case type
-                 when Type::Object then "V"
-                 else "W"
+                 when Type::Object then 'V'
+                   # we cannot use 'v' when value is zero, as for a
+                   # variable, a zero address is correct, it's just
+                   # functions that cannot be at zero address.
+                 when value == 0 then 'w'
+                 else 'W'
                  end
-
-        nmflag.downcase! if value == 0
 
       when bind == Binding::GNU::Unique
         nmflag = 'u'
