@@ -77,6 +77,26 @@ module Elf::TestNMCodes
                      "static_constant"                   => 'r' })
   end
 
+  def test_undefined
+    dotest_symbols({
+                     "undefined_external_variable" => 'U'
+                   })
+  end
+
+  def test_weakrefs
+    dotest_symbols({
+                     "weak_reference_to_variable" => 'V',
+                     "weak_reference_to_function" => 'W'
+                   })
+  end
+
+  def test_gnu
+    dotest_symbols({
+                     "gnu_function" => 'i',
+                     "gnu_unique_object" => 'u'
+                   })
+  end
+
   module ICC
     Compiler = "icc"
 
@@ -101,26 +121,6 @@ module Elf::TestNMCodes
                        "static_cold_function"   => 't',
                        "external_hot_function"  => 'T',
                        "static_hot_function"    => 't' })
-    end
-
-    def test_undefined
-      dotest_symbols({
-                       "undefined_external_variable" => 'U'
-                     })
-    end
-
-    def test_weakrefs
-      dotest_symbols({
-                       "weak_reference_to_variable" => 'v',
-                       "weak_reference_to_function" => 'W'
-                     })
-    end
-
-    def test_gnu
-      dotest_symbols({
-                       "gnu_function" => 'i',
-                       "gnu_unique_object" => 'u'
-                     })
     end
   end
 
@@ -154,6 +154,9 @@ module Elf::TestNMCodes
     include Elf::TestNMCodes
     include Elf::TestExecutable::LinuxAMD64
     include ICC
+
+    # require rebuilding the object file
+    undef :test_undefined, :test_weakrefs, :test_gnu
   end
 
   class LinuxAMD64_SunStudio < Test::Unit::TestCase
@@ -170,6 +173,9 @@ module Elf::TestNMCodes
                        "relocated_external_tls_variable"     => 'D',
                        "relocated_static_tls_variable"       => 'd' })
     end
+
+    # require rebuilding the object file
+    undef :test_undefined, :test_weakrefs, :test_gnu
   end
 
   class LinuxAMD64_Path64 < Test::Unit::TestCase
@@ -193,5 +199,8 @@ module Elf::TestNMCodes
                        "relocated_external_tls_variable"     => 'D',
                        "relocated_static_tls_variable"       => 'd' })
     end
+
+    # require rebuilding the object file
+    undef :test_undefined, :test_weakrefs, :test_gnu
   end
 end
