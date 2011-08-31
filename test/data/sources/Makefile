@@ -1,7 +1,7 @@
 all:
 	@echo "Please specify OS and architecture (linux-amd64, solaris-x86, ...)"
 
-linux-amd64: linux-amd64-gcc linux-amd64-suncc linux-amd64-icc linux-x86
+linux-amd64: linux-amd64-gcc linux-amd64-suncc linux-amd64-icc linux-amd64-path64 linux-x86
 linux-amd64-gcc: \
 	../linux/amd64/gcc/dynamic_executable.o \
 	../linux/amd64/gcc/dynamic_executable \
@@ -19,8 +19,13 @@ linux-amd64-icc: \
 	../linux/amd64/icc/dynamic_executable \
 	../linux/amd64/icc/static_executable \
 	../linux/amd64/icc/symboltypes.o
+linux-amd64-path64: \
+	../linux/amd64/path64/dynamic_executable.o \
+	../linux/amd64/path64/dynamic_executable \
+	../linux/amd64/path64/static_executable \
+	../linux/amd64/path64/symboltypes.o
 
-linux-x86: linux
+linux-x86:
 linux-x86-gcc: \
 	../linux/x86/gcc/dynamic_executable.o \
 	../linux/x86/gcc/dynamic_executable \
@@ -83,6 +88,18 @@ solaris-x86-gcc: \
 
 ../linux/amd64/icc/symboltypes.o: symboltypes.c
 	icc -fPIC -c symboltypes.c -o $@
+
+../linux/amd64/path64/dynamic_executable.o: executable.c
+	pathcc -c executable.c -o $@
+
+../linux/amd64/path64/dynamic_executable: executable.c
+	pathcc -Wl,--as-needed executable.c -o $@
+
+../linux/amd64/path64/static_executable: executable.c
+	pathcc -static executable.c -o $@
+
+../linux/amd64/path64/symboltypes.o: symboltypes.c
+	pathcc -fPIC -c symboltypes.c -o $@
 
 ../linux/amd64/gcc/versioning.so: versioning.c versioning.ld
 	x86_64-pc-linux-gnu-gcc -Wl,-h,versioning.so -shared -fPIC versioning.c -Wl,--version-script=versioning.ld -o $@

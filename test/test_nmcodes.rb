@@ -36,10 +36,13 @@ module Elf::TestNMCodes
     assert_equal " ", @elf[".symtab"][0].nm_code, "Testing first symbol"
   end
 
+  def test_absolute
+    dotest_symbols({ "symboltypes.c"     => 'a' })
+  end
+
   # Test the general symbols
   def test_general
-    dotest_symbols({ "symboltypes.c"     => 'a',
-                     "external_function" => 'T',
+    dotest_symbols({ "external_function" => 'T',
                      "static_function"   => 't' })
   end
 
@@ -167,6 +170,14 @@ module Elf::TestNMCodes
                        "relocated_external_tls_variable"     => 'D',
                        "relocated_static_tls_variable"       => 'd' })
     end
+  end
+
+  class LinuxAMD64_Path64 < Test::Unit::TestCase
+    include Elf::TestNMCodes
+    include Elf::TestExecutable::LinuxAMD64
+    Compiler = "path64"
+
+    undef :test_absolute
   end
 
   class SolarisX86_SunStudio < Test::Unit::TestCase

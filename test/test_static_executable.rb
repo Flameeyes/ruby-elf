@@ -92,6 +92,14 @@ module Elf::TestStaticExecutable
     ExpectedEntryPoint = 0x400200
   end
 
+  class LinuxAMD64_Path64 < Test::Unit::TestCase
+    Compiler = "path64"
+    ExpectedABI = Elf::OsAbi::Linux
+    include Elf::TestStaticExecutable
+    include Elf::TestExecutable::LinuxAMD64
+    ExpectedEntryPoint = 0x400f3c
+  end
+
   class LinuxSparc < Test::Unit::TestCase
     include Elf::TestStaticExecutable
     include Elf::TestExecutable::LinuxSparc

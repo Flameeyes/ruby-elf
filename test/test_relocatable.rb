@@ -95,7 +95,13 @@ module Elf::TestRelocatable
     include Elf::TestRelocatable
     include Elf::TestExecutable::LinuxAMD64
   end
- 
+
+  class LinuxAMD64_Path64 < Test::Unit::TestCase
+    Compiler = "path64"
+    include Elf::TestRelocatable
+    include Elf::TestExecutable::LinuxAMD64
+  end
+
   class LinuxSparc < Test::Unit::TestCase
     include Elf::TestRelocatable
     include Elf::TestExecutable::LinuxSparc

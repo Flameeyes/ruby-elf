@@ -179,6 +179,14 @@ module Elf::TestDynamicExecutable
     ExpectedEntryPoint = 0x400430
   end
 
+  class LinuxAMD64_Path64 < Test::Unit::TestCase
+    Compiler = "path64"
+    ExpectedLibC = "libc.so.6"
+    include Elf::TestDynamicExecutable
+    include Elf::TestExecutable::LinuxAMD64
+    ExpectedEntryPoint = 0x4005a0
+  end
+
   class LinuxSparc < Test::Unit::TestCase
     include Elf::TestDynamicExecutable
     include Elf::TestExecutable::LinuxSparc
