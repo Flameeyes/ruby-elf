@@ -129,7 +129,7 @@ module Elf::Tools
 
       @multimplementation_files.each do |multimplementation|
         @multimplementations |= \
-        File.new(multimplementation).read.split(/\r?\n/).collect do |line|
+        File.open(multimplementation).read.split(/\r?\n/).collect do |line|
           implementation, paths = line.
             gsub(/#\s.*/, '').
             strip.
