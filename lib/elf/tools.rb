@@ -239,6 +239,7 @@ module Elf
             try_execute(input.sub(/\r?\n/, ''))
           }
         else
+          $stdin.close
           @targets.uniq.each { |target| try_execute(target) }
         end
 
