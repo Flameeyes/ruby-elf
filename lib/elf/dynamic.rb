@@ -122,7 +122,7 @@ module Elf
              0x7ffffffd => [ :Auxiliary, "AUXILIARY", :Value ]
            )
 
-      OsSpecific = 0x6000000d..0x6ffff000
+      OsSpecific = 0x60000000..0x6fffffff
       ProcSpecific = 0x70000000..0x7fffffff
       SpecialRanges = {
         "DT_LOOS" => OsSpecific,
