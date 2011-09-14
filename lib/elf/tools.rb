@@ -224,7 +224,7 @@ module Elf
         # arguments.
         @targets = ARGV.collect { |argument|
           if argument[0..0] == "@"
-            ::File.new(argument[1..-1]).read.split(/\r?\n/)
+            ::File.read(argument[1..-1]).split(/\r?\n/)
           else
             argument
           end
