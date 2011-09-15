@@ -329,7 +329,7 @@ EOF
 
       db_exec("SELECT * FROM duplicate_symbols").each do |row|
         outfile.puts "Symbol #{row['symbol']} (#{row['abi']}) present #{row['occurrences']} times"
-        db_exec( "EXECUTE getinstances ('#{row['symbol']}', '#{row['abi']}')" ).each do |path|
+        db_exec( "EXECUTE getinstances ('#{row['symbol']}', '#{row['abi'].gsub("'", "''")}')" ).each do |path|
           outfile.puts "  #{path['name']}"
         end
       end
