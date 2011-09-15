@@ -14,9 +14,6 @@
 # ARM EABI symbols
 .*					^__aeabi_
 
-# Scratchbox is totally messed up
-/opt/scratchbox/
-
 # xine plugins use xine_plugin_info structure as entrypoint
 .*/xine/plugins/.*/xineplug_.*\.so	^xine_plugin_info$
 
@@ -61,11 +58,11 @@
 
 # GTK and GNOME plugins
 .*								^g_module_check_init$
-/gtk-2\.0/.*/modules/.*\.so					^gtk_module_init$
-/gtk-2\.0/.*/immodules/im-.*\.so				^im_module_(create|init|exit|list)$
-/gtk-2\.0/.*/engines/.*\.so					^(theme_(create_rc_style|init|exit))$
-/(gtk-2\.0|gdk-pixbuf-2\.0)/.*/loaders/libpixbuf.*\.so		^(load|fill_(info|vtable)|get_info)$
-/gtk-2\.0/.*/printbackends/.*\.so				^pb_module_(init|create|exit)$
+/gtk-[23]\.0/.*/modules/.*\.so					^gtk_module_init$
+/gtk-[23]\.0/.*/immodules/im-.*\.so				^im_module_(create|init|exit|list)$
+/gtk-[23]\.0/.*/engines/.*\.so					^(theme_(create_rc_style|init|exit))$
+/(gtk|gdk-pixbuf)-[23]\.0/.*/loaders/libpixbuf.*\.so		^(load|fill_(info|vtable)|get_info)$
+/gtk-[23]\.0/.*/printbackends/.*\.so				^pb_module_(init|create|exit)$
 /pango/.*/modules/pango-.*\.so					^script_engine_(list|create|init|exit)$
 /gnome-vfs-2\.0/modules/lib.*\.so				^vfs_module_(init|shutdown)$
 /libglade/.*/lib.*\.so						^glade_module_register_widgets$
@@ -100,8 +97,8 @@
 # Java JNI extensions
 .*					^JNI_OnLoad$
 # Sun Java implementation
-^/opt/sun-jdk-.*/.*			^JavaMain$
-/icedtea6/.*                            ^JavaMain$
+/sun-jdk-.*/.*                          ^JavaMain$
+/icedtea6?(-bin)?(-[0-9\.]+)?/.*	^JavaMain$
 
 # ZSH modules
 .*/zsh/.*/zsh/.*\.so			^(boot|setup|cleanup|finish)_$

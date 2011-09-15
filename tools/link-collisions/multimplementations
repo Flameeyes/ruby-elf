@@ -16,8 +16,8 @@ java-libmawt		jre/lib/(amd64|i386)/(xawt|motif21|headless)/libmawt.so
 
 ncurses-lib$2		/lib(|32|64)/lib(n?curses|form|menu|panel)w?\.so
 
-php5			php5/bin/php(-cgi)?$
-php5			apache2/modules/libphp5\.so
+php			/bin/php(-cgi)?$
+php			apache2/modules/libphp5\.so
 
 mysqlclient		/lib(|32|64)/mysql/libmysqlclient(_r)?\.so
 libldap$3		/lib(|32|64)/libldap(_r)?((-[0-9\.]+)?)\.so
@@ -91,7 +91,7 @@ lib$1			/lib([a-zA-Z]+)([23]D|2D3)(-[0-9\.]+)?\.so
 
 opal/openh323		/lib(32|64)?/lib(opal|h323)_.*_n\.so
 
-libfmodex		/lib(32|64)?/libfmodex[Lp]?-[0-9\.]+\.so
+libfmodex		/libfmodex[Lp]?-[0-9\.]+\.so
 
 libossp-uuid		/libossp-uuid(_dce)?\.so
 
@@ -104,7 +104,7 @@ libk3d			/libk3d(ngui|python|sdk)\.so
 
 fftw			/lib(32|64)?/lib[ds]?fftw(3[lf]?(_threads)?)?\.so
 
-CLHEP			/lib(32|64)?/libCLHEP(-(Vector|GenericFunctions|Matrix|Random|Geometry))?-[0-9\.]+\.so
+CLHEP			/lib(32|64)?/libCLHEP(-(Vector|GenericFunctions|Matrix|Random|Geometry|Evaluator|Exceptions))?-[0-9\.]+\.so
 
 mozilla-libs		/lib(xpcom(_core|glue)?|xul)(-[0-9\.]+)?\.so
 lib$7			/lib(32|64)?/(nvu|mozilla-(sunbird|thunderbird)|xulrunner(-devel)?(-[0-9\.]+)?|seamonkey)(/sdk/lib)?/lib([0-9a-zA-Z_]+)(_core)?\.so$
@@ -119,12 +119,31 @@ lib$1			/lib(g[dt]k)(-x11)?\.so
 
 libidnkit               /libidnkit(lite)?\.so
 
+libprotobuf             /libprotobuf(-lite)?\.so
+
+libtcmalloc             /libtcmalloc(_(debug|and_profiler))?\.so
+
+libscintilla            /lib(wb|fx|q)?scintilla(2|nolexer)\.so
+
 libGL                   /libGL(ESv2)?\.so
 
 libzzip                 /libzzip(mmapped|fseeko)?-0\.so
 
+lib4ti2                 /lib4ti2(gmp|int(32|64))\.so
+
+libexpat                /libexpat[uw]?\.so
+
+libIce                  /libIceE?\.so
+
+LAPACK                  /libc?lapack\.so
+
 PKCS#11                 /(openpin-)?opensc-pkcs11\.so
 PKCS#11                 /pkcs11-spy\.so
+
+X11                     /bin/X(vfb|fbdev|ephyr|org)
+
+# Consolidating multiple python site packages
+python/$1		python[0-9]+\.[0-9]+/(site-packages/.*\.so)$
 
 # Library consolidation, keep at the end!
 #
