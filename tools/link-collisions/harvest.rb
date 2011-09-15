@@ -245,10 +245,16 @@ EOF
       return if filename =~ @total_suppressions
 
       Elf::File.open(filename) do |elf|
-        unless ($machines.nil? or $machines.include?(elf.machine)) and
-            (elf.has_section?('.dynsym') and elf.has_section?('.dynstr') and
-             elf.has_section?('.dynamic')) and
-            (elf[".dynsym"].class == Elf::SymbolTable)
+        begin
+          unless ($machines.nil? or $machines.include?(elf.machine)) and
+              (elf.has_section?('.dynsym') and elf.has_section?('.dynstr') and
+               elf.has_section?('.dynamic')) and
+              (elf[".dynsym"].class == Elf::SymbolTable)
+            return
+          end
+        rescue Elf::File::MissingStringTable
+          # the ELF file is (usually) a static ELF without a
+          # configured string table.
           return
         end
 
