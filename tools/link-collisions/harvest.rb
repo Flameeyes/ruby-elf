@@ -49,11 +49,13 @@ module Elf::Tools
                    ["--postgres-port",       "-T", GetoptLong::REQUIRED_ARGUMENT ],
                    ["--postgres-database",   "-D", GetoptLong::REQUIRED_ARGUMENT ],
                    ["--output",              "-o", GetoptLong::REQUIRED_ARGUMENT ],
+                   ["--analyze-only",        "-A", GetoptLong::NO_ARGUMENT ],
                   ]
 
       # we remove the -R option since we always want to be recursive in our search
       @options.delete_if { |opt| opt[1] == "-R" }
       @recursive = true
+      @analyze_only = false
 
       @suppression_files = File.exist?('suppressions') ? [ 'suppressions' ] : []
       @multimplementation_files = File.exist?('multimplementations') ? [ 'multimplementations' ] : []
@@ -145,6 +147,8 @@ module Elf::Tools
       @targets |=
         ( !@no_scan_ldpath             ? Elf::Utilities.system_library_path : [] ) |
         ( (@scan_path and ENV['PATH']) ? ENV['PATH'].split(":")             : [] )
+
+      return if @analyse_only
 
       @db = PGconn.open(pg_params)
 
