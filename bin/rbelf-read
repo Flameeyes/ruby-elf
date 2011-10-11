@@ -55,12 +55,12 @@ module Elf::Tools
       printf("There are %d section headers, starting at offset 0x%x:\n\nSection Headers:\n",
              elf.sections, elf.shoff)
 
-      printf("[Nr] Name                 Type          Addr             Off      Size     ES Flags Lk Inf Al\n")
+      printf("[Nr] Name                    Type          Addr             Off      Size     ES Flags Lk Inf Al\n")
 
       elf.each_section do |section|
         printf("[%2d] %s %s %0#{elf.address_print_size}x %08x %08x %2d %s %2d %3d %2d\n",
                section.index,
-               section.name.ljust(20),
+               section.name.ljust(23),
                section.type.mnemonic.upcase.ljust(13),
                section.addr, section.offset, section.size, section.entsize,
                section.flags_s.ljust(5), section.link.to_i, section.info, section.addralign)
