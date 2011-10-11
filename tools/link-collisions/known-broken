@@ -122,6 +122,7 @@ lib(gcj|gauche|Synopsis)\.so						^GC_
 
 # Broken proprietaryware
 /lib/fmodex
+/fmodex/api
 
 # Link statically to libpcap, may bundle libopts
 /bin/tcp(rewrite|bridge|prep|replay)	  ^(options[A-Z]|pcap_)
@@ -167,3 +168,6 @@ lib(gcj|gauche|Synopsis)\.so						^GC_
 # Scratchbox is totally messed up, and so is sgpp
 /opt/scratchbox/
 /opt/sgpp
+
+# mesa's build system tends to be TFU and copies llvm code around
+/(mesa|egl)/.*\.so			^_ZN4llvm

@@ -157,7 +157,7 @@
 .*/lib(|32|64)/zsh/.*/zsh/.*\.so$	^(enables|features)_$
 
 # OSS wrappers and other LD_PRELOAD libraries
-lib((pulse|esd|arts)dsp|aoss|jackasyn|(soap|sand)box|fake(ch)?root|zzuf|v4l(1compat|2convert)|trash|syncdir|honeyd|tsocks)	^((__)?(m(un)?map(64)?|f?(open(at)?(64)?(_2)?|close))|ioctl|poll|connect|glob|bind|execvp?)$
+lib((pulse|esd|arts)dsp|aoss|jackasyn|(soap|sand)box|fake(ch)?root|zzuf|v4l(1compat|2convert)|trash|syncdir|honeyd|tsocks)	^((__)?(m(un)?map(64)?|f?(open(at)?(64)?(_2)?|close))|ioctl|poll|connect|glob|bind|execvp?|select)$
 
 lib(fake(ch)?root|(soap|sand)box|trash)(-[0-9\.]+)?\.so									^f?(l?ch(own|mod)|(un)?link|rename|(mk|rm)dir|remove|creat|mkfifo|l?utimen?s?|(__x)?mknod(e|at)|symlink|access|truncate)(64)?(at)?$
 
@@ -229,7 +229,7 @@ strigi/strigi[lt]a_.*\.so		^(deleteS|s)trigiAnalyzerFactory$
 /lib(32|64)?/mozart/cache/x-oz/		^oz_module_name$
 
 # Netscape/Mozilla plugins
-.*					^NP[NP]?_(Get(MIMEDescription|Value|Java(Class|Env|Peer)|URL|Property|StringIdentifier)|Set(Window|Value)|Initialize|Shutdown|(Destroy|New)(Stream)?|Mem(Alloc|Flush|Free)|PostURL|ReloadPlugins|RequestRead|Status|UserAgent|Version|Write|Print|StreamAsFile|Write(Ready)?|URLNotify|ForceRedraw|Invalidate(Rect|Region)|HandleEvent|(Push|Pop)PopupEnabledState|ReleaseObject)
+.*					^NP[NP]?_(Get(MIMEDescription|Value|Java(Class|Env|Peer)|URL|Property|StringIdentifier)|Set(Window|Value)|Initialize|Shutdown|(Destroy|New)(Stream)?|Mem(Alloc|Flush|Free)|PostURL|ReloadPlugins|RequestRead|Status|UserAgent|Version|Write|Print|StreamAsFile|Write(Ready)?|URLNotify|ForceRedraw|Invalidate(Rect|Region)|HandleEvent|(Push|Pop)PopupEnabledState|ReleaseObject|SetException|HasMethod|IdentifierIsString|(Int|UTF8)FromIdentifier|(Remove|Has|Set)Property|Invoke(Default)?|(Create|Retain)Object|ReleaseVariantValue)
 
 /lib(32|64)?/rep/.*\.so$		^rep_dl_init$
 
@@ -256,7 +256,7 @@ strigi/strigi[lt]a_.*\.so		^(deleteS|s)trigiAnalyzerFactory$
 /lib(32|64)?/libmirage/.*\.so			^mirage_plugin_(un)?load_plugin$
 /lib(32|64)?/awn/applets/.*/.*\.so		^awl_applet_factory_initp$
 /lib(32|64)?/rxtx-2/.*\.so			^translate_((data|stop)_bits|parity|speed)$
-/php5/lib/php/extensions/.*/.*\.so		^get_module$
+/php/extensions/.*/.*\.so			^get_module$
 /lib(32|64)?/licq/licq_.*\.so			^LP_(Build(Date|Time)|ConfigFile|Description|Exit|Init|Main(_tep)?|Name|Status|Usage|Version)$
 /lib(32|64)?/gambas2?/gb\..*\.so		^GB_(INIT|EXIT|CLASSES)$
 /lib(32|64)?/SpiralPlugins/.*\.so		^SpiralPlugin_(CreateInstance|Get(GroupName|Icon|ID))$
@@ -278,3 +278,4 @@ strigi/strigi[lt]a_.*\.so		^(deleteS|s)trigiAnalyzerFactory$
 /lib(32|64)?/(connman|flimflam)/plugins/.*\.so	^connman_plugin_desc$
 /lib(32|64)?/pppd/[0-9.]\+/.*\.so		^pppd_version$
 /lib(32|64)?/device-mapper/.*\.so		^(process_event|(un)?register_device)$
+/lib(32|64)?/weechat/plugins/.*\.so             ^weechat_plugin_((api_)?version|author|description|end|init|license|name)$

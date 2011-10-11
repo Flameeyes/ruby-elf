@@ -17,7 +17,7 @@ java-libmawt		jre/lib/(amd64|i386)/(xawt|motif21|headless)/libmawt.so
 ncurses-lib$2		/lib(|32|64)/lib(n?curses|form|menu|panel)w?\.so
 
 php			/bin/php(-cgi)?$
-php			apache2/modules/libphp5\.so
+php			/libphp5\.so
 
 mysqlclient		/lib(|32|64)/mysql/libmysqlclient(_r)?\.so
 libldap$3		/lib(|32|64)/libldap(_r)?((-[0-9\.]+)?)\.so
@@ -121,9 +121,9 @@ libidnkit               /libidnkit(lite)?\.so
 
 libprotobuf             /libprotobuf(-lite)?\.so
 
-libtcmalloc             /libtcmalloc(_(debug|and_profiler))?\.so
+libtcmalloc             /libtcmalloc(_minimal)?(_(debug|and_profiler))?
 
-libscintilla            /lib(wb|fx|q)?scintilla(2|nolexer)\.so
+libscintilla            /lib(wb|fx|q)?scintilla(2|nolexer)?
 
 libGL                   /libGL(ESv2)?\.so
 
@@ -133,7 +133,19 @@ lib4ti2                 /lib4ti2(gmp|int(32|64))\.so
 
 libexpat                /libexpat[uw]?\.so
 
-libIce                  /libIceE?\.so
+libIce                  /libIceEC?\.so
+
+libicu                  /libicu(uc|cnv)\.so
+
+libibdm                 /libibdbm(com)?\.so
+
+libraw                  /libraw(_r)?\.so
+
+libgflash               /libgflags(_nothreads)?\.so
+
+libaal                  /libaal(-minimal)?\.so
+
+libsqlite3              /lib(moz)?sqlite3\.so
 
 LAPACK                  /libc?lapack\.so
 
