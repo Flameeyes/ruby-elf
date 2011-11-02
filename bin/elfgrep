@@ -190,7 +190,7 @@ module Elf::Tools
             break unless @show == :full_match
             next if @count
 
-            print("%s%#{elf.address_print_size}s %s %s\n",
+            printf("%s%#{elf.address_print_size}s %s %s\n",
                   file_prefix, symbol.address_string,
                   (symbol.nm_code rescue '?'), symname)
           end
