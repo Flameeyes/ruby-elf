@@ -31,7 +31,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
     <refentry>
       <info>
-        <date>January 2011</date>
+        <date>November 2011</date>
         <productname>ruby-elf</productname>
       </info>
       <refmeta>
@@ -108,6 +108,11 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
               <replaceable>PATTERN</replaceable>
             </arg>
 
+            <arg choice="plain" rep="repeat">
+              <option>--file</option>
+              <replaceable>FILE</replaceable>
+            </arg>
+
             <arg choice="plain">
               <replaceable>PATTERN</replaceable>
             </arg>
@@ -162,6 +167,38 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
                   multiple search patterns, or to protect a pattern beginning with a hyphen
                   (<literal>-</literal>).
                 </para>
+              </listitem>
+            </varlistentry>
+
+            <varlistentry>
+              <term>
+                <option>-f</option>
+                <replaceable>FILE</replaceable>
+              </term>
+              <term>
+                <option>--file</option>
+                <replaceable>FILE</replaceable>
+              </term>
+
+              <listitem>
+                <para>
+                  Obtain patterns from <replaceable>FILE</replaceable>, one per line.
+                </para>
+
+                <note>
+                  <title>Behaviour difference from <application>grep</application> semantics</title>
+
+                  <para>
+                    For <application>grep</application>'s <option>--file</option> option, an empty
+                    line (with only a newline character) is a “match all” pattern, while a totally
+                    empty file (zero bytes sized) is a “match none” pattern. This doesn't make much
+                    sense, especially for <application>elfgrep</application>, so both empty lines
+                    and empty files are simply skipped over. Passing <option>--file</option>
+                    pointing to a file that gets totally ignored (zero bytes sized, or a sequence of
+                    newline characters) will still stop <application>elfgrep</application> from
+                    looking for a pattern in the first non-option argument.
+                  </para>
+                </note>
               </listitem>
             </varlistentry>
 

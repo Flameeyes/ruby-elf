@@ -52,6 +52,8 @@ module Elf::Tools
                    ["--ignore-case", "-i", GetoptLong::NO_ARGUMENT],
                    # Use NULLs to terminate filenames
                    ["--null", "-Z", GetoptLong::NO_ARGUMENT],
+                   # read the list of patterns from the given file
+                   ["--file", "-f", GetoptLong::REQUIRED_ARGUMENT],
                   ]
 
       @invert_match = false
@@ -60,6 +62,7 @@ module Elf::Tools
       @match_symbols = nil
 
       @patterns = []
+      @pattern_is_first = true
     end
 
     # We define callbacks for some behaviour-changing options as those
@@ -104,7 +107,17 @@ module Elf::Tools
     end
 
     def self.regexp_cb(pattern)
+      @pattern_is_first = false
+
       @patterns << pattern
+    end
+
+    def self.file_cb(filename)
+      @pattern_is_first = false
+
+      @patterns += File.readlines(filename).
+        each { |l| l.strip }.
+        reject { |l| l.empty? }
     end
 
     def self.after_options
@@ -122,7 +135,7 @@ module Elf::Tools
       # to be given by stdin, and that won't include the actual pattern,
       # if we have an @-prefixed argument, that's a list of targets and
       # can't include the pattern either.
-      if (@patterns.size == 0 and
+      if (@pattern_is_first and
           @targets.size >= 1 and
           @targets[0] !~ /^@/)
 
