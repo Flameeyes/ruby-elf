@@ -54,6 +54,8 @@ module Elf::Tools
                    ["--null", "-Z", GetoptLong::NO_ARGUMENT],
                    # read the list of patterns from the given file
                    ["--file", "-f", GetoptLong::REQUIRED_ARGUMENT],
+                   # match the whole symbol
+                   ["--symbol-regexp", "-s", GetoptLong::NO_ARGUMENT],
                   ]
 
       @invert_match = false
@@ -152,15 +154,40 @@ module Elf::Tools
       @file_list_fmt = "%s#{@null ? "\0" : "\n"}"
 
       regexp_options = @ignore_case ? Regexp::IGNORECASE : 0
-      @regexp = Regexp.union(@patterns.collect { |pattern|
-                               if @match == :fixed_strings
-                                 pattern.split(/\r?\n/).collect { |string|
-                                   Regexp.new("^" + Regexp.escape(string) + "$", regexp_options)
-                                 }
-                               else
-                                 Regexp.new(pattern, regexp_options)
-                               end
-                             }.flatten)
+      regexps = @patterns.collect { |pattern|
+        if @match == :fixed_strings
+          pattern.split(/\r?\n/).collect { |string|
+            Regexp.new(Regexp.escape(string), regexp_options)
+          }
+        else
+          Regexp.new(pattern, regexp_options)
+        end
+      }.flatten
+
+      if @symbol_regexp
+        # if we're matching a whole symbol name we need the longest
+        # match, and Ruby's union of regexp does _not_ enforce that,
+        # so we have to do it the long way.
+
+        @match_lambda = proc { |symbol|
+          longest_match = ""
+
+          regexps.each { |re|
+            m = re.match(symbol)
+            longest_match = m[0] unless (m.nil? or m[0].length < longest_match.length)
+          }
+
+          (longest_match != symbol) == @invert_match
+        }
+      else
+        # if we're just doing a loose match, unite the regexps and do
+        # it the fast way.
+        regexp = Regexp.union(regexps)
+
+        @match_lambda = proc { |symbol|
+          regexp.match(symbol).nil? == @invert_match
+        }
+      end
     end
 
     def self.analysis(file)
@@ -194,10 +221,7 @@ module Elf::Tools
           symname = symbol.name
           symname += "@#{symbol.version}" if @match_version
 
-          # We don't care where it matches, but we do care that it matches
-          # or not; we use an invert match since we have to further compare
-          # that to @invert_match
-          if (@invert_match == (@regexp =~ symname).nil?)
+          if (@match_lambda.call(symname))
             matches = matches+1
 
             break unless @show == :full_match

@@ -100,6 +100,10 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
             <option>--null</option>
           </arg>
 
+          <arg choice="opt">
+            <option>--symbol-regexp</option>
+          </arg>
+
           <xi:include href="common.xmli"  xpointer="xpointer(id('filelist.synopsis.options')/*)" />
 
           <group choice="req">
@@ -257,6 +261,16 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
                   Invert the sense of matching, to select non-matching symbols. This does not invert
                   the sense of <option>--no-match-undefined</option> and
                   <option>--no-match-defined</option>.
+                </para>
+              </listitem>
+            </varlistentry>
+
+            <varlistentry>
+              <term><option>-s</option></term>
+              <term><option>--symbol-regexp</option></term>
+              <listitem>
+                <para>
+                  Select only those matches that exactly match the whole line.
                 </para>
               </listitem>
             </varlistentry>
