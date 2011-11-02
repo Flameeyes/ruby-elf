@@ -116,7 +116,7 @@ module Elf::Tools
       @pattern_is_first = false
 
       @patterns += File.readlines(filename).
-        each { |l| l.strip }.
+        each { |l| l.strip! }.
         reject { |l| l.empty? }
     end
 
