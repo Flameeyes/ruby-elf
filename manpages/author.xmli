@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8" standalone="no"?>
 <!--
-   Copyright © 2008, Diego "Flameeyes" Pettenò <flameeyes@gmail.com>
+   Copyright © 2008, Diego Elio Pettenò <flameeyes@flameeyes.eu>
   
    This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -25,7 +25,7 @@
       </personname>
 
       <affiliation>
-	<address><email>flameeyes@gmail.com</email></address>
+	<address><email>flameeyes@flameeyes.eu</email></address>
       </affiliation>
 
       <personblurb>

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # Copyright © 2009 Alex Legler <a3li@gentoo.org>
-# Copyright © 2009-2010 Diego E. "Flameeyes" Pettenò <flameeyes@gmail.com>
+# Copyright © 2009-2010 Diego Elio Pettenò <flameeyes@flameeyes.eu>
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
