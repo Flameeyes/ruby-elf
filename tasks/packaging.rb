@@ -72,8 +72,8 @@ EOF
     pkg.package_files << "ruby-elf-#{Elf::VERSION}.gemspec"
   end
 
-  require 'rake/gempackagetask'
-  Rake::GemPackageTask.new(Spec) do |pkg|
+  require 'rubygems/package_task'
+  Gem::PackageTask.new(Spec) do |pkg|
   end
 rescue Exception => e
   # This can happen for instance if you're not running from within a
