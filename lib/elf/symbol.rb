@@ -368,29 +368,27 @@ module Elf
       return true
     end
 
-    begin
-      require 'elf/symbol/demangler_gcc3'
-
-      Demanglers = [ Elf::Symbol::Demangler::GCC3 ]
-      def demangle
-        return @demangled if @demangled
-
-        Demanglers.each do |demangler|
-          break if (@demangled ||= demangler.demangle(name))
-        end
-
-        # We're going to remove top-namespace specifications as we don't
-        # need them, but it's easier for the demangler to still emit
-        # them.
-        @demangled.gsub!(/(^| |\()::/, '\1') if @demangled
-
-        return @demangled ||= name
-      end
-    rescue LoadError
+#    begin
+#      Demanglers = [  ]
+#      def demangle
+#        return @demangled if @demangled
+#
+#        Demanglers.each do |demangler|
+#          break if (@demangled ||= demangler.demangle(name))
+#        end
+#
+#        # We're going to remove top-namespace specifications as we don't
+#        # need them, but it's easier for the demangler to still emit
+#        # them.
+#        @demangled.gsub!(/(^| |\()::/, '\1') if @demangled
+#
+#        return @demangled ||= name
+#      end
+#    rescue LoadError
       def demangle
         return name
       end
-    end
+#    end
 
     private
     def version_index

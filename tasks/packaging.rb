@@ -45,7 +45,7 @@ begin
     s.files = git_files.reject { |file|
       file =~ /(^Rakefile$|^(test|tasks)\/|\.(xmli|rl)?$)/
     }
-    s.files |= DemanglersList | ManpagesList
+    s.files |= ManpagesList
 
     s.executables = FileList["bin/*"].collect { |bin|
       next if bin =~ /~$/
@@ -68,7 +68,7 @@ EOF
   Rake::PackageTask.new("ruby-elf", Elf::VERSION) do |pkg|
     pkg.need_tar_bz2 = true
     pkg.package_dir = "pkg"
-    pkg.package_files = git_files | DemanglersList | ManpagesList
+    pkg.package_files = git_files | ManpagesList
     pkg.package_files << "ruby-elf-#{Elf::VERSION}.gemspec"
   end
 

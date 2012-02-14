@@ -23,16 +23,12 @@ Rake::TestTask.new do |t|
   t.libs = ["lib", "test"]
 end
 
-task :test => :demanglers
-
 begin
   require 'rcov/rcovtask'
   
   Rcov::RcovTask.new do |t|
     t.libs = ["lib", "test"]
   end
-
-  task :rcov => :demanglers
 rescue LoadError
   $stderr.puts "Unable to find rcov, coverage won't be available"
 end
