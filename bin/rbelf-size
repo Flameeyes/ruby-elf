@@ -143,7 +143,9 @@ module Elf::Tools
     end
 
     def self.count_allocated(results)
-      results[:allocated] = results.values.inject { |sum, val| sum += val rescue sum}
+      results[:allocated] = results.values.inject { |sum, val|
+        sum = val.is_a?(String) ? sum : (sum+val)
+      }
     end
 
     def self.apply_differential(results)
