@@ -160,7 +160,7 @@ module Elf
       if @name.is_a? Integer and @symsect.link
         begin
           name = @symsect.link[@name]
-        rescue StringTable::InvalidIndex
+        rescue Utilities::OffsetTable::InvalidIndex
           raise InvalidName.new(@name, self, @symsect)
         end
         @name = name if name

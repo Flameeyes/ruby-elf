@@ -57,10 +57,10 @@ class TC_StringTable < Test::Unit::TestCase
 
   # Test behaviour when providing an invalid index
   #
-  # Expected behaviour: Elf::StringTable::InvalidIndex exception
+  # Expected behaviour: Elf::Utilities::OffsetTable::InvalidIndex exception
   # raised.
   def test_invalid_index
-    assert_raise Elf::StringTable::InvalidIndex do
+    assert_raise Elf::Utilities::OffsetTable::InvalidIndex do
       @elf[".strtab"][@elf[".strtab"].size]
     end
   end

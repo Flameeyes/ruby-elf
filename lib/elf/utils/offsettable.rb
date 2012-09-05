@@ -1,11 +1,7 @@
 # -*- coding: utf-8 -*-
-# Simple ELF parser for Ruby
+# Offset-based string table
 #
-# Copyright © 2007-2010 Diego Elio Pettenò <flameeyes@flameeyes.eu>
-# Portions inspired by elf.py
-#   Copyright © 2002 Netgraft Corporation
-# Portions inspired by elf.h
-#   Copyright © 1995-2006 Free Software Foundation, Inc.
+# Copyright © 2007-2012 Diego Elio Pettenò <flameeyes@flameeyes.eu>
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -21,19 +17,33 @@
 # along with this generator; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
-require 'elf/section'
-require 'elf/utils/offsettable'
-
 module Elf
-  class StringTable < Section
-    def load_internal
-      @rawtable = Utilities::OffsetTable.new(@file.readexactly(@size), "\x00")
-    end
+  module Utilities
+    class OffsetTable
+      class InvalidIndex < Exception
+        def initialize(idx, max_idx)
+          super("Invalid index #{idx} (maximum index: #{max_idx})")
+        end
+      end
 
-    def [](idx)
-      load unless @rawtable
+      def initialize(content, separator)
+        @content = content
+        @separator = separator
+      end
 
-      @rawtable[idx]
+      def size
+        @content.size
+      end
+
+      def [](idx)
+        raise InvalidIndex.new(idx, size) if idx >= size
+
+        # find the first occurrence of the separator starting from the
+        # given index
+        endidx = @content.index(@separator, idx)
+
+        return @content[idx..endidx].chomp(@separator)
+      end
     end
   end
 end
