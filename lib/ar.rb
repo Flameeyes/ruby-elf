@@ -110,7 +110,7 @@ module Ar
                 file[:name] = readexactly(file[:name][3..-1].to_i)
               end
 
-              if file[:name][0] == "/"
+              if file[:name][0..0] == "/"
                 file[:name] = @gnu_names[file[:name][1..-1].to_i]
               end
               
