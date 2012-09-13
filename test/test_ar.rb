@@ -150,9 +150,22 @@ class TC_AR < Test::Unit::TestCase
     assert_equal 1, ar.files_count
     file = ar[0]
 
-    assert_equal file[:name], "thisisaveryveryverylongfilenameandithastobeencodedwiththeextendedformattoworkcorrectly"
+    assert_equal "thisisaveryveryverylongfilenameandithastobeencodedwiththeextendedformattoworkcorrectly", file[:name]
     
-    assert_equal file, ar["thisisaveryveryverylongfilenameandithastobeencodedwiththeextendedformattoworkcorrectly"]
+    assert_equal ar["thisisaveryveryverylongfilenameandithastobeencodedwiththeextendedformattoworkcorrectly"], file
+  ensure
+    ar.close unless ar.nil?
+  end
+
+  # Test access of a file with Apple long file names
+  def test_longfilename_apple
+    ar = Ar::File.new(get_test_file("archive/longfilename-apple.a"))
+    assert_equal 1, ar.files_count
+    file = ar[0]
+
+    assert_equal "thisisaveryveryverylongfilenameandithastobeencodedwiththeextendedformattoworkcorrectly", file[:name]
+
+    assert_equal ar["thisisaveryveryverylongfilenameandithastobeencodedwiththeextendedformattoworkcorrectly"], file
   ensure
     ar.close unless ar.nil?
   end
@@ -160,6 +173,14 @@ class TC_AR < Test::Unit::TestCase
   # Test access of a file with real objects (GNU ar)
   def test_objects_gnu
     ar = Ar::File.new(get_test_file("archive/objects-gnu.a"))
+    assert_equal 3, ar.files_count
+  ensure
+    ar.close unless ar.nil?
+  end
+
+  # Test access of a file with real objects (Apple ar)
+  def test_objects_apple
+    ar = Ar::File.new(get_test_file("archive/objects-apple.a"))
     assert_equal 3, ar.files_count
   ensure
     ar.close unless ar.nil?
