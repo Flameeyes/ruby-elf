@@ -106,8 +106,8 @@ module Ar
               # skip adding the file to the list.
               @gnu_names = Elf::Utilities::OffsetTable.new(readexactly(file[:size]), "\n")
             else
-              if file[:name][0..3] == "#1/"
-                file[:name] = readexactly(file[:name][4..-1].to_i)
+              if file[:name][0..2] == "#1/"
+                file[:name] = readexactly(file[:name][3..-1].to_i)
               end
 
               if file[:name][0] == "/"
