@@ -107,7 +107,10 @@ module Ar
               @gnu_names = Elf::Utilities::OffsetTable.new(readexactly(file[:size]), "\n")
             else
               if file[:name][0..2] == "#1/"
-                file[:name] = readexactly(file[:name][3..-1].to_i)
+                bsd_name_length = file[:name][3..-1].to_i
+
+                file[:name] = readexactly(bsd_name_length)
+                file[:size] -= bsd_name_length
               end
 
               if file[:name][0..0] == "/"
