@@ -144,9 +144,8 @@ class TC_AR < Test::Unit::TestCase
     ar.close unless ar.nil?
   end
 
-  # Test access of a file with GNU long file names
-  def test_longfilename_gnu
-    ar = Ar::File.new(get_test_file("archive/longfilename-gnu.a"))
+  def _test_longfilename(variant)
+    ar = Ar::File.new(get_test_file("archive/longfilename-#{variant}.a"))
     assert_equal 1, ar.files_count
     file = ar[0]
 
@@ -157,53 +156,40 @@ class TC_AR < Test::Unit::TestCase
     ar.close unless ar.nil?
   end
 
+  # Test access of a file with GNU long file names
+  def test_longfilename_gnu
+    _test_longfilename("gnu")
+  end
+
   # Test access of a file with Apple long file names
   def test_longfilename_apple
-    ar = Ar::File.new(get_test_file("archive/longfilename-apple.a"))
-    assert_equal 1, ar.files_count
-    file = ar[0]
-
-    assert_equal "thisisaveryveryverylongfilenameandithastobeencodedwiththeextendedformattoworkcorrectly", file[:name]
-
-    assert_equal ar["thisisaveryveryverylongfilenameandithastobeencodedwiththeextendedformattoworkcorrectly"], file
-  ensure
-    ar.close unless ar.nil?
+    _test_longfilename("apple")
   end
 
   # Test access of a file with libarchive/bsdtar long file names
   def test_longfilename_libarchive
-    ar = Ar::File.new(get_test_file("archive/longfilename-libarchive.a"))
-    assert_equal 1, ar.files_count
-    file = ar[0]
+    _test_longfilename("libarchive")
+  end
 
-    assert_equal "thisisaveryveryverylongfilenameandithastobeencodedwiththeextendedformattoworkcorrectly", file[:name]
-
-    assert_equal ar["thisisaveryveryverylongfilenameandithastobeencodedwiththeextendedformattoworkcorrectly"], file
+  def _test_objects(variant)
+    ar = Ar::File.new(get_test_file("archive/objects-#{variant}.a"))
+    assert_equal 3, ar.files_count
   ensure
     ar.close unless ar.nil?
   end
 
   # Test access of a file with real objects (GNU ar)
   def test_objects_gnu
-    ar = Ar::File.new(get_test_file("archive/objects-gnu.a"))
-    assert_equal 3, ar.files_count
-  ensure
-    ar.close unless ar.nil?
+    _test_objects("gnu")
   end
 
   # Test access of a file with real objects (Apple ar)
   def test_objects_apple
-    ar = Ar::File.new(get_test_file("archive/objects-apple.a"))
-    assert_equal 3, ar.files_count
-  ensure
-    ar.close unless ar.nil?
+    _test_objects("apple")
   end
 
   # Test access of a file with real objects (libarchive/bsdtar)
   def test_objects_libarchive
-    ar = Ar::File.new(get_test_file("archive/objects-libarchive.a"))
-    assert_equal 3, ar.files_count
-  ensure
-    ar.close unless ar.nil?
+    _test_objects("libarchive")
   end
 end
