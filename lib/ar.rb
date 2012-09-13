@@ -111,6 +111,11 @@ module Ar
 
                 file[:name] = readexactly(bsd_name_length)
                 file[:size] -= bsd_name_length
+
+                # for whatever reason the ar(1) command provided by
+                # Apple in Mac OS X (10.8) seems to get the size
+                # wrong, and pads the filename with zero bytes.
+                file[:name].sub!(/\0+$/, '');
               end
 
               if file[:name][0..0] == "/"
