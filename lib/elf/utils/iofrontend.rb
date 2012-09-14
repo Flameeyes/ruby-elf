@@ -16,6 +16,15 @@
 # along with this generator; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
+require 'stringio'
+
+# required to be able to reference it (and avoid circular
+# dependencies)
+module Ar
+  class Entry
+  end
+end
+
 module Elf::Utilities
   # This class is useful to allow access of something that acts like
   # an IO and simulate its own behaviour in front of it.
