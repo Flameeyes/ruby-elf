@@ -66,7 +66,9 @@ module Elf::Utilities
     end
 
     def initialize(param)
-      if param.respond_to?(:to_s)
+      if param.is_a?(IO) or param.is_a?(StringIO)
+        @backend = param
+      elsif param.respond_to?(:to_s)
         param = param.to_s
 
         _checkvalidpath(param)
