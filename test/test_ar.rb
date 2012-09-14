@@ -179,7 +179,10 @@ class TC_AR < Test::Unit::TestCase
   def _test_objects(variant)
     ar = Ar::File.new(get_test_file("archive/objects-#{variant}.a"))
     assert_equal 3, ar.files_count
+
+    elf = Elf::File.new(ar["cxxsymbols.o"])
   ensure
+    elf.close unless elf.nil?
     ar.close unless ar.nil?
   end
 

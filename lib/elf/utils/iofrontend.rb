@@ -66,7 +66,7 @@ module Elf::Utilities
     end
 
     def initialize(param)
-      if param.is_a?(IO) or param.is_a?(StringIO)
+      if param.is_a?(IO) or param.is_a?(StringIO) or param.is_a?(Ar::Entry)
         @backend = param
       elsif param.respond_to?(:to_s)
         param = param.to_s
