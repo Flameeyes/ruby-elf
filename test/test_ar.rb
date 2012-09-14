@@ -138,6 +138,8 @@ class TC_AR < Test::Unit::TestCase
     assert_equal 0100644, file.mode #octal
     assert_equal 2, file.size
 
+    assert_equal "ab", file.content
+
     # make sure that it was inserted into the index correctly
     assert_equal file, ar["shortfile"]
   ensure
