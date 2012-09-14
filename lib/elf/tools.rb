@@ -43,7 +43,7 @@ module Elf
 
     # Gets the name of the tool
     def self.to_s
-      File.basename($0)
+      ::File.basename($0)
     end
 
     # Output an error message, prefixed with the tool name.
@@ -77,8 +77,8 @@ module Elf
         if opt == "--help"
           # check if we're executing from a tarball or the git repository,
           # if so we can't use the system man page.
-          manpage = File.expand_path("../../../manpages/#{to_s}.1", __FILE__)
-          manpage = to_s unless File.exist?(manpage)
+          manpage = ::File.expand_path("../../../manpages/#{to_s}.1", __FILE__)
+          manpage = to_s unless ::File.exist?(manpage)
           exec("man #{manpage}")
         end
 
@@ -157,9 +157,9 @@ module Elf
         # we usually want to check them out if they are given directly in
         # the list of files to analyse
         file_stat = if @recursive
-                      File.lstat(filename)
+                      ::File.lstat(filename)
                     else
-                      File.stat(filename)
+                      ::File.stat(filename)
                     end
 
         # if the path references a directory, and we're going to run
@@ -167,7 +167,7 @@ module Elf
         if @recursive and file_stat.directory?
           Dir.foreach(filename) do |children|
             next if children == "." or children == ".."
-            try_execute(File.join(filename, children))
+            try_execute(::File.join(filename, children))
           end
           # if the path does not point to a regular file, ignore it
         elsif not file_stat.file?
