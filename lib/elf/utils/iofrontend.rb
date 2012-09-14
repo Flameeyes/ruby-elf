@@ -87,5 +87,12 @@ module Elf::Utilities
         raise ArgumentError.new
       end
     end
+
+    def self.open(param)
+      f = new(param)
+      yield f
+    ensure
+      f.close unless f.nil?
+    end
   end
 end
