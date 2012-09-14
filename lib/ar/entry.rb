@@ -23,22 +23,6 @@ module Ar
   class Entry 
     attr_reader :name, :mtime, :owner, :group, :mode, :size
 
-    # this is different from the one in iofrontend because we don't
-    # use super, we go straight to the backend, which we know being an
-    # Ar::File object.
-    def method_missing(meth, *args, &block)
-      if @backend.respond_to?(meth)
-        (class << self; self; end).class_eval do
-          define_method(meth) do |*args|
-            @backend.send(meth, *args, &block)
-          end
-        end
-        send(meth, *args, &block)
-      else
-        @backend.method_missing(meth, *args, &block)
-      end
-    end
-
     def initialize(archive)
       raise ArgumentError.new unless archive.is_a?(Ar::File)
 
@@ -46,19 +30,19 @@ module Ar
 
       # read the file header; most of the content is actually in an
       # ASCII-compatible text format, which is very easy to parse
-      @name = readexactly(16).rstrip
-      @mtime = Time.at(readexactly(12).rstrip.to_i)
-      @owner = readexactly(6).rstrip.to_i
-      @group = readexactly(6).rstrip.to_i
-      @mode = readexactly(8).rstrip.to_i(8)
-      @size = readexactly(10).rstrip.to_i
+      @name = @backend.readexactly(16).rstrip
+      @mtime = Time.at(@backend.readexactly(12).rstrip.to_i)
+      @owner = @backend.readexactly(6).rstrip.to_i
+      @group = @backend.readexactly(6).rstrip.to_i
+      @mode = @backend.readexactly(8).rstrip.to_i(8)
+      @size = @backend.readexactly(10).rstrip.to_i
       
-      raise File::NotAnAR if readexactly(2) != "\x60\x0a"
+      raise File::NotAnAR if @backend.readexactly(2) != "\x60\x0a"
 
       if @name[0..2] == "#1/"
         bsd_name_length = @name[3..-1].to_i
 
-        @name = readexactly(bsd_name_length)
+        @name = @backend.readexactly(bsd_name_length)
         @size -= bsd_name_length
 
         # for whatever reason the ar(1) command provided by
@@ -77,6 +61,7 @@ module Ar
       @name.sub!(/([^\/])\/$/, '\1')
 
       @offset = @backend.tell()
+      @fpos = 0
 
       @backend.seek(@size, IO::SEEK_CUR)
     end
@@ -85,9 +70,44 @@ module Ar
       oldpos = @backend.tell()
       @backend.seek(@offset, IO::SEEK_SET)
 
-      readexactly(@size)
+      @backend.readexactly(@size)
     ensure
       @backend.seek(oldpos, IO::SEEK_SET)
+    end
+
+    %w(read readexactly).each do |method|
+      define_method(method) do |rsize|
+        begin
+          return nil if @fpos >= @size
+
+          rsize = rsize.to_i
+          rsize = (@size - @fpos) if (@fpos + rsize) >= @size
+
+          oldpos = @backend.tell()
+          @backend.seek(@offset+@fpos, IO::SEEK_SET)
+
+          @backend.send(method, rsize)
+        ensure
+          @fpos += rsize unless rsize.nil?
+          @backend.seek(oldpos) unless oldpos.nil?
+        end
+      end
+    end
+
+    def eof
+      @fpos >= @size
+    end
+
+    def tell
+      @fpos
+    end
+
+    def seek(pos, direction)
+      @fpos = case direction
+              when IO::SEEK_SET then pos
+              when IO::SEEK_CUR then (@fpos + pos)
+              when IO::SEEK_END then (@size - pos)
+              end
     end
   end
 end

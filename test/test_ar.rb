@@ -139,6 +139,9 @@ class TC_AR < Test::Unit::TestCase
     assert_equal 2, file.size
 
     assert_equal "ab", file.content
+    assert_equal "a", file.read(1)
+    assert_equal "b", file.read(2)
+    assert file.eof
 
     # make sure that it was inserted into the index correctly
     assert_equal file, ar["shortfile"]
