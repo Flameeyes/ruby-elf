@@ -132,11 +132,11 @@ class TC_AR < Test::Unit::TestCase
     file = ar[0]
 
     # check the file's header
-    assert_equal "shortfile", file[:name]
-    assert_equal 501, file[:owner]
-    assert_equal 1005, file[:group]
-    assert_equal 0100644, file[:mode] #octal
-    assert_equal 2, file[:size]
+    assert_equal "shortfile", file.name
+    assert_equal 501, file.owner
+    assert_equal 1005, file.group
+    assert_equal 0100644, file.mode #octal
+    assert_equal 2, file.size
 
     # make sure that it was inserted into the index correctly
     assert_equal file, ar["shortfile"]
@@ -149,7 +149,7 @@ class TC_AR < Test::Unit::TestCase
     assert_equal 1, ar.files_count
     file = ar[0]
 
-    assert_equal "thisisaveryveryverylongfilenameandithastobeencodedwiththeextendedformattoworkcorrectly", file[:name]
+    assert_equal "thisisaveryveryverylongfilenameandithastobeencodedwiththeextendedformattoworkcorrectly", file.name
     
     assert_equal ar["thisisaveryveryverylongfilenameandithastobeencodedwiththeextendedformattoworkcorrectly"], file
   ensure
