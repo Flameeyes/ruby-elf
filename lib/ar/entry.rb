@@ -75,23 +75,34 @@ module Ar
       @backend.seek(oldpos, IO::SEEK_SET)
     end
 
-    %w(read readexactly).each do |method|
-      define_method(method) do |rsize|
-        begin
-          return nil if @fpos >= @size
+    def read(rsize)
+      return nil if @fpos >= @size
 
-          rsize = rsize.to_i
-          rsize = (@size - @fpos) if (@fpos + rsize) >= @size
+      rsize = rsize.to_i
+      rsize = (@size - @fpos) if (@fpos + rsize) >= @size
 
-          oldpos = @backend.tell()
-          @backend.seek(@offset+@fpos, IO::SEEK_SET)
+      oldpos = @backend.tell()
+      @backend.seek(@offset+@fpos, IO::SEEK_SET)
 
-          @backend.send(method, rsize)
-        ensure
-          @fpos += rsize unless rsize.nil?
-          @backend.seek(oldpos) unless oldpos.nil?
-        end
-      end
+      @backend.read(rsize)
+    ensure
+      @fpos += rsize unless rsize.nil?
+      @backend.seek(oldpos, IO::SEEK_SET) unless oldpos.nil?
+    end
+
+    def readpartial(rsize)
+      raise EOFError.new if @fpos >= @size
+
+      rsize = rsize.to_i
+      rsize = (@size - @fpos) if (@fpos + rsize) >= @size
+
+      oldpos = @backend.tell()
+      @backend.seek(@offset+@fpos, IO::SEEK_SET)
+
+      @backend.readpartial(rsize)
+    ensure
+      @fpos += rsize unless rsize.nil?
+      @backend.seek(oldpos, IO::SEEK_SET) unless oldpos.nil?
     end
 
     def eof
@@ -102,12 +113,17 @@ module Ar
       @fpos
     end
 
-    def seek(pos, direction)
+    def seek(pos, direction = IO::SEEK_SET)
       @fpos = case direction
               when IO::SEEK_SET then pos
               when IO::SEEK_CUR then (@fpos + pos)
               when IO::SEEK_END then (@size - pos)
               end
+      0 # for compatibility with IO#seek
+    end
+
+    # this is a moot function to make it look like an IO object.
+    def close
     end
   end
 end
