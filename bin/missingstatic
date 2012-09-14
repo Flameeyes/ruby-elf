@@ -63,8 +63,8 @@ module Elf::Tools
       @exclude_patterns << Regexp.new(arg)
     end
 
-    def self.analysis(filename)
-      Elf::File.open(filename) do |elf|
+    def self.analysis(filename, param)
+      Elf::File.open(param) do |elf|
         if elf.type != Elf::File::Type::Rel
           putnotice "#{file}: not an object file"
           next

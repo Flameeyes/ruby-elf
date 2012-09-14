@@ -68,8 +68,8 @@ module Elf::Tools
       @format = (@results_fields.collect { |field| results_formats[field] || "% 12d" }).join(" ")
     end
 
-    def self.analysis(file)
-      Elf::File.open(file) do |elf|
+    def self.analysis(file, param)
+      Elf::File.open(param) do |elf|
         results = {
           :exec => 0,
           :data => 0,

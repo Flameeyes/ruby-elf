@@ -190,11 +190,11 @@ module Elf::Tools
       end
     end
 
-    def self.analysis(file)
+    def self.analysis(file, param)
       file_prefix = sprintf(@file_prefix_fmt, file)
       file_list = sprintf(@file_list_fmt, file)
 
-      Elf::File.open(file) do |elf|
+      Elf::File.open(param) do |elf|
         table = [".dynsym", ".symtab"].find do |table|
           begin
             (elf[table].class == Elf::SymbolTable)

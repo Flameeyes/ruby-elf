@@ -83,7 +83,7 @@ module Elf::Tools
       end
     end
 
-    def self.analysis(file)
+    def self.analysis(filename, param)
       data_vars = []
       data_size = 0
       bss_vars = []
@@ -93,13 +93,13 @@ module Elf::Tools
       relro_vars = []
       relro_size = 0
       
-      Elf::File.open(file) do |elf|
+      Elf::File.open(param) do |elf|
         if elf.type != Elf::File::Type::Rel
-          putnotice "#{file}: not an object file"
+          putnotice "#{filename}: not an object file"
           next
         end
         if not elf.has_section?(".symtab")
-          putnotice "#{file}: no .symtab section found"
+          putnotice "#{filename}: no .symtab section found"
           next
         end
 
@@ -167,7 +167,7 @@ module Elf::Tools
       end
       
       if @statistics
-        @files_info[file] = {
+        @files_info[filename] = {
           :data_size => data_size,
           :bss_size => bss_size,
           :rel_size => rel_size,
@@ -177,7 +177,7 @@ module Elf::Tools
       end
 
       @output_mutex.synchronize do
-        puts "Processing file #{file}"
+        puts "Processing file #{filename}"
         
         if bss_vars.length > 0
           puts "  The following variables aren't initialised (Copy-On-Write):"

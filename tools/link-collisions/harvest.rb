@@ -245,10 +245,10 @@ EOF
       @db.exec(query)
     end
 
-    def self.analysis(filename)
+    def self.analysis(filename, param)
       return if filename =~ @total_suppressions
 
-      Elf::File.open(filename) do |elf|
+      Elf::File.open(param) do |elf|
         begin
           unless ($machines.nil? or $machines.include?(elf.machine)) and
               (elf.has_section?('.dynsym') and elf.has_section?('.dynstr') and

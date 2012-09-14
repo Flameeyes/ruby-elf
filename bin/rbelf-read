@@ -40,8 +40,8 @@ module Elf::Tools
     def self.after_options
     end
 
-    def self.analysis(file)
-      elf = Elf::File.open(file)
+    def self.analysis(file, param)
+      elf = Elf::File.open(param)
 
       @output_mutex.synchronize {
         printf("\nFile: %s\n", file) if @targets.size != 1

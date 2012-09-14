@@ -72,8 +72,8 @@ module Elf::Tools
       end
     end
 
-    def self.analysis(file)
-      Elf::File.open(file) do |elf|
+    def self.analysis(file, param)
+      Elf::File.open(param) do |elf|
         unless @elftypes.include? elf.type
           putnotice "#{file}: not #{@elfdescr}"
           next

@@ -59,10 +59,10 @@ module Elf::Tools
       end
     end
 
-    def self.analysis(file)
+    def self.analysis(file, param)
       symbols = []
 
-      Elf::File.open(file) do |elf|
+      Elf::File.open(param) do |elf|
         if not elf.has_section? @scan_section
           puterror "No symbols"
           @exitval = 1

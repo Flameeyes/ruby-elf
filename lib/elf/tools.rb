@@ -18,6 +18,7 @@
 require 'getoptlong'
 require 'thread'
 require 'elf'
+require 'ar'
 
 # This file allows to wrap aroudn the most common features of
 # Ruby-Elf based tools, that follow a series of common traits.
@@ -118,8 +119,18 @@ module Elf
 
     def self.execute(filename)
       begin
-        analysis(filename)
-      rescue Errno::ENOENT, Errno::EACCES, Errno::EISDIR, Elf::File::NotAnELF,
+        analysis(filename, filename)
+      rescue Elf::File::NotAnELF
+        begin
+          Ar::File.open(filename) do |ar|
+            ar.each_file do |entry|
+              analysis("#{filename}:#{entry.name}", entry)
+            end
+          end
+        rescue Ar::File::NotAnAR
+          putnotice "#{filename}: not a valid ELF or AR file."
+        end
+      rescue Errno::ENOENT, Errno::EACCES, Errno::EISDIR,
         Elf::File::InvalidElfClass, Elf::File::InvalidDataEncoding,
         Elf::File::UnsupportedElfVersion, Elf::File::InvalidOsAbi, Elf::File::InvalidElfType,
         Elf::File::InvalidMachine => e
