@@ -82,5 +82,9 @@ module Ar
     def files_count
       @files.size
     end
+
+    def each_file(&block)
+      @files.each(&block)
+    end
   end
 end
