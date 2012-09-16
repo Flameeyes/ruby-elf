@@ -339,6 +339,12 @@ module Elf
       end
     end
 
+    def each_program_header
+      @program_headers_data.each do |program_header_data|
+        yield @program_headers[program_header_data[:idx]]
+      end
+    end
+
     def find_section_by_addr(addr)
       @sections_data.each do |sectdata|
         next unless sectdata[:addr] == addr
