@@ -50,6 +50,13 @@ module Elf::FullTest
     end
   end
 
+
+  def test_program_headers_iteration
+    @elf.each_program_header do |program_header|
+      assert_kind_of(Elf::ProgramHeader, program_header)
+    end
+  end
+
   # Test for ELF file version.
   #
   # We assume that all the ELF files we test are ELF version 1 files,
@@ -168,7 +175,7 @@ module Elf::FullTest
   # Subclasses can fill the ExpectedSectionClasses hash with section
   # names as indexes, and section class as values.
   ExpectedSectionClasses = {}
-  
+
   def test_section_classes
     self.class::ExpectedSectionClasses.each_pair do |section, klass|
       assert_instance_of(klass, @elf[section],
@@ -184,7 +191,7 @@ module Elf::FullTest
   # This is useful to ensure that not only section types but also
   # section type classes (for unknown types) are detected properly
   ExpectedSectionTypeClasses = {}
-  
+
   def test_section_type_classes
     self.class::ExpectedSectionTypeClasses.each_pair do |section, klass|
       assert_instance_of(klass, @elf[section].type,
