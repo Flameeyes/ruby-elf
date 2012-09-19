@@ -86,11 +86,14 @@ module Elf
     attr_reader :elf_class, :data_encoding, :type, :version, :abi,
                 :abi_version, :machine, :entry_address, :phoff, :shoff,
                 :flags, :ehsize, :phentsize, :phnum, :shentsize, :shnum,
-                :shstrndx
+                :shstrndxm
     attr_reader :string_table
 
     # raw data access
     attr_reader :shoff
+
+    # temporarily allow access to program headers
+    attr_reader :program_headers_data
 
     def read_addr
       case @elf_class
@@ -212,6 +215,27 @@ module Elf
 
         elf32 = elf_class == Class::Elf32
         @sections = {}
+        @program_headers = {}
+
+        # Read program headers
+        @program_headers_data = []
+        seek(@phoff)
+        for i in 1..@phnum
+          phdata = {}
+          phdata[:idx] = i -1
+          phdata[:type_id] = read_word
+          phdata[:offset] = read_off
+          phdata[:virtual_address] = read_addr
+          phdata[:physical_address] = read_addr
+          phdata[:file_size] = elf32 ? read_word : read_xword
+          phdata[:memory_size] = elf32 ? read_word : read_xword
+          phdata[:flags] = elf32 ? read_word : read_xword
+          phdata[:alignment] = elf32 ? read_word : read_xword
+
+          @program_headers_data << phdata
+          @program_headers[phdata[:idx]] = ProgramHeader.new(phdata)
+        end
+
 
         @sections_data = []
         seek(@shoff)
@@ -320,6 +344,12 @@ module Elf
         next unless sectdata[:addr] == addr
         load_section(sectdata[:idx])
         return @sections[sectdata[:idx]]
+      end
+    end
+
+    def find_program_header_by_type(type)
+      @program_headers_data.each do |program_header|
+        return @program_headers[program_header[:idx]] if program_header[:type_id] == type
       end
     end
 

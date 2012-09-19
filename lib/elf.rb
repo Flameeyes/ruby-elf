@@ -27,6 +27,7 @@ require 'elf/value'
 require 'elf/symbol'
 require 'elf/file'
 require 'elf/section'
+require 'elf/program_header'
 
 module Elf
   VERSION = "1.0.6.1"
