@@ -91,9 +91,6 @@ intel/idb/.*/bin/iidb
 /bin/mydns(-conf|export|ptrconvert|check|import)
 /sbin/mydns
 
-# bash links to libreadline statically in Gentoo as it's mission-critical
-/bin/bash$  		    	       ^_?rl_
-
 # byld stuff is always duplicated
 /usr/lib/byld/
 
