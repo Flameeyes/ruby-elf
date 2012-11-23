@@ -92,10 +92,10 @@ intel/idb/.*/bin/iidb
 /sbin/mydns
 
 # bash links to libreadline statically in Gentoo as it's mission-critical
-^/bin/bash$  		    	       ^_?rl_
+/bin/bash$  		    	       ^_?rl_
 
 # byld stuff is always duplicated
-^/usr/lib/byld/
+/usr/lib/byld/
 
 # Some packages like to bundle sqlite3
 /lib(32|64)?/libgda-([0-9\.]+)/providers/libgda-sqlite\.so		^sqlite3
