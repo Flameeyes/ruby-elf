@@ -156,7 +156,7 @@ module Elf::Tools
 BEGIN TRANSACTION;
 
 DROP TABLE IF EXISTS symbols, multimplementations, objects CASCADE;
-DROP LANGUAGE IF EXISTS plpgsql CASCADE;
+DROP EXTENSION IF EXISTS plpgsql CASCADE;
 
 CREATE LANGUAGE plpgsql;
 CREATE TABLE objects (
