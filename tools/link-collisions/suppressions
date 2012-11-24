@@ -9,7 +9,7 @@
 .*					^((__libc_csu)?_(init|fini|start)|main|__data_start|_IO_stdin_used|_fp_hw|_edata)$
 
 # C++ symbols
-.*					^_Z(d[al]Pv|[nd][aw]j)$
+.*					^_Z(d[al]Pv|[nd][aw][jm])$
 
 # ARM EABI symbols
 .*					^__aeabi_
