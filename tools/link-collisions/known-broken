@@ -16,17 +16,6 @@ libkpdfpart.so
 # until it's sorted out upstream.
 libsnmp\.so
 
-# Multiple copies of Qt4 libraries from proprietary software like
-# Skype, GoogleEarth and so on.
-/opt/.*/libQt.*
-
-# Intel C and Fortran compilers keep the same code
-/opt/intel/[cf]c/.*/lib/.*
-
-# The binary versions of xulrunner, firefox and thunderbird have
-# duplicate symbols.
-/opt/(xulrunner|firefox|thunderbird|)/.*
-
 # Quake-engine based games duplicate numbers of symbols, bad.
 .*/gamei386\.so
 
@@ -147,7 +136,6 @@ lib(gcj|gauche|Synopsis)\.so						^GC_
 /lib(tlen|wxsvg|Tclexpat[0-9\.]+|txml|MiKTeX[0-9]+-expat)\.so	^XML_
 /bin/(yasim|fg[fj]s)						^XML_
 /bin/scorched3d							^XML_
-/opt/ICAClient/wfcmgr\.bin					^XML_
 
 # paraview bundles vtk
 /lib/paraview-[0-9\.]+/libvtk.*\.so
