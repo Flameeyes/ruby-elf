@@ -159,9 +159,6 @@ lib(gcj|gauche|Synopsis)\.so						^GC_
 /bin/alsaplayer
 /bin/aften
 
-# bash and gdb are known for linking readline statically
-/bin/(bash|gdb)				^(_?rl_|readline).*
-
 # ignore prebuilt packages/files as they add way too much noise
 /opt/
 
