@@ -68,7 +68,7 @@
 /libglade/.*/lib.*\.so						^glade_module_register_widgets$
 /(goffice|gnumeric)/[0-9\.]+/plugins/.*\.so			^go_plugin_(depends|header|init|shutdown)$
 /evolution/[0-9\.]+/plugins/.*\.so				^e_plugin_lib_enable$
-/abiword-[0-9\.]+/plugins/lib.*\.so				^abi_plugin_((un)?register|supports_version)$
+/abiword-[0-9\.]+/plugins/.*\.so				^abi_plugin_((un)?register|supports_version)$
 /libgda(-[0-9\.]+)?/providers/lib.*\.so				^plugin_(init|get_(name|description)|create_provider)$
 /gedit-[0-9]+/plugins/lib.*\.so					^register_gedit_plugin$
 /brasero/plugins/lib.*\.so					^brasero_plugin_register$
