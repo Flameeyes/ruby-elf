@@ -279,3 +279,9 @@ strigi/strigi[lt]a_.*\.so		^(deleteS|s)trigiAnalyzerFactory$
 /lib(32|64)?/pppd/[0-9.]\+/.*\.so		^pppd_version$
 /lib(32|64)?/device-mapper/.*\.so		^(process_event|(un)?register_device)$
 /lib(32|64)?/weechat/plugins/.*\.so             ^weechat_plugin_((api_)?version|author|description|end|init|license|name)$
+/lib(32|64)?/leechcraft/plugins/.*\.so		^GetAPILevels$
+/lib(32|64)?/ADM_plugins/videoFilter/.*\.so	^ADM_VF_getDescriptor$
+/lib(32|64)?/.*/.*\.so				^peas_register_types$
+/lib(32|64)?/plugins/.*\.so			^GemRBPlugin_
+/lib(32|64)?/geany/.*\.so			^plugin_
+/lib(32|64)?/yafaray/.*\.so			^registerPlugin$
