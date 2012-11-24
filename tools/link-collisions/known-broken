@@ -162,9 +162,8 @@ lib(gcj|gauche|Synopsis)\.so						^GC_
 # bash and gdb are known for linking readline statically
 /bin/(bash|gdb)				^(_?rl_|readline).*
 
-# Scratchbox is totally messed up, and so is sgpp
-/opt/scratchbox/
-/opt/sgpp
+# ignore prebuilt packages/files as they add way too much noise
+/opt/
 
 # mesa's build system tends to be TFU and copies llvm code around
 /(mesa|egl)/.*\.so			^_ZN4llvm
