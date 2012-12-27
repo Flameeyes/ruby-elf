@@ -29,7 +29,7 @@ require 'elf/file'
 require 'elf/section'
 
 module Elf
-  VERSION = "1.0.6.1"
+  VERSION = "1.0.7"
 
   MagicString = "\177ELF"
 
