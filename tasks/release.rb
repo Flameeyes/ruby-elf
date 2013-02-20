@@ -23,22 +23,19 @@ begin
       raise Exception.new("Can't execute this task outside of Ruby-Elf git repository")
     end
 
-    # we use read.split because lines will include the final \n and it's
-    # a bother; we also skip over .gitignore since we never want to
-    # package that.
-    IO.popen("git tag -l ruby-elf-#{Elf::VERSION}").read == "ruby-elf-#{Elf::VERSION}\n"
+    IO.popen("git tag -l #{Elf::VERSION}").read == "#{Elf::VERSION}\n"
   end
 
   desc "Tag and publish the release"
-  task :release => :package do
+  task :package => ManpagesList do
     if git_tagged?
       $stderr.puts "The current release is already tagged; did you forget to bump the version?"
       exit 1
     end
 
-    sh "git", "tag", "-m", "Release #{Elf::VERSION}", "ruby-elf-#{Elf::VERSION}"
-    sh "gem", "push", "pkg/ruby-elf-#{Elf::VERSION}.gem"
-    sh "rubyforge", "add_release", "ruby-elf", "ruby-elf", Elf::VERSION, "pkg/ruby-elf-#{Elf::VERSION}.tar.bz2"
+    sh "gem", "build", "ruby-elf.gemspec"
+    sh "git", "tag", "-m", "Release #{Elf::VERSION}", "#{Elf::VERSION}"
+    sh "gem", "push", "ruby-elf-#{Elf::VERSION}.gem"
   end
 rescue Exception => e
   # This can happen for instance if you're not running from within a
