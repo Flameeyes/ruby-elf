@@ -50,8 +50,8 @@ License
 -------
 
 Due to derivation, library and tools are released under the GNU GPL-2
-license, and no other version. See the [`COPYING`](COPYING) file for
-the complete text.
+license, or later. See the [`COPYING`](COPYING) file for the complete
+text.
 
 Resources
 ---------
