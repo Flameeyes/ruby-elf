@@ -155,6 +155,7 @@ module Elf::Tools
       end
 
       @results_fields.each do |field|
+        next if field == :filename
         results[field] = results[field] - @first_results[field] rescue nil
       end
     end
