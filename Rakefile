@@ -34,7 +34,7 @@ begin
       raise Exception.new("Can't execute this task outside of Ruby-Elf git repository")
     end
 
-    IO.popen("git status --porcelain --untracked-files=no") != "\n"
+    IO.popen("git status --porcelain --untracked-files=no").read != ""
   end
 
   desc "Tag and publish the release"
