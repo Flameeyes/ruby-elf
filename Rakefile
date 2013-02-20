@@ -29,10 +29,23 @@ begin
     IO.popen("git tag -l #{Elf::VERSION}").read == "#{Elf::VERSION}\n"
   end
 
+  def git_dirty?
+    unless File.exists?(".git")
+      raise Exception.new("Can't execute this task outside of Ruby-Elf git repository")
+    end
+
+    IO.popen("git status --porcelain --untracked-files=no") != "\n"
+  end
+
   desc "Tag and publish the release"
   task :package => ManpagesList do
     if git_tagged?
       $stderr.puts "The current release is already tagged; did you forget to bump the version?"
+      exit 1
+    end
+
+    if git_dirty?
+      $stderr.puts "The git repository contains modifications that are not committed."
       exit 1
     end
 
