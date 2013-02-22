@@ -248,76 +248,74 @@ EOF
     def self.analysis(filename)
       return if filename =~ @total_suppressions
 
-      Elf::File.open(filename) do |elf|
-        begin
+      begin
+        Elf::File.open(filename) do |elf|
           unless ($machines.nil? or $machines.include?(elf.machine)) and
               (elf.has_section?('.dynsym') and elf.has_section?('.dynstr') and
                elf.has_section?('.dynamic')) and
               (elf[".dynsym"].class == Elf::SymbolTable)
             return
           end
-        rescue Elf::File::MissingStringTable
-          # the ELF file is (usually) a static ELF without a
-          # configured string table.
-          return
-        end
 
-        local_suppressions = Regexp.union((@partial_suppressions.dup.delete_if{ |s| filename.to_s !~ s[0] }).collect { |s| s[1] })
+          local_suppressions = Regexp.union((@partial_suppressions.dup.delete_if{ |s| filename.to_s !~ s[0] }).collect { |s| s[1] })
 
-        name = filename
-        abi = "#{elf.elf_class} #{elf.abi} #{elf.machine}".gsub("'", "''")
+          name = filename
+          abi = "#{elf.elf_class} #{elf.abi} #{elf.machine}".gsub("'", "''")
 
-        @multimplementations.each do |implementation, paths|
-          # Get the full matchdata because we might need to get the matches.
-          match = paths.match(filename)
+          @multimplementations.each do |implementation, paths|
+            # Get the full matchdata because we might need to get the matches.
+            match = paths.match(filename)
 
-          next unless match
+            next unless match
 
-          while implementation =~ /\$([0-9]+)/ do
-            match_idx = $1.to_i
-            replacement = match[match_idx]
-            replacement = "" if replacement.nil?
-            implementation = implementation.gsub("$#{match_idx}", replacement)
+            while implementation =~ /\$([0-9]+)/ do
+              match_idx = $1.to_i
+              replacement = match[match_idx]
+              replacement = "" if replacement.nil?
+              implementation = implementation.gsub("$#{match_idx}", replacement)
+            end
+
+            name = implementation
+            break
           end
 
-          name = implementation
-          break
-        end
+          shared = (filename != name) || (elf['.dynamic'].soname != nil)
 
-        shared = (filename != name) || (elf['.dynamic'].soname != nil)
+          res = db_exec("SELECT * FROM implementation('#{name}', '#{abi}', '#{shared}')")
+          impid = res[0]["implementation_id"]
 
-        res = db_exec("SELECT * FROM implementation('#{name}', '#{abi}', '#{shared}')")
-        impid = res[0]["implementation_id"]
-
-        if filename != name
-          # If this is a collapsed multimplementation, add it to the list
-          res = db_exec("SELECT multimplementation(#{impid}, '#{filename}') AS created");
-        end
-
-        # skip over the file if we already visited it (either directly
-        # or as a multimplementation.
-        next if res[0]["created"] != "t"
-
-        query = ""
-        elf['.dynsym'].each do |sym|
-          begin
-            next if sym.idx == 0 or
-              sym.bind != Elf::Symbol::Binding::Global or
-              sym.section.nil? or
-              sym.value == 0 or
-              sym.section.is_a? Integer or
-              sym.section.name == '.init' or
-              sym.section.name == '.bss'
-
-            next if (sym.name =~ local_suppressions);
-
-            query << "SELECT symbol('#{impid}', '#{sym.name}@#{sym.version}');"
-          rescue Exception
-            $stderr.puts "Mangling symbol #{sym.name}"
-            raise
+          if filename != name
+            # If this is a collapsed multimplementation, add it to the list
+            res = db_exec("SELECT multimplementation(#{impid}, '#{filename}') AS created");
           end
+
+          # skip over the file if we already visited it (either directly
+          # or as a multimplementation.
+          next if res[0]["created"] != "t"
+
+          query = ""
+          elf['.dynsym'].each do |sym|
+            begin
+              next if sym.idx == 0 or
+                sym.bind != Elf::Symbol::Binding::Global or
+                sym.section.nil? or
+                sym.value == 0 or
+                sym.section.is_a? Integer or
+                sym.section.name == '.init' or
+                sym.section.name == '.bss'
+
+              next if (sym.name =~ local_suppressions);
+
+              query << "SELECT symbol('#{impid}', '#{sym.name}@#{sym.version}');"
+            rescue Exception
+              $stderr.puts "Mangling symbol #{sym.name}"
+              raise
+            end
+          end
+          db_exec("BEGIN TRANSACTION;" + query + "COMMIT;") unless query.empty?
         end
-        db_exec("BEGIN TRANSACTION;" + query + "COMMIT;") unless query.empty?
+      rescue Exception => e
+        putnotice "#{filename}: #{e.message}"
       end
     end
 
