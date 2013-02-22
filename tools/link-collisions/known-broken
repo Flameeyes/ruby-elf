@@ -5,7 +5,7 @@
 /usr/bin/gs
 /usr/bin/gdbtui
 
-/usr/lib(|32|64)/dri/.*
+/usr/lib(?:32|64)?/dri/.*
 
 # KPDF contains XPDF code, which is also contained in libpoppler.
 # Ignore KPDF symbols then.
@@ -20,13 +20,13 @@ libsnmp\.so
 .*/gamei386\.so
 
 # Aegis does not know about shared libraries it seems
-.*/bin/ae(cvsserver|patch|annotate|subunit|rect|dist|de-policy|find|import|lcf|tar|complete|-repo-ci|ls|svt|lock|get|lpf|sub|xml|diff|finish|gis|report|revml|makegen|promptcmd)
+.*/bin/ae(?:cvsserver|patch|annotate|subunit|rect|dist|de-policy|find|import|lcf|tar|complete|-repo-ci|ls|svt|lock|get|lpf|sub|xml|diff|finish|gis|report|revml|makegen|promptcmd)
 
 # asis-gcc links libasis statically in the commands, no idea why.
-.*/gnat-gcc-bin/.*/(gnatelim|gnatpp|gnatmetric|adasubst|adadep|adabrowse|gnatstub)
+.*/gnat-gcc-bin/.*/(?:gnatelim|gnatpp|gnatmetric|adasubst|adadep|adabrowse|gnatstub)
 
 # Sane should use a core library
-.*/(libsane-.*\.so|xcam|saned)		^sanei_.*$
+.*/(?:libsane-.*\.so|xcam|saned)		^sanei_.*$
 
 # idb comes with Qt (unknown version)
 intel/idb/.*/bin/iidb
@@ -45,10 +45,10 @@ intel/idb/.*/bin/iidb
 /bin/pdbedit
 /bin/profiles
 /bin/rpcclient
-/bin/smb(cacls|client|control|cquotas|get|mount|passwd|spool|status|tree)
+/bin/smb(?:cacls|client|control|cquotas|get|mount|passwd|spool|status|tree)
 /bin/testparm
-/lib(32|64)?/python[0-9\.]+/site-packages/samba/(lsa|samr|smb|spoolss|srvsvc|tdb|winbind|winreg)\.so
-/lib(32|64)?/samba/lib(msrpc|smbclient)\.so
+/lib(32|64)?/python[0-9\.]+/site-packages/samba/(?:lsa|samr|smb|spoolss|srvsvc|tdb|winbind|winreg)\.so
+/lib(32|64)?/samba/lib(?:msrpc|smbclient)\.so
 /lib(32|64)?/security/pam_smbpass\.so
 /sbin/[sn]mbd
 
@@ -57,48 +57,48 @@ intel/idb/.*/bin/iidb
 /bin/dbus-daemon		  ^dbus_
 
 # The static version links all statically obviously
-/bin/paw(\+\+|X11)\.static
+/bin/paw(?:\+\+|X11)\.static
 
 # Inkscape comes with copies of GDL and libcroco
-/bin/ink(scape|view)  	     	  ^(gdl|cr)_
+/bin/ink(?:scape|view)  	     	  ^(?:gdl|cr)_
 
 # gettext comes with a copy of libcroco
-/lib(32|64)?/libgettextlib-[0-9\.]+\.so	^cr_
+/lib(?:32|64)?/libgettextlib-[0-9\.]+\.so	^cr_
 
 # screem with a copy of gdl
 /bin/screem			  ^gdl_
 
 # MySQL could also use a libmysqlcore
 /bin/comp_err
-/bin/my(_print_defaults|isam(_ftdump|chk|log|pack)|sql_(tzinfo_to_sql|waitpid))
+/bin/my(?:_print_defaults|isam(?:_ftdump|chk|log|pack)|sql_(?:tzinfo_to_sql|waitpid))
 /bin/perror
 /bin/replace
-/bin/resolve(_stack_dump|ip)
-/sbin/mysql(d|manager)
+/bin/resolve(?:_stack_dump|ip)
+/sbin/mysql(?:d|manager)
 
 # MyDNS is linking statically to mysql
-/bin/mydns(-conf|export|ptrconvert|check|import)
+/bin/mydns(?:-conf|export|ptrconvert|check|import)
 /sbin/mydns
 
 # byld stuff is always duplicated
 /usr/lib/byld/
 
 # Some packages like to bundle sqlite3
-/lib(32|64)?/libgda-([0-9\.]+)/providers/libgda-sqlite\.so		^sqlite3
-/lib(32|64)?/perl5/vendor_perl/[0-9\.]+/.*/auto/DBD/SQLite/SQLite.so	^sqlite3
-/lib(32|64)?/lib(showimg)?kexisql3\.so					^sqlite3
-/lib(32|64)/hk_classes/drivers/libhk_sqlite3driver\.so			^sqlite3
+/lib(?:32|64)?/libgda-(?:[0-9\.]+)/providers/libgda-sqlite\.so		^sqlite3
+/lib(?:32|64)?/perl5/vendor_perl/[0-9\.]+/.*/auto/DBD/SQLite/SQLite.so	^sqlite3
+/lib(?:32|64)?/lib(?:showimg)?kexisql3\.so				^sqlite3
+/lib(?:32|64)/hk_classes/drivers/libhk_sqlite3driver\.so		^sqlite3
 
 # Some packages like to bundle boehm-gc
-/lib(32|64)?/mercury-[0-9\.]/lib/libgc(_prof)?\.so			^GC_
-lib(gcj|gauche|Synopsis)\.so						^GC_
+/lib(?:32|64)?/mercury-[0-9\.]/lib/libgc(?:_prof)?\.so			^GC_
+lib(?:gcj|gauche|Synopsis)\.so						^GC_
 /bin/pedump								^GC_
 
 # alliance links libX11 statically
 /alliance/bin/.*							^_?X
 
 # This is just boring
-/lib(32|64)?/gnucap/models-.*
+/lib(?:32|64)?/gnucap/models-.*
 
 # Inkscape needs a core library
 /bin/inkview
@@ -111,37 +111,37 @@ lib(gcj|gauche|Synopsis)\.so						^GC_
 /fmodex/api
 
 # Link statically to libpcap, may bundle libopts
-/bin/tcp(rewrite|bridge|prep|replay)	  ^(options[A-Z]|pcap_)
+/bin/tcp(?:rewrite|bridge|prep|replay)	  ^(?:options[A-Z]|pcap_)
 
 # Link statically to libdspam
-/bin/(css(clean|stat|convert)|dispamc)	^_ds_
+/bin/(?:css(?:clean|stat|convert)|dispamc)	^_ds_
 
 # Static link to readline (unwarranted)
-/bin/(gdb-armulator|insight)		^_?rl_
+/bin/(?:gdb-armulator|insight)		^_?rl_
 
 # Static internal link
-/bin/fun(calc|cen|cnts|cone|disp|head|hist|image|join|merge|sky|table)
+/bin/fun(?:calc|cen|cnts|cone|disp|head|hist|image|join|merge|sky|table)
 
 # They use liboscar
-/bin/(bitlbee|pork)			^aim_
+/bin/(?:bitlbee|pork)			^aim_
 
 # KDE3 and ARTS come with a modified libltdl.
-/lib(32|64)?/lib(kdecore|arts(c|dsp_st)|mcop)\.so	^_?lt_dl
+/lib(?:32|64)?/lib(?:kdecore|arts(?:c|dsp_st)|mcop)\.so	^_?lt_dl
 
 # MythTV has its own copy of FFmpeg, and of liveMedia
-/lib(32|64)?/libmyth(av(codec|format|util)|livemedia)-[0-9\.]+\.so
+/lib(?:32|64)?/libmyth(?:av(?:codec|format|util)|livemedia)-[0-9\.]+\.so
 
 # Stuff bundling or deriving Expat
 /lib/einit/bootstrap/bootstrap-configuration-xml-expat.so	^XML_
-/lib(tlen|wxsvg|Tclexpat[0-9\.]+|txml|MiKTeX[0-9]+-expat)\.so	^XML_
-/bin/(yasim|fg[fj]s)						^XML_
+/lib(?:tlen|wxsvg|Tclexpat[0-9\.]+|txml|MiKTeX[0-9]+-expat)\.so	^XML_
+/bin/(?:yasim|fg[fj]s)						^XML_
 /bin/scorched3d							^XML_
 
 # paraview bundles vtk
 /lib/paraview-[0-9\.]+/libvtk.*\.so
 
 # ardour incluess all the libraries it uses
-/lib/ardour2/lib(rubberband|soundtouch|vampsdk)\.so
+/lib/ardour2/lib(?:rubberband|soundtouch|vampsdk)\.so
 
 # These binaries contain a copy of their library rather than using it.
 /bin/alsaplayer
@@ -151,4 +151,4 @@ lib(gcj|gauche|Synopsis)\.so						^GC_
 /opt/
 
 # mesa's build system tends to be TFU and copies llvm code around
-/(mesa|egl)/.*\.so			^_ZN4llvm
+/(?:mesa|egl)/.*\.so			^_ZN4llvm

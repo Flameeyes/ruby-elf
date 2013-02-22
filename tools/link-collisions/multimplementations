@@ -3,156 +3,153 @@
 # ignoring eventual problems with multiple libraries implementing the same
 # interface
 
-libc			/lib(32|64)?/(loki_)?libc(-[0-9\.]+)?\.so
+libc			/lib(?:32|64)?/(?:loki_)?libc(?:-[0-9\.]+)?\.so
 
 perl			/usr/bin/perl5\..*
-perl			/usr/lib(|32|64)/libperl\.so\..*
+perl			/usr/lib(?:32|64)?/libperl\.so\..*
 
-libgpgme		.*/libgpgme(-pth(read)?)?\.so.*
+libgpgme		.*/libgpgme(?:-pth(?:read)?)?\.so.*
 
 # JAVA libraries, especially graphic libraries.
-java-libawt		jre/lib/(amd64|i386)/libawt\.so$
-java-libmawt		jre/lib/(amd64|i386)/(xawt|motif21|headless)/libmawt.so
+java-libawt		jre/lib/(?:amd64|i386)/libawt\.so$
+java-libmawt		jre/lib/(?:amd64|i386)/(?:xawt|motif21|headless)/libmawt.so
 
-ncurses-lib$2		/lib(|32|64)/lib(n?curses|form|menu|panel)w?\.so
+ncurses-lib$1		/lib(?:32|64)?/lib(n?curses|form|menu|panel)w?\.so
 
 php			/bin/php(-cgi)?$
 php			/libphp5\.so
 
-mysqlclient		/lib(|32|64)/mysql/libmysqlclient(_r)?\.so
-libldap$3		/lib(|32|64)/libldap(_r)?((-[0-9\.]+)?)\.so
+mysqlclient		/lib(?:32|64)?/mysql/libmysqlclient(_r)?\.so
+libldap$1		/lib(?:32|64)?/libldap(?:_r)?(-[0-9\.]+)?\.so
 
-libXaw			/lib(|32|64)/libXaw(6|7|3d)\.so
-libXaw			/lib/(32|64)/libneXtaw\.so
-libXmu			/lib(|32|64)/libXmuu?\.so
+libXaw			/lib(?:32|64)?/libXaw(?:6|7|3d)\.so
+libXaw			/lib/(?:32|64)?/libneXtaw\.so
+libXmu			/lib(?:32|64)?/libXmuu?\.so
 
-osswrappers		/lib(|32|64)/lib(aoss|(esd|pa|)dsp)\.so$
+osswrappers		/lib(?:32|64)?/lib(?:aoss|(?:esd|pa)?dsp)\.so$
 
-libxerces		/lib(|32|64)/libxerces-(c|depdom)\.so
-
-# Boost
-libboost_$2		/lib(|32|64)/libboost_([0-9a-z_]+)(-mt)?(-[0-9_]+)?.so
+libxerces		/lib(?:32|64)?/libxerces-(?:c|depdom)\.so
 
 # KDE's libgpgme++
-libgpgme++		/lib(|32|64)/libgpgme\+\+(-pth(read)?)?\.so
+libgpgme++		/lib(?:32|64)?/libgpgme\+\+(?:-pth(?:read)?)?\.so
 
 # libevent, _core and _extra replace the original, for now consider them a single
 # implementation, until libevent itself is deprecated.
-libevent-$4		/lib(|32|64)/libevent(_(extra|core))?-([0-9\.]+)\.so
+libevent-$1		/lib(?:32|64)?/libevent(?:_(?:extra|core))?-([0-9\.]+)\.so
 
 # GNU libs
-gnu-libmudflap		libmudflap(th)?\.so
+gnu-libmudflap		libmudflap(?:th)?\.so
 libbfd     		libbfd-[0-9\.]+\.so
-libgcj     		libgcj(-[0-9\.]+|_bc)\.so
+libgcj     		libgcj(?:-[0-9\.]+|_bc)\.so
 libgnat     		libgnat-[0-9\.]+\.so
-libffi			libffi-[0-9\.]+(-beta)?\.so
+libffi			libffi-[0-9\.]+(?:-beta)?\.so
 
-libgvc			libgvc(_builtins)?\.so
+libgvc			libgvc(?:_builtins)?\.so
 
-mercury-$4		/mercury-.*/lib/(asm_fast|hlc|none).gc(.(tr|memprof|prof))?/(.*)\.so
+mercury-$1		/mercury-.*/lib/(?:asm_fast|hlc|none).gc(?:.(?:tr|memprof|prof))?/(.*)\.so
 
-glide3			/lib(32|64)?/libglide3-v[1235]\.so
+glide3			/lib(?:32|64)?/libglide3-v[1235]\.so
 
-cblas			/lib(32|64)?/blas/((threaded-)?atlas|reference)/libcblas\.so
-cblas			/lib(32|64)?/gclcblas\.so
+cblas			/lib(?:32|64)?/blas/(?:(?:threaded-)?atlas|reference)/libcblas\.so
+cblas			/lib(?:32|64)?/gclcblas\.so
 
-libcorex		/lib(32|64)?/libcorex\+\+_level[123]\.so
+libcorex		/lib(?:32|64)?/libcorex\+\+_level[123]\.so
 
-libstlport		/lib(32|64)?/libstlport((stl)?g?)\.so
+libstlport		/lib(?:32|64)?/libstlport(?:(?:stl)?g?)\.so
 
-libfann			/lib(32|64)?/lib(double|float|fixed)?fann.so
+libfann			/lib(?:32|64)?/lib(?:double|float|fixed)?fann.so
 
-libcilk			/lib(32|64)?/libcilk(\.g)?(\.p)?\.so
+libcilk			/lib(?:32|64)?/libcilk(?:\.g)?(?:\.p)?\.so
 
-libcanna		/lib(32|64)?/libcanna(16)?\.so
-libRKC			/lib(32|64)?/libRKC(16)?\.so
+libcanna		/lib(?:32|64)?/libcanna(?:16)?\.so
+libRKC			/lib(?:32|64)?/libRKC(?:16)?\.so
 
-odbc			/lib(32|64)?/lib(i|my)?odbc(5|inst|txt|psql)?(-[0-9\.]+)?\.so
-odbc			/lib(32|64)?/wine/odbc32\.dll\.so
-odbc			/lib(32|64)?/libtemplate\.so
+odbc			/lib(?:32|64)?/lib(?:i|my)?odbc(?:5|inst|txt|psql)?(?:-[0-9\.]+)?\.so
+odbc			/lib(?:32|64)?/wine/odbc32\.dll\.so
+odbc			/lib(?:32|64)?/libtemplate\.so
 
-libspread		/lib(32|64)?/libt?spread(-core)?\.so
+libspread		/lib(?:32|64)?/libt?spread(?:-core)?\.so
 
-libgraph		/lib(32|64)?/lib[ac]?graph\.so
+libgraph		/lib(?:32|64)?/lib[ac]?graph\.so
 
-libPoco$2		/lib(32|64)?/libPoco([A-Za-z]+[a-ce-zA-Z])d?\.so
+libPoco$1		/lib(?:32|64)?/libPoco([A-Za-z]+[a-ce-zA-Z])d?\.so
 
-xvmc			/lib(32|64)?/lib(chrome|I(810|ntel))?XvMC(Pro|NVIDIA|W)?\.so
+xvmc			/lib(?:32|64)?/lib(?:chrome|I(?:810|ntel))?XvMC(?:Pro|NVIDIA|W)?\.so
 
-libqwt$2		/lib(32|64)?/libqwt(plot3d)?(-qt3)?\.so
+libqwt$1		/lib(?:32|64)?/libqwt(plot3d)?(-qt3)?\.so
 
 efte			/bin/[cnv]efte$
 
-libodbc++		/lib(32|64)?/libodbc\+\+(-mt)?\.so
+libodbc++		/lib(?:32|64)?/libodbc\+\+(?:-mt)?\.so
 
-libctemplate		/lib(32|64)?/libctemplate(_nothreads)?\.so
+libctemplate		/lib(?:32|64)?/libctemplate(?:_nothreads)?\.so
 
-lib$1			/lib([a-zA-Z]+)([23]D|2D3)(-[0-9\.]+)?\.so
+lib$1			/lib([a-zA-Z]+)(?:[23]D|2D3)(?:-[0-9\.]+)?\.so
 
-opal/openh323		/lib(32|64)?/lib(opal|h323)_.*_n\.so
+opal/openh323		/lib(?:32|64)?/lib(?:opal|h323)_.*_n\.so
 
 libfmodex		/libfmodex[Lp]?-[0-9\.]+\.so
 
-libossp-uuid		/libossp-uuid(_dce)?\.so
+libossp-uuid		/libossp-uuid(?:_dce)?\.so
 
-libunwind		/libunwind(-x86)?\.so
+libunwind		/libunwind(?:-x86)?\.so
 
-libdmalloc		/libdmalloc(cxx)?\.so
-libmpatrol		/libmpa(lloc|trol(mt)?)\.so
+libdmalloc		/libdmalloc(?:cxx)?\.so
+libmpatrol		/libmpa(?:lloc|trol(?:mt)?)\.so
 
-libk3d			/libk3d(ngui|python|sdk)\.so
+libk3d			/libk3d(?:ngui|python|sdk)\.so
 
-fftw			/lib(32|64)?/lib[ds]?fftw(3[lf]?(_threads)?)?\.so
+fftw			/lib(?:32|64)?/lib[ds]?fftw(?:3[lf]?(?:_threads)?)?\.so
 
-CLHEP			/lib(32|64)?/libCLHEP(-(Vector|GenericFunctions|Matrix|Random|Geometry|Evaluator|Exceptions))?-[0-9\.]+\.so
+CLHEP			/lib(?:32|64)?/libCLHEP(?:-(?:Vector|GenericFunctions|Matrix|Random|Geometry|Evaluator|Exceptions))?-[0-9\.]+\.so
 
-mozilla-libs		/lib(xpcom(_core|glue)?|xul)(-[0-9\.]+)?\.so
-lib$7			/lib(32|64)?/(nvu|mozilla-(sunbird|thunderbird)|xulrunner(-devel)?(-[0-9\.]+)?|seamonkey)(/sdk/lib)?/lib([0-9a-zA-Z_]+)(_core)?\.so$
+mozilla-libs		/lib(?:xpcom(?:_core|glue)?|xul)(?:-[0-9\.]+)?\.so
+lib$1			/lib(?:32|64)?/(?:nvu|mozilla-(?:sunbird|thunderbird)|xulrunner(?:-devel)?(?:-[0-9\.]+)?|seamonkey)(?:/sdk/lib)?/lib([0-9a-zA-Z_]+)(?:_core)?\.so$
 
 libstdc++		/lib/libstdc\+\+-libc[0-9\.\-]+\.so
 
-libHSrts                /libHSrts(_thr)?(_debug)?-ghc[0-9.]+\.so
+libHSrts                /libHSrts(?:_thr)?(?:_debug)?-ghc[0-9.]+\.so
 
-libruby                 /libruby(ee)?1[89]\.so
+libruby                 /libruby(?:ee)?1[89]\.so
 
-lib$1			/lib(g[dt]k)(-x11)?\.so
+lib$1			/lib(g[dt]k)(?:-x11)?\.so
 
-libidnkit               /libidnkit(lite)?\.so
+libidnkit               /libidnkit(?:lite)?\.so
 
-libprotobuf             /libprotobuf(-lite)?\.so
+libprotobuf             /libprotobuf(?:-lite)?\.so
 
-libtcmalloc             /libtcmalloc(_minimal)?(_(debug|and_profiler))?
+libtcmalloc             /libtcmalloc(?:_minimal)?(?:_(?:debug|and_profiler))?
 
-libscintilla            /lib(wb|fx|q)?scintilla(2|nolexer)?
+libscintilla            /lib(?:wb|fx|q)?scintilla(?:2|nolexer)?
 
-libGL                   /libGL(ESv2)?\.so
+libGL                   /libGL(?:ESv2)?\.so
 
-libzzip                 /libzzip(mmapped|fseeko)?-0\.so
+libzzip                 /libzzip(?:mmapped|fseeko)?-0\.so
 
-lib4ti2                 /lib4ti2(gmp|int(32|64))\.so
+lib4ti2                 /lib4ti2(?:gmp|int(32|64))\.so
 
 libexpat                /libexpat[uw]?\.so
 
 libIce                  /libIceEC?\.so
 
-libicu                  /libicu(uc|cnv)\.so
+libicu                  /libicu(?:uc|cnv)\.so
 
-libibdm                 /libibdbm(com)?\.so
+libibdm                 /libibdbm(?:com)?\.so
 
-libraw                  /libraw(_r)?\.so
+libraw                  /libraw(?:_r)?\.so
 
-libgflash               /libgflags(_nothreads)?\.so
+libgflash               /libgflags(?:_nothreads)?\.so
 
-libaal                  /libaal(-minimal)?\.so
+libaal                  /libaal(?:-minimal)?\.so
 
-libsqlite3              /lib(moz)?sqlite3\.so
+libsqlite3              /lib(?:moz)?sqlite3\.so
 
 LAPACK                  /libc?lapack\.so
 
-PKCS#11                 /(openpin-)?opensc-pkcs11\.so
+PKCS#11                 /(?:openpin-)?opensc-pkcs11\.so
 PKCS#11                 /pkcs11-spy\.so
 
-X11                     /bin/X(vfb|fbdev|ephyr|org)
+X11                     /bin/X(?:vfb|fbdev|ephyr|org)
 
 # Consolidating multiple python site packages
 python/$1		python[0-9]+\.[0-9]+/(site-packages/.*\.so)$
@@ -167,4 +164,4 @@ python/$1		python[0-9]+\.[0-9]+/(site-packages/.*\.so)$
 # Note that the presence of _at least_ one object after the soname is
 # needed to ensure this does not hit most of the plugins that use the
 # format libfoo.so for the names.
-lib$1			/lib([a-zA-Z0-9\-_\+]+)(-[0-9\.]+)*\.so(\.[0-9\.]+)+$
+lib$1			/lib([a-zA-Z0-9\-_\+]+)(?:-[0-9\.]+)*\.so(?:\.[0-9\.]+)+$
