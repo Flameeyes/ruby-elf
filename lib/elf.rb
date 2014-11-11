@@ -227,12 +227,14 @@ module Elf
            178 => [ :ETPU, 'Freescale Extended Time Processing Unit' ],
            179 => [ :SLE9X, 'Infineon Technologies SLE9X core' ],
            180 => [ :L1OM, 'Intel L1OM' ],
+           183 => [ :AArch64, 'ARM AARCH64 (ARM64)' ],
            185 => [ :AVR32, 'Atmel Corporation 32-bit microprocessor family' ],
            186 => [ :STM8, 'STMicroeletronics STM8 8-bit microcontroller' ],
            187 => [ :TILE64, 'Tilera TILE64 multicore architecture family' ],
            188 => [ :TILEPro, 'Tilera TILEPro multicore architecture family' ],
            189 => [ :MicroBlaze, 'Xilinx MicroBlaze 32-bit RISC soft processor core' ],
            190 => [ :CUDA, 'NVIDIA CUDA architecture' ],
+           191 => [ :TILEGx, 'Tilera TILE-Gx' ],
 
            0x9026 => [ :Alpha, 'DEC Alpha' ]
          )
