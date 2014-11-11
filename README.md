@@ -1,8 +1,6 @@
 Ruby-Elf
 ========
 
-[![Flattr this!](http://api.flattr.com/button/flattr-badge-large.png)](https://flattr.com/thing/27866/Ruby-Elf)
-
 Ruby-Elf is a pure-Ruby library for parse and fetch information about
 ELF format used by Linux, FreeBSD, Solaris and other Unix-like
 operating systems, and include a set of analysis tools helpful for
