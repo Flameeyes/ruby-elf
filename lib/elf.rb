@@ -83,6 +83,10 @@ module Elf
             97 => [ :ARM, 'ARM' ],
            255 => [ :Standalone, 'Standalone (embedded) application' ]
          )
+
+    def linux_compatible?;
+      [Elf::OsAbi::SysV, Elf::OsAbi::Linux].include?(self)
+    end
   end
 
   class Machine < Value

@@ -374,12 +374,14 @@ module Elf
       raise TypeError.new("wrong argument type #{other.class} (expected Elf::File)") unless
         other.is_a? Elf::File
 
+      compatible_abi = (@abi.linux_compatible? && other.abi.linux_compatible?) \
+        || ([@abi, @abi_version] == [other.abi, other.abi_version])
+
       @elf_class == other.elf_class and
         @data_encoding == other.data_encoding and
         @version == other.version and
-        @abi == other.abi and
-        @abi_version == other.abi_version and
-        @machine == other.machine
+        @machine == other.machine and
+        compatible_abi
     end
 
     # Constants used for ARM-architecture files, as described by the
