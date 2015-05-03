@@ -200,7 +200,6 @@ module Elf
            131 => [ :TSK3000, 'Altium TSK3000 core' ],
            132 => [ :RS08, 'Freescale RS08 embedded processor' ],
            134 => [ :ECOG2, 'Cyan Technology eCOG2 microprocessor' ],
-           135 => [ :Score, 'Sunplus Score' ],
            135 => [ :Score7, 'Sunplus S+core7 RISC processor' ],
            136 => [ :DSP24, 'New Japan Radio (NJR) 24-bit DSP Processor' ],
            137 => [ :VideoCore3, 'Broadcom VideoCore III processor' ],
@@ -217,7 +216,6 @@ module Elf
            165 => [ :I8051, 'Intel 8051 and variants' ],
            166 => [ :STXP7X, 'STMicroelectronics STxP7x family' ],
            167 => [ :NDS32, 'Andes Technology compact code size embedded RISC processor family' ],
-           168 => [ :ECOG1, 'Cyan Technology eCOG1X family' ],
            168 => [ :ECOG1X, 'Cyan Technology eCOG1X family' ],
            169 => [ :MAXQ30, 'Dallas Semiconductor MAXQ30 Core Micro-controllers' ],
            170 => [ :XIMO16, 'New Japan Radio (NJR) 16-bit DSP Processor' ],
@@ -242,6 +240,8 @@ module Elf
 
            0x9026 => [ :Alpha, 'DEC Alpha' ]
          )
+    Score = Score7
+    ECOG1 = ECOG1X
   end
 
 end
