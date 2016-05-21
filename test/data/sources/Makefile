@@ -66,7 +66,7 @@ solaris-x86-gcc: \
 	x86_64-pc-linux-gnu-gcc -c executable.c -o $@
 
 ../linux/amd64/gcc/dynamic_executable: executable.c
-	x86_64-pc-linux-gnu-gcc executable.c -o $@
+	x86_64-pc-linux-gnu-gcc executable.c -Wl,-rpath -Wl,/opt/misc/lib -o $@
 
 ../linux/amd64/gcc/dynamic_executable_sstrip: ../linux/amd64/gcc/dynamic_executable
 	cp $< $@

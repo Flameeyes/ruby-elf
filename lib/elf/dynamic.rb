@@ -307,7 +307,7 @@ module Elf
         @complete_library_path = Array.new
 
         # If there is no DT_RUNPATH. RPATH wins over the LD_LIBRARY_PATH
-        @complete_library_path.concat rpath unless runpath.empty?
+        @complete_library_path.concat rpath if runpath.empty?
 
         @complete_library_path.concat Elf::Utilities.environment_library_path
 

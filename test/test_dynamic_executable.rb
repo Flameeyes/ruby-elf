@@ -160,7 +160,20 @@ module Elf::TestDynamicExecutable
     include Elf::TestDynamicExecutable
     include Elf::TestExecutable::LinuxAMD64
     include GLIBC
-    ExpectedEntryPoint = 0x400460
+    ExpectedEntryPoint = 0x400440
+
+    def test_rpath
+      assert_equal(["/opt/misc/lib"], @elf[".dynamic"].rpath)
+    end
+
+    def test_runpath
+      assert_equal([], @elf[".dynamic"].runpath)
+      assert_true( @elf[".dynamic"].runpath.empty?)
+    end
+
+    def test_complete_library_path
+      assert_equal(["/opt/misc/lib"], @elf[".dynamic"].complete_library_path.take(1))
+    end
   end
 
   class LinuxAMD64_ICC < Test::Unit::TestCase
@@ -218,6 +231,11 @@ module Elf::TestDynamicExecutable
     def test_runpath
       assert_equal(["/opt/gentoo/usr/i386-pc-solaris2.11/lib/gcc", "/opt/gentoo/usr/i386-pc-solaris2.11/lib", "/opt/gentoo/usr/lib", "/opt/gentoo/lib"],
                    @elf[".dynamic"].runpath)
+    end
+
+    def test_complete_library_path
+      assert_equal(["/opt/gentoo/usr/i386-pc-solaris2.11/lib/gcc", "/opt/gentoo/usr/i386-pc-solaris2.11/lib", "/opt/gentoo/usr/lib", "/opt/gentoo/lib"],
+                   @elf[".dynamic"].complete_library_path.take(4))
     end
   end
 
