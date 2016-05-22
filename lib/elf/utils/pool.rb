@@ -18,20 +18,32 @@
 
 require 'elf'
 require 'pathname'
+require 'weakref'
 
 module Elf::Utilities
   # Pool for ELF files.
   #
   # This pool is useful for tools that recurse over a tree of
   # dependencies to avoid creating multiple instances of Elf::File
-  # accessing the same file.
+  # being open and accessing the same file.
+  #
+  # Notes:
+  #   - Instances might be re-created if no strong references left to specific
+  #     Elf::File
+  #   - New instance will be created on access if previous one were closed
   class FilePool
     @pool = Hash.new
 
     def self.[](file)
       realfile = Pathname.new(file).realpath
-      
-      @pool[realfile] ||= Elf::File.new(realfile)
+
+      cached = @pool[realfile].__getobj__ rescue nil
+      if cached.nil? || cached.closed?
+        cached = Elf::File.new(realfile)
+        @pool[realfile] = WeakRef.new(cached)
+      end
+
+      cached
     end
   end
 end

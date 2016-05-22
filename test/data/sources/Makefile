@@ -9,7 +9,8 @@ linux-amd64-gcc: \
 	../linux/amd64/gcc/static_executable \
 	../linux/amd64/gcc/symboltypes.o \
 	../linux/amd64/gcc/versioning.so \
-	../linux/amd64/gcc/cxxsymbols.o
+	../linux/amd64/gcc/cxxsymbols.o \
+	../linux/amd64/gcc/gnu_specific
 linux-amd64-suncc: \
 	../linux/amd64/suncc/dynamic_executable.o \
 	../linux/amd64/suncc/dynamic_executable \
@@ -65,7 +66,7 @@ solaris-x86-gcc: \
 	x86_64-pc-linux-gnu-gcc -c executable.c -o $@
 
 ../linux/amd64/gcc/dynamic_executable: executable.c
-	x86_64-pc-linux-gnu-gcc executable.c -o $@
+	x86_64-pc-linux-gnu-gcc executable.c -Wl,-rpath -Wl,/opt/misc/lib -o $@
 
 ../linux/amd64/gcc/dynamic_executable_sstrip: ../linux/amd64/gcc/dynamic_executable
 	cp $< $@
@@ -76,6 +77,9 @@ solaris-x86-gcc: \
 
 ../linux/amd64/gcc/symboltypes.o: symboltypes.c
 	x86_64-pc-linux-gnu-gcc -fPIC -c symboltypes.c -o $@
+
+../linux/amd64/gcc/gnu_specific: gnu_specific.c
+	x86_64-pc-linux-gnu-gcc gnu_specific.c -o $@
 
 ../linux/amd64/icc/dynamic_executable.o: executable.c
 	icc -c executable.c -o $@
