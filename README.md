@@ -55,5 +55,4 @@ Resources
 ---------
 
 You can find the source code for the package at
-[GitHub](https://github.com/Flameeyes/ruby-elf) — previously at
-[Gitorious](https://gitorious.org/ruby-elf).
+[GitHub](https://github.com/Flameeyes/ruby-elf).
