@@ -9,7 +9,7 @@ Gem::Specification.new do |s|
 
   s.requirements << 'none'
   s.require_path = 'lib'
-  s.homepage = "http://www.flameeyes.eu/projects/ruby-elf"
+  s.homepage = "https://www.flameeyes.com/p/ruby-elf"
   s.license = "GPL-2 or later"
   s.author = "Diego Elio Pettenò"
   s.email = "flameeyes@flameeyes.com"
