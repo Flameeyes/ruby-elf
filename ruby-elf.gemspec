@@ -21,7 +21,7 @@ operating systems, and include a set of analysis tools helpful for
 both optimisations and verification of compiled ELF files.
 EOF
 
-  s.files  = %w{COPYING README.md DONATING ruby-elf.gemspec}
+  s.files  = %w{COPYING README.md ruby-elf.gemspec}
   s.files += Dir['lib/**/*.rb']
   s.files += Dir['bin/**/*.rb']
   s.files += Dir['tools/**/*.rb']
