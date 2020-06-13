@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # Simple ELF parser for Ruby
 #
-# Copyright © 2007-2010 Diego Elio Pettenò <flameeyes@flameeyes.eu>
+# Copyright © 2007-2010 Diego Elio Pettenò <flameeyes@flameeyes.com>
 # Portions inspired by elf.py
 #   Copyright © 2002 Netgraft Corporation
 # Portions inspired by glibc's elf.h

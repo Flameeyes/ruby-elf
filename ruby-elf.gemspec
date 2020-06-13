@@ -12,7 +12,7 @@ Gem::Specification.new do |s|
   s.homepage = "http://www.flameeyes.eu/projects/ruby-elf"
   s.license = "GPL-2 or later"
   s.author = "Diego Elio Pettenò"
-  s.email = "flameeyes@flameeyes.eu"
+  s.email = "flameeyes@flameeyes.com"
 
   s.description = <<EOF
 Ruby-Elf is a pure-Ruby library for parse and fetch information about

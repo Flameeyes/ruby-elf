@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # Offset-based string table
 #
-# Copyright © 2007-2012 Diego Elio Pettenò <flameeyes@flameeyes.eu>
+# Copyright © 2007-2012 Diego Elio Pettenò <flameeyes@flameeyes.com>
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
