@@ -79,6 +79,10 @@ module Elf
              30 => [ :Flags, "FLAGS", :Value ],
              32 => [ :PreinitArray, "PREINIT_ARRAY", :Address ],
              33 => [ :PreinitArraySz, "PREINIT_ARRAYSZ", :Value ],
+             34 => [ :SymTab_SHNDX, "SYMTAB_SHNDX", :Ignore ],
+             35 => [ :RelrSz, "RELRSZ", :Value ],
+             36 => [ :Relr, "RELR", :Address ],
+             37 => [ :RelrEnt, "RELRENT", :Value ],
 
              # DT_VAL* constants mapping
              0x6ffffdf5 => [ :GNUPrelinked, "GNU_PRELINKED", :Value ],
