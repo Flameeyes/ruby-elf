@@ -237,6 +237,7 @@ module Elf
            189 => [ :MicroBlaze, 'Xilinx MicroBlaze 32-bit RISC soft processor core' ],
            190 => [ :CUDA, 'NVIDIA CUDA architecture' ],
            191 => [ :TILEGx, 'Tilera TILE-Gx' ],
+           243 => [ :RISCV, 'RISC-V' ],
 
            0x9026 => [ :Alpha, 'DEC Alpha' ]
          )
